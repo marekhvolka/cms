@@ -21,9 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Page', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?= $this->render('_search', [
+        'model' => $searchModel,
+    ]) ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 

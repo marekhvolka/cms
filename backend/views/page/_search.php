@@ -15,15 +15,7 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'url') ?>
-
-    <?= $form->field($model, 'portal_id') ?>
-
-    <?= $form->field($model, 'active') ?>
+    <?= $form->field($model, 'globalSearch') ?>
 
     <?php // echo $form->field($model, 'in_menu') ?>
 

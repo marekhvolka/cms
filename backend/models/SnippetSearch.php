@@ -12,6 +12,8 @@ use backend\models\Snippet;
  */
 class SnippetSearch extends Snippet
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class SnippetSearch extends Snippet
     {
         return [
             [['id', 'default_code_id', 'typ_snippet', 'last_edit_user'], 'integer'],
-            [['name', 'popis', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'popis', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
         ];
     }
 
@@ -55,22 +57,8 @@ class SnippetSearch extends Snippet
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'default_code_id' => $this->default_code_id,
-            'typ_snippet' => $this->typ_snippet,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'popis', $this->popis])
-            ->andFilterWhere(['like', 'sekcia_id', $this->sekcia_id])
-            ->andFilterWhere(['like', 'sekcia_class', $this->sekcia_class])
-            ->andFilterWhere(['like', 'sekcia_style', $this->sekcia_style])
-            ->andFilterWhere(['like', 'block_id', $this->block_id])
-            ->andFilterWhere(['like', 'block_class', $this->block_class])
-            ->andFilterWhere(['like', 'block_style', $this->block_style]);
+        $query->orFilterWhere(['like', 'name', $this->globalSearch])
+            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
 
         return $dataProvider;
     }

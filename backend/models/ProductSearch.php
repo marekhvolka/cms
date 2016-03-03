@@ -12,6 +12,8 @@ use backend\models\Product;
  */
 class ProductSearch extends Product
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'identifikator', 'popis', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'identifikator', 'popis', 'last_edit'], 'safe'],
         ];
     }
 
@@ -55,19 +57,9 @@ class ProductSearch extends Product
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'parent_id' => $this->parent_id,
-            'type_id' => $this->type_id,
-            'language_id' => $this->language_id,
-            'active' => $this->active,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'identifikator', $this->identifikator])
-            ->andFilterWhere(['like', 'popis', $this->popis]);
+        $query->orFilterWhere(['like', 'name', $this->globalSearch])
+            ->orFilterWhere(['like', 'identifikator', $this->globalSearch])
+            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
 
         return $dataProvider;
     }

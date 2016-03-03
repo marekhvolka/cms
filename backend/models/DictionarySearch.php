@@ -12,6 +12,8 @@ use backend\models\Dictionary;
  */
 class DictionarySearch extends Dictionary
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class DictionarySearch extends Dictionary
     {
         return [
             [['id', 'last_edit_user'], 'integer'],
-            [['word', 'identifier', 'last_edit'], 'safe'],
+            [['globalSearch', 'word', 'identifier', 'last_edit'], 'safe'],
         ];
     }
 
@@ -55,14 +57,8 @@ class DictionarySearch extends Dictionary
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
-        ]);
-
-        $query->andFilterWhere(['like', 'word', $this->word])
-            ->andFilterWhere(['like', 'identifier', $this->identifier]);
+        $query->orFilterWhere(['like', 'word', $this->globalSearch])
+            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
 
         return $dataProvider;
     }

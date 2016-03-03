@@ -14151,3 +14151,130 @@ $_SERVER = [
     ]
     'argc' => 1
 ]
+2016-03-03 18:37:32 [::1][-][-][error][yii\base\ErrorException:8] exception 'yii\base\ErrorException' with message 'Undefined variable: model' in /Users/MarekHvolka/Sites/cms_yii/cms/backend/views/page/index.php:25
+Stack trace:
+#0 /Users/MarekHvolka/Sites/cms_yii/cms/backend/views/page/index.php(25): yii\base\ErrorHandler->handleError(8, 'Undefined varia...', '/Users/MarekHvo...', 25, Array)
+#1 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/View.php(325): require('/Users/MarekHvo...')
+#2 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/Users/MarekHvo...', Array)
+#3 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/Users/MarekHvo...', Array, Object(backend\controllers\PageController))
+#4 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Controller.php(377): yii\base\View->render('index', Array, Object(backend\controllers\PageController))
+#5 /Users/MarekHvolka/Sites/cms_yii/cms/backend/controllers/PageController.php(41): yii\base\Controller->render('index', Array)
+#6 [internal function]: backend\controllers\PageController->actionIndex()
+#7 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#8 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#9 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('index', Array)
+#10 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('page/index', Array)
+#11 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#12 /Users/MarekHvolka/Sites/cms_yii/cms/backend/web/index.php(18): yii\base\Application->run()
+#13 {main}
+2016-03-03 18:37:32 [::1][-][-][info][application] $_GET = [
+    'r' => 'page/index'
+]
+
+$_COOKIE = [
+    '_ga' => 'GA1.1.76212508.1455306967'
+    'PHPSESSID' => 'd59d0dbdaa02e61351e8462671e12545'
+    '_csrf' => '1dd767b0909d605c54b398e4e93311d5f6ac5e983ee65f87a0ff7840fb83fcd0a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"-Qs-aZjIKMgHY0SMribhkcxCNi_PVEjY\";}'
+    '_identity' => '27e10595d3cb2318693479b1d5a9431ec832325d7df7e29763f44bd5596ad56ea:2:{i:0;s:9:\"_identity\";i:1;s:46:\"[1,\"HxZh2QiJWdARvlTozjZPQVWFynRrxUTJ\",2592000]\";}'
+    'cookies-allowed' => '1'
+    'nette-browser' => 'f9y42g9agq'
+]
+
+$_SERVER = [
+    'HTTP_HOST' => 'localhost:8888'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => '_ga=GA1.1.76212508.1455306967; PHPSESSID=d59d0dbdaa02e61351e8462671e12545; _csrf=1dd767b0909d605c54b398e4e93311d5f6ac5e983ee65f87a0ff7840fb83fcd0a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22-Qs-aZjIKMgHY0SMribhkcxCNi_PVEjY%22%3B%7D; _identity=27e10595d3cb2318693479b1d5a9431ec832325d7df7e29763f44bd5596ad56ea%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A46%3A%22%5B1%2C%22HxZh2QiJWdARvlTozjZPQVWFynRrxUTJ%22%2C2592000%5D%22%3B%7D; cookies-allowed=1; nette-browser=f9y42g9agq'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/601.4.4 (KHTML, like Gecko) Version/9.0.3 Safari/601.4.4'
+    'HTTP_ACCEPT_LANGUAGE' => 'sk-sk'
+    'HTTP_REFERER' => 'http://localhost:8888/cms_yii/cms/backend/web/index.php?r=page%2Findex'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.2.29 (Unix) mod_wsgi/3.5 Python/2.7.10 PHP/5.6.10 mod_ssl/2.2.29 OpenSSL/0.9.8zg DAV/2 mod_fastcgi/2.4.6 mod_perl/2.0.9 Perl/v5.22.0'
+    'SERVER_NAME' => 'localhost'
+    'SERVER_ADDR' => '::1'
+    'SERVER_PORT' => '8888'
+    'REMOTE_ADDR' => '::1'
+    'DOCUMENT_ROOT' => '/Users/MarekHvolka/Sites'
+    'SERVER_ADMIN' => 'you@example.com'
+    'SCRIPT_FILENAME' => '/Users/MarekHvolka/Sites/cms_yii/cms/backend/web/index.php'
+    'REMOTE_PORT' => '54791'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'r=page%2Findex'
+    'REQUEST_URI' => '/cms_yii/cms/backend/web/index.php?r=page%2Findex'
+    'SCRIPT_NAME' => '/cms_yii/cms/backend/web/index.php'
+    'PHP_SELF' => '/cms_yii/cms/backend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1457026652.57
+    'REQUEST_TIME' => 1457026652
+    'argv' => [
+        0 => 'r=page%2Findex'
+    ]
+    'argc' => 1
+]
+2016-03-03 18:42:00 [::1][-][-][error][yii\base\UnknownPropertyException] exception 'yii\base\UnknownPropertyException' with message 'Getting unknown property: backend\models\PageSearch::global_search' in /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Component.php:143
+Stack trace:
+#0 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/db/BaseActiveRecord.php(247): yii\base\Component->__get('global_search')
+#1 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/validators/Validator.php(240): yii\db\BaseActiveRecord->__get('global_search')
+#2 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Model.php(356): yii\validators\Validator->validateAttributes(Object(backend\models\PageSearch), Array)
+#3 /Users/MarekHvolka/Sites/cms_yii/cms/backend/models/PageSearch.php(54): yii\base\Model->validate()
+#4 /Users/MarekHvolka/Sites/cms_yii/cms/backend/controllers/PageController.php(36): backend\models\PageSearch->search(Array)
+#5 [internal function]: backend\controllers\PageController->actionIndex()
+#6 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#7 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#8 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('index', Array)
+#9 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('page/index', Array)
+#10 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#11 /Users/MarekHvolka/Sites/cms_yii/cms/backend/web/index.php(18): yii\base\Application->run()
+#12 {main}
+2016-03-03 18:42:00 [::1][-][-][info][application] $_GET = [
+    'r' => 'page/index'
+]
+
+$_COOKIE = [
+    '_ga' => 'GA1.1.76212508.1455306967'
+    'PHPSESSID' => 'd59d0dbdaa02e61351e8462671e12545'
+    '_csrf' => '1dd767b0909d605c54b398e4e93311d5f6ac5e983ee65f87a0ff7840fb83fcd0a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"-Qs-aZjIKMgHY0SMribhkcxCNi_PVEjY\";}'
+    '_identity' => '27e10595d3cb2318693479b1d5a9431ec832325d7df7e29763f44bd5596ad56ea:2:{i:0;s:9:\"_identity\";i:1;s:46:\"[1,\"HxZh2QiJWdARvlTozjZPQVWFynRrxUTJ\",2592000]\";}'
+    'cookies-allowed' => '1'
+    'nette-browser' => 'f9y42g9agq'
+]
+
+$_SERVER = [
+    'HTTP_HOST' => 'localhost:8888'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => '_ga=GA1.1.76212508.1455306967; PHPSESSID=d59d0dbdaa02e61351e8462671e12545; _csrf=1dd767b0909d605c54b398e4e93311d5f6ac5e983ee65f87a0ff7840fb83fcd0a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22-Qs-aZjIKMgHY0SMribhkcxCNi_PVEjY%22%3B%7D; _identity=27e10595d3cb2318693479b1d5a9431ec832325d7df7e29763f44bd5596ad56ea%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A46%3A%22%5B1%2C%22HxZh2QiJWdARvlTozjZPQVWFynRrxUTJ%22%2C2592000%5D%22%3B%7D; cookies-allowed=1; nette-browser=f9y42g9agq'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/601.4.4 (KHTML, like Gecko) Version/9.0.3 Safari/601.4.4'
+    'HTTP_ACCEPT_LANGUAGE' => 'sk-sk'
+    'HTTP_REFERER' => 'http://localhost:8888/cms_yii/cms/backend/web/index.php?r=page%2Findex'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.2.29 (Unix) mod_wsgi/3.5 Python/2.7.10 PHP/5.6.10 mod_ssl/2.2.29 OpenSSL/0.9.8zg DAV/2 mod_fastcgi/2.4.6 mod_perl/2.0.9 Perl/v5.22.0'
+    'SERVER_NAME' => 'localhost'
+    'SERVER_ADDR' => '::1'
+    'SERVER_PORT' => '8888'
+    'REMOTE_ADDR' => '::1'
+    'DOCUMENT_ROOT' => '/Users/MarekHvolka/Sites'
+    'SERVER_ADMIN' => 'you@example.com'
+    'SCRIPT_FILENAME' => '/Users/MarekHvolka/Sites/cms_yii/cms/backend/web/index.php'
+    'REMOTE_PORT' => '54829'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'r=page%2Findex'
+    'REQUEST_URI' => '/cms_yii/cms/backend/web/index.php?r=page%2Findex'
+    'SCRIPT_NAME' => '/cms_yii/cms/backend/web/index.php'
+    'PHP_SELF' => '/cms_yii/cms/backend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1457026920.01
+    'REQUEST_TIME' => 1457026920
+    'argv' => [
+        0 => 'r=page%2Findex'
+    ]
+    'argc' => 1
+]

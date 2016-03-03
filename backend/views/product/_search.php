@@ -15,25 +15,7 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'parent_id') ?>
-
-    <?= $form->field($model, 'type_id') ?>
-
-    <?= $form->field($model, 'identifikator') ?>
-
-    <?php // echo $form->field($model, 'popis') ?>
-
-    <?php // echo $form->field($model, 'language_id') ?>
-
-    <?php // echo $form->field($model, 'active') ?>
-
-    <?php // echo $form->field($model, 'last_edit') ?>
-
-    <?php // echo $form->field($model, 'last_edit_user') ?>
+    <?= $form->field($model, 'globalSearch') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
