@@ -1,0 +1,81 @@
+<?php
+
+namespace backend\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "template".
+ *
+ * @property integer $id
+ * @property string $name
+ * @property string $popis
+ * @property string $sablona
+ * @property integer $active
+ * @property string $last_edit
+ * @property integer $last_edit_user
+ *
+ * @property Portal[] $portals
+ * @property User $lastEditUser
+ */
+class Template extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'template';
+    }
+
+    public function init()
+    {
+        $this->active = 1;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'sablona', 'active'], 'required'],
+            [['active', 'last_edit_user'], 'integer'],
+            [['last_edit'], 'safe'],
+            [['name'], 'string', 'max' => 50],
+            [['sablona'], 'string', 'max' => 100]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'popis' => 'Popis',
+            'sablona' => 'Sablona',
+            'active' => 'Active',
+            'last_edit' => 'Last Edit',
+            'last_edit_user' => 'Last Edit User',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPortals()
+    {
+        return $this->hasMany(Portal::className(), ['template_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastEditUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
+    }
+}
