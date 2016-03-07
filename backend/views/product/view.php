@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'parent_id',
             'type_id',
-            'identifikator',
+            'identifier',
             'popis',
             'language_id',
             'active',

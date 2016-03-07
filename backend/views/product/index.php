@@ -44,14 +44,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Typ produktu',
                 'value' => 'productType.name'
             ],
-            'identifikator',
+            'identifier',
             // 'popis',
             // 'language_id',
             // 'active',
             'last_edit',
             [
                 'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.name'
+                'value' => 'lastEditUser.username'
             ],
 
             ['class' => 'yii\grid\ActionColumn'],

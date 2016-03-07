@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'last_edit',
             [
                 'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.name'
+                'value' => 'lastEditUser.username'
             ]
         ],
     ]); ?>

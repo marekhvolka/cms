@@ -83,3 +83,101 @@ Additional Information:
     ]
     'argc' => 2
 ]
+2016-03-07 14:22:48 [-][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'You should configure "authManager" component to use database before executing this migration.' in /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/rbac/migrations/m140506_102106_rbac_init.php:27
+Stack trace:
+#0 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/rbac/migrations/m140506_102106_rbac_init.php(45): m140506_102106_rbac_init->getAuthManager()
+#1 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(562): m140506_102106_rbac_init->up()
+#2 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(151): yii\console\controllers\BaseMigrateController->migrateUp('m140506_102106_...')
+#3 [internal function]: yii\console\controllers\BaseMigrateController->actionUp(0)
+#4 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#5 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#6 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Controller.php(108): yii\base\Controller->runAction('', Array)
+#7 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Module.php(454): yii\console\Controller->runAction('', Array)
+#8 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Application.php(167): yii\base\Module->runAction('migrate', Array)
+#9 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Application.php(143): yii\console\Application->runAction('migrate', Array)
+#10 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Application.php(375): yii\console\Application->handleRequest(Object(yii\console\Request))
+#11 /Users/MarekHvolka/Sites/cms_yii/cms/yii(27): yii\base\Application->run()
+#12 {main}
+2016-03-07 14:22:45 [-][-][-][info][application] $_SERVER = [
+    'TERM_PROGRAM' => 'Apple_Terminal'
+    'TERM' => 'xterm-256color'
+    'SHELL' => '/bin/bash'
+    'TMPDIR' => '/var/folders/qk/72_4fpp94696p6kx03d0vr1h0000gn/T/'
+    'Apple_PubSub_Socket_Render' => '/private/tmp/com.apple.launchd.v7JUvr58MP/Render'
+    'TERM_PROGRAM_VERSION' => '361.1'
+    'TERM_SESSION_ID' => 'A15C77CC-553E-4A69-84EC-EEFF2A234052'
+    'USER' => 'MarekHvolka'
+    'SSH_AUTH_SOCK' => '/private/tmp/com.apple.launchd.eLrEwSESGh/Listeners'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x1D:0x39'
+    'PATH' => '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'
+    'PWD' => '/Users/MarekHvolka/Sites/cms_yii/cms'
+    'LANG' => 'sk_SK.UTF-8'
+    'XPC_FLAGS' => '0x0'
+    'XPC_SERVICE_NAME' => '0'
+    'HOME' => '/Users/MarekHvolka'
+    'SHLVL' => '1'
+    'LOGNAME' => 'MarekHvolka'
+    '_' => '/usr/bin/php'
+    'PHP_SELF' => 'yii'
+    'SCRIPT_NAME' => 'yii'
+    'SCRIPT_FILENAME' => 'yii'
+    'PATH_TRANSLATED' => 'yii'
+    'DOCUMENT_ROOT' => ''
+    'REQUEST_TIME_FLOAT' => 1457360565.9343
+    'REQUEST_TIME' => 1457360565
+    'argv' => [
+        0 => 'yii'
+        1 => 'migrate'
+        2 => '--migrationPath=@yii/rbac/migrations/'
+    ]
+    'argc' => 3
+]
+2016-03-07 14:26:02 [-][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'You should configure "authManager" component to use database before executing this migration.' in /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/rbac/migrations/m140506_102106_rbac_init.php:27
+Stack trace:
+#0 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/rbac/migrations/m140506_102106_rbac_init.php(45): m140506_102106_rbac_init->getAuthManager()
+#1 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(562): m140506_102106_rbac_init->up()
+#2 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(151): yii\console\controllers\BaseMigrateController->migrateUp('m140506_102106_...')
+#3 [internal function]: yii\console\controllers\BaseMigrateController->actionUp(0)
+#4 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#5 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#6 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Controller.php(108): yii\base\Controller->runAction('', Array)
+#7 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Module.php(454): yii\console\Controller->runAction('', Array)
+#8 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Application.php(167): yii\base\Module->runAction('migrate', Array)
+#9 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/console/Application.php(143): yii\console\Application->runAction('migrate', Array)
+#10 /Users/MarekHvolka/Sites/cms_yii/cms/vendor/yiisoft/yii2/base/Application.php(375): yii\console\Application->handleRequest(Object(yii\console\Request))
+#11 /Users/MarekHvolka/Sites/cms_yii/cms/yii(27): yii\base\Application->run()
+#12 {main}
+2016-03-07 14:26:00 [-][-][-][info][application] $_SERVER = [
+    'TERM_PROGRAM' => 'Apple_Terminal'
+    'TERM' => 'xterm-256color'
+    'SHELL' => '/bin/bash'
+    'TMPDIR' => '/var/folders/qk/72_4fpp94696p6kx03d0vr1h0000gn/T/'
+    'Apple_PubSub_Socket_Render' => '/private/tmp/com.apple.launchd.v7JUvr58MP/Render'
+    'TERM_PROGRAM_VERSION' => '361.1'
+    'TERM_SESSION_ID' => 'A15C77CC-553E-4A69-84EC-EEFF2A234052'
+    'USER' => 'MarekHvolka'
+    'SSH_AUTH_SOCK' => '/private/tmp/com.apple.launchd.eLrEwSESGh/Listeners'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x1D:0x39'
+    'PATH' => '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'
+    'PWD' => '/Users/MarekHvolka/Sites/cms_yii/cms'
+    'LANG' => 'sk_SK.UTF-8'
+    'XPC_FLAGS' => '0x0'
+    'XPC_SERVICE_NAME' => '0'
+    'HOME' => '/Users/MarekHvolka'
+    'SHLVL' => '1'
+    'LOGNAME' => 'MarekHvolka'
+    '_' => '/usr/bin/php'
+    'PHP_SELF' => 'yii'
+    'SCRIPT_NAME' => 'yii'
+    'SCRIPT_FILENAME' => 'yii'
+    'PATH_TRANSLATED' => 'yii'
+    'DOCUMENT_ROOT' => ''
+    'REQUEST_TIME_FLOAT' => 1457360760.6723
+    'REQUEST_TIME' => 1457360760
+    'argv' => [
+        0 => 'yii'
+        1 => 'migrate'
+        2 => '--migrationPath=@yii/rbac/migrations/'
+    ]
+    'argc' => 3
+]

@@ -22,6 +22,7 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <?php $this->head() ?>
 </head>
 <body>
@@ -99,6 +100,5 @@ AppAsset::register($this);
 
 <?php $this->endBody() ?>
 </body>
-
 </html>
 <?php $this->endPage() ?>

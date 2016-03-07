@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\DictionarySearch */
@@ -22,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_search', [
         'model' => $searchModel,
     ]) ?>
-
+    <?php Pjax::begin(['id' => 'gridData']) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -40,11 +41,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'last_edit',
             [
                 'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.name'
+                'value' => 'lastEditUser.username'
             ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+    <?php Pjax::end() ?>
+
+    <?php
+
+    $this->registerJs(
+        '$("document").ready(function(){
+        $("#search-form").on("pjax:end", function() {
+            $.pjax.reload({container:"#gridData"});  //Reload GridView
+        });
+    });'
+    );
+    ?>
+
+    <script>
+
+
+        $('form').bind('input', function(event) {
+        //input.addEventListener('input', function(event) {
+            var container = $(this).closest('[data-pjax-container]');
+            $.pjax.submit(event, container);
+        })
+    </script>
 
 </div>

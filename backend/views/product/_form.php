@@ -36,7 +36,7 @@ use backend\models\ProductType;
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
     ) ?>
 
-    <?= $form->field($model, 'identifikator')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
 

@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\User;
 use Yii;
 
 /**
@@ -48,12 +49,12 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'type_id', 'identifikator', 'language_id', 'active'], 'required'],
+            [['name', 'type_id', 'identifier', 'language_id', 'active'], 'required'],
             [['parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
-            [['name', 'identifikator'], 'string', 'max' => 50],
+            [['name', 'identifier'], 'string', 'max' => 50],
             [['name', 'language_id'], 'unique', 'targetAttribute' => ['name', 'language_id'], 'message' => 'The combination of Name and Language ID has already been taken.'],
-            [['identifikator', 'language_id'], 'unique', 'targetAttribute' => ['identifikator', 'language_id'], 'message' => 'The combination of Identifikator and Language ID has already been taken.']
+            [['identifier', 'language_id'], 'unique', 'targetAttribute' => ['identifier', 'language_id'], 'message' => 'The combination of Identifier and Language ID has already been taken.']
         ];
     }
 
@@ -67,7 +68,7 @@ class Product extends \yii\db\ActiveRecord
             'name' => 'Name',
             'parent_id' => 'Rodič',
             'type_id' => 'Typ produktu',
-            'identifikator' => 'Identifikator',
+            'identifier' => 'Identifikator',
             'popis' => 'Popis',
             'language_id' => 'Krajina',
             'active' => 'Active',

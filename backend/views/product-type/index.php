@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'active',
             [
                 'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.name'
+                'value' => 'lastEditUser.username'
             ],
             'last_edit',
 

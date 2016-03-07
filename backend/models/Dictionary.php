@@ -2,7 +2,10 @@
 
 namespace backend\models;
 
+
+use common\models\User;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "dictionary".
@@ -16,7 +19,7 @@ use Yii;
  * @property User $lastEditUser
  * @property DictionaryTranslation[] $dictionaryTranslations
  */
-class Dictionary extends \yii\db\ActiveRecord
+class Dictionary extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -68,6 +71,9 @@ class Dictionary extends \yii\db\ActiveRecord
      */
     public function getDictionaryTranslations()
     {
-        return $this->hasMany(DictionaryTranslation::className(), ['word_id' => 'id']);
+        //return $this->hasMany('DictionaryTranslation', array('post_id' => 'id'));
+        //return $this->hasMany(DictionaryTranslation::className(), ['word_id' => 'id']);
+        return Yii::$app->db->createCommand('SELECT * FROM dictionary_translation WHERE word_id = ' . $this->id)
+            ->queryAll();
     }
 }

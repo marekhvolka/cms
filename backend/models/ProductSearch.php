@@ -21,7 +21,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'identifikator', 'popis', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'identifier', 'popis', 'last_edit'], 'safe'],
         ];
     }
 
@@ -58,7 +58,7 @@ class ProductSearch extends Product
         }
 
         $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifikator', $this->globalSearch])
+            ->orFilterWhere(['like', 'identifier', $this->globalSearch])
             ->orFilterWhere(['like', 'popis', $this->globalSearch]);
 
         return $dataProvider;

@@ -5,6 +5,7 @@ namespace backend\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Query;
+use common\models\User;
 
 /**
  * This is the model class for table "tracking_code".
@@ -102,7 +103,9 @@ class TrackingCode extends ActiveRecord
 
     public static function getPlaces()
     {
-        return Yii::$app->db->createCommand('SELECT * FROM tracking_code_place')
-            ->queryAll();
+        return (new Query())
+            ->select(['id', 'name'])
+            ->from('tracking_code_place')
+            ->all();
     }
 }
