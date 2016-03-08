@@ -76,7 +76,7 @@ use backend\models\ProductType;
                         <div class="panel-body">
                             <div class="form-group">
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelProductVarValue, '[{$i}]attr_id')->dropDownList(
+                                    <?= $form->field($modelProductVarValue, '[{$i}]var_id')->dropDownList(
                                         ArrayHelper::map(ProductVar::find()->all(), 'id', 'vlastnost')
                                     ) ?>
                                 </div>
