@@ -7,7 +7,7 @@ use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Model;
 use backend\models\Snippet;
-use backend\models\SnippetSearch;
+use backend\models\search\SnippetSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;

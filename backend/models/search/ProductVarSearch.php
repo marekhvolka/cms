@@ -1,27 +1,25 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
+use backend\models\ProductVar;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Product;
 
 /**
- * ProductSearch represents the model behind the search form about `app\models\Product`.
+ * ProductVarSearch represents the model behind the search form about `backend\models\ProductVar`.
  */
-class ProductSearch extends Product
+class ProductVarSearch extends ProductVar
 {
-    public $globalSearch;
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'identifier', 'popis', 'last_edit'], 'safe'],
+            [['id', 'type_id', 'last_edit_user'], 'integer'],
+            [['name', 'identifier', 'popis', 'product_type', 'last_edit'], 'safe'],
         ];
     }
 
@@ -43,7 +41,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = ProductVar::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,9 +55,17 @@ class ProductSearch extends Product
             return $dataProvider;
         }
 
-        $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch])
-            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'type_id' => $this->type_id,
+            'last_edit' => $this->last_edit,
+            'last_edit_user' => $this->last_edit_user,
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'identifier', $this->identifier])
+            ->andFilterWhere(['like', 'popis', $this->popis])
+            ->andFilterWhere(['like', 'product_type', $this->product_type]);
 
         return $dataProvider;
     }

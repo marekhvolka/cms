@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\TrackingCode;
-use backend\models\TrackingCodeSearch;
+use backend\models\search\TrackingCodeSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 

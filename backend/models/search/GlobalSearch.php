@@ -1,12 +1,14 @@
 <?php
 
+namespace backend\models\search;
+
 use Yii;
 
 class GlobalSearch
 {
     public $globalSearch;
 
-    public function search($params)
+    public function search()
     {
         $results = array();
 

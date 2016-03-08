@@ -1,25 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Template;
+use backend\models\Dictionary;
 
 /**
- * TemplateSearch represents the model behind the search form about `app\models\Template`.
+ * DictionarySearch represents the model behind the search form about `backend\models\Dictionary`.
  */
-class TemplateSearch extends Template
+class DictionarySearch extends Dictionary
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'popis', 'sablona', 'last_edit'], 'safe'],
+            [['id', 'last_edit_user'], 'integer'],
+            [['globalSearch', 'word', 'identifier', 'last_edit'], 'safe'],
         ];
     }
 
@@ -41,7 +43,7 @@ class TemplateSearch extends Template
      */
     public function search($params)
     {
-        $query = Template::find();
+        $query = Dictionary::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,16 +57,8 @@ class TemplateSearch extends Template
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'active' => $this->active,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'popis', $this->popis])
-            ->andFilterWhere(['like', 'sablona', $this->sablona]);
+        $query->orFilterWhere(['like', 'word', $this->globalSearch])
+            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
 
         return $dataProvider;
     }

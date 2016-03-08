@@ -1,25 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Language;
+use backend\models\Page;
 
 /**
- * LanguageSearch represents the model behind the search form about `backend\models\Language`.
+ * PageSearch represents the model behind the search form about `app\models\Page`.
  */
-class LanguageSearch extends Language
+class PageSearch extends Page
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'active'], 'integer'],
-            [['name', 'currency', 'identifier'], 'safe'],
+            [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'presmerovanie_aktivne', 'sidebar', 'sidebar_size', 'footer', 'header', 'last_edit_user'], 'integer'],
+            [['globalSearch', 'name', 'url', 'presmerovanie', 'utm', 'seo_title', 'seo_description', 'seo_keywords', 'layout_poradie', 'layout_poradie_id', 'layout_element', 'layout_element_type', 'layout_element_active', 'layout_element_time_from', 'layout_element_time_to', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
         ];
     }
 
@@ -41,7 +43,7 @@ class LanguageSearch extends Language
      */
     public function search($params)
     {
-        $query = Language::find();
+        $query = Page::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,14 +57,8 @@ class LanguageSearch extends Language
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'active' => $this->active,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'currency', $this->currency])
-            ->andFilterWhere(['like', 'identifier', $this->identifier]);
+        $query->orFilterWhere(['like', 'name', $this->globalSearch])
+            ->orFilterWhere(['like', 'url', $this->globalSearch]);
 
         return $dataProvider;
     }

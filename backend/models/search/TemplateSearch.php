@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User;
+use backend\models\Template;
 
 /**
- * UserSearch represents the model behind the search form about `backend\models\User`.
+ * TemplateSearch represents the model behind the search form about `app\models\Template`.
  */
-class UserSearch extends User
+class TemplateSearch extends Template
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'active', 'actualPortal', 'role', 'isLog'], 'integer'],
-            [['firstname', 'lastname', 'email', 'password_hash', 'created_at', 'allowPortal', 'cookie_hash', 'updated_at'], 'safe'],
+            [['id', 'active', 'last_edit_user'], 'integer'],
+            [['name', 'popis', 'sablona', 'last_edit'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = Template::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,19 +57,14 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'created_at' => $this->created_at,
             'active' => $this->active,
-            'actualPortal' => $this->actualPortal,
-            'role' => $this->role,
-            'isLog' => $this->isLog,
-            'updated_at' => $this->updated_at,
+            'last_edit' => $this->last_edit,
+            'last_edit_user' => $this->last_edit_user,
         ]);
 
-        $query->andFilterWhere(['like', 'firstname', $this->firstname])
-            ->andFilterWhere(['like', 'lastname', $this->lastname])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'allowPortal', $this->allowPortal])
-            ->andFilterWhere(['like', 'cookie_hash', $this->cookie_hash]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'popis', $this->popis])
+            ->andFilterWhere(['like', 'sablona', $this->sablona]);
 
         return $dataProvider;
     }

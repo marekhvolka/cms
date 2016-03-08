@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Dictionary;
+use backend\models\Snippet;
 
 /**
- * DictionarySearch represents the model behind the search form about `backend\models\Dictionary`.
+ * SnippetSearch represents the model behind the search form about `app\models\Snippet`.
  */
-class DictionarySearch extends Dictionary
+class SnippetSearch extends Snippet
 {
     public $globalSearch;
 
@@ -20,8 +20,8 @@ class DictionarySearch extends Dictionary
     public function rules()
     {
         return [
-            [['id', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'word', 'identifier', 'last_edit'], 'safe'],
+            [['id', 'default_code_id', 'typ_snippet', 'last_edit_user'], 'integer'],
+            [['globalSearch', 'name', 'popis', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
         ];
     }
 
@@ -43,7 +43,7 @@ class DictionarySearch extends Dictionary
      */
     public function search($params)
     {
-        $query = Dictionary::find();
+        $query = Snippet::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,8 +57,8 @@ class DictionarySearch extends Dictionary
             return $dataProvider;
         }
 
-        $query->orFilterWhere(['like', 'word', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
+        $query->orFilterWhere(['like', 'name', $this->globalSearch])
+            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
 
         return $dataProvider;
     }

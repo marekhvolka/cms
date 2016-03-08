@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\ProductType;
+use backend\models\SnippetCode;
 
 /**
- * ProductTypeSearch represents the model behind the search form about `backend\models\ProductType`.
+ * SnippetCodeSearch represents the model behind the search form about `app\models\SnippetCode`.
  */
-class ProductTypeSearch extends ProductType
+class SnippetCodeSearch extends SnippetCode
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class ProductTypeSearch extends ProductType
     public function rules()
     {
         return [
-            [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'last_edit'], 'safe'],
+            [['id', 'snippet_id'], 'integer'],
+            [['name', 'code', 'popis', 'portal'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class ProductTypeSearch extends ProductType
      */
     public function search($params)
     {
-        $query = ProductType::find();
+        $query = SnippetCode::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,12 +57,13 @@ class ProductTypeSearch extends ProductType
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'active' => $this->active,
-            'last_edit_user' => $this->last_edit_user,
-            'last_edit' => $this->last_edit,
+            'snippet_id' => $this->snippet_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'popis', $this->popis])
+            ->andFilterWhere(['like', 'portal', $this->portal]);
 
         return $dataProvider;
     }

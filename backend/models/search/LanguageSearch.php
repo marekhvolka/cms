@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TrackingCode;
+use backend\models\Language;
 
 /**
- * TrackingCodeSearch represents the model behind the search form about `backend\models\TrackingCode`.
+ * LanguageSearch represents the model behind the search form about `backend\models\Language`.
  */
-class TrackingCodeSearch extends TrackingCode
+class LanguageSearch extends Language
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class TrackingCodeSearch extends TrackingCode
     public function rules()
     {
         return [
-            [['id', 'place_id', 'portal_id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'code', 'last_edit'], 'safe'],
+            [['id', 'active'], 'integer'],
+            [['name', 'currency', 'identifier'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class TrackingCodeSearch extends TrackingCode
      */
     public function search($params)
     {
-        $query = TrackingCode::find();
+        $query = Language::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,15 +57,12 @@ class TrackingCodeSearch extends TrackingCode
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'place_id' => $this->place_id,
-            'portal_id' => $this->portal_id,
             'active' => $this->active,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'code', $this->code]);
+            ->andFilterWhere(['like', 'currency', $this->currency])
+            ->andFilterWhere(['like', 'identifier', $this->identifier]);
 
         return $dataProvider;
     }

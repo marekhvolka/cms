@@ -6,7 +6,7 @@ use backend\models\Model;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Dictionary;
-use backend\models\DictionarySearch;
+use backend\models\search\DictionarySearch;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

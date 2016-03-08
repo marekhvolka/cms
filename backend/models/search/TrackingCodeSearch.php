@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Portal;
+use backend\models\TrackingCode;
 
 /**
- * PortalSearch represents the model behind the search form about `app\models\Portal`.
+ * TrackingCodeSearch represents the model behind the search form about `backend\models\TrackingCode`.
  */
-class PortalSearch extends Portal
+class TrackingCodeSearch extends TrackingCode
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PortalSearch extends Portal
     public function rules()
     {
         return [
-            [['id', 'language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
-            [['name', 'domain', 'template_settings'], 'safe'],
+            [['id', 'place_id', 'portal_id', 'active', 'last_edit_user'], 'integer'],
+            [['name', 'code', 'last_edit'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PortalSearch extends Portal
      */
     public function search($params)
     {
-        $query = Portal::find();
+        $query = TrackingCode::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,16 +57,15 @@ class PortalSearch extends Portal
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'language_id' => $this->language_id,
-            'template_id' => $this->template_id,
+            'place_id' => $this->place_id,
+            'portal_id' => $this->portal_id,
             'active' => $this->active,
-            'published' => $this->published,
-            'cached' => $this->cached,
+            'last_edit' => $this->last_edit,
+            'last_edit_user' => $this->last_edit_user,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'domain', $this->domain])
-            ->andFilterWhere(['like', 'template_settings', $this->template_settings]);
+            ->andFilterWhere(['like', 'code', $this->code]);
 
         return $dataProvider;
     }

@@ -7,7 +7,7 @@ use backend\models\ProductVarValue;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Product;
-use backend\models\ProductSearch;
+use backend\models\search\ProductSearch;
 use yii\helpers\ArrayHelper;
 use backend\models\Model;
 use yii\web\NotFoundHttpException;

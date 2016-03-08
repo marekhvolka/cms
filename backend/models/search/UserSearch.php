@@ -1,15 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use common\models\User;
 
 /**
- * TagSearch represents the model behind the search form about `backend\models\Tag`.
+ * UserSearch represents the model behind the search form about `backend\models\User`.
  */
-class TagSearch extends Tag
+class UserSearch extends User
 {
     /**
      * @inheritdoc
@@ -17,8 +18,8 @@ class TagSearch extends Tag
     public function rules()
     {
         return [
-            [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'nazov_system', 'identifier', 'product_type', 'last_edit'], 'safe'],
+            [['id', 'active', 'actualPortal', 'role', 'isLog'], 'integer'],
+            [['firstname', 'lastname', 'email', 'password_hash', 'created_at', 'allowPortal', 'cookie_hash', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,7 +41,7 @@ class TagSearch extends Tag
      */
     public function search($params)
     {
-        $query = Tag::find();
+        $query = User::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -56,15 +57,19 @@ class TagSearch extends Tag
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'created_at' => $this->created_at,
             'active' => $this->active,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
+            'actualPortal' => $this->actualPortal,
+            'role' => $this->role,
+            'isLog' => $this->isLog,
+            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'nazov_system', $this->nazov_system])
-            ->andFilterWhere(['like', 'identifier', $this->identifier])
-            ->andFilterWhere(['like', 'product_type', $this->product_type]);
+        $query->andFilterWhere(['like', 'firstname', $this->firstname])
+            ->andFilterWhere(['like', 'lastname', $this->lastname])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'allowPortal', $this->allowPortal])
+            ->andFilterWhere(['like', 'cookie_hash', $this->cookie_hash]);
 
         return $dataProvider;
     }

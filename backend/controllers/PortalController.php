@@ -8,7 +8,7 @@ use backend\models\PortalVarValue;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Portal;
-use backend\models\PortalSearch;
+use backend\models\search\PortalSearch;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
