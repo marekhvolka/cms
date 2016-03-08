@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $portal_id
- * @property integer $attr_id
+ * @property integer $var_id
  * @property string $value
  *
  * @property Portal $portal
@@ -31,10 +31,10 @@ class PortalVarValue extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['portal_id', 'attr_id'], 'required'],
-            [['portal_id', 'attr_id'], 'integer'],
+            [['portal_id', 'var_id'], 'required'],
+            [['portal_id', 'var_id'], 'integer'],
             [['value'], 'string', 'max' => 255],
-            [['portal_id', 'attr_id'], 'unique', 'targetAttribute' => ['portal_id', 'attr_id'], 'message' => 'The combination of Portal ID and Attr ID has already been taken.']
+            [['portal_id', 'var_id'], 'unique', 'targetAttribute' => ['portal_id', 'var_id'], 'message' => 'The combination of Portal ID and Attr ID has already been taken.']
         ];
     }
 
@@ -46,7 +46,7 @@ class PortalVarValue extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'portal_id' => 'Portal ID',
-            'attr_id' => 'Attr ID',
+            'var_id' => 'Var ID',
             'value' => 'Value',
         ];
     }
@@ -64,6 +64,6 @@ class PortalVarValue extends \yii\db\ActiveRecord
      */
     public function getAttr()
     {
-        return $this->hasOne(PortalVar::className(), ['id' => 'attr_id']);
+        return $this->hasOne(PortalVar::className(), ['id' => 'var_id']);
     }
 }

@@ -14,9 +14,9 @@ use yii\helpers\ArrayHelper;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'vlastnost')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'identifikator')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
 

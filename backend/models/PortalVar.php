@@ -9,8 +9,8 @@ use Yii;
  * This is the model class for table "portal_var".
  *
  * @property integer $id
- * @property string $vlastnost
- * @property string $identifikator
+ * @property string $name
+ * @property string $identifier
  * @property string $popis
  * @property integer $type_id
  * @property string $last_edit
@@ -36,13 +36,13 @@ class PortalVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['vlastnost', 'identifikator', 'type_id'], 'required'],
+            [['name', 'identifier', 'type_id'], 'required'],
             [['popis'], 'string'],
             [['type_id', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
-            [['vlastnost'], 'string', 'max' => 50],
-            [['identifikator'], 'string', 'max' => 30],
-            [['identifikator'], 'unique']
+            [['name'], 'string', 'max' => 50],
+            [['identifier'], 'string', 'max' => 30],
+            [['identifier'], 'unique']
         ];
     }
 
@@ -53,12 +53,12 @@ class PortalVar extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'vlastnost' => 'Vlastnost',
-            'identifikator' => 'Identifikator',
+            'name' => 'Názov',
+            'identifier' => 'Identifikator',
             'popis' => 'Popis',
             'type_id' => 'Type ID',
             'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit_user' => 'Naposledy editoval',
         ];
     }
 
@@ -83,6 +83,6 @@ class PortalVar extends \yii\db\ActiveRecord
      */
     public function getPortalVarValues()
     {
-        return $this->hasMany(PortalVarValue::className(), ['attr_id' => 'id']);
+        return $this->hasMany(PortalVarValue::className(), ['var_id' => 'id']);
     }
 }

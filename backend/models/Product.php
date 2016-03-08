@@ -12,7 +12,7 @@ use Yii;
  * @property string $name
  * @property integer $parent_id
  * @property integer $type_id
- * @property string $identifikator
+ * @property string $identifier
  * @property string $popis
  * @property integer $language_id
  * @property integer $active
@@ -65,15 +65,15 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Názov',
             'parent_id' => 'Rodič',
             'type_id' => 'Typ produktu',
-            'identifier' => 'Identifikator',
+            'identifier' => 'Identifikátor',
             'popis' => 'Popis',
             'language_id' => 'Krajina',
             'active' => 'Active',
             'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit_user' => 'Naposledy editoval',
         ];
     }
 
@@ -144,8 +144,8 @@ class Product extends \yii\db\ActiveRecord
     public function relations()
     {
         return array(
-            'product_vars' => array(self::HAS_MANY, 'ProductVar', 'product_var_value(product_id, attr_id)'),
-            'product_vars_value' => array(self::MANY_MANY, 'ProductVar', 'product_var_value(product_id, attr_id)'),
+            'product_vars' => array(self::HAS_MANY, 'ProductVar', 'product_var_value(product_id, var_id)'),
+            'product_vars_value' => array(self::MANY_MANY, 'ProductVar', 'product_var_value(product_id, var_id)'),
         );
     }
 

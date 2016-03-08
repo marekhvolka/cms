@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\ProductVarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Produktové premenné';
+$this->title = 'Premenné produktu';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-var-index">
@@ -21,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -29,10 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($data) {
-                    return Html::a($data->vlastnost,'?r=product-var/update&id='. $data->id);
+                    return Html::a($data->name,'?r=product-var/update&id='. $data->id);
                 },
             ],
-            'identifikator',
+            'identifier',
             [
                 'label' => 'Typ',
                 'value' => 'type.type'

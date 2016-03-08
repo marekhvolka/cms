@@ -9,8 +9,8 @@ use Yii;
  * This is the model class for table "product_var".
  *
  * @property integer $id
- * @property string $vlastnost
- * @property string $identifikator
+ * @property string $name
+ * @property string $identifier
  * @property string $popis
  * @property integer $type_id
  * @property string $product_type
@@ -37,13 +37,13 @@ class ProductVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['vlastnost', 'identifikator', 'type_id', 'product_type'], 'required'],
+            [['name', 'identifier', 'type_id', 'product_type'], 'required'],
             [['type_id', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
-            [['vlastnost'], 'string', 'max' => 50],
-            [['identifikator'], 'string', 'max' => 30],
+            [['name'], 'string', 'max' => 50],
+            [['identifier'], 'string', 'max' => 30],
             [['product_type'], 'string', 'max' => 80],
-            [['identifikator'], 'unique']
+            [['identifier'], 'unique']
         ];
     }
 
@@ -54,8 +54,8 @@ class ProductVar extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'vlastnost' => 'Vlastnost',
-            'identifikator' => 'Identifikator',
+            'name' => 'Názov',
+            'identifier' => 'Identifikátor',
             'popis' => 'Popis',
             'type_id' => 'Type ID',
             'product_type' => 'Product Type',
@@ -85,6 +85,6 @@ class ProductVar extends \yii\db\ActiveRecord
      */
     public function getProductVarValues()
     {
-        return $this->hasMany(ProductVarValue::className(), ['attr_id' => 'id']);
+        return $this->hasMany(ProductVarValue::className(), ['var_id' => 'id']);
     }
 }

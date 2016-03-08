@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\ProductType */
 
-$this->title = 'Create Product Type';
-$this->params['breadcrumbs'][] = ['label' => 'Product Types', 'url' => ['index']];
+$this->title = 'Vytvoriť typ produktov';
+$this->params['breadcrumbs'][] = ['label' => 'Typy produktov', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-type-create">

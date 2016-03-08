@@ -2,14 +2,18 @@
 
 namespace backend\controllers;
 
+use backend\models\Model;
 use backend\models\PortalVar;
 use backend\models\PortalVarValue;
+use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Portal;
 use backend\models\PortalSearch;
-use backend\controllers\BaseController;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PortalController implements the CRUD actions for Portal model.
@@ -40,18 +44,6 @@ class PortalController extends BaseController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Portal model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -96,7 +88,7 @@ class PortalController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -128,7 +120,7 @@ class PortalController extends BaseController
         {
             $oldIDs = ArrayHelper::map($modelsPortalVarValue, 'id', 'id');
             $modelsPortalVarValue = Model::createMultiple(PortalVar::classname(), $modelsPortalVarValue);
-            Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
+            Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPortalVarValue, 'id', 'id')));
 
             // ajax validation
@@ -162,7 +154,7 @@ class PortalController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();

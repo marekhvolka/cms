@@ -23,6 +23,8 @@ use backend\models\ProductType;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
         'language' => 'en',
@@ -35,8 +37,6 @@ use backend\models\ProductType;
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
     ) ?>
-
-    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
 
@@ -61,12 +61,8 @@ use backend\models\ProductType;
                 'model' => $modelsProductVarValue[0],
                 'formId' => 'dynamic-form',
                 'formFields' => [
-                    'full_name',
-                    'address_line1',
-                    'address_line2',
-                    'city',
-                    'state',
-                    'postal_code',
+                    'var_id',
+                    'value',
                 ],
             ]); ?>
 
@@ -77,7 +73,7 @@ use backend\models\ProductType;
                             <div class="form-group">
                                 <div class="col-sm-3">
                                     <?= $form->field($modelProductVarValue, '[{$i}]var_id')->dropDownList(
-                                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'vlastnost')
+                                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'name')
                                     ) ?>
                                 </div>
                                 <div class="col-sm-6">

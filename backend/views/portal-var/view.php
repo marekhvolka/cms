@@ -29,8 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'vlastnost',
-            'identifikator',
+            'name',
+            'identifier',
             'popis:ntext',
             'type_id',
             'last_edit',

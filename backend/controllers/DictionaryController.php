@@ -2,12 +2,16 @@
 
 namespace backend\controllers;
 
+use backend\models\Model;
+use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Dictionary;
 use backend\models\DictionarySearch;
-use yii\web\Controller;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * DictionaryController implements the CRUD actions for Dictionary model.
@@ -42,18 +46,6 @@ class DictionaryController extends BaseController
     }
 
     /**
-     * Displays a single Dictionary model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Dictionary model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -65,7 +57,7 @@ class DictionaryController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $modelsWordTranslation = Model::createMultiple(PortalVarValue::classname());
+            $modelsWordTranslation = Model::createMultiple(WordTranslation::classname());
             Model::loadMultiple($modelsWordTranslation, Yii::$app->request->post());
 
             // ajax validation
@@ -95,13 +87,13 @@ class DictionaryController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
                 }
             }
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -120,7 +112,7 @@ class DictionaryController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,

@@ -3,14 +3,16 @@
 namespace backend\controllers;
 
 use backend\models\SnippetCode;
+use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Model;
 use backend\models\Snippet;
 use backend\models\SnippetSearch;
-use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.
@@ -41,18 +43,6 @@ class SnippetController extends BaseController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Snippet model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -98,7 +88,7 @@ class SnippetController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -163,7 +153,7 @@ class SnippetController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();

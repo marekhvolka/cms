@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'name',
-            'identifikator',
+            'identifier',
             'active',
             // 'product_type',
             // 'last_edit',

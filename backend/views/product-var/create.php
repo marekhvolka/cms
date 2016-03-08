@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\ProductVar */
 
-$this->title = 'Create Product Var';
-$this->params['breadcrumbs'][] = ['label' => 'Product Vars', 'url' => ['index']];
+$this->title = 'Vytvoriť premennú produktu';
+$this->params['breadcrumbs'][] = ['label' => 'Premenné produktu', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-var-create">

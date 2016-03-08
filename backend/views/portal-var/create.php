@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\PortalVar */
 
-$this->title = 'Create Portal Var';
+$this->title = 'Vytvoriť premennú portálu';
 $this->params['breadcrumbs'][] = ['label' => 'Portal Vars', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

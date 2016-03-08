@@ -5,7 +5,6 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\ProductVar;
 
 /**
  * ProductVarSearch represents the model behind the search form about `backend\models\ProductVar`.
@@ -19,7 +18,7 @@ class ProductVarSearch extends ProductVar
     {
         return [
             [['id', 'type_id', 'last_edit_user'], 'integer'],
-            [['vlastnost', 'identifikator', 'popis', 'product_type', 'last_edit'], 'safe'],
+            [['name', 'identifier', 'popis', 'product_type', 'last_edit'], 'safe'],
         ];
     }
 
@@ -62,8 +61,8 @@ class ProductVarSearch extends ProductVar
             'last_edit_user' => $this->last_edit_user,
         ]);
 
-        $query->andFilterWhere(['like', 'vlastnost', $this->vlastnost])
-            ->andFilterWhere(['like', 'identifikator', $this->identifikator])
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'identifier', $this->identifier])
             ->andFilterWhere(['like', 'popis', $this->popis])
             ->andFilterWhere(['like', 'product_type', $this->product_type]);
 

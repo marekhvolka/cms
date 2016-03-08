@@ -5,7 +5,6 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Tag;
 
 /**
  * TagSearch represents the model behind the search form about `backend\models\Tag`.
@@ -19,7 +18,7 @@ class TagSearch extends Tag
     {
         return [
             [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'nazov_system', 'identifikator', 'product_type', 'last_edit'], 'safe'],
+            [['name', 'nazov_system', 'identifier', 'product_type', 'last_edit'], 'safe'],
         ];
     }
 
@@ -64,7 +63,7 @@ class TagSearch extends Tag
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'nazov_system', $this->nazov_system])
-            ->andFilterWhere(['like', 'identifikator', $this->identifikator])
+            ->andFilterWhere(['like', 'identifier', $this->identifier])
             ->andFilterWhere(['like', 'product_type', $this->product_type]);
 
         return $dataProvider;

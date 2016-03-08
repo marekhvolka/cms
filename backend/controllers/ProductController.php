@@ -4,14 +4,16 @@ namespace backend\controllers;
 
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
+use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Product;
 use backend\models\ProductSearch;
 use yii\helpers\ArrayHelper;
 use backend\models\Model;
-use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -46,18 +48,6 @@ class ProductController extends BaseController
     }
 
     /**
-     * Displays a single Product model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Product model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -81,9 +71,6 @@ class ProductController extends BaseController
                 );
             }
 
-            VarDumper::dump($modelsProductVarValue);
-            die();
-
             // validate all models
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelsProductVarValue) && $valid;
@@ -102,7 +89,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -165,7 +152,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();

@@ -11,7 +11,7 @@ use Yii;
  * @property integer $id
  * @property string $name
  * @property string $nazov_system
- * @property string $identifikator
+ * @property string $identifier
  * @property integer $active
  * @property string $product_type
  * @property string $last_edit
@@ -41,12 +41,12 @@ class Tag extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'nazov_system', 'identifikator', 'active', 'product_type'], 'required'],
+            [['name', 'nazov_system', 'identifier', 'active', 'product_type'], 'required'],
             [['active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
-            [['name', 'nazov_system', 'identifikator'], 'string', 'max' => 50],
+            [['name', 'nazov_system', 'identifier'], 'string', 'max' => 50],
             [['product_type'], 'string', 'max' => 100],
-            [['identifikator'], 'unique']
+            [['identifier'], 'unique']
         ];
     }
 
@@ -59,7 +59,7 @@ class Tag extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'nazov_system' => 'Nazov System',
-            'identifikator' => 'Identifikator',
+            'identifier' => 'Identifikator',
             'active' => 'Active',
             'product_type' => 'Product Type',
             'last_edit' => 'Last Edit',

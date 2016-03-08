@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'nazov_system') ?>
 
-    <?= $form->field($model, 'identifikator') ?>
+    <?= $form->field($model, 'identifier') ?>
 
     <?= $form->field($model, 'active') ?>
 

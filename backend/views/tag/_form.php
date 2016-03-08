@@ -17,7 +17,7 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'nazov_system')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'identifikator')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
