@@ -14,8 +14,8 @@ use Yii;
  * @property integer $template_id
  * @property string $template_settings
  * @property integer $active
- * @property integer $publikovana
- * @property integer $cache
+ * @property integer $published
+ * @property integer $cached
  *
  * @property Page[] $pages
  * @property PageInclude[] $pageIncludes
@@ -46,8 +46,8 @@ class Portal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'language_id', 'domain', 'template_id', 'template_settings', 'active', 'publikovana', 'cache'], 'required'],
-            [['language_id', 'template_id', 'active', 'publikovana', 'cache'], 'integer'],
+            [['name', 'language_id', 'domain', 'template_id', 'template_settings', 'active', 'published', 'cached'], 'required'],
+            [['language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
             [['template_settings'], 'string'],
             [['name', 'domain'], 'string', 'max' => 50]
         ];
@@ -62,12 +62,12 @@ class Portal extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Názov',
             'language_id' => 'Krajina',
-            'domain' => 'Domain',
+            'domain' => 'Doména',
             'template_id' => 'Šablóna',
             'template_settings' => 'Template Settings',
             'active' => 'Active',
-            'publikovana' => 'Publikovana',
-            'cache' => 'Cache',
+            'published' => 'Publikovana',
+            'cached' => 'Cache',
         ];
     }
 

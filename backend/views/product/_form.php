@@ -38,7 +38,7 @@ use backend\models\ProductType;
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
     ) ?>
 
-    <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'popis')->textarea() ?>
 
     <?= $form->field($model, 'language_id')->dropDownList(
         ArrayHelper::map(Language::find()->all(), 'id', 'name')

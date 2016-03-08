@@ -5,7 +5,7 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\User;
+use common\models\User;
 
 /**
  * UserSearch represents the model behind the search form about `backend\models\User`.
@@ -19,7 +19,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'active', 'actualPortal', 'role', 'isLog'], 'integer'],
-            [['name', 'surname', 'email', 'pass', 'datum_vytvorenia', 'allowPortal', 'cookie_hash', 'lastLog'], 'safe'],
+            [['firstname', 'lastname', 'email', 'password_hash', 'created_at', 'allowPortal', 'cookie_hash', 'updated_at'], 'safe'],
         ];
     }
 
@@ -57,18 +57,17 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'datum_vytvorenia' => $this->datum_vytvorenia,
+            'created_at' => $this->created_at,
             'active' => $this->active,
             'actualPortal' => $this->actualPortal,
             'role' => $this->role,
             'isLog' => $this->isLog,
-            'lastLog' => $this->lastLog,
+            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'surname', $this->surname])
+        $query->andFilterWhere(['like', 'firstname', $this->firstname])
+            ->andFilterWhere(['like', 'lastname', $this->lastname])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'pass', $this->pass])
             ->andFilterWhere(['like', 'allowPortal', $this->allowPortal])
             ->andFilterWhere(['like', 'cookie_hash', $this->cookie_hash]);
 

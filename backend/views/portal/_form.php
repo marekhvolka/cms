@@ -42,11 +42,11 @@ use kartik\switchinput\SwitchInput;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?= $form->field($model, 'publikovana')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'published')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?= $form->field($model, 'cache')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'cached')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
@@ -63,12 +63,8 @@ use kartik\switchinput\SwitchInput;
                 'model' => $modelsPortalVarValue[0],
                 'formId' => 'dynamic-form',
                 'formFields' => [
-                    'full_name',
-                    'address_line1',
-                    'address_line2',
-                    'city',
-                    'state',
-                    'postal_code',
+                    'value',
+                    'name',
                 ],
             ]); ?>
 
@@ -78,8 +74,8 @@ use kartik\switchinput\SwitchInput;
                         <div class="panel-body">
                             <div class="form-group">
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelPortalVarValue, '[{$i}]attr_id')->dropDownList(
-                                        ArrayHelper::map(PortalVar::find()->all(), 'id', 'vlastnost')
+                                    <?= $form->field($modelPortalVarValue, '[{$i}]var_id')->dropDownList(
+                                        ArrayHelper::map(PortalVar::find()->all(), 'id', 'name')
                                     ) ?>
                                 </div>
                                 <div class="col-sm-6">

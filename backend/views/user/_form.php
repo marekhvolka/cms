@@ -12,15 +12,17 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'firstname')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'lastname')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'pass')->passwordInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'datum_vytvorenia')->textInput() ?>
+    <?= $form->field($model, 'created_at')->textInput() ?>
 
     <?= $form->field($model, 'active')->textInput() ?>
 
@@ -34,7 +36,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'cookie_hash')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'lastLog')->textInput() ?>
+    <?= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

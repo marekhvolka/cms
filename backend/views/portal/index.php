@@ -21,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -32,7 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($data->name,'?r=portal/update&id='. $data->id);
                 },
             ],
-            'language_id',
+            [
+                'label' => 'Krajina',
+                'value' => 'language.name'
+            ],
             'domain',
             [
                 'label' => 'Šablóna',

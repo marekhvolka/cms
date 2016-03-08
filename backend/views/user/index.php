@@ -21,15 +21,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'name',
-            'surname',
+            'username',
+            'firstname',
+            'lastname',
             'email:email',
-            'pass',
             // 'datum_vytvorenia',
             // 'active',
             // 'allowPortal',
