@@ -9,11 +9,11 @@ use Yii;
  *
  * @property integer $id
  * @property integer $product_id
- * @property integer $attr_id
+ * @property integer $var_id
  * @property string $value
  *
  * @property Product $product
- * @property ProductVar $attr
+ * @property ProductVar $var
  */
 class ProductVarValue extends \yii\db\ActiveRecord
 {
@@ -31,10 +31,10 @@ class ProductVarValue extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['attr_id'], 'required'],
-            [['product_id', 'attr_id'], 'integer'],
+            [['var_id'], 'required'],
+            [['product_id', 'var_id'], 'integer'],
             [['value'], 'string'],
-            [['attr_id', 'product_id'], 'unique', 'targetAttribute' => ['attr_id', 'product_id'], 'message' => 'The combination of Product ID and Attr ID has already been taken.']
+            [['var_id', 'product_id'], 'unique', 'targetAttribute' => ['var_id', 'product_id'], 'message' => 'The combination of Product ID and Var ID has already been taken.']
         ];
     }
 
@@ -46,7 +46,7 @@ class ProductVarValue extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'product_id' => 'Product ID',
-            'attr_id' => 'Attr ID',
+            'var_id' => 'Var ID',
             'value' => 'Value',
         ];
     }
@@ -62,8 +62,8 @@ class ProductVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAttr()
+    public function getVar()
     {
-        return $this->hasOne(ProductVar::className(), ['id' => 'attr_id']);
+        return $this->hasOne(ProductVar::className(), ['id' => 'var_id']);
     }
 }
