@@ -36,7 +36,7 @@ abstract class BaseController extends Controller
                 'items' => [
                     ['label' => 'Administrácia používateľov', 'url' => ['/user/index']],
                     ['label' => 'Administrácia portálov', 'url' => ['/portal/index']],
-                    ['label' => 'Administrácia vlastností portálov', 'url' => ['/portal-var/index']],
+                    ['label' => 'Administrácia premenných portálov', 'url' => ['/portal-var/index']],
                     ['label' => 'Administrácia krajín', 'url' => ['/language/index']],
                     ['label' => 'Administrácia rolí', 'url' => ['/role/index']],
                     ['label' => 'Administrácia oprávnení', 'url' => ['/portal/index']],
@@ -60,7 +60,7 @@ abstract class BaseController extends Controller
                 ['label' => '<i class="fa fa-fw fa-shopping-cart"></i> Produkty',
                     'items' => [
                         ['label' => 'Zoznam produktov', 'url' => Url::to(['/product/index'])],
-                        ['label' => 'Zoznam vlastností', 'url' => Url::to(['/product-var/index'])],
+                        ['label' => 'Zoznam premenných', 'url' => Url::to(['/product-var/index'])],
                         ['label' => 'Zoznam typov', 'url' => Url::to(['/product-type/index'])],
                         ['label' => 'Zoznam tagov', 'url' => Url::to(['/tag/index'])],
                     ],
