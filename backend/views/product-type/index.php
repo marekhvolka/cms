@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'lastEditUser.username'
             ],
             'last_edit',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+            'template' => '{delete}'],
         ],
     ]); ?>
 

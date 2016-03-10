@@ -42,8 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Naposledy editoval',
                 'value' => 'lastEditUser.username'
             ],
-
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+            'template' => '{delete}'],
         ],
     ]); ?>
 
