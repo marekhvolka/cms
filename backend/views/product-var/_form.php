@@ -31,7 +31,8 @@ use kartik\select2\Select2;
     $productTypes = ProductType::find()->all();
     $productTypesData = ArrayHelper::map($productTypes, 'id', 'name');
 
-    $selectedProductTypes = ProductType::find()->where('id in (' . $model->product_type . ')')->all();
+    $selectedProductTypes = $model->product_type ? 
+            ProductType::find()->where('id in (' . $model->product_type . ')')->all() : [];
     $selectedProductTypesData = ArrayHelper::map($selectedProductTypes, 'id', 'id');
     
     // TODO controller site saving process

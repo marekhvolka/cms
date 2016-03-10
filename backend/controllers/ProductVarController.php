@@ -49,8 +49,11 @@ class ProductVarController extends BaseController
     {
         $model = new ProductVar();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if (Yii::$app->request->isPost) {
+            $pruductTypeIds = Yii::$app->request->post('product_type_ids');
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
