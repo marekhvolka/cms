@@ -57,8 +57,8 @@ class ProductVar extends \yii\db\ActiveRecord
             'name' => 'Názov',
             'identifier' => 'Identifikátor',
             'popis' => 'Popis',
-            'type_id' => 'Type ID',
-            'product_type' => 'Product Type',
+            'type_id' => 'Var Type',
+            'product_type' => 'For Product Types',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];
