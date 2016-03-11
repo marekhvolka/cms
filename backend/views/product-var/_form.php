@@ -51,11 +51,38 @@ use kartik\select2\Select2;
     ]);
     
     ?>
+    <div class="help-block" id="help-block-prod-types" >
+        <p style="color: #a94442;"><?= $model->getAttributeLabel('product_type')?> cannot be blank.</p>
+    </div>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', [
+            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+            'id' => 'submit-form'
+            ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
+    <button id="test">clickme</button>
+    
 </div>
+
+<?php
+
+//TODO refactoring - this may be validated by using Yii2 validation in model and controller
+$js = <<<JS
+
+$('#help-block-prod-types').hide();
+$('#submit-form').click(function(){
+    if ($('#campaign-device').val() == null) {
+        $('#help-block-prod-types').show();
+        return false;
+    }
+    $('#help-block-prod-types').hide();
+    return true;
+})
+        
+JS;
+$this->registerJs($js);
+?>

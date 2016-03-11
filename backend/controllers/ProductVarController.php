@@ -50,8 +50,11 @@ class ProductVarController extends BaseController
         $model = new ProductVar();
 
         if (Yii::$app->request->isPost) {
-            $pruductTypeIds = Yii::$app->request->post('product_type_ids');
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $pruductTypeIdsArray = Yii::$app->request->post('product_type_ids');
+            //$productTypesIds = $pruductTypeIdsArray ? implode($pruductTypeIdsArray, ',') : '';
+            //$model->product_type = $productTypesIds;
+            $loaded = $model->load(Yii::$app->request->post());
+            if ( $model->save()) {
                 return $this->redirect(['index']);
             }
         } else {
@@ -72,7 +75,12 @@ class ProductVarController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            $pruductTypeIdsArray = Yii::$app->request->post('product_type_ids');
+            $productTypesIds = !$pruductTypeIdsArray ? : implode($pruductTypeIdsArray, ',');
+            $model->product_type = $productTypesIds;
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,
