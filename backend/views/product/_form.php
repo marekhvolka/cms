@@ -48,6 +48,15 @@ use backend\models\ProductType;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
+    <?php $types = \backend\models\VarType::find()->all(); var_dump($types);?>
+    
+    <div id="dynamic-fields" class="row">
+        <div class="form group">
+            
+        </div>
+    </div>
+    
+
     <div class="panel panel-default">
         <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
         <div class="panel-body">
@@ -65,13 +74,13 @@ use backend\models\ProductType;
                     'value',
                 ],
             ]); ?>
-
             <div class="container-items"><!-- widgetContainer -->
                 <?php foreach ($modelsProductVarValue as $i => $modelProductVarValue): ?>
                     <div class="item panel panel-default"><!-- widgetBody -->
                         <div class="panel-body">
                             <div class="form-group">
                                 <div class="col-sm-3">
+                                    <?php var_dump($i);?>
                                     <?= $form->field($modelProductVarValue, '[{$i}]var_id')->dropDownList(
                                         ArrayHelper::map(ProductVar::find()->all(), 'id', 'name')
                                     ) ?>
