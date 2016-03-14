@@ -47,66 +47,19 @@ use backend\models\ProductType;
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
-
-    <?php $types = \backend\models\VarType::find()->all(); var_dump($types);?>
     
     <div id="dynamic-fields" class="row">
-        <div class="form group">
-            
-        </div>
+        <div id="starting-point"></div>
     </div>
     
+    <?php 
+    $vars = ProductVar::find()->all();
+    echo Html::dropDownList('types', null,
+      ArrayHelper::map($vars, 'id', 'name'), ['id' => 'types-dropdown']);
+    
+    ?>
 
-    <div class="panel panel-default">
-        <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
-        <div class="panel-body">
-            <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                'widgetBody' => '.container-items', // required: css class selector
-                'widgetItem' => '.item', // required: css class
-                'min' => 1, // 0 or 1 (default 1)
-                'insertButton' => '.add-item', // css class
-                'deleteButton' => '.remove-item', // css class
-                'model' => $modelsProductVarValue[0],
-                'formId' => 'dynamic-form',
-                'formFields' => [
-                    'var_id',
-                    'value',
-                ],
-            ]); ?>
-            <div class="container-items"><!-- widgetContainer -->
-                <?php foreach ($modelsProductVarValue as $i => $modelProductVarValue): ?>
-                    <div class="item panel panel-default"><!-- widgetBody -->
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <div class="col-sm-3">
-                                    <?php var_dump($i);?>
-                                    <?= $form->field($modelProductVarValue, '[{$i}]var_id')->dropDownList(
-                                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'name')
-                                    ) ?>
-                                </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelProductVarValue, "[{$i}]value")->textInput(['maxlength' => true]) ?>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button type="button" class="add-item btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
-                                    <button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                            <?php
-                            // necessary for update action.
-                            if (! $modelProductVarValue->isNewRecord) {
-                                echo Html::activeHiddenInput($modelProductVarValue, "[{$i}]id");
-                            }
-                            ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <?php DynamicFormWidget::end(); ?>
-        </div>
-    </div>
+    
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -115,3 +68,57 @@ use backend\models\ProductType;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<input type="text" id="test">
+
+
+<div id="input-types-list">
+    <?php foreach ($vars as $i => $var):?>
+
+    <?php switch($var->type->type): 
+    case 'Input': ?>
+        <input type="text" id="field-<?=$var->id?>" class="form-control hidden" 
+               value="" name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
+               data-type="<?=$var->type->type?>">
+        <?php break; ?>
+    <?php case 'Číslo': ?>
+        <input type="text" id="field-<?=$var->id?>" class="form-control hidden" 
+               value="" name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
+               data-type="<?=$var->type->type?>">
+        <?php break; ?>
+    <?php case 'Textarea': ?>
+        <textarea id="field-<?=$var->id?>" class="form-control hidden" rows="5" 
+                  name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
+                  data-type="<?=$var->type->type?>"></textarea>
+        <?php break; ?>
+    <?php endswitch; ?>
+    
+    <?php endforeach;?>
+</div>
+
+
+<div id="test">
+    <?php foreach ($vars as $i => $var):?>
+    <?=$var->name?>--->
+    <?=$var->type->type?>
+    <br/>
+    <?php endforeach;?>
+</div>
+
+<?php
+
+$js = <<<JS
+        
+$('[value="4"]').addClass('hidden');
+
+$('#types-dropdown').change(function(){
+    var fieldId = $(this).val();
+    var source = $('#field-' + fieldId);
+    source.removeClass('hidden');
+        console.log(source);
+    source.appendTo('#dynamic-fields');
+});
+        
+JS;
+$this->registerJs($js);
+?>
