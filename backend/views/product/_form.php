@@ -54,12 +54,19 @@ use backend\models\ProductType;
     
     <?php 
     $vars = ProductVar::find()->all();
-    echo Html::dropDownList('types', null,
-      ArrayHelper::map($vars, 'id', 'name'), ['id' => 'types-dropdown']);
+    $varsData = ArrayHelper::map($vars, 'id', 'name');
+
+    echo '<label class="control-label">Variables</label>';
+    echo Select2::widget([
+        'name' => 'product_vars',
+        'data' => $varsData,
+        'options' => [
+            'placeholder' => 'Select var ...',
+            'id' => 'types-dropdown',
+        ],
+    ]);
     
     ?>
-
-    
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -69,30 +76,32 @@ use backend\models\ProductType;
 
 </div>
 
-<input type="text" id="test">
-
 
 <div id="input-types-list">
     <?php foreach ($vars as $i => $var):?>
-
+    <div class="hidden field-<?=$var->id?>">
     <?php switch($var->type->type): 
     case 'Input': ?>
-        <input type="text" id="field-<?=$var->id?>" class="form-control hidden" 
+        <input type="text" class="form-control" 
                value="" name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
-               data-type="<?=$var->type->type?>">
+               data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
         <?php break; ?>
     <?php case 'Číslo': ?>
         <input type="text" id="field-<?=$var->id?>" class="form-control hidden" 
                value="" name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
-               data-type="<?=$var->type->type?>">
+               data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
         <?php break; ?>
     <?php case 'Textarea': ?>
         <textarea id="field-<?=$var->id?>" class="form-control hidden" rows="5" 
                   name="product_var[<?=$var->id?>][]" placeholder="<?=$var->name?>" 
-                  data-type="<?=$var->type->type?>"></textarea>
+                  data-type="<?=$var->type->type?>" data-name="<?=$var->name?>"></textarea>
         <?php break; ?>
     <?php endswitch; ?>
-    
+    <span class="input-group-btn rmv-btn" data-field-id="<?=$var->id?>">
+        <button class="btn btn-danger remove-field" type="button" >
+        <span class="glyphicon glyphicon-remove"></span></button>
+    </span>
+    </div>
     <?php endforeach;?>
 </div>
 
@@ -113,11 +122,20 @@ $('[value="4"]').addClass('hidden');
 
 $('#types-dropdown').change(function(){
     var fieldId = $(this).val();
-    var source = $('#field-' + fieldId);
-    source.removeClass('hidden');
-        console.log(source);
-    source.appendTo('#dynamic-fields');
+    var source = $('.field-' + fieldId);
+    var sourceClone = source.clone(true, true);
+    sourceClone.removeClass('hidden');
+    sourceClone.addClass('active-field');
+        
+    sourceClone.appendTo('#dynamic-fields');
 });
+        
+   $('.rmv-btn').click(function() {
+        var id = $(this).attr('data-field-id');
+        var elementClass = '.field-' + id + '.active-field';
+        $(elementClass).remove();
+   
+   })
         
 JS;
 $this->registerJs($js);
