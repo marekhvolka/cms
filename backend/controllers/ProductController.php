@@ -56,6 +56,8 @@ class ProductController extends BaseController
     {
         $model = new Product();
         $modelsProductVarValue = [new ProductVarValue()];
+        
+        $test = Yii::$app->request->post('product_var');
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
