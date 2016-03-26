@@ -119,14 +119,6 @@ use backend\models\ProductType;
     <?php endforeach;?>
 </div>
 
-<div id="test">
-    <?php foreach ($vars as $i => $var):?>
-    <?=$var->name?>--->
-    <?=$var->type->type?>
-    <br/>
-    <?php endforeach;?>
-</div>
-
 <?php
 
 $typesDataJs = '{';
