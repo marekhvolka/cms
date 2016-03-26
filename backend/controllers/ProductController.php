@@ -57,12 +57,20 @@ class ProductController extends BaseController
         $model = new Product();
         $modelsProductVarValue = [new ProductVarValue()];
         
-        $test = Yii::$app->request->post('product_var');
+        $productVars = Yii::$app->request->post('product_var');
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
+            
+            foreach ($productVars as $idVar => $value) {
+                $productVarValue = new ProductVarValue();
+                $productVarValue->product_id = $model->id;
+                $productVarValue->var_id = $idVar;
+                $productVarValue->value = $value[0];
+                $saved = $productVarValue->save();
+            }
 
             // ajax validation
             if (Yii::$app->request->isAjax) {

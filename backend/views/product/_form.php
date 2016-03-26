@@ -81,7 +81,7 @@ use backend\models\ProductType;
 
 <div id="input-types-list">
     <?php foreach ($vars as $i => $var):?>
-    <div class="hidden field-<?=$var->id?>">
+    <div class="hidden field-<?=$var->id?> input-group">
     <?php switch($var->type->type): 
     case 'Input': ?>
         <input type="text" class="form-control" 
@@ -89,12 +89,12 @@ use backend\models\ProductType;
                data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
         <?php break; ?>
     <?php case 'Číslo': ?>
-        <input type="text" id="field-<?=$var->id?>" class="form-control hidden" 
+        <input type="text" class="form-control" 
                value="" placeholder="<?=$var->name?>" 
                data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
         <?php break; ?>
     <?php case 'Textarea': ?>
-        <textarea id="field-<?=$var->id?>" class="form-control hidden" rows="5" 
+        <textarea id="field-<?=$var->id?>" class="form-control" rows="5" 
                   placeholder="<?=$var->name?>" 
                   data-type="<?=$var->type->type?>" data-name="<?=$var->name?>"></textarea>
         <?php break; ?>
@@ -104,6 +104,14 @@ use backend\models\ProductType;
         <span class="glyphicon glyphicon-remove"></span></button>
     </span>
     </div>
+    <?php endforeach;?>
+</div>
+
+<div id="test">
+    <?php foreach ($vars as $i => $var):?>
+    <?=$var->name?>--->
+    <?=$var->type->type?>
+    <br/>
     <?php endforeach;?>
 </div>
 
@@ -155,16 +163,19 @@ $('.rmv-btn').click(function() {
     $('#types-dropdown').find('option').attr('aria-selected', "false");
 });
 
-$('#save-model').click(function() {
-//    var types = [];
+//$('#save-model').click(function() {
+//    var productVars = [];
 //    $('.active-field').each(function(i, obj) {
-//        $(obj).
+//        var varId = parseInt($(obj).find('span').attr('data-field-id'));
+//        var value = $(obj).val();
+//        var productVar = { 'id': 'dasd', 'value': 'cascas' };
+//        productVars.push(productVar);
 //    });
 //        
-//    test = JSON.stringify( ["Hello", "World"] );
-//    $('#input-types').val(test);
-    return true;
-});
+//    typesDataToSend = JSON.stringify(productVars);
+//    $('#input-types').val(typesDataToSend);
+//    return true;
+//});
         
       
 JS;
