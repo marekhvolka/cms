@@ -93,6 +93,18 @@ use backend\models\ProductType;
                value="" placeholder="<?=$var->name?>" 
                data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
         <?php break; ?>
+        
+    <?php // TODO - add widgets for special input types ?>
+    <?php case 'Dátum': ?>
+        <input type="text" class="form-control" 
+               value="" placeholder="<?=$var->name?>" 
+               data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
+        <?php break; ?>
+    <?php case 'Obrázok': ?>
+        <input type="text" class="form-control" 
+               value="" placeholder="<?=$var->name?>" 
+               data-type="<?=$var->type->type?>" data-name="<?=$var->name?>">
+        <?php break; ?>
     <?php case 'Textarea': ?>
         <textarea id="field-<?=$var->id?>" class="form-control" rows="5" 
                   placeholder="<?=$var->name?>" 
@@ -161,22 +173,7 @@ $('.rmv-btn').click(function() {
     .appendTo($('#types-dropdown'));
         
     $('#types-dropdown').find('option').attr('aria-selected', "false");
-});
-
-//$('#save-model').click(function() {
-//    var productVars = [];
-//    $('.active-field').each(function(i, obj) {
-//        var varId = parseInt($(obj).find('span').attr('data-field-id'));
-//        var value = $(obj).val();
-//        var productVar = { 'id': 'dasd', 'value': 'cascas' };
-//        productVars.push(productVar);
-//    });
-//        
-//    typesDataToSend = JSON.stringify(productVars);
-//    $('#input-types').val(typesDataToSend);
-//    return true;
-//});
-        
+});        
       
 JS;
 $this->registerJs($js);
