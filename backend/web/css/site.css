@@ -161,3 +161,11 @@ a.desc:after {
         /*padding-left: 225px;*/
     }
 }
+
+.var-value {
+    margin-bottom: 20px;
+}
+
+.label-var {
+    text-align: right;
+}

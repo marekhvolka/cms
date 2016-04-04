@@ -56,20 +56,19 @@ class ProductController extends BaseController
     {
         $model = new Product();
         $modelsProductVarValue = [new ProductVarValue()];
-        
-        $productVars = Yii::$app->request->post('product_var');
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             
+            $productVars = Yii::$app->request->post('product_var');
             foreach ($productVars as $idVar => $value) {
                 $productVarValue = new ProductVarValue();
                 $productVarValue->product_id = $model->id;
                 $productVarValue->var_id = $idVar;
                 $productVarValue->value = $value[0];
-                $saved = $productVarValue->save();
+                $productVarValue->save();
             }
 
             // ajax validation
@@ -131,6 +130,20 @@ class ProductController extends BaseController
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsProductVarValue, 'id', 'id')));
 
+            $productVars = Yii::$app->request->post('product_var');
+            
+            foreach ($model->productVarValues as $product_var_value) {
+                $product_var_value->delete();
+            }
+            
+            foreach ($productVars as $idVar => $value) {
+                $productVarValue = new ProductVarValue();
+                $productVarValue->product_id = $model->id;
+                $productVarValue->var_id = $idVar;
+                $productVarValue->value = $value[0];
+                $saved = $productVarValue->save();
+            }
+            
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;

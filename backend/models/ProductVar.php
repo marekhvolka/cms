@@ -87,4 +87,22 @@ class ProductVar extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductVarValue::className(), ['var_id' => 'id']);
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public static function getAllThatDoesntBelongToProduct($product_id) 
+    {
+        $query = "product_var.id not in (select var_id from product_var_value where product_id = $product_id)";
+        return ProductVar::find()->where($query);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public static function getAllThatBelongToProduct($product_id) 
+    {
+        $query = "product_var.id in (select var_id from product_var_value where product_id = $product_id)";
+        return ProductVar::find()->where($query);
+    }
 }
