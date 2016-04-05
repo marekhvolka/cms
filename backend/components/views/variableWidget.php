@@ -17,8 +17,6 @@ if ($model->id) {
 $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
 
 ?>
-   
-    
     
     <div id="dynamic-fields" class="row">
         <?php if(isset($selected_var_values)):?>
