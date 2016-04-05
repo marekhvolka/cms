@@ -15,9 +15,6 @@ use backend\components\VariableWidget;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-
-
-
 <div class="product-form">
 
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
