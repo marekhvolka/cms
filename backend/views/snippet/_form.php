@@ -16,11 +16,11 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'default_code_id')->textInput() ?>
 
-    <?= $form->field($model, 'typ_snippet')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'snippet_type')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
@@ -86,7 +86,7 @@ use kartik\switchinput\SwitchInput;
                             </div><!-- .row -->
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <?= $form->field($modelSnippetCode, "[{$i}]popis")->textInput(['maxlength' => true]) ?>
+                                    <?= $form->field($modelSnippetCode, "[{$i}]description")->textInput(['maxlength' => true]) ?>
                                 </div>
                             </div>
                         </div>

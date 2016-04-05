@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($data->name,'?r=snippet/update&id='. $data->id);
                 },
             ],
-            'popis',
+            'description',
             'last_edit',
             [
                 'label' => 'Naposledy editoval',

@@ -10,9 +10,9 @@ use common\models\User;
  *
  * @property integer $id
  * @property string $name
- * @property string $popis
+ * @property string $description
  * @property integer $default_code_id
- * @property integer $typ_snippet
+ * @property integer $snippet_type
  * @property string $sekcia_id
  * @property string $sekcia_class
  * @property string $sekcia_style
@@ -45,8 +45,8 @@ class Snippet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'default_code_id', 'typ_snippet'], 'required'],
-            [['default_code_id', 'typ_snippet', 'last_edit_user'], 'integer'],
+            [['name', 'default_code_id', 'snippet_type'], 'required'],
+            [['default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style'], 'string', 'max' => 30],
@@ -62,9 +62,9 @@ class Snippet extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'popis' => 'Popis',
+            'description' => 'Popis',
             'default_code_id' => 'Default Code ID',
-            'typ_snippet' => 'Typ Snippet',
+            'snippet_type' => 'Typ Snippet',
             'sekcia_id' => 'Sekcia ID',
             'sekcia_class' => 'Sekcia Class',
             'sekcia_style' => 'Sekcia Style',

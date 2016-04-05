@@ -20,8 +20,8 @@ class SnippetSearch extends Snippet
     public function rules()
     {
         return [
-            [['id', 'default_code_id', 'typ_snippet', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'popis', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
+            [['id', 'default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
+            [['globalSearch', 'name', 'description', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
         ];
     }
 
@@ -58,7 +58,7 @@ class SnippetSearch extends Snippet
         }
 
         $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
+            ->orFilterWhere(['like', 'description', $this->globalSearch]);
 
         return $dataProvider;
     }
