@@ -1,7 +1,6 @@
 <?php
 
 use backend\models\ProductVar;
-use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -53,7 +52,6 @@ use backend\models\ProductType;
     $vars = ProductVar::find()->all();
     
     if ($model->id) {
-        $vars = ProductVar::getAllThatDoesntBelongToProduct($model->id)->all();
         $selected_var_values = $model->productVarValues;
     }
     
@@ -64,7 +62,7 @@ use backend\models\ProductType;
     <div id="dynamic-fields" class="row">
         <?php if(isset($selected_var_values)):?>
             <?php foreach ($selected_var_values as $i => $var_value):?>
-            <div class="form-group field-<?=$var_value->var_id?>">
+            <div class="form-group field-<?=$var_value->var_id?> active-field">
                 <label class="col-sm-2 control-label label-var"><?=$var_value->var->name?></label>
                 <div class="col-sm-10 var-value">
                     <div class="input-group">
@@ -161,22 +159,47 @@ use backend\models\ProductType;
 
 <?php
 
-$typesDataJs = '{';
-
+// Additional javascript (will be injected into js code).
+// List of types of product variables.
+$product_type_vars = '{';
+// Concatening of string which will be used as javascript code.
 for ($i = 0; $i < sizeof($vars); $i++) {
     $dataObject = '' . $vars[$i]->id .  ': "' . $vars[$i]->name . '"';
     if ($i != sizeof($vars) - 1) {
         $dataObject .= ',';
     }
     
-    $typesDataJs .= $dataObject;
+    $product_type_vars .= $dataObject;
 }
+$product_type_vars .= '}';
 
-$typesDataJs .= '}';
+
+// Additional javascript (will be injected into js code).
+// Array of IDs of product variables which was allready set to product.
+$selected_var_values_js = '[]';
+
+// IDs of selected product variables.
+if (isset($selected_var_values)) {  // Update of product which have set variables.
+    $selected_var_values_ids = ArrayHelper::getColumn($selected_var_values, 'var_id');
+    $selected_var_values_js = '[';
+    // Concatening of string which will be used as javascript code.
+    for ($i = 0; $i < sizeof($selected_var_values_ids); $i++) {
+        $selected_var_values_js .= $selected_var_values_ids[$i];
+        if ($i != sizeof($selected_var_values_ids) - 1) {
+            $selected_var_values_js .= ',';
+        }
+    }
+    $selected_var_values_js .= ']';
+}
 
 $js = <<<JS
 
-var typesData = $typesDataJs;
+var typesData = $product_type_vars;
+var selectedVarIds = $selected_var_values_js;
+        
+for (var i = 0; i < selectedVarIds.length; i++) {
+    $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').remove();
+}        
 
 $('#types-dropdown').change(function(){
     var fieldId = $(this).val();
