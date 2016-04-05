@@ -8,19 +8,17 @@ use yii\helpers\Html;
 class VariableWidget extends Widget
 {
 
-    public $message;
+    public $type;
+    public $model;
 
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            $this->message = 'Hello World';
-        }
     }
 
     public function run()
     {
-        return $this->render('variableWidget',['message' => $this->message]);
+        return $this->render('variableWidget',['type' => $this->type, 'model' => $this->model]);
     }
 
 }
