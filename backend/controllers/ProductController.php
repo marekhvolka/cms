@@ -62,11 +62,12 @@ class ProductController extends BaseController
             $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             
-            $productVars = Yii::$app->request->post('product_var');
-            foreach ($productVars as $idVar => $value) {
+            // TODO - refactor this - same code in PortalController
+            $vars = Yii::$app->request->post('var');
+            foreach ($vars as $id_var => $value) {
                 $productVarValue = new ProductVarValue();
                 $productVarValue->product_id = $model->id;
-                $productVarValue->var_id = $idVar;
+                $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
                 $productVarValue->save();
             }
@@ -130,18 +131,18 @@ class ProductController extends BaseController
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsProductVarValue, 'id', 'id')));
 
-            $productVars = Yii::$app->request->post('product_var');
+            $vars = Yii::$app->request->post('var');
             
-            foreach ($model->productVarValues as $product_var_value) {
-                $product_var_value->delete();
+            foreach ($model->productVarValues as $var_value) {
+                $var_value->delete();
             }
             
-            foreach ($productVars as $idVar => $value) {
+            foreach ($vars as $id_var => $value) {
                 $productVarValue = new ProductVarValue();
                 $productVarValue->product_id = $model->id;
-                $productVarValue->var_id = $idVar;
+                $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
-                $saved = $productVarValue->save();
+                $productVarValue->save();
             }
             
             // ajax validation

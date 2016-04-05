@@ -9,12 +9,15 @@ use backend\models\Language;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
-
+use backend\components\VariableWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+
+
+<?php echo VariableWidget::widget(['message' => 'AAAAAAAAAA']) ?>
 
 <div class="product-form">
 
@@ -49,13 +52,13 @@ use backend\models\ProductType;
     
     <?php 
     
-    $vars = ProductVar::find()->all();
+    $all_variables = ProductVar::find()->all();
     
     if ($model->id) {
         $selected_var_values = $model->productVarValues;
     }
     
-    $varsData = ArrayHelper::map($vars, 'id', 'name');
+    $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
     
     ?>
    
@@ -66,18 +69,20 @@ use backend\models\ProductType;
                 <label class="col-sm-2 control-label label-var"><?=$var_value->var->name?></label>
                 <div class="col-sm-10 var-value">
                     <div class="input-group">
+                        <?php if($var_value->var->popis): ?>
                         <span class="input-group-addon">
                             <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var_value->var->popis?>">
                                 <!-- The class CANNOT be tooltip... -->
                                 <i class='glyphicon glyphicon-question-sign'></i>
                             </a>
                         </span>
+                        <?php endif;?>
                         <?php switch($var_value->var->type->type): 
                         case 'textarea': ?>
                             <textarea id="field-<?=$var_value->var_id?>" class="form-control" rows="5" 
                                       placeholder="<?=$var_value->var->name?>" 
                                       data-type="<?=$var_value->var->type->type?>" data-name="<?=$var_value->var->name?>"
-                                      name="product_var[<?=$var_value->var_id?>][]">
+                                      name="var[<?=$var_value->var_id?>][]">
                                       <?=$var_value->value?>
                             </textarea>
                             <?php break; ?>
@@ -85,7 +90,7 @@ use backend\models\ProductType;
                             <input type="text" class="form-control" 
                                    value="<?=$var_value->value?>" placeholder="<?=$var_value->var->name?>" 
                                    data-type="<?=$var_value->var->type->type?>" data-name="<?=$var_value->var->name?>"
-                                   name="product_var[<?=$var_value->var_id?>][]">
+                                   name="var[<?=$var_value->var_id?>][]">
                             <?php break; ?>
                         <?php endswitch; ?>
                         <span class="input-group-btn rmv-btn" data-field-id="<?=$var_value->var_id?>">
@@ -103,8 +108,8 @@ use backend\models\ProductType;
 
     echo '<label class="control-label">Variables</label>';
     echo Select2::widget([
-        'name' => 'product_vars',
-        'data' => $varsData,
+        'name' => 'vars',
+        'data' => $all_variables_data,
         'options' => [
             'placeholder' => 'Select var ...',
             'id' => 'types-dropdown',
@@ -124,17 +129,19 @@ use backend\models\ProductType;
 </div>
 
 <div id="input-types-list">
-    <?php foreach ($vars as $i => $var):?>
+    <?php foreach ($all_variables as $i => $var):?>
     <div class="form-group hidden field-<?=$var->id?>">
         <label class="col-sm-2 control-label label-var"><?=$var->name?></label>
         <div class="col-sm-10 var-value">
             <div class="input-group">
+                <?php if($var->popis): ?>
                 <span class="input-group-addon">
                     <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var->popis?>">
                         <!-- The class CANNOT be tooltip... -->
                         <i class='glyphicon glyphicon-question-sign'></i>
                     </a>
                 </span>
+                <?php endif;?>
                 <?php switch($var->type->type): 
                 case 'textarea': ?>
                     <textarea id="field-<?=$var->id?>" class="form-control" rows="5" 
@@ -160,18 +167,18 @@ use backend\models\ProductType;
 <?php
 
 // Additional javascript (will be injected into js code).
-// List of types of product variables.
-$product_type_vars = '{';
+// List of variables data - id and name.
+$vars_data_js = '{';
 // Concatening of string which will be used as javascript code.
-for ($i = 0; $i < sizeof($vars); $i++) {
-    $dataObject = '' . $vars[$i]->id .  ': "' . $vars[$i]->name . '"';
-    if ($i != sizeof($vars) - 1) {
-        $dataObject .= ',';
+for ($i = 0; $i < sizeof($all_variables); $i++) {
+    $data_object = '' . $all_variables[$i]->id .  ': "' . $all_variables[$i]->name . '"';
+    if ($i != sizeof($all_variables) - 1) {
+        $data_object .= ',';
     }
     
-    $product_type_vars .= $dataObject;
+    $vars_data_js .= $data_object;
 }
-$product_type_vars .= '}';
+$vars_data_js .= '}';
 
 
 // Additional javascript (will be injected into js code).
@@ -194,7 +201,7 @@ if (isset($selected_var_values)) {  // Update of product which have set variable
 
 $js = <<<JS
 
-var typesData = $product_type_vars;
+var typesData = $vars_data_js;
 var selectedVarIds = $selected_var_values_js;
         
 for (var i = 0; i < selectedVarIds.length; i++) {
@@ -209,7 +216,7 @@ $('#types-dropdown').change(function(){
     sourceClone.addClass('active-field');
         
     sourceClone.appendTo('#dynamic-fields');
-    sourceClone.find('input').attr('name', 'product_var[' + fieldId + '][]');
+    sourceClone.find('input').attr('name', 'var[' + fieldId + '][]');
         
     $('#types-dropdown').find('[value="' + fieldId + '"]').remove();
 });

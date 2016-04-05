@@ -61,6 +61,16 @@ class PortalController extends BaseController
             $modelsPortalVarValue = Model::createMultiple(PortalVarValue::classname());
             Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
 
+            // TODO - refactor this - same code in ProductController
+            $vars = Yii::$app->request->post('var');
+            foreach ($vars as $id_var => $value) {
+                $productVarValue = new PortalVarValue();
+                $productVarValue->portal_id = $model->id;
+                $productVarValue->var_id = $id_var;
+                $productVarValue->value = $value[0];
+                $productVarValue->save();
+            }
+            
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -123,6 +133,19 @@ class PortalController extends BaseController
             Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPortalVarValue, 'id', 'id')));
 
+            $vars = Yii::$app->request->post('var');
+            foreach ($model->portalVarValues as $var_value) {
+                $var_value->delete();
+            }
+            
+            foreach ($vars as $id_var => $value) {
+                $productVarValue = new PortalVarValue();
+                $productVarValue->portal_id = $model->id;
+                $productVarValue->var_id = $id_var;
+                $productVarValue->value = $value[0];
+                $productVarValue->save();
+            }
+            
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;

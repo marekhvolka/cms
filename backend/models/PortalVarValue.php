@@ -13,7 +13,7 @@ use Yii;
  * @property string $value
  *
  * @property Portal $portal
- * @property PortalVar $attr
+ * @property PortalVar $var
  */
 class PortalVarValue extends \yii\db\ActiveRecord
 {
@@ -62,7 +62,7 @@ class PortalVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAttr()
+    public function getVar()
     {
         return $this->hasOne(PortalVar::className(), ['id' => 'var_id']);
     }
