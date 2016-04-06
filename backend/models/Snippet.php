@@ -45,10 +45,11 @@ class Snippet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'default_code_id', 'snippet_type'], 'required'],
+            [['name', 'snippet_type'], 'required'],
             [['default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
+            [['description'], 'string'],
             [['sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style'], 'string', 'max' => 30],
             [['name'], 'unique']
         ];
@@ -61,10 +62,10 @@ class Snippet extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Popis',
+            'name' => 'Názov',
+            'description' => 'Popis snippetu',
             'default_code_id' => 'Default Code ID',
-            'snippet_type' => 'Typ Snippet',
+            'snippet_type' => 'Typ',
             'sekcia_id' => 'Sekcia ID',
             'sekcia_class' => 'Sekcia Class',
             'sekcia_style' => 'Sekcia Style',

@@ -169,3 +169,10 @@ a.desc:after {
 .label-var {
     text-align: right;
 }
+
+.btn-remove-var {
+    position: absolute;
+    left: 95%;
+    top: 10px;
+    z-index: 999;
+}

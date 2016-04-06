@@ -51,7 +51,7 @@ class SnippetCode extends \yii\db\ActiveRecord
             'name' => 'Name',
             'code' => 'Code',
             'popis' => 'Popis',
-            'portal' => 'Portal',
+            'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'Snippet ID',
         ];
     }

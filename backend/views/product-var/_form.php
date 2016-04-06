@@ -51,6 +51,7 @@ use kartik\select2\Select2;
     ]);
     
     ?>
+    
     <div class="help-block" id="help-block-prod-types" >
         <p style="color: #a94442;"><?= $model->getAttributeLabel('product_type')?> cannot be blank.</p>
     </div>
@@ -63,8 +64,6 @@ use kartik\select2\Select2;
     </div>
 
     <?php ActiveForm::end(); ?>
-
-    <button id="test">clickme</button>
     
 </div>
 
