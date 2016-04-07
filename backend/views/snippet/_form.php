@@ -112,20 +112,19 @@ use backend\models\Portal;
                                 <div class="row">
                                     <div class="col-sm-12">
                                         
-                                        <label class="control-label" for="productvar-product_type">For Product Types</label>
+                                        <label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>
                                         <?php
                                         $portals = Portal::find()->all();
-                                        $portalsData = ArrayHelper::map($portals, 'id', 'name');
+                                        $portals_data = ArrayHelper::map($portals, 'id', 'name');
 
-//                                        $selectedProductTypes = $model->product_type ? 
-//                                                ProductType::find()->where('id in (' . $model->product_type . ')')->all() : [];
-//                                        $selectedProductTypesData = ArrayHelper::map($selectedProductTypes, 'id', 'id');
-
-                                        // TODO controller site saving process
+                                        $selected_vars = $modelSnippetCode->portal ? 
+                                                Portal::find()->where('id in (' . $modelSnippetCode->portal . ')')->all() : [];
+                                        $selected_vars_data = ArrayHelper::map($selected_vars, 'id', 'id');
+                                        
                                         echo Select2::widget([
-                                            'name' => 'product_type_ids',
-                                            //'value' => $selectedProductTypesData,
-                                            'data' => $productTypesData,
+                                            'name' => 'snippet_code_portals',
+                                            'value' => $selected_vars_data,
+                                            'data' => $portals_data,
                                             'id' => 'campaign-device',
                                             'options' => [
                                                 'placeholder' => 'Select or type cover url ...',
@@ -138,8 +137,6 @@ use backend\models\Portal;
 
                                         ?>
                                         
-                                        
-                                        <?= $form->field($modelSnippetCode, "[{$i}]portal")->textInput() ?>
                                     </div>
                                 </div>
                             </div>

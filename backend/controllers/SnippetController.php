@@ -79,7 +79,11 @@ class SnippetController extends BaseController
                 try {
                     if ($flag = $model->save(false)) {
                         foreach ($modelsSnippetCode as $modelSnippetCode) {
-                            $modelSnippetCode->snippet_id = $model->id;
+                            $modelSnippetCode->link('snippet', $model);
+                            $snippet_code_portals_ids_array = Yii::$app->request->post('snippet_code_portals');
+                            $snippet_code_portals_ids = implode(",", $snippet_code_portals_ids_array);
+                            $modelSnippetCode->portal = $snippet_code_portals_ids;
+                            
                             if (! ($flag = $modelSnippetCode->save(false))) {
                                 $transaction->rollBack();
                                 break;
@@ -144,7 +148,13 @@ class SnippetController extends BaseController
                             SnippetCode::deleteAll(['id' => $deletedIDs]);
                         }
                         foreach ($modelsSnippetCode as $modelSnippetCode) {
-                            $modelSnippetCode->snippet_id = $model->id;
+                            $modelSnippetCode->link('snippet', $model);
+                            
+                            // Update snippet portals (alternatives of snippet).
+                            $portals_array = Yii::$app->request->post('snippet_code_portals');
+                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
+                            $modelSnippetCode->portal = $portals_ids;
+                            
                             if (! ($flag = $modelSnippetCode->save(false))) {
                                 $transaction->rollBack();
                                 break;
