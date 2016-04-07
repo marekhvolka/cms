@@ -18,6 +18,8 @@ use backend\models\Portal;
 <div class="snippet-form">
 
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
+    
+    <h3 class="page-header">Všeobecné <small>nastavenia</small></h3>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -55,12 +57,11 @@ use backend\models\Portal;
                 <div class="container-items"><!-- widgetContainer -->
                     <?php foreach ($modelsSnippetCode as $i => $modelSnippetCode): ?>
                         <div class="item panel panel-default"><!-- widgetBody -->
+                            <button type="button" class="remove-item btn btn-danger btn-xs">
+                                <i class="glyphicon glyphicon-minus"></i>
+                            </button>
                             
-                            <button type="button" class="remove-item btn btn-danger btn-xs btn-remove-var">
-                                            <i class="glyphicon glyphicon-minus"></i>
-                                        </button>
-                            <div class="panel-heading">
-                                
+                            <div class="panel-heading"> 
                                 <div class="input-group">
                                     <?= $form->field($modelSnippetCode, "[{$i}]name")->textInput(['maxlength' => true]) ?>
                                     <div class="pull-right">
@@ -86,7 +87,7 @@ use backend\models\Portal;
                                             echo $form->field($modelSnippetCode, "[{$i}]code")->widget(
                                                 CodemirrorWidget::className(),
                                                 [
-                                                    'assets'=>[
+                                                    'assets' => [
                                                         CodemirrorAsset::MODE_CLIKE,
                                                         CodemirrorAsset::KEYMAP_EMACS,
                                                         CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
@@ -95,10 +96,13 @@ use backend\models\Portal;
                                                         CodemirrorAsset::ADDON_SEARCHCURSOR,
                                                         CodemirrorAsset::ADDON_SEARCH,
                                                     ],
-                                                    'settings'=>[
+                                                    'settings' => [
                                                         'lineNumbers' => true,
                                                         'mode' => 'text/x-csrc',
                                                     ],
+                                                    'options' => [
+                                                        'class' => 'html-editor'
+                                                    ]
                                                 ]
                                             );
                                         ?>
@@ -111,31 +115,7 @@ use backend\models\Portal;
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        
                                         <label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>
-                                        <?php
-                                        $portals = Portal::find()->all();
-                                        $portals_data = ArrayHelper::map($portals, 'id', 'name');
-
-                                        $selected_vars = $modelSnippetCode->portal ? 
-                                                Portal::find()->where('id in (' . $modelSnippetCode->portal . ')')->all() : [];
-                                        $selected_vars_data = ArrayHelper::map($selected_vars, 'id', 'id');
-                                        
-                                        echo Select2::widget([
-                                            'name' => 'snippet_code_portals',
-                                            'value' => $selected_vars_data,
-                                            'data' => $portals_data,
-                                            'id' => 'campaign-device',
-                                            'options' => [
-                                                'placeholder' => 'Select or type cover url ...',
-                                                'multiple' => true,
-                                            ],
-                                            'pluginOptions' => [
-                                                'tags' => true,
-                                            ],
-                                        ]);
-
-                                        ?>
                                         
                                     </div>
                                 </div>
@@ -211,11 +191,9 @@ use backend\models\Portal;
                 </div>
             </div>
         </div>
-        
-        
-        
     </div>
-
+    
+    
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
@@ -223,3 +201,18 @@ use backend\models\Portal;
     <?php ActiveForm::end(); ?>
 
 </div>
+ 
+<?php
+
+$js = <<<JS
+
+$(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+    var myTextarea = item.getElementsByClassName('html-editor')[0];
+    var editor = CodeMirror.fromTextArea(myTextarea, {
+        lineNumbers: true
+    });    
+});
+        
+JS;
+$this->registerJs($js);
+?>

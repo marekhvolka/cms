@@ -40,7 +40,7 @@ use kartik\select2\Select2;
         'name' => 'product_type_ids',
         'value' => $selectedProductTypesData,
         'data' => $productTypesData,
-        'id' => 'campaign-device',
+        'id' => 'product_types',
         'options' => [
             'placeholder' => 'Select or type cover url ...',
             'multiple' => true,

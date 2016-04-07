@@ -118,6 +118,7 @@ class SnippetController extends BaseController
     {
         $model = $this->findModel($id);
         $modelsSnippetCode = $model->snippetCodes;
+        $modelsVars = $model->snippetVars;
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -151,9 +152,9 @@ class SnippetController extends BaseController
                             $modelSnippetCode->link('snippet', $model);
                             
                             // Update snippet portals (alternatives of snippet).
-                            $portals_array = Yii::$app->request->post('snippet_code_portals');
-                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
-                            $modelSnippetCode->portal = $portals_ids;
+//                            $portals_array = Yii::$app->request->post('snippet_code_portals');
+//                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
+//                            $modelSnippetCode->portal = $portals_ids;
                             
                             if (! ($flag = $modelSnippetCode->save(false))) {
                                 $transaction->rollBack();
@@ -175,6 +176,7 @@ class SnippetController extends BaseController
             return $this->render('update', [
                 'model' => $model,
                 'modelsSnippetCode' => (empty($modelsSnippetCode)) ? [new SnippetCode()] : $modelsSnippetCode,
+                'snippetVars' => (empty($snippetVars)) ? [new Snippet()] : $snippetVars,
             ]);
         }
     }
