@@ -140,7 +140,7 @@ class SnippetController extends BaseController
                     ActiveForm::validateMultiple($modelsSnippetCode),
                     ActiveForm::validate($model)
                 );
-            }
+            } 
 
             // validate all models
             $valid = $model->validate();
