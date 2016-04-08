@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use backend\models\SnippetVar;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.
@@ -118,14 +119,19 @@ class SnippetController extends BaseController
     {
         $model = $this->findModel($id);
         $modelsSnippetCode = $model->snippetCodes;
-        $modelsVars = $model->snippetVars;
+        $snippetVars = $model->snippetVars;
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $oldIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
             $modelsSnippetCode = Model::createMultiple(SnippetCode::classname(), $modelsSnippetCode);
             Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
+            $deletedIDsSnippetCodes = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
+            
+            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
+            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
+            Model::loadMultiple($snippetVars, Yii::$app->request->post());
+            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -145,9 +151,14 @@ class SnippetController extends BaseController
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        if (! empty($deletedIDs)) {
-                            SnippetCode::deleteAll(['id' => $deletedIDs]);
+                        if (!empty($deletedIDsSnippetCodes)) {
+                            SnippetCode::deleteAll(['id' => $deletedIDsSnippetCodes]);
                         }
+                        
+                        if (!empty($deletedIDsVars)) {
+                            SnippetVar::deleteAll(['id' => $deletedIDsVars]);
+                        }
+                        
                         foreach ($modelsSnippetCode as $modelSnippetCode) {
                             $modelSnippetCode->link('snippet', $model);
                             
@@ -176,7 +187,6 @@ class SnippetController extends BaseController
             return $this->render('update', [
                 'model' => $model,
                 'modelsSnippetCode' => (empty($modelsSnippetCode)) ? [new SnippetCode()] : $modelsSnippetCode,
-                'snippetVars' => (empty($snippetVars)) ? [new Snippet()] : $snippetVars,
             ]);
         }
     }

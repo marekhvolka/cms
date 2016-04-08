@@ -58,10 +58,10 @@ class SnippetVar extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'identifier' => 'Identifier',
-            'description' => 'Description',
+            'identifier' => 'Názov',
+            'description' => 'Popis',
             'type_id' => 'Type ID',
-            'default_value' => 'Default Value',
+            'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
             'page_var' => 'Page Var',

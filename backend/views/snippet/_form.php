@@ -115,8 +115,32 @@ use backend\models\Portal;
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>
-                                        
+                                        <?= $form->field($modelSnippetCode, 'portal')->textInput() ?>
+                                        <!--<label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>-->
+                                        <?php
+//                                        $portals = Portal::find()->all();
+//                                        $portals_data = ArrayHelper::map($portals, 'id', 'name');
+//                                        
+//                                        $selected_vars = $modelSnippetCode->portal ? 
+//                                                Portal::find()->where('id in (' . $modelSnippetCode->portal . ')')->all() : [];
+//                                        $selected_vars_data = ArrayHelper::map($selected_vars, 'id', 'id');
+//                                        
+//                                        $id_suffix = $modelSnippetCode ? $modelSnippetCode->id : '';
+//                                        
+//                                        echo Select2::widget([
+//                                            'name' => 'snippet_code_portals',
+//                                            'value' => $selected_vars_data,
+//                                            'data' => $portals_data,
+//                                            'id' => 'snippet_code_portals-' . $id_suffix,
+//                                            'options' => [
+//                                                'placeholder' => 'Select or type cover url ...',
+//                                                'multiple' => true,
+//                                            ],
+//                                            'pluginOptions' => [
+//                                                'tags' => true,
+//                                            ],
+//                                        ]);
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +153,6 @@ use backend\models\Portal;
     </div>
     
     <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
-    
     
     <?php // TODO - this could be refactored - maybe moved to snippet ?>
     
@@ -192,6 +215,10 @@ use backend\models\Portal;
             </div>
         </div>
     </div>
+    
+    <?php $snippetVars = $model->snippetVars; ?>
+    
+    
     
     
     <div class="form-group">
