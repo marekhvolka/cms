@@ -115,8 +115,7 @@ use backend\models\Portal;
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>
-                                        
+                                        <?= $form->field($modelSnippetCode, "[{$i}]portal")->textInput(['maxlength' => true]) ?>
                                     </div>
                                 </div>
                             </div>
