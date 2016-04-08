@@ -218,7 +218,119 @@ use backend\models\Portal;
     
     <?php $snippetVars = $model->snippetVars; ?>
     
+    <div class="form-group">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
+            <div class="panel-body">
+                <?php DynamicFormWidget::begin([
+                    'widgetContainer' => 'dynamicform_wrapper_vars', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
+                    'widgetBody' => '.container-items', // required: css class selector
+                    'widgetItem' => '.item', // required: css class
+                    'min' => 1, // 0 or 1 (default 1)
+                    'insertButton' => '.add-item-vars', // css class
+                    'deleteButton' => '.remove-item-vars', // css class
+                    'model' => $snippetVars[0],
+                    'formId' => 'dynamic-form',
+                    'formFields' => [
+                        'full_name',
+                        'address_line1',
+                        'address_line2',
+                        'city',
+                        'state',
+                        'postal_code',
+                    ],
+                ]); ?>
     
+                <div class="container-items"><!-- widgetContainer -->
+                    <?php foreach ($snippetVars as $i => $snippetVar): ?>
+                        <div class="item panel panel-default"><!-- widgetBody -->
+                            <button type="button" class="remove-item-vars btn btn-danger btn-xs">
+                                <i class="glyphicon glyphicon-minus"></i>
+                            </button>
+    
+                            <div class="panel-heading"> 
+                                <div class="input-group">
+                                    <div class="pull-right">
+                                        <button type="button" class="add-item-vars btn btn-success btn-xs">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                        </button>
+    
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <?php
+                                // necessary for update action.
+                                if (! $modelSnippetCode->isNewRecord) {
+                                    echo Html::activeHiddenInput($modelSnippetCode, "[{$i}]id");
+                                }
+                                ?>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <?= $form->field($snippetVar, "[{$i}]identifier")->textInput(['maxlength' => true]) ?>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <?= $form->field($snippetVar, "[{$i}]type_id")->textInput() ?>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <?= $form->field($snippetVar, "[{$i}]default_value")->textInput() ?>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <?= $form->field($snippetVar, "[{$i}]description")->textarea(['rows' => '4']) ?>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        
+                                        <!--<label class="control-label" for="productvar-product_type"><?= $modelSnippetCode->getAttributeLabel('portal');?></label>-->
+                                        <?php
+//                                        $portals = Portal::find()->all();
+//                                        $portals_data = ArrayHelper::map($portals, 'id', 'name');
+//                                        
+//                                        $selected_vars = $modelSnippetCode->portal ? 
+//                                                Portal::find()->where('id in (' . $modelSnippetCode->portal . ')')->all() : [];
+//                                        $selected_vars_data = ArrayHelper::map($selected_vars, 'id', 'id');
+//                                        
+//                                        $id_suffix = $modelSnippetCode ? $modelSnippetCode->id : '';
+//                                        
+//                                        echo Select2::widget([
+//                                            'name' => 'snippet_code_portals',
+//                                            'value' => $selected_vars_data,
+//                                            'data' => $portals_data,
+//                                            'id' => 'snippet_code_portals-' . $id_suffix,
+//                                            'options' => [
+//                                                'placeholder' => 'Select or type cover url ...',
+//                                                'multiple' => true,
+//                                            ],
+//                                            'pluginOptions' => [
+//                                                'tags' => true,
+//                                            ],
+//                                        ]);
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php DynamicFormWidget::end(); ?>
+            </div>
+        </div>
+    </div>
     
     
     <div class="form-group">
