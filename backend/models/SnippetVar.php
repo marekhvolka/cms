@@ -65,6 +65,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
             'page_var' => 'Page Var',
+            'type' => 'Typ premennej',
         ];
     }
 

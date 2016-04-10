@@ -9,6 +9,7 @@ use conquer\codemirror\CodemirrorAsset;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use backend\models\Portal;
+use backend\models\VarType;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
@@ -273,31 +274,26 @@ use backend\models\Portal;
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        
+                                        <div class="form-group field-snippetvar-<?= $snippetVar->id ?>-type">
+                                            <label class="control-label" for="snippetvar-<?= $snippetVar->id ?>-type"><?= $snippetVar->getAttributeLabel('type')?></label>
                                         <?php
-//                                        $portals = Portal::find()->all();
-//                                        $portals_data = ArrayHelper::map($portals, 'id', 'name');
-//                                        
-//                                        $selected_vars = $modelSnippetCode->portal ? 
-//                                                Portal::find()->where('id in (' . $modelSnippetCode->portal . ')')->all() : [];
-//                                        $selected_vars_data = ArrayHelper::map($selected_vars, 'id', 'id');
-//                                        
-//                                        $id_suffix = $modelSnippetCode ? $modelSnippetCode->id : '';
-//                                        
-//                                        echo Select2::widget([
-//                                            'name' => 'snippet_code_portals',
-//                                            'value' => $selected_vars_data,
-//                                            'data' => $portals_data,
-//                                            'id' => 'snippet_code_portals-' . $id_suffix,
-//                                            'options' => [
-//                                                'placeholder' => 'Select or type cover url ...',
-//                                                'multiple' => true,
-//                                            ],
-//                                            'pluginOptions' => [
-//                                                'tags' => true,
-//                                            ],
-//                                        ]);
+                                        
+                                        $allVars = VarType::find()->where(['show_snippet' => 1])->all();
+                                                
+                                        $data = ArrayHelper::map($allVars, 'id', 'type');
+                                        
+                                        echo Select2::widget([
+                                            'name' => 'type',
+                                            'value' => $snippetVar->type_id,
+                                            'data' => $data,
+                                            'options' => [
+                                                'placeholder' => 'Select type ...',
+                                            ],
+                                            
+                                        ]);
+                                        
                                         ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +322,14 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     var myTextarea = item.getElementsByClassName('html-editor')[0];
     var editor = CodeMirror.fromTextArea(myTextarea, {
         lineNumbers: true
-    });    
+    }); 
+});
+
+$(".dynamicform_wrapper_vars").on("beforeInsert", function(e, item) {
+    var select = $(item).find('select');
+    //select.select2();
+        
+       // $('select').select2();
 });
         
 JS;
