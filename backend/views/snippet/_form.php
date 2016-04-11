@@ -274,26 +274,23 @@ use backend\models\VarType;
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <div class="form-group field-snippetvar-<?= $snippetVar->id ?>-type">
-                                            <label class="control-label" for="snippetvar-<?= $snippetVar->id ?>-type"><?= $snippetVar->getAttributeLabel('type')?></label>
                                         <?php
-                                        
                                         $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                                                
                                         $data = ArrayHelper::map($allVars, 'id', 'type');
                                         
-                                        echo Select2::widget([
-                                            'name' => 'type',
-                                            'value' => $snippetVar->type_id,
-                                            'data' => $data,
-                                            'options' => [
-                                                'placeholder' => 'Select type ...',
-                                            ],
-                                            
-                                        ]);
+                                        echo $form->field($snippetVar, 'type')->dropDownList($data, ['prompt'=>'Select...']);
+                                        
+//                                        echo Select2::widget([
+//                                            'name' => 'type',
+//                                            'value' => $snippetVar->type_id,
+//                                            'data' => $data,
+//                                            'options' => [
+//                                                'placeholder' => 'Select type ...',
+//                                            ],
+//                                            
+//                                        ]);
                                         
                                         ?>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +301,6 @@ use backend\models\VarType;
             </div>
         </div>
     </div>
-    
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -318,6 +314,7 @@ use backend\models\VarType;
 
 $js = <<<JS
 
+// Add item - new Snippet code and initialize Codemirrod library to according code attribute textarea.
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     var myTextarea = item.getElementsByClassName('html-editor')[0];
     var editor = CodeMirror.fromTextArea(myTextarea, {
@@ -325,12 +322,10 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     }); 
 });
 
-$(".dynamicform_wrapper_vars").on("beforeInsert", function(e, item) {
-    var select = $(item).find('select');
-    //select.select2();
-        
-       // $('select').select2();
-});
+//$(".dynamicform_wrapper_vars").on("beforeInsert", function(e, item) {
+//    var select = $(item).find('select');
+//    select.select2();
+//});
         
 JS;
 $this->registerJs($js);
