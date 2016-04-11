@@ -40,14 +40,14 @@ class SnippetVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['identifier', 'type_id', 'snippet_id', 'page_var'], 'required'],
-            [['description', 'default_value'], 'string'],
-            [['type_id', 'snippet_id', 'parent_id', 'page_var'], 'integer'],
+            [['identifier', 'type_id'], 'required'],
+            [['type_id', 'description', 'default_value'], 'string'],
+            [[ 'snippet_id', 'parent_id', 'page_var'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
-            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
+            //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 

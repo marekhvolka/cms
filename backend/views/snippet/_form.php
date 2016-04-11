@@ -10,6 +10,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use backend\models\Portal;
 use backend\models\VarType;
+use backend\models\SnippetVar;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
@@ -200,6 +201,8 @@ use backend\models\VarType;
                 <?php 
                 
                 $snippetVars = $model->snippetVars;
+                $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
+                
                 
                 DynamicFormWidget::begin([
                     'widgetContainer' => 'dynamicform_wrapper_vars', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]

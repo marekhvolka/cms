@@ -56,36 +56,55 @@ class SnippetController extends BaseController
     {
         $model = new Snippet();
         $modelsSnippetCode = [new SnippetCode()];
+        $modelsSnippetVar = [new SnippetVar()];
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsSnippetCode = Model::createMultiple(SnippetCode::classname());
             Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
+            
+            $modelsSnippetVar = Model::createMultiple(SnippetVar::classname());
+            Model::loadMultiple($modelsSnippetVar, Yii::$app->request->post());
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(
                     ActiveForm::validateMultiple($modelsSnippetCode),
+                    ActiveForm::validateMultiple($modelsSnippetVar),
                     ActiveForm::validate($model)
                 );
             }
 
             // validate all models
             $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsSnippetCode) && $valid;
+            $valid = Model::validateMultiple($modelsSnippetCode);
+            $valid = Model::validateMultiple($modelsSnippetVar);
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        foreach ($modelsSnippetCode as $modelSnippetCode) {
-                            $modelSnippetCode->link('snippet', $model);
-                            $snippet_code_portals_ids_array = Yii::$app->request->post('snippet_code_portals');
-                            $snippet_code_portals_ids = implode(",", $snippet_code_portals_ids_array);
-                            $modelSnippetCode->portal = $snippet_code_portals_ids;
+                        foreach ($modelsSnippetCode as $code) {
+                            $code->link('snippet', $model);
                             
-                            if (! ($flag = $modelSnippetCode->save(false))) {
+                            $snippet_code_portals_ids_array = Yii::$app->request->post('snippet_code_portals');
+                            if ($snippet_code_portals_ids_array) {
+                                $snippet_code_portals_ids = implode(",", $snippet_code_portals_ids_array);
+                                $code->portal = $snippet_code_portals_ids;
+                            }
+                            $flag = $code->save(false);
+                            if (!($flag)) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                        
+                        foreach ($modelsSnippetVar as $var) {
+                            $var->snippet_id = $model->id;
+                            $flag = $var->save(false);
+                            
+                            if (!($flag)) {
                                 $transaction->rollBack();
                                 break;
                             }
@@ -118,20 +137,28 @@ class SnippetController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        
+     //   $snippetVars = $model->snippetVars;
         $modelsSnippetCode = $model->snippetCodes;
-        $snippetVars = $model->snippetVars;
-
+        
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $oldIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
+            $snippetCodesToDelete = SnippetCode::find()->where(['snippet_id' => $model->id])->all();
+            foreach ($snippetCodesToDelete as $code) {
+                $code->delete();
+            }
+
+            $modelsSnippetCode = [new SnippetCode()];
+            
+            //$oldIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
             $modelsSnippetCode = Model::createMultiple(SnippetCode::classname(), $modelsSnippetCode);
             Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
-            $deletedIDsSnippetCodes = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
+            //$deletedIDsSnippetCodes = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
             
-            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
-            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
-            Model::loadMultiple($snippetVars, Yii::$app->request->post());
-            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
+//            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
+//            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
+//            Model::loadMultiple($snippetVars, Yii::$app->request->post());
+//            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -144,20 +171,21 @@ class SnippetController extends BaseController
 
             // validate all models
             $valid = $model->validate();
-
             $valid = Model::validateMultiple($modelsSnippetCode) && $valid;
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        if (!empty($deletedIDsSnippetCodes)) {
-                            SnippetCode::deleteAll(['id' => $deletedIDsSnippetCodes]);
-                        }
                         
-                        if (!empty($deletedIDsVars)) {
-                            SnippetVar::deleteAll(['id' => $deletedIDsVars]);
-                        }
+                        
+//                        foreach ($deletedIDsSnippetCodes as $id) {
+//                            
+//                        }
+//                        
+//                        if (!empty($deletedIDsVars)) {
+//                            SnippetVar::deleteAll(['id' => $deletedIDsVars]);
+//                        }
                         
                         foreach ($modelsSnippetCode as $modelSnippetCode) {
                             $modelSnippetCode->link('snippet', $model);
