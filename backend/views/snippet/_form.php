@@ -278,7 +278,7 @@ use backend\models\VarType;
                                         $allVars = VarType::find()->where(['show_snippet' => 1])->all();
                                         $data = ArrayHelper::map($allVars, 'id', 'type');
                                         
-                                        echo $form->field($snippetVar, 'type')->dropDownList($data, ['prompt'=>'Select...']);
+                                     //   echo $form->field($snippetVar, 'type')->dropDownList($data, ['prompt'=>'Select...']);
                                         
 //                                        echo Select2::widget([
 //                                            'name' => 'type',

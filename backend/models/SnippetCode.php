@@ -59,10 +59,6 @@ class SnippetCode extends \yii\db\ActiveRecord
     public function beforeDelete()
     {
         $this->unlinkAll('snippets', false);
-        $this->unlinkAll('snippet', false);
-        
-        $this->snippet->default_code_id = null;
-        $this->snippet->save();
         
         return parent::beforeDelete();
     }
