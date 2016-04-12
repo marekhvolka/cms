@@ -65,31 +65,27 @@ class SnippetController extends BaseController
             Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
             
             /*
-             * TODO - !!! this is hardcoded! should be refactor as follows (something like that):
+             * TODO - !!! this is hardcoded! should be refactored as follows (something like that):
              * 
              * $modelsSnippetVar2 = [new SnippetVar()];
              * $modelsSnippetVar2 = Model::createMultiple(SnippetVar::classname());
              * Model::loadMultiple($modelsSnippetVar2, Yii::$app->request->post());
              * 
-             * At least refactor for using: $modelVar->load($varData, false);
+             * At least refactor for using: $snippetVar->load($varData, false);
              */
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
             foreach ($snippetVarData as $varData) {
-                $modelVar = new SnippetVar();
+                $snippetVar = new SnippetVar();
                 
-                $modelVar->identifier = $varData['identifier'];
-                $modelVar->type_id = $varData['type_id'];
-                $modelVar->default_value = $varData['default_value'];
-                $modelVar->description = $varData['description'];
+                $snippetVar->identifier = $varData['identifier'];
+                $snippetVar->type_id = $varData['type_id'];
+                $snippetVar->default_value = $varData['default_value'];
+                $snippetVar->description = $varData['description'];
                 
-                $modelsSnippetVar[] = $modelVar;
+                $modelsSnippetVar[] = $snippetVar;
             }
             
-            $modelsSnippetVar2 = [new SnippetVar()];
-            $modelsSnippetVar2 = Model::createMultiple(SnippetVar::classname());
-            Model::loadMultiple($modelsSnippetVar2, Yii::$app->request->post());
-
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -171,12 +167,41 @@ class SnippetController extends BaseController
             foreach ($snippetCodesToDelete as $code) {
                 $code->delete();
             }
-
-            $modelsSnippetCode = [new SnippetCode()];
+            
+            //$modelsSnippetCode = [new SnippetCode()];
+            $modelsSnippetCode = [];
+            
+            //TODO - !!! this is hardcoded! as in above create action - should be refactored.
+            $snippetCodeData = Yii::$app->request->post('SnippetCode');
+            foreach ($snippetCodeData as $codeData) {
+                $snippetCode = new SnippetCode();
+                
+                $snippetCode->name = $codeData['name'];
+                $snippetCode->code = $codeData['code'];
+                $snippetCode->popis = $codeData['popis'];
+                $snippetCode->portal = $codeData['portal'];
+                
+                $modelsSnippetCode[] = $snippetCode;
+            }
+            
+            $modelsSnippetVar = [];
+            
+            $snippetVarData = Yii::$app->request->post('SnippetVar');
+            foreach ($snippetVarData as $varData) {
+                $snippetVar = new SnippetVar();
+                
+                $snippetVar->identifier = $varData['identifier'];
+                $snippetVar->type_id = $varData['type_id'];
+                $snippetVar->default_value = $varData['default_value'];
+                $snippetVar->description = $varData['description'];
+                
+                $modelsSnippetVar[] = $snippetVar;
+            }
+            
             
             //$oldIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
-            $modelsSnippetCode = Model::createMultiple(SnippetCode::classname(), $modelsSnippetCode);
-            Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
+//            $modelsSnippetCode = Model::createMultiple(SnippetCode::classname(), $modelsSnippetCode);
+//            Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
             //$deletedIDsSnippetCodes = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
             
 //            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
@@ -196,6 +221,7 @@ class SnippetController extends BaseController
             // validate all models
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelsSnippetCode) && $valid;
+            $valid = Model::validateMultiple($modelsSnippetVar);
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
