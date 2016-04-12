@@ -257,7 +257,12 @@ use backend\models\SnippetVar;
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]type_id")->textInput() ?>
+                                        <?php
+                                        $allVars = VarType::find()->where(['show_snippet' => 1])->all();
+                                        $data = ArrayHelper::map($allVars, 'id', 'type');
+                                        
+                                        echo $form->field($snippetVar, "[{$y}]type_id")->dropDownList($data, ['prompt'=>'Select...']);
+                                        ?>
                                     </div>
                                 </div>
                                 
@@ -270,30 +275,6 @@ use backend\models\SnippetVar;
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <?= $form->field($snippetVar, "[{$y}]description")->textarea(['rows' => '4']) ?>
-                                    </div>
-                                </div>
-                                
-                                
-                                
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <?php
-                                        $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                                        $data = ArrayHelper::map($allVars, 'id', 'type');
-                                        
-                                     //   echo $form->field($snippetVar, 'type')->dropDownList($data, ['prompt'=>'Select...']);
-                                        
-//                                        echo Select2::widget([
-//                                            'name' => 'type',
-//                                            'value' => $snippetVar->type_id,
-//                                            'data' => $data,
-//                                            'options' => [
-//                                                'placeholder' => 'Select type ...',
-//                                            ],
-//                                            
-//                                        ]);
-                                        
-                                        ?>
                                     </div>
                                 </div>
                             </div>

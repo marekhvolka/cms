@@ -60,12 +60,11 @@ class SnippetVar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'identifier' => 'Názov',
             'description' => 'Popis',
-            'type_id' => 'Type ID',
+            'type_id' => 'Typ premennej',
             'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
             'page_var' => 'Page Var',
-            'type' => 'Typ premennej',
         ];
     }
 
