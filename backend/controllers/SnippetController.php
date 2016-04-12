@@ -173,6 +173,7 @@ class SnippetController extends BaseController
             
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
+            
             foreach ($snippetCodeData as $codeData) {
                 $snippetCode = new SnippetCode();
                 
@@ -197,17 +198,6 @@ class SnippetController extends BaseController
                 
                 $modelsSnippetVar[] = $snippetVar;
             }
-            
-            
-            //$oldIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
-//            $modelsSnippetCode = Model::createMultiple(SnippetCode::classname(), $modelsSnippetCode);
-//            Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
-            //$deletedIDsSnippetCodes = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSnippetCode, 'id', 'id')));
-            
-//            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
-//            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
-//            Model::loadMultiple($snippetVars, Yii::$app->request->post());
-//            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -228,18 +218,10 @@ class SnippetController extends BaseController
                 try {
                     if ($flag = $model->save(false)) {
                         
-                        
-//                        foreach ($deletedIDsSnippetCodes as $id) {
-//                            
-//                        }
-//                        
-//                        if (!empty($deletedIDsVars)) {
-//                            SnippetVar::deleteAll(['id' => $deletedIDsVars]);
-//                        }
-                        
                         foreach ($modelsSnippetCode as $modelSnippetCode) {
                             $modelSnippetCode->link('snippet', $model);
                             
+                            //TODO here will be code for change portals.
                             // Update snippet portals (alternatives of snippet).
 //                            $portals_array = Yii::$app->request->post('snippet_code_portals');
 //                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
@@ -250,6 +232,17 @@ class SnippetController extends BaseController
                                 break;
                             }
                         }
+                        
+                        foreach ($modelsSnippetVar as $var) {
+                            $var->snippet_id = $model->id;
+                            $flag = $var->save(false);
+                            
+                            if (!($flag)) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                        
                     }
                     if ($flag) {
                         $transaction->commit();
