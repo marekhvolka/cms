@@ -224,7 +224,7 @@ use backend\models\SnippetVar;
                 ]); ?>
     
                 <div class="container-items"><!-- widgetContainer -->
-                    <?php foreach ($snippetVars as $i => $snippetVar): ?>
+                    <?php foreach ($snippetVars as $y => $snippetVar): ?>
                         <div class="item panel panel-default"><!-- widgetBody -->
                             <button type="button" class="remove-item-vars btn btn-danger btn-xs">
                                 <i class="glyphicon glyphicon-minus"></i>
@@ -245,31 +245,31 @@ use backend\models\SnippetVar;
                                 <?php
                                 // necessary for update action.
                                 if (! $modelSnippetCode->isNewRecord) {
-                                    echo Html::activeHiddenInput($modelSnippetCode, "[{$i}]id");
+                                    echo Html::activeHiddenInput($modelSnippetCode, "[{$y}]id");
                                 }
                                 ?>
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$i}]identifier")->textInput(['maxlength' => true]) ?>
+                                        <?= $form->field($snippetVar, "[{$y}]identifier")->textInput(['maxlength' => true]) ?>
                                     </div>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$i}]type_id")->textInput() ?>
+                                        <?= $form->field($snippetVar, "[{$y}]type_id")->textInput() ?>
                                     </div>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$i}]default_value")->textInput() ?>
+                                        <?= $form->field($snippetVar, "[{$y}]default_value")->textInput() ?>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$i}]description")->textarea(['rows' => '4']) ?>
+                                        <?= $form->field($snippetVar, "[{$y}]description")->textarea(['rows' => '4']) ?>
                                     </div>
                                 </div>
                                 

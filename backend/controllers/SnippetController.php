@@ -56,15 +56,39 @@ class SnippetController extends BaseController
     {
         $model = new Snippet();
         $modelsSnippetCode = [new SnippetCode()];
-        $modelsSnippetVar = [new SnippetVar()];
+        //$modelsSnippetVar = [new SnippetVar()];
+        $modelsSnippetVar = [];
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsSnippetCode = Model::createMultiple(SnippetCode::classname());
             Model::loadMultiple($modelsSnippetCode, Yii::$app->request->post());
             
-            $modelsSnippetVar = Model::createMultiple(SnippetVar::classname());
-            Model::loadMultiple($modelsSnippetVar, Yii::$app->request->post());
+            /*
+             * TODO - !!! this is hardcoded! should be refactor as follows (something like that):
+             * 
+             * $modelsSnippetVar2 = [new SnippetVar()];
+             * $modelsSnippetVar2 = Model::createMultiple(SnippetVar::classname());
+             * Model::loadMultiple($modelsSnippetVar2, Yii::$app->request->post());
+             * 
+             * At least refactor for using: $modelVar->load($varData, false);
+             */
+            
+            $snippetVarData = Yii::$app->request->post('SnippetVar');
+            foreach ($snippetVarData as $varData) {
+                $modelVar = new SnippetVar();
+                
+                $modelVar->identifier = $varData['identifier'];
+                $modelVar->type_id = $varData['type_id'];
+                $modelVar->default_value = $varData['default_value'];
+                $modelVar->description = $varData['description'];
+                
+                $modelsSnippetVar[] = $modelVar;
+            }
+            
+            $modelsSnippetVar2 = [new SnippetVar()];
+            $modelsSnippetVar2 = Model::createMultiple(SnippetVar::classname());
+            Model::loadMultiple($modelsSnippetVar2, Yii::$app->request->post());
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -75,12 +99,12 @@ class SnippetController extends BaseController
                     ActiveForm::validate($model)
                 );
             }
-
+            
             // validate all models
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsSnippetCode);
-            $valid = Model::validateMultiple($modelsSnippetVar);
-
+            $valid = $model->validate() 
+                    && Model::validateMultiple($modelsSnippetCode)
+                    && Model::validateMultiple($modelsSnippetVar);
+       
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
