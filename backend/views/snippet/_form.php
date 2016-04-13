@@ -236,7 +236,6 @@ use backend\models\SnippetVar;
                                         <button type="button" class="add-item-vars btn btn-success btn-xs">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
-    
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -251,7 +250,7 @@ use backend\models\SnippetVar;
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]identifier")->textInput(['maxlength' => true]) ?>
+                                        <?= $form->field($snippetVar, "[{$y}]identifier")->textInput(['maxlength' => true, 'class' => 'form-control var-identifier']) ?>
                                     </div>
                                 </div>
                                 
@@ -268,13 +267,13 @@ use backend\models\SnippetVar;
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]default_value")->textInput() ?>
+                                        <?= $form->field($snippetVar, "[{$y}]default_value")->textInput(['class' => 'form-control var-default-value']) ?>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]description")->textarea(['rows' => '4']) ?>
+                                        <?= $form->field($snippetVar, "[{$y}]description")->textarea(['rows' => '4', 'class' => 'form-control var-description']) ?>
                                     </div>
                                 </div>
                             </div>
@@ -305,7 +304,18 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         lineNumbers: true
     }); 
 });
-
+        
+// Last remove button was clicked - last form must be cleared.
+$('.remove-item-vars').bind('click', function() {
+    var count = $('.var-identifier').length; 
+    if (count == 1) {
+        $('.var-identifier').val("");
+        $('.var-default-value').val("");
+        $('.var-description').val("");
+    }
+    console.log(count);
+});
+        
 //$(".dynamicform_wrapper_vars").on("beforeInsert", function(e, item) {
 //    var select = $(item).find('select');
 //    select.select2();

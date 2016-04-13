@@ -157,8 +157,6 @@ class SnippetController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        
-     //   $snippetVars = $model->snippetVars;
         $modelsSnippetCode = $model->snippetCodes;
         
         if ($model->load(Yii::$app->request->post()) && $model->save())
@@ -168,35 +166,45 @@ class SnippetController extends BaseController
                 $code->delete();
             }
             
+            $snippetVarsToDelete = SnippetVar::find()->where(['snippet_id' => $model->id])->all();
+            foreach ($snippetVarsToDelete as $var) {
+                $var->delete();
+            }
+            
             //$modelsSnippetCode = [new SnippetCode()];
             $modelsSnippetCode = [];
             
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
-            
             foreach ($snippetCodeData as $codeData) {
-                $snippetCode = new SnippetCode();
-                
-                $snippetCode->name = $codeData['name'];
-                $snippetCode->code = $codeData['code'];
-                $snippetCode->popis = $codeData['popis'];
-                $snippetCode->portal = $codeData['portal'];
-                
-                $modelsSnippetCode[] = $snippetCode;
+                if (isset($codeData['name'])) {
+                    $snippetCode = new SnippetCode();
+                    
+                    $snippetCode->name = $codeData['name'];
+                    $snippetCode->code = $codeData['code'];
+                    $snippetCode->popis = $codeData['popis'];
+                    $snippetCode->portal = $codeData['portal'];
+
+                    $modelsSnippetCode[] = $snippetCode;
+                }
             }
             
             $modelsSnippetVar = [];
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            foreach ($snippetVarData as $varData) {
-                $snippetVar = new SnippetVar();
-                
-                $snippetVar->identifier = $varData['identifier'];
-                $snippetVar->type_id = $varData['type_id'];
-                $snippetVar->default_value = $varData['default_value'];
-                $snippetVar->description = $varData['description'];
-                
-                $modelsSnippetVar[] = $snippetVar;
+            if ($snippetVarData > 0) {
+                foreach ($snippetVarData as $varData) {
+                    if (isset($varData['identifier'])) {
+                        $snippetVar = new SnippetVar();
+
+                        $snippetVar->identifier = $varData['identifier'];
+                        $snippetVar->type_id = $varData['type_id'];
+                        $snippetVar->default_value = $varData['default_value'];
+                        $snippetVar->description = $varData['description'];
+
+                        $modelsSnippetVar[] = $snippetVar;
+                    }
+                }
             }
 
             // ajax validation
