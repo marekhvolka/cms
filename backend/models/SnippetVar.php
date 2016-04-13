@@ -20,7 +20,7 @@ use Yii;
  * @property SnippetProductValue[] $snippetProductValues
  * @property ProductType[] $productTypes
  * @property SnippetVar $parent
- * @property SnippetVar[] $snippetVars
+ * @property SnippetVar[] $children
  * @property Snippet $snippet
  * @property VarType $type
  */
@@ -103,7 +103,7 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetVars()
+    public function getChildren()
     {
         return $this->hasMany(SnippetVar::className(), ['parent_id' => 'id']);
     }

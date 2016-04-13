@@ -203,84 +203,16 @@ use backend\models\SnippetVar;
                 $snippetVars = $model->snippetVars;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 
-                
-                DynamicFormWidget::begin([
-                    'widgetContainer' => 'dynamicform_wrapper_vars', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                    'widgetBody' => '.container-items', // required: css class selector
-                    'widgetItem' => '.item', // required: css class
-                    'min' => 1, // 0 or 1 (default 1)
-                    'insertButton' => '.add-item-vars', // css class
-                    'deleteButton' => '.remove-item-vars', // css class
-                    'model' => $snippetVars[0],
-                    'formId' => 'dynamic-form',
-                    'formFields' => [
-                        'full_name',
-                        'address_line1',
-                        'address_line2',
-                        'city',
-                        'state',
-                        'postal_code',
-                    ],
-                ]); ?>
-    
+                ?>
                 <div class="container-items"><!-- widgetContainer -->
                     <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <div class="item panel panel-default"><!-- widgetBody -->
-                            <button type="button" class="remove-item-vars btn btn-danger btn-xs">
-                                <i class="glyphicon glyphicon-minus"></i>
-                            </button>
-    
-                            <div class="panel-heading"> 
-                                <div class="input-group">
-                                    <div class="pull-right">
-                                        <button type="button" class="add-item-vars btn btn-success btn-xs">
-                                            <i class="glyphicon glyphicon-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <?php
-                                // necessary for update action.
-                                if (! $modelSnippetCode->isNewRecord) {
-                                    echo Html::activeHiddenInput($modelSnippetCode, "[{$y}]id");
-                                }
-                                ?>
-
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]identifier")->textInput(['maxlength' => true, 'class' => 'form-control var-identifier']) ?>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <?php
-                                        $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                                        $data = ArrayHelper::map($allVars, 'id', 'type');
-                                        
-                                        echo $form->field($snippetVar, "[{$y}]type_id")->dropDownList($data, ['prompt'=>'Select...']);
-                                        ?>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]default_value")->textInput(['class' => 'form-control var-default-value']) ?>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <?= $form->field($snippetVar, "[{$y}]description")->textarea(['rows' => '4', 'class' => 'form-control var-description']) ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <?= $this->render('_variable', ['snippetVar' => $snippetVar, 'form' => $form]); ?>
                     <?php endforeach; ?>
                 </div>
-                <?php DynamicFormWidget::end(); ?>
+                
+                <button type="button" class="add-item-vars btn btn-success btn-xs">
+                    <i class="glyphicon glyphicon-plus"></i>Add
+                </button>
             </div>
         </div>
     </div>
@@ -297,14 +229,6 @@ use backend\models\SnippetVar;
 
 $js = <<<JS
 
-// Add item - new Snippet code and initialize Codemirrod library to according code attribute textarea.
-$(".dynamicform_wrapper").on("afterInsert", function(e, item) {
-    var myTextarea = item.getElementsByClassName('html-editor')[0];
-    var editor = CodeMirror.fromTextArea(myTextarea, {
-        lineNumbers: true
-    }); 
-});
-        
 // Last remove button was clicked - last form must be cleared.
 $('.remove-item-vars').bind('click', function() {
     var count = $('.var-identifier').length; 
@@ -315,11 +239,8 @@ $('.remove-item-vars').bind('click', function() {
     }
     console.log(count);
 });
+
         
-//$(".dynamicform_wrapper_vars").on("beforeInsert", function(e, item) {
-//    var select = $(item).find('select');
-//    select.select2();
-//});
         
 JS;
 $this->registerJs($js);
