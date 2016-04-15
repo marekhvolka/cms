@@ -258,6 +258,7 @@ class SnippetController extends BaseController
                         
                     }
                     if ($flag) {
+                        $transaction->rollBack();
                         $transaction->commit();
                         return $this->redirect(['index']);
                     }
