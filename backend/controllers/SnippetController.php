@@ -165,7 +165,8 @@ class SnippetController extends BaseController
             foreach ($snippetCodesToDelete as $code) {
                 $code->delete();
             }
-            
+            $snippetCodeData = Yii::$app->request->post('SnippetCode');
+            $snippetVarData = Yii::$app->request->post('SnippetVar');
             $snippetVarsToDelete = SnippetVar::find()->where(['snippet_id' => $model->id])->all();
             foreach ($snippetVarsToDelete as $var) {
                 $var->delete();
@@ -201,6 +202,10 @@ class SnippetController extends BaseController
                         $snippetVar->type_id = $varData['type_id'];
                         $snippetVar->default_value = $varData['default_value'];
                         $snippetVar->description = $varData['description'];
+                        
+                        if (isset($varData['parent_id'])) {
+                            $snippetVar->parent_id = $varData['parent_id'];
+                        }
 
                         $modelsSnippetVar[] = $snippetVar;
                     }
@@ -260,9 +265,7 @@ class SnippetController extends BaseController
                     $transaction->rollBack();
                 }
             }
-        }
-        else
-        {
+        } else {
             return $this->render('update', [
                 'model' => $model,
                 'modelsSnippetCode' => (empty($modelsSnippetCode)) ? [new SnippetCode()] : $modelsSnippetCode,
