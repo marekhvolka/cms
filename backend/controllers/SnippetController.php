@@ -161,25 +161,25 @@ class SnippetController extends BaseController
         
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $snippetCodesToDelete = SnippetCode::find()->where(['snippet_id' => $model->id])->all();
-            foreach ($snippetCodesToDelete as $code) {
-                $code->delete();
-            }
+            // TEST
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $snippetVarsToDelete = SnippetVar::find()->where(['snippet_id' => $model->id])->all();
-            foreach ($snippetVarsToDelete as $var) {
-                $var->delete();
-            }
+            // TEST
+            
+//            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
+//            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
+//            Model::loadMultiple($snippetVars, Yii::$app->request->post());
+//            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
             
             //$modelsSnippetCode = [new SnippetCode()];
             $modelsSnippetCode = [];
             
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
+            $oldCodesIDs = ArrayHelper::map($model->snippetCodes, 'id', 'id');
             foreach ($snippetCodeData as $codeData) {
                 if (isset($codeData['name'])) {
-                    $snippetCode = new SnippetCode();
+                    $snippetCode = SnippetCode::findOne($codeData['id']) ? : new SnippetCode();
                     
                     $snippetCode->name = $codeData['name'];
                     $snippetCode->code = $codeData['code'];
@@ -189,6 +189,8 @@ class SnippetController extends BaseController
                     $modelsSnippetCode[] = $snippetCode;
                 }
             }
+            $newCodesIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
+            $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
             
             $modelsSnippetVar = [];
             
@@ -196,8 +198,9 @@ class SnippetController extends BaseController
             if ($snippetVarData > 0) {
                 foreach ($snippetVarData as $varData) {
                     if (isset($varData['identifier'])) {
-                        $snippetVar = new SnippetVar();
-
+                        $snippetVar = SnippetVar::findOne($varData['id']) ? : new SnippetVar();
+                        
+                        $snippetVar->id = $varData['id'];
                         $snippetVar->identifier = $varData['identifier'];
                         $snippetVar->type_id = $varData['type_id'];
                         $snippetVar->default_value = $varData['default_value'];
@@ -207,10 +210,17 @@ class SnippetController extends BaseController
                             $snippetVar->parent_id = $varData['parent_id'];
                         }
 
+                        if($snippetVar->id != 16769)
                         $modelsSnippetVar[] = $snippetVar;
                     }
                 }
             }
+            
+            $oldVarsIDs = ArrayHelper::map($model->snippetVars, 'id', 'id');
+            $newVarsIDs = ArrayHelper::map($modelsSnippetVar, 'id', 'id');
+ 
+            $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
+            
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -228,6 +238,14 @@ class SnippetController extends BaseController
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
+                foreach ($codesIDsToDelete as $codeID) {
+                    SnippetCode::findOne($codeID)->delete();
+                }
+                
+                foreach ($varsIDsToDelete as $varID) {
+                    SnippetCode::findOne($codeID)->delete();
+                }
+                
                 try {
                     if ($flag = $model->save(false)) {
                         
@@ -258,7 +276,7 @@ class SnippetController extends BaseController
                         
                     }
                     if ($flag) {
-                        $transaction->rollBack();
+                  //      $transaction->rollBack();
                         $transaction->commit();
                         return $this->redirect(['index']);
                     }

@@ -51,6 +51,8 @@ use yii\helpers\Html;
         <?= Html::hiddenInput("SnippetVar[$snippetVar->id][parent_id]", $snippetVar->parent_id); ?>
         <?php endif;?>
         
+        <?= Html::hiddenInput("SnippetVar[$snippetVar->id][id]", $snippetVar->id); ?>
+        
         <div class="row">
             <div class="col-sm-12">
                 <?= $form->field($snippetVar, "description")->textarea([

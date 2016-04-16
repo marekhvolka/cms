@@ -67,6 +67,12 @@ class SnippetVar extends \yii\db\ActiveRecord
             'page_var' => 'Page Var',
         ];
     }
+    
+    public function beforeDelete()
+    {
+        $this->unlinkAll('children', true);
+        return parent::beforeDelete();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
