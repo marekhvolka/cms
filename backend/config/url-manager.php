@@ -3,7 +3,5 @@ return [
     'class' => 'yii\web\UrlManager',
     'showScriptName' => false,
     'enablePrettyUrl' => true,
-    'rules' => [
-        
-    ],
+    'rules' => require('routes.php'),
 ];
