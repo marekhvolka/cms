@@ -228,6 +228,7 @@ use yii\helpers\Url;
  
 <?php
 $url = Url::toRoute(['append-var', ['id' => '23']]);
+var_dump($url);
                
 $js = <<<JS
         
