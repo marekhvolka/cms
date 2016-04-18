@@ -32,6 +32,8 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'urlManager' => require('url-manager.php'),
+        'urlManagerFrontend' => require('../../frontend/config/url-manager.php'),
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
