@@ -5,11 +5,12 @@
 
 use yii\helpers\ArrayHelper;
 use backend\models\VarType;
-use yii\helpers\Html;
+use yii\helpers\BaseHtml;
 
 ?>
-<div class="item panel panel-default"><!-- widgetBody -->
-    <button type="button" class="remove-item-vars btn btn-danger btn-xs">
+
+<div class="item panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
+    <button type="button" class="remove-item-vars btn btn-danger btn-xs" data-var-id="<?= $snippetVar->id; ?>">
         <i class="glyphicon glyphicon-minus"></i>
     </button>
 
@@ -17,49 +18,62 @@ use yii\helpers\Html;
 
         <div class="row">
             <div class="col-sm-12">
-                <?= $form->field($snippetVar, "identifier")->textInput(['maxlength' => true, 
+                <label class="control-label" for="snippetvar-identifier">
+                    <?= $snippetVar->getAttributeLabel('identifier'); ?>
+                </label>
+                <?= BaseHtml::activeTextInput($snippetVar, "identifier", ['maxlength' => true, 
                     'class' => 'form-control var-identifier',
                     'name' => "SnippetVar[$snippetVar->id][identifier]",
-                    ]) ?>
+                    ]);?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-12">
+                <label class="control-label" for="snippetvar-type_id">
+                    <?= $snippetVar->getAttributeLabel('type_id'); ?>
+                </label>
                 <?php
                 $allVars = VarType::find()->where(['show_snippet' => 1])->all();
                 $data = ArrayHelper::map($allVars, 'id', 'type');
-
-                echo $form->field($snippetVar, "type_id")->dropDownList($data, [
+                
+                echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
+                    'class' => 'form-control',
                     'prompt'=>'Select...',
                     'name' => "SnippetVar[$snippetVar->id][type_id]",
-                    ]);
+                ]);
                 ?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-12">
-                <?= $form->field($snippetVar, "default_value")->textInput([
+                <label class="control-label" for="snippetvar-default_value">
+                    <?= $snippetVar->getAttributeLabel('default_value'); ?>
+                </label>
+                <?= BaseHtml::activeTextInput($snippetVar, "default_value", [
                     'class' => 'form-control var-default-value',
                     'name' => "SnippetVar[$snippetVar->id][default_value]",
-                    ]) ?>
+                    ]);?>
             </div>
         </div>
 
         <?php if($snippetVar->parent_id): ?>
-        <?= Html::hiddenInput("SnippetVar[$snippetVar->id][parent_id]", $snippetVar->parent_id); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$snippetVar->id][parent_id]", $snippetVar->parent_id); ?>
         <?php endif;?>
         
-        <?= Html::hiddenInput("SnippetVar[$snippetVar->id][id]", $snippetVar->id); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$snippetVar->id][id]", $snippetVar->id); ?>
         
         <div class="row">
             <div class="col-sm-12">
-                <?= $form->field($snippetVar, "description")->textarea([
+                <label class="control-label" for="snippetvar-default_value">
+                    <?= $snippetVar->getAttributeLabel('description'); ?>
+                </label>
+                <?= BaseHtml::activeTextarea($snippetVar, "description", [
                     'rows' => '4', 
                     'class' => 'form-control var-description',
                     'name' => "SnippetVar[$snippetVar->id][description]",
-                    ]) ?>
+                    ]);?>
             </div>
         </div>
         
@@ -87,3 +101,21 @@ use yii\helpers\Html;
         <?php endif; ?>
     </div>
 </div>
+
+<?php
+
+$js = <<<JS
+
+// Last remove button was clicked - last form must be cleared.
+$('.remove-item-vars').bind('click', function() {
+    var varId = $(this).attr('data-var-id');
+    $('.var-id-' + varId).remove();
+});     
+        
+
+        
+
+        
+JS;
+$this->registerJs($js);
+?>

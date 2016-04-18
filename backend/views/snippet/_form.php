@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
 use backend\models\Portal;
 use backend\models\VarType;
 use backend\models\SnippetVar;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
@@ -206,7 +207,7 @@ use backend\models\SnippetVar;
                 ?>
                 <div class="container-items"><!-- widgetContainer -->
                     <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <?= $this->render('_variable', ['snippetVar' => $snippetVar, 'form' => $form]); ?>
+                        <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
                     <?php endforeach; ?>
                 </div>
                 
@@ -226,22 +227,17 @@ use backend\models\SnippetVar;
 </div>
  
 <?php
-
+$url = Url::to(['append-var']);
+               
 $js = <<<JS
-
-// Last remove button was clicked - last form must be cleared.
-$('.remove-item-vars').bind('click', function() {
-    var count = $('.var-identifier').length; 
-    if (count == 1) {
-        $('.var-identifier').val("");
-        $('.var-default-value').val("");
-        $('.var-description').val("");
-    }
-    console.log(count);
-});
-
         
-        
+$('.add-item-vars ').bind('click', function() {
+    $.get('$url', function (data) {
+            console.log(data);
+        }
+    );
+});  
+   
 JS;
 $this->registerJs($js);
 ?>
