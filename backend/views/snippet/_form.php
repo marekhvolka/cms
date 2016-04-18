@@ -227,12 +227,13 @@ use yii\helpers\Url;
 </div>
  
 <?php
-$url = Url::to(['append-var']);
+$url = Url::toRoute(['append-var', ['id' => '23']]);
                
 $js = <<<JS
         
 $('.add-item-vars ').bind('click', function() {
     $.get('$url', function (data) {
+           // $('.container-items').append(data);
             console.log(data);
         }
     );

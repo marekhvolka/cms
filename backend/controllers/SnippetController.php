@@ -188,10 +188,14 @@ class SnippetController extends BaseController
             $snippetVarData = Yii::$app->request->post('SnippetVar');
             if ($snippetVarData > 0) {
                 foreach ($snippetVarData as $varData) {
-                    if (isset($varData['identifier'])) {
-                        $snippetVar = SnippetVar::findOne($varData['id']) ? : new SnippetVar();
-
-                        $snippetVar->id = $varData['id'];
+                    if (isset($varData['identifier']) && $varData['identifier']) {
+                        if (isset($varData['id']) && $varData['id']) {
+                            $snippetVar = SnippetVar::findOne($varData['id']);
+                            $snippetVar->id = $varData['id'];
+                        } else {
+                            $snippetVar = new SnippetVar();
+                        }
+                        
                         $snippetVar->identifier = $varData['identifier'];
                         $snippetVar->type_id = $varData['type_id'];
                         $snippetVar->default_value = $varData['default_value'];
@@ -281,9 +285,9 @@ class SnippetController extends BaseController
         }
     }
 
-    public function actionAppendVar()
+    public function actionAppendVar($id)
     {
-        echo 'test';return;
+        echo $id; return;
         return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
     }
 
