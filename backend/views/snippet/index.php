@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name,Url::to(['/snippet/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name, Url::to(['/snippet/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'description',

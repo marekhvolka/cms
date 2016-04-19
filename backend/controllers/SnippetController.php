@@ -285,9 +285,9 @@ class SnippetController extends BaseController
         }
     }
 
-    public function actionAppendVar($id)
+    public function actionAppendVar()
     {
-        echo $id; return;
+       // echo $id; return;
         return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
     }
 

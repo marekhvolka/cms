@@ -40,7 +40,7 @@ use yii\helpers\BaseHtml;
                 $data = ArrayHelper::map($allVars, 'id', 'type');
                 
                 echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
-                    'class' => 'form-control',
+                    'class' => 'form-control select-var-type',
                     'prompt'=>'Select...',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][type_id]",
                 ]);
@@ -79,28 +79,29 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
         
-        <?php if(isset($snippetVar->type) && $snippetVar->type->type == 'list'): ?>
-        <div class="col-sm-11 col-sm-offset-1">
-            <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
-                <button type="button" class="btn btn-success btn-xs btn-remove-var" 
-                        data-toggle="dropdown" aria-expanded="false" title="Pridať premennú" 
-                        onclick="">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </button>
-                <div class="panel-heading">Premenné pre položku zoznamu</div>
-                <div class="panel-body">
-                    <input type="hidden" value="0" id="">
-                    <ul id="">
-                        <?php foreach ($snippetVar->children as $child):?>
-                        <li>
-                            <?= $this->render('_variable', ['snippetVar' => $child]); ?>
-                        </li>
-                        <?php endforeach;?>
-                    </ul>
+        <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->type == 'list') ? '' : 'hidden="hidden"' ?>>
+            <div class="col-sm-11 col-sm-offset-1">
+                <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
+                    <button type="button" class="btn btn-success btn-xs btn-add-var" 
+                            data-toggle="dropdown" aria-expanded="false" title="Pridať premennú" 
+                            onclick="">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <div class="panel-heading">Premenné pre položku zoznamu</div>
+                    <div class="panel-body">
+                        <input type="hidden" value="0" id="">
+                        <ul id="">
+                            <?php foreach ($snippetVar->children as $child):?>
+                            <li>
+                                <?= $this->render('_variable', ['snippetVar' => $child]); ?>
+                            </li>
+                            <?php endforeach;?>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <?php endif; ?>
+        
     </div>
 </div>
 

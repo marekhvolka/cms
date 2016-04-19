@@ -227,19 +227,53 @@ use yii\helpers\Url;
 </div>
  
 <?php
-$url = Url::toRoute(['append-var', ['id' => '23']]);
-var_dump($url);
-               
+$url = Url::to(['/snippet/append-var']);
+$listIdJs = VarType::find()->where(['type' => 'list'])->one()->id;
+
 $js = <<<JS
         
+$('.select-var-type').change(function() {
+    alert('hello');
+});
+
 $('.add-item-vars ').bind('click', function() {
     $.get('$url', function (data) {
-           // $('.container-items').append(data);
-            console.log(data);
+            var element = $(data);
+            $('.container-items').append(element);
+            var select = element.find('select');
+        
+            select.change(function() {
+                if($(this).val() == $listIdJs) {
+                    var child = element.find('.child-var');
+                    child.removeAttr('hidden');
+        
+                    var addButton = element.find('.btn-add-var');
+                    addButton.click(function() {
+                        $.get('$url', function (dataList) {
+                            var varList = child.find('ul');
+                            var countOfListElements = varList.find('li').length;
+                            console.log(countOfListElements);
+        
+                            var elementToAppend;
+                            if (countOfListElements == 0) {
+                                elementToAppend = data;
+                            }
+        
+                            var listElement = $('<li></li>');
+                            varList.append(listElement);
+                            listElement.append(elementToAppend);
+                        });
+                    });
+                }
+            })
         }
     );
-});  
+});
    
+function initAppend(variable) {
+    
+}
+        
 JS;
 $this->registerJs($js);
 ?>
