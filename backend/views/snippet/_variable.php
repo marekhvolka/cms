@@ -9,7 +9,7 @@ use yii\helpers\BaseHtml;
 
 ?>
 
-<div class="item panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
+<div class="item variable panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
     <button type="button" class="remove-item-vars btn btn-danger btn-xs" data-var-id="<?= $snippetVar->id; ?>">
         <i class="glyphicon glyphicon-minus"></i>
     </button>
@@ -114,10 +114,6 @@ $('.remove-item-vars').bind('click', function() {
     var varId = $(this).attr('data-var-id');
     $('.var-id-' + varId).remove();
 });     
-        
-
-        
-
         
 JS;
 $this->registerJs($js);

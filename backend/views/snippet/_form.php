@@ -229,49 +229,57 @@ use yii\helpers\Url;
 <?php
 $url = Url::to(['/snippet/append-var']);
 $listIdJs = VarType::find()->where(['type' => 'list'])->one()->id;
+//$variableCodeJs = $this->render('_variable', ['snippetVar' => new SnippetVar()]);
+
+
 
 $js = <<<JS
         
-$('.select-var-type').change(function() {
-    alert('hello');
+
+$( ".variable" ).each(function() {
+    attachSelectToListChange($(this));
+});
+        
+var variableCode;
+        
+// Getting HTML code for single variable.
+$.get('$url', function (data) {
+    variableCode = data;
 });
 
 $('.add-item-vars ').bind('click', function() {
-    $.get('$url', function (data) {
-            var element = $(data);
-            $('.container-items').append(element);
-            var select = element.find('select');
-        
-            select.change(function() {
-                if($(this).val() == $listIdJs) {
-                    var child = element.find('.child-var');
-                    child.removeAttr('hidden');
-        
-                    var addButton = element.find('.btn-add-var');
-                    addButton.click(function() {
-                        $.get('$url', function (dataList) {
-                            var varList = child.find('ul');
-                            var countOfListElements = varList.find('li').length;
-                            console.log(countOfListElements);
-        
-                            var elementToAppend;
-                            if (countOfListElements == 0) {
-                                elementToAppend = data;
-                            }
-        
-                            var listElement = $('<li></li>');
-                            varList.append(listElement);
-                            listElement.append(elementToAppend);
-                        });
-                    });
-                }
-            })
-        }
-    );
+    // Adding new variable.
+    var element = $(variableCode);  // Newly added variable.
+    $('.container-items').append(element);
+    
+    attachSelectToListChange(element);    
 });
    
-function initAppend(variable) {
-    
+// Attachment event for changing variable type to list.
+function attachSelectToListChange(element) {
+    var select = element.find('select').first();
+    select.change(function() {
+        if($(this).val() == $listIdJs) {        // If selected type is List.
+            var child = element.find('.child-var');
+            child.removeAttr('hidden');
+
+            var addChildButton = element.find('.btn-add-var');
+            addChildButton.click(function() {
+
+                var varList = child.find('ul').first();
+                var countOfListElements = varList.find('li').length;
+                console.log(countOfListElements);
+
+                var listElement = $('<li></li>');
+                varList.append(listElement);
+                
+                var newElement = $(variableCode);
+                listElement.append(newElement);
+                attachSelectToListChange(newElement);
+
+            });
+        }
+    })
 }
         
 JS;
