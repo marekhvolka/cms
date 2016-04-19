@@ -9,7 +9,7 @@ use yii\helpers\BaseHtml;
 
 ?>
 
-<div class="item variable panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
+<li class="item variable panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
     <button type="button" class="remove-item-vars btn btn-danger btn-xs" data-var-id="<?= $snippetVar->id; ?>">
         <i class="glyphicon glyphicon-minus"></i>
     </button>
@@ -90,7 +90,7 @@ use yii\helpers\BaseHtml;
                     <div class="panel-heading">Premenné pre položku zoznamu</div>
                     <div class="panel-body">
                         <input type="hidden" value="0" id="">
-                        <ul id="">
+                        <ul style="list-style: none;">
                             <?php foreach ($snippetVar->children as $child):?>
                             <li>
                                 <?= $this->render('_variable', ['snippetVar' => $child]); ?>
@@ -103,7 +103,7 @@ use yii\helpers\BaseHtml;
         </div>
         
     </div>
-</div>
+</li>
 
 <?php
 
@@ -111,8 +111,9 @@ $js = <<<JS
 
 // Last remove button was clicked - last form must be cleared.
 $('.remove-item-vars').bind('click', function() {
-    var varId = $(this).attr('data-var-id');
-    $('.var-id-' + varId).remove();
+    //var varId = $(this).attr('data-var-id');
+    //$('.var-id-' + varId).remove();
+        $(this).parents('li').first().remove();
 });     
         
 JS;

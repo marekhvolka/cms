@@ -176,3 +176,7 @@ a.desc:after {
     top: 10px;
     z-index: 999;
 }
+
+ul {
+    list-style-type: none;
+}

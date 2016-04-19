@@ -205,10 +205,12 @@ use yii\helpers\Url;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 
                 ?>
-                <div class="container-items"><!-- widgetContainer -->
-                    <?php foreach ($snippetVars as $y => $snippetVar): ?>
+                <div><!-- widgetContainer -->
+                    <ul style="list-style: none;" class="container-items">
+                        <?php foreach ($snippetVars as $y => $snippetVar): ?>
                         <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
                 
                 <button type="button" class="add-item-vars btn btn-success btn-xs">
