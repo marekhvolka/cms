@@ -1,7 +1,9 @@
 <?php
+
 return [
     'class' => 'yii\web\UrlManager',
-    'showScriptName' => false,
-    'enablePrettyUrl' => true,
+    'showScriptName' => false, // Disable index.php
+    'enablePrettyUrl' => true, // Disable r= routes
+    
     'rules' => require('routes.php'),
 ];
