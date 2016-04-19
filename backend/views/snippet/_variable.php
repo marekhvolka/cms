@@ -61,10 +61,10 @@ use yii\helpers\BaseHtml;
         </div>
 
         <?php if($snippetVar->parent_id): ?>
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id, ['class' => 'parent-id']); ?>
         <?php endif;?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][id]", $snippetVar->id); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][id]", $snippetVar->id, ['class' => 'item-id']); ?>
         
         <div class="row">
             <div class="col-sm-12">

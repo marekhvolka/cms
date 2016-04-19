@@ -254,6 +254,8 @@ $('.add-item-vars ').bind('click', function() {
     var element = $(variableCode);  // Newly added variable.
     $('.container-items').append(element);
     
+    // TODO maybe create temporary ids
+    //element.find('.item-id').first().val();
     attachSelectToListChange(element);    
 });
    
@@ -277,6 +279,8 @@ function attachSelectToListChange(element) {
                 
                 var newElement = $(variableCode);
                 listElement.append(newElement);
+        
+                newElement.find('parent-id').val(element);
                 attachSelectToListChange(newElement);
 
             });
