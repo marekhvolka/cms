@@ -155,8 +155,7 @@ class SnippetController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             // TEST
-            $snippetCodeData = Yii::$app->request->post('SnippetCode');
-            $snippetVarData = Yii::$app->request->post('SnippetVar');
+            
             // TEST
 //            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
 //            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
@@ -200,13 +199,17 @@ class SnippetController extends BaseController
                         $snippetVar->type_id = $varData['type_id'];
                         $snippetVar->default_value = $varData['default_value'];
                         $snippetVar->description = $varData['description'];
+                        $snippetVar->tmp_id = $varData['tmp_id'];
 
                         if (isset($varData['parent_id'])) {
                             $snippetVar->parent_id = $varData['parent_id'];
                         }
-
-                        if ($snippetVar->id != 16769)
-                            $modelsSnippetVar[] = $snippetVar;
+                        
+                        if (isset($varData['parent_id'])) {
+                            $snippetVar->parent_id = $varData['parent_id'];
+                        }
+                        
+                        $modelsSnippetVar[] = $snippetVar;
                     }
                 }
             }
@@ -258,14 +261,26 @@ class SnippetController extends BaseController
                             }
                         }
 
+                        $savedVars = [];
+                        
                         foreach ($modelsSnippetVar as $var) {
                             $var->snippet_id = $model->id;
                             $flag = $var->save(false);
-
+                            
                             if (!($flag)) {
                                 $transaction->rollBack();
                                 break;
                             }
+                            
+                            $savedVars[] = $var;
+                        }
+                        
+                        // Parent ids change back to id of parent.
+                        foreach ($savedVars as $savedVar) {
+                            foreach ($savedVar->children as $varChild) {
+                                $varChild->parent_id = $savedVar->id;
+                            }
+                            $savedVar->tmp_id = '';
                         }
                     }
                     if ($flag) {

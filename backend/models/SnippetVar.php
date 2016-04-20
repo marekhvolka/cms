@@ -15,6 +15,7 @@ use Yii;
  * @property string $snippet_id
  * @property string $parent_id
  * @property integer $page_var
+ * @property integer $tmp_id
  *
  * @property SnippetDropdown[] $snippetDropdowns
  * @property SnippetProductValue[] $snippetProductValues
@@ -44,6 +45,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             [['type_id', 'description', 'default_value'], 'string'],
             [[ 'snippet_id', 'parent_id', 'page_var'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
+            [['tmp_id'], 'string', 'max' => 45],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],

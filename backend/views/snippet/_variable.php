@@ -22,9 +22,10 @@ use yii\helpers\BaseHtml;
                     <?= $snippetVar->getAttributeLabel('identifier'); ?>
                 </label>
                 <?php
-                    $arrayFirstDymensionValue = $snippetVar->id ? : 'new';
+                    $arrayFirstDymensionValue = $snippetVar->id ? : 'placeholder';
                     echo BaseHtml::activeTextInput($snippetVar, "identifier", ['maxlength' => true, 
-                    'class' => 'form-control var-identifier',
+                    'class' => 'form-control var-identifier attribute',
+                    'data-attribute-name' => 'identifier',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][identifier]",
                     ]);?>
             </div>
@@ -40,8 +41,9 @@ use yii\helpers\BaseHtml;
                 $data = ArrayHelper::map($allVars, 'id', 'type');
                 
                 echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
-                    'class' => 'form-control select-var-type',
+                    'class' => 'form-control select-var-type attribute',
                     'prompt'=>'Select...',
+                    'data-attribute-name' => 'type_id',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][type_id]",
                 ]);
                 ?>
@@ -54,17 +56,27 @@ use yii\helpers\BaseHtml;
                     <?= $snippetVar->getAttributeLabel('default_value'); ?>
                 </label>
                 <?= BaseHtml::activeTextInput($snippetVar, "default_value", [
-                    'class' => 'form-control var-default-value',
+                    'class' => 'form-control var-default-value attribute',
+                    'data-attribute-name' => 'default_value',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][default_value]",
                     ]);?>
             </div>
         </div>
 
-        <?php if($snippetVar->parent_id): ?>
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id, ['class' => 'parent-id']); ?>
-        <?php endif;?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id, [
+            'class' => 'parent-id attribute',
+            'data-attribute-name' => 'parent_id',
+            ]); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][id]", $snippetVar->id, ['class' => 'item-id']); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][id]", $snippetVar->id, [
+            'class' => 'item-id attribute',
+            'data-attribute-name' => 'id',
+            ]); ?>
+        
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][tmp_id]", '', [
+            'class' => 'tmp-id attribute',
+            'data-attribute-name' => 'tmp_id',
+            ]); ?>
         
         <div class="row">
             <div class="col-sm-12">
@@ -73,7 +85,8 @@ use yii\helpers\BaseHtml;
                 </label>
                 <?= BaseHtml::activeTextarea($snippetVar, "description", [
                     'rows' => '4', 
-                    'class' => 'form-control var-description',
+                    'class' => 'form-control var-description attribute',
+                    'data-attribute-name' => 'description',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][description]",
                     ]);?>
             </div>
