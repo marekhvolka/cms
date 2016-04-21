@@ -203,10 +203,11 @@ class SnippetController extends BaseController
 
                         if (isset($varData['parent_id'])) {
                             $snippetVar->parent_id = $varData['parent_id'];
-                        }
-                        
-                        if (isset($varData['parent_id'])) {
-                            $snippetVar->parent_id = $varData['parent_id'];
+                            
+                            // TODO should go to beforesave - in model
+                            if (!$snippetVar->parent_id) {
+                                $snippetVar->parent_id = null;
+                            }
                         }
                         
                         $modelsSnippetVar[] = $snippetVar;
@@ -218,8 +219,7 @@ class SnippetController extends BaseController
             $newVarsIDs = ArrayHelper::map($modelsSnippetVar, 'id', 'id');
 
             $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
-
-
+            
             // ajax validation
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -232,6 +232,11 @@ class SnippetController extends BaseController
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelsSnippetCode) && $valid;
             $valid = Model::validateMultiple($modelsSnippetVar);
+            
+            foreach ($modelsSnippetVar as $var) {
+                $validated = $var->validate();
+            }
+            // TODO this should be && &&
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
@@ -260,8 +265,6 @@ class SnippetController extends BaseController
                                 break;
                             }
                         }
-
-                        $savedVars = [];
                         
                         foreach ($modelsSnippetVar as $var) {
                             $var->snippet_id = $model->id;
@@ -271,17 +274,22 @@ class SnippetController extends BaseController
                                 $transaction->rollBack();
                                 break;
                             }
-                            
-                            $savedVars[] = $var;
                         }
                         
                         // Parent ids change back to id of parent.
-                        foreach ($savedVars as $savedVar) {
-                            foreach ($savedVar->children as $varChild) {
-                                $varChild->parent_id = $savedVar->id;
-                            }
-                            $savedVar->tmp_id = '';
+                        foreach ($modelsSnippetVar as $savedVar) {
+                            $parent = SnippetVar::find()
+                                    ->where(['tmp_id' => $savedVar->parent_id])
+                                    ->andWhere(['not', ['tmp_id' => null]])
+                                    ->one(); 
+                                if ($parent) {
+                                    $savedVar->parent_id = strval($parent->id);
+                                    $savedVar->save();
+                                }
+                            
                         }
+                        
+                        
                     }
                     if ($flag) {
                         //      $transaction->rollBack();

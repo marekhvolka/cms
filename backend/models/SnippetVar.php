@@ -42,12 +42,12 @@ class SnippetVar extends \yii\db\ActiveRecord
     {
         return [
             [['identifier', 'type_id'], 'required'],
-            [['type_id', 'description', 'default_value'], 'string'],
-            [[ 'snippet_id', 'parent_id', 'page_var'], 'integer'],
+            [['type_id', 'description', 'default_value', 'parent_id'], 'string'],
+            [[ 'snippet_id', 'page_var'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
             [['tmp_id'], 'string', 'max' => 45],
-            [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
+            [['identifier', 'snippet_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
+            //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
             //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
