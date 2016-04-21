@@ -245,7 +245,10 @@ class SnippetController extends BaseController
                 }
 
                 foreach ($varsIDsToDelete as $varID) {
-                    SnippetVar::findOne($varID)->delete();
+                    $snippetVarToDelete = SnippetVar::findOne($varID);
+                    if ($snippetVarToDelete) {
+                        $snippetVarToDelete->delete();
+                    }
                 }
 
                 try {
