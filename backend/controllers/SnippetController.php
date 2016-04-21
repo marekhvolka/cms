@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\SnippetCode;
-use MongoDB\Driver\Exception\Exception;
+use Exception;
 use Yii;
 use backend\models\Model;
 use backend\models\Snippet;
