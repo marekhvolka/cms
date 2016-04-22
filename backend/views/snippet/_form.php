@@ -200,16 +200,14 @@ use yii\web\View;
         <div class="panel panel-default">
             <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
             <div class="panel-body">
-                <?php 
-                
+                <?php
                 $snippetVars = $model->snippetVars;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
-                
                 ?>
                 <div><!-- widgetContainer -->
                     <ul style="list-style: none;" class="container-items-vars">
                         <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <?php if(!$snippetVar->parent): ?>
+                        <?php if(!$snippetVar->parent && $snippetVar->id): ?>
                         <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
                         <?php endif;?>
                         <?php endforeach; ?>

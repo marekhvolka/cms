@@ -197,11 +197,6 @@ class SnippetController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
       
-//            $oldIDs = ArrayHelper::map($snippetVars, 'id', 'id');
-//            $snippetVars = Model::createMultiple(SnippetCode::classname(), $snippetVars);
-//            Model::loadMultiple($snippetVars, Yii::$app->request->post());
-//            $deletedIDsVars = array_diff($oldIDs, array_filter(ArrayHelper::map($snippetVars, 'id', 'id')));
-            //$modelsSnippetCode = [new SnippetCode()];
             $modelsSnippetCode = [];
 
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
@@ -227,7 +222,7 @@ class SnippetController extends BaseController
             $snippetVarData = Yii::$app->request->post('SnippetVar');
             if ($snippetVarData > 0) {
                 foreach ($snippetVarData as $varData) {
-                    if (isset($varData['identifier']) && $varData['identifier']) {
+                    //if (isset($varData['identifier']) && $varData['identifier']) {
                         if (isset($varData['id']) && $varData['id']) {
                             $snippetVar = SnippetVar::findOne($varData['id']);
                             $snippetVar->id = $varData['id'];
@@ -241,17 +236,12 @@ class SnippetController extends BaseController
                         $snippetVar->description = $varData['description'];
                         $snippetVar->tmp_id = $varData['tmp_id'];
 
-                        if (isset($varData['parent_id'])) {
+                        if (isset($varData['parent_id']) && $varData['parent_id']) {
                             $snippetVar->parent_id = $varData['parent_id'];
-                            
-                            // TODO should go to beforesave - in model
-                            if (!$snippetVar->parent_id) {
-                                $snippetVar->parent_id = null;
-                            }
                         }
                         
                         $modelsSnippetVar[] = $snippetVar;
-                    }
+                    //}
                 }
             }
 
@@ -315,6 +305,7 @@ class SnippetController extends BaseController
                             }
                         }
                         
+                        // TODO --> to model
                         // Parent ids change back to id of parent.
                         foreach ($modelsSnippetVar as $savedVar) {
                             $parent = SnippetVar::find()
