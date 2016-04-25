@@ -22,12 +22,14 @@ use yii\helpers\BaseHtml;
                     <?= $snippetVar->getAttributeLabel('identifier'); ?>
                 </label>
                 <?php
-                    $arrayFirstDymensionValue = $snippetVar->id ? : 'placeholder';
-                    echo BaseHtml::activeTextInput($snippetVar, "identifier", ['maxlength' => true, 
+                $arrayFirstDymensionValue = $snippetVar->id ? : 'placeholder';
+                echo BaseHtml::activeTextInput($snippetVar, "identifier", [
+                    'maxlength' => true, 
                     'class' => 'form-control var-identifier attribute',
                     'data-attribute-name' => 'identifier',
                     'name' => "SnippetVar[$arrayFirstDymensionValue][identifier]",
-                    ]);?>
+                ]);
+                ?>
             </div>
         </div>
 

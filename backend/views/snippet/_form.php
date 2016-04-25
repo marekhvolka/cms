@@ -39,9 +39,9 @@ use yii\web\View;
         <div class="panel panel-default">
             <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Alternatívy</h4></div>
             <div class="panel-body">
-                <div class="container-items">
-                    <?php foreach ($modelsSnippetCode as $i => $modelSnippetCode): ?>
-                    <?= $this->render('_code', ['modelSnippetCode' => $modelSnippetCode, 'i' => $i, 'form' => $form]) ;?>
+                <div class="container-items-codes">
+                    <?php foreach ($snippetCodes as $i => $snippetCode): ?>
+                    <?= $this->render('_code', ['snippetCode' => $snippetCode, 'i' => $i, 'form' => $form]) ;?>
                     <?php endforeach;?>
                 </div>
             </div>
@@ -50,68 +50,7 @@ use yii\web\View;
     
     <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
     
-    
-    <?php // TODO - this could be refactored - maybe moved to snippet ?>
-    
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Nastavenia sekcie</div>
-                    <div class="panel-body">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">id</span>
-                                    <input type="text" id="snippet-sekcia_id" value="<?=$model->sekcia_id?>" class="form-control" name="Snippet[sekcia_id]" maxlength="30">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">class</span>
-                                    <input type="text" id="snippet-sekcia_class" value="<?=$model->sekcia_class?>" class="form-control" name="Snippet[sekcia_class]" maxlength="30">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">style</span>
-                                    <input type="text" id="snippet-sekcia_style" value="<?=$model->sekcia_style?>" class="form-control" name="Snippet[sekcia_style]" maxlength="30">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Nastavenia bloku</div>
-                    <div class="panel-body">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">id</span>
-                                    <input type="text" id="snippet-block_id" value="<?=$model->block_id?>" class="form-control" name="Snippet[block_id]" maxlength="30">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">class</span>
-                                    <input type="text" id="snippet-block_class" value="<?=$model->block_class?>" class="form-control" name="Snippet[block_class]" maxlength="30">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">style</span>
-                                    <input type="text" id="snippet-block_style" value="<?=$model->block_style?>" class="form-control" name="Snippet[block_style]" maxlength="30">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?= $this->render('_blocks-and-sections', ['model' => $model]); ?>
     
     <div class="form-group">
         <div class="panel panel-default">
@@ -131,7 +70,7 @@ use yii\web\View;
                     </ul>
                 </div>
                 
-                <button type="button" class="add-item-vars btn btn-success btn-xs">
+                <button type="button" class="add-item-var btn btn-success btn-xs">
                     <i class="glyphicon glyphicon-plus"></i>Add
                 </button>
             </div>
@@ -150,16 +89,19 @@ use yii\web\View;
 </div>
  
 <?php
-$url = Url::to(['/snippet/append-var']);
+$urlForAppendVar = Url::to(['/snippet/append-var']);
+$urlForAppendCode = Url::to(['/snippet/append-code']);
 $listIdJs = VarType::find()->where(['type' => 'list'])->one()->id;
 //$variableCodeJs = $this->render('_variable', ['snippetVar' => new SnippetVar()]);
 
 $js = <<<JS
 
 var snippetVarParams = {
-    variableCode: '',
+    variableHtml: '',
+    codeHtml: '',
     listId: $listIdJs,
-    appendVarUrl: '$url',
+    appendVarUrl: '$urlForAppendVar',
+    appendCodeUrl: '$urlForAppendCode',
 }
         
 JS;

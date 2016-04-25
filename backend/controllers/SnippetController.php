@@ -56,11 +56,11 @@ class SnippetController extends BaseController
     public function actionCreate()
     {
         $model = new Snippet();
-        $modelsSnippetCode = [new SnippetCode()];
-        //$modelsSnippetVar = [new SnippetVar()];
+        $modelSnippetCodes = [new SnippetCode()];
+        //$modelSnippetVars = [new SnippetVar()];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-             $modelsSnippetCode = [];
+             $modelSnippetCodes = [];
 
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
@@ -74,13 +74,13 @@ class SnippetController extends BaseController
                     $snippetCode->popis = $codeData['popis'];
                     $snippetCode->portal = $codeData['portal'];
 
-                    $modelsSnippetCode[] = $snippetCode;
+                    $modelSnippetCodes[] = $snippetCode;
                 }
             }
-            $newCodesIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
+            $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
             $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
 
-            $modelsSnippetVar = [];
+            $modelSnippetVars = [];
 
             $snippetVarData = Yii::$app->request->post('SnippetVar');
             if ($snippetVarData > 0) {
@@ -108,7 +108,7 @@ class SnippetController extends BaseController
                             }
                         }
                         
-                        $modelsSnippetVar[] = $snippetVar;
+                        $modelSnippetVars[] = $snippetVar;
                     }
                 }
             }
@@ -117,20 +117,20 @@ class SnippetController extends BaseController
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($modelsSnippetCode), ActiveForm::validateMultiple($modelsSnippetVar), ActiveForm::validate($model)
+                                ActiveForm::validateMultiple($modelSnippetCodes), ActiveForm::validateMultiple($modelSnippetVars), ActiveForm::validate($model)
                 );
             }
             
             // validate all models
             $valid = $model->validate() && 
-                    Model::validateMultiple($modelsSnippetCode) &&
-                    Model::validateMultiple($modelsSnippetVar);
+                    Model::validateMultiple($modelSnippetCodes) &&
+                    Model::validateMultiple($modelSnippetVars);
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        foreach ($modelsSnippetCode as $modelSnippetCode) {
+                        foreach ($modelSnippetCodes as $modelSnippetCode) {
                             $modelSnippetCode->link('snippet', $model);
 
                             //TODO here will be code for change portals.
@@ -145,7 +145,7 @@ class SnippetController extends BaseController
                             }
                         }
 
-                        foreach ($modelsSnippetVar as $var) {
+                        foreach ($modelSnippetVars as $var) {
                             $var->snippet_id = $model->id;
                             $flag = $var->save(false);
 
@@ -156,7 +156,7 @@ class SnippetController extends BaseController
                         }
                         
                         // Parent ids change back to id of parent.
-                        foreach ($modelsSnippetVar as $savedVar) {
+                        foreach ($modelSnippetVars as $savedVar) {
                             $parent = SnippetVar::find()
                                     ->where(['tmp_id' => $savedVar->parent_id])
                                     ->andWhere(['not', ['tmp_id' => null]])
@@ -179,7 +179,7 @@ class SnippetController extends BaseController
         } else {
             return $this->render('create', [
                         'model' => $model,
-                        'modelsSnippetCode' => (empty($modelsSnippetCode)) ? [new SnippetCode()] : $modelsSnippetCode,
+                        'snippetCodes' => [new SnippetCode()],
             ]);
         }
     }
@@ -193,11 +193,11 @@ class SnippetController extends BaseController
     public function actionUpdate($id)
     {       
         $model = $this->findModel($id);
-        $modelsSnippetCode = $model->snippetCodes;
+        $modelSnippetCodes = $model->snippetCodes;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
       
-            $modelsSnippetCode = [];
+            $modelSnippetCodes = [];
 
             //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
@@ -211,13 +211,13 @@ class SnippetController extends BaseController
                     $snippetCode->popis = $codeData['popis'];
                     $snippetCode->portal = $codeData['portal'];
 
-                    $modelsSnippetCode[] = $snippetCode;
+                    $modelSnippetCodes[] = $snippetCode;
                 }
             }
-            $newCodesIDs = ArrayHelper::map($modelsSnippetCode, 'id', 'id');
+            $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
             $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
 
-            $modelsSnippetVar = [];
+            $modelSnippetVars = [];
 
             $snippetVarData = Yii::$app->request->post('SnippetVar');
             if ($snippetVarData > 0) {
@@ -240,13 +240,12 @@ class SnippetController extends BaseController
                             $snippetVar->parent_id = $varData['parent_id'];
                         }
                         
-                        $modelsSnippetVar[] = $snippetVar;
-                    //}
+                        $modelSnippetVars[] = $snippetVar;
                 }
             }
 
             $oldVarsIDs = ArrayHelper::map($model->snippetVars, 'id', 'id');
-            $newVarsIDs = ArrayHelper::map($modelsSnippetVar, 'id', 'id');
+            $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
 
             $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
             
@@ -254,14 +253,14 @@ class SnippetController extends BaseController
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($modelsSnippetCode), ActiveForm::validate($model)
+                                ActiveForm::validateMultiple($modelSnippetCodes), ActiveForm::validate($model)
                 );
             }
 
             // validate all models
             $valid = $model->validate() && 
-                    Model::validateMultiple($modelsSnippetCode) &&
-                    Model::validateMultiple($modelsSnippetVar);
+                    Model::validateMultiple($modelSnippetCodes) &&
+                    Model::validateMultiple($modelSnippetVars);
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
@@ -280,7 +279,7 @@ class SnippetController extends BaseController
                 
                     if ($flag = $model->save(false)) {
 
-                        foreach ($modelsSnippetCode as $modelSnippetCode) {
+                        foreach ($modelSnippetCodes as $modelSnippetCode) {
                             $modelSnippetCode->link('snippet', $model);
 
                             //TODO here will be code for change portals.
@@ -295,7 +294,7 @@ class SnippetController extends BaseController
                             }
                         }
                         
-                        foreach ($modelsSnippetVar as $var) {
+                        foreach ($modelSnippetVars as $var) {
                             $var->snippet_id = $model->id;
                             $flag = $var->save(false);
                             
@@ -307,7 +306,7 @@ class SnippetController extends BaseController
                         
                         // TODO --> to model
                         // Parent ids change back to id of parent.
-                        foreach ($modelsSnippetVar as $savedVar) {
+                        foreach ($modelSnippetVars as $savedVar) {
                             $parent = SnippetVar::find()
                                     ->where(['tmp_id' => $savedVar->parent_id])
                                     ->andWhere(['not', ['tmp_id' => null]])
@@ -318,11 +317,8 @@ class SnippetController extends BaseController
                                 }
                             
                         }
-                        
-                        
                     }
                     if ($flag) {
-                        //      $transaction->rollBack();
                         $transaction->commit();
                         return $this->redirect(['index']);
                     }
@@ -333,14 +329,18 @@ class SnippetController extends BaseController
         } else {
             return $this->render('update', [
                         'model' => $model,
-                        'modelsSnippetCode' => (empty($modelsSnippetCode)) ? [new SnippetCode()] : $modelsSnippetCode,
+                        'snippetCodes' => (empty($modelSnippetCodes)) ? [new SnippetCode()] : $modelSnippetCodes,
             ]);
         }
     }
-
+    
+    public function actionAppendCode()
+    {
+        return $this->renderAjax('_code', ['snippetCode' => new SnippetCode()]);
+    }
+    
     public function actionAppendVar()
     {
-       // echo $id; return;
         return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
     }
 

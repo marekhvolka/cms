@@ -1,27 +1,31 @@
-
 $( ".variable" ).each(function() {
     attachSelectToListChange($(this));
 });
         
 // Getting HTML code for single variable.
 $.get(snippetVarParams.appendVarUrl, function (data) {
-    snippetVarParams.variableCode = data;
+    snippetVarParams.variableHtml = data;
 });
         
-function setNewHashedNamesToFields(element) {   //TODO may be refactored simplier.
+// Getting HTML code for single code.
+$.get(snippetVarParams.appendCodeUrl, function (data) {
+    snippetVarParams.codeHtml = data;
+});
+        
+function setNewHashedNamesToFields(element, type) {   //TODO may be refactored simplier.
     var hash = Math.random().toString(36).substring(7);
         
     element.find('.attribute').each(function() {
-        $(this).attr('name', 'SnippetVar[' + hash + '][' + $(this).attr('data-attribute-name') + ']');
+        $(this).attr('name', type + '[' + hash + '][' + $(this).attr('data-attribute-name') + ']');
     });
 }
 
 // Adding new variable.
-$('.add-item-vars ').bind('click', function() {
-    var element = $(snippetVarParams.variableCode);  // Newly added variable.
+$('.add-item-var').bind('click', function() {
+    var element = $(snippetVarParams.variableHtml);  // Newly added variable.
         
     // First dymension of name attribute (array form) have to be distinctive (not to confuse server side).
-    setNewHashedNamesToFields(element); 
+    setNewHashedNamesToFields(element, 'SnippetVar'); 
     $('.container-items-vars').append(element);     // Append new variable to list of variables.
     attachSelectToListChange(element);      // Event for change to list type is attached.
     
@@ -30,11 +34,30 @@ $('.add-item-vars ').bind('click', function() {
     // this substitutes id till id is created and switched in child as its parent id.
     element.find('.tmp-id').first().val(Math.random().toString(36).substring(7));    
 });
+
+// Adding new variable.
+$('.add-item-code').bind('click', function() {
+    attachAddItemCodeEvent();
+});
+
+function attachAddItemCodeEvent() {
+    var element = $(snippetVarParams.codeHtml);  // Newly added variable.
         
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    // First dymension of name attribute (array form) have to be distinctive (not to confuse server side).
+    setNewHashedNamesToFields(element, 'SnippetCode'); 
+    $('.container-items-codes').append(element);     // Append new variable to list of variables.
+    
+    var addBtn = element.find('.add-item-code');
+    addBtn.click(function() {
+        attachAddItemCodeEvent();
+    });
+    
+    var textArea = element.find('textarea').first()[0];
+    var editor = CodeMirror.fromTextArea(textArea, {
+        lineNumbers: true
+    });
 }
-   
+
 // Attachment event for changing variable type to list.
 function attachSelectToListChange(element) {
     var select = element.find('select').first();
@@ -57,7 +80,7 @@ function attachSelectToListChange(element) {
                 var listElement = $('<li></li>');
                 varList.append(listElement);
                 
-                var newElement = $(snippetVarParams.variableCode);
+                var newElement = $(snippetVarParams.variableHtml);
                 listElement.append(newElement);
         
                 setNewHashedNamesToFields(newElement);
@@ -73,3 +96,7 @@ function attachSelectToListChange(element) {
         }
     })
 }
+
+$( ".add-item-code" ).click(function() {
+    $('.container-items-codes').append();
+});
