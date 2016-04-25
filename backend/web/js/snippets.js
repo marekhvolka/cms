@@ -16,7 +16,8 @@ function setNewHashedNamesToFields(element, type) {   //TODO may be refactored s
     var hash = Math.random().toString(36).substring(7);
         
     element.find('.attribute').each(function() {
-        $(this).attr('name', type + '[' + hash + '][' + $(this).attr('data-attribute-name') + ']');
+        var name = type + '[' + hash + '][' + $(this).attr('data-attribute-name') + ']';
+        $(this).attr('name', name);
     });
 }
 
@@ -83,7 +84,7 @@ function attachSelectToListChange(element) {
                 var newElement = $(snippetVarParams.variableHtml);
                 listElement.append(newElement);
         
-                setNewHashedNamesToFields(newElement);
+                setNewHashedNamesToFields(newElement, 'SnippetVar');
                 
                 attachSelectToListChange(newElement);
                 newElement.find('.parent-id').first().val(parentId);

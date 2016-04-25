@@ -220,14 +220,15 @@ class SnippetController extends BaseController
             $modelSnippetVars = [];
 
             $snippetVarData = Yii::$app->request->post('SnippetVar');
+            
             if ($snippetVarData > 0) {
                 foreach ($snippetVarData as $varData) {
                     //if (isset($varData['identifier']) && $varData['identifier']) {
                         if (isset($varData['id']) && $varData['id']) {
-                            $snippetVar = SnippetVar::findOne($varData['id']);
+                            $snippetVar = SnippetVar::findOne($varData['id']);  // Updating existing var.
                             $snippetVar->id = $varData['id'];
                         } else {
-                            $snippetVar = new SnippetVar();
+                            $snippetVar = new SnippetVar();     // Creating new var.
                         }
                         
                         $snippetVar->identifier = $varData['identifier'];

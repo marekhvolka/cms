@@ -42,6 +42,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 <?php
                 echo CodemirrorWidget::widget([
                         'name' => "SnippetCode[$arrayFirstDymensionValue][code]",
+                        'value' => $snippetCode->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
                             CodemirrorAsset::KEYMAP_EMACS,
