@@ -59,6 +59,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
                             'autofocus' => 'false',
+                            'name' => "SnippetCode[$arrayFirstDymensionValue][code]",
                         ]
                     ]
                 );
@@ -94,5 +95,10 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 ?>
             </div>
         </div>
+        
+        <?= BaseHtml::hiddenInput("SnippetCode[$arrayFirstDymensionValue][id]", $snippetCode->id, [
+            'class' => 'code-id attribute',
+            'data-attribute-name' => 'id',
+            ]); ?>
     </div>
 </div>
