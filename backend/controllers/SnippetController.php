@@ -56,62 +56,13 @@ class SnippetController extends BaseController
     public function actionCreate()
     {
         $model = new Snippet();
-        $modelSnippetCodes = [new SnippetCode()];
-        //$modelSnippetVars = [new SnippetVar()];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-             $modelSnippetCodes = [];
-
-            //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
-            $oldCodesIDs = ArrayHelper::map($model->snippetCodes, 'id', 'id');
-            foreach ($snippetCodeData as $codeData) {
-                if (isset($codeData['name'])) {
-                    $snippetCode = new SnippetCode();
-
-                    $snippetCode->name = $codeData['name'];
-                    $snippetCode->code = $codeData['code'];
-                    $snippetCode->popis = $codeData['popis'];
-                    $snippetCode->portal = $codeData['portal'];
-
-                    $modelSnippetCodes[] = $snippetCode;
-                }
-            }
-            $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
-            $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
-
-            $modelSnippetVars = [];
-
+            $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
+            
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            if ($snippetVarData > 0) {
-                foreach ($snippetVarData as $varData) {
-                    if (isset($varData['identifier']) && $varData['identifier']) {
-                        if (isset($varData['id']) && $varData['id']) {
-                            $snippetVar = SnippetVar::findOne($varData['id']);
-                            $snippetVar->id = $varData['id'];
-                        } else {
-                            $snippetVar = new SnippetVar();
-                        }
-                        
-                        $snippetVar->identifier = $varData['identifier'];
-                        $snippetVar->type_id = $varData['type_id'];
-                        $snippetVar->default_value = $varData['default_value'];
-                        $snippetVar->description = $varData['description'];
-                        $snippetVar->tmp_id = $varData['tmp_id'];
-
-                        if (isset($varData['parent_id'])) {
-                            $snippetVar->parent_id = $varData['parent_id'];
-                            
-                            // TODO should go to beforesave - in model
-                            if (!$snippetVar->parent_id) {
-                                $snippetVar->parent_id = null;
-                            }
-                        }
-                        
-                        $modelSnippetVars[] = $snippetVar;
-                    }
-                }
-            }
+            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -145,27 +96,9 @@ class SnippetController extends BaseController
                             }
                         }
 
-                        foreach ($modelSnippetVars as $var) {
-                            $var->snippet_id = $model->id;
-                            $flag = $var->save(false);
-
-                            if (!($flag)) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-                        
-                        // Parent ids change back to id of parent.
-                        foreach ($modelSnippetVars as $savedVar) {
-                            $parent = SnippetVar::find()
-                                    ->where(['tmp_id' => $savedVar->parent_id])
-                                    ->andWhere(['not', ['tmp_id' => null]])
-                                    ->one(); 
-                                if ($parent) {
-                                    $savedVar->parent_id = strval($parent->id);
-                                    $savedVar->save();
-                                }
-                            
+                        $flag = SnippetVar::saveMultiple($modelSnippetVars);
+                        if (!$flag) {
+                            $transaction->rollBack();
                         }
                     }
                     if ($flag) {

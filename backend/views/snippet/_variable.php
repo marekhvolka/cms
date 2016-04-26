@@ -65,7 +65,7 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id, [
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id ? : '', [
             'class' => 'parent-id attribute',
             'data-attribute-name' => 'parent_id',
             ]); ?>

@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_var".
@@ -27,6 +28,7 @@ use Yii;
  */
 class SnippetVar extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -43,13 +45,13 @@ class SnippetVar extends \yii\db\ActiveRecord
         return [
             [['identifier', 'type_id'], 'required'],
             [['type_id', 'description', 'default_value', 'parent_id'], 'string'],
-            [[ 'snippet_id', 'page_var'], 'integer'],
+            [['snippet_id', 'page_var'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
             [['tmp_id'], 'string', 'max' => 45],
             [['identifier', 'snippet_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
-            //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
+                //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 
@@ -70,6 +72,14 @@ class SnippetVar extends \yii\db\ActiveRecord
         ];
     }
     
+    public function beforeSave($insert)
+    {
+        if (!$this->parent_id) {
+            $this->parent_id = null;
+        }
+        return parent::beforeSave($insert);
+    }
+
     public function beforeDelete()
     {
         $this->unlinkAll('children', true);
@@ -131,4 +141,82 @@ class SnippetVar extends \yii\db\ActiveRecord
     {
         return $this->hasOne(VarType::className(), ['id' => 'type_id']);
     }
+
+    /**
+     * Returns array of newly created SnippetVars from given data.
+     * @return backend\models\SnippetVar []
+     */
+    public static function createMultipleFromData($snippetVarData)
+    {
+        $modelSnippetVars = [];     // Array of created SnippetVars.
+        
+        if (!$snippetVarData) {
+            return $modelSnippetVars;
+        }  
+        
+        foreach ($snippetVarData as $varData) {
+            if (isset($varData['identifier']) && $varData['identifier']) {
+                if (isset($varData['id']) && $varData['id']) {
+                    $snippetVar = SnippetVar::findOne($varData['id']);
+                    $snippetVar->id = $varData['id'];
+                } else {
+                    $snippetVar = new SnippetVar();
+                }
+
+                // Set all neccessary attributes.
+                $snippetVar->identifier = $varData['identifier'];
+                $snippetVar->type_id = $varData['type_id'];
+                $snippetVar->default_value = $varData['default_value'];
+                $snippetVar->description = $varData['description'];
+                $snippetVar->tmp_id = $varData['tmp_id'];
+
+                // Set parent if SnippetVar is item of list type parent SnippetVar.   
+                $snippetVar->parent_id = $varData['parent_id'];
+                
+                $modelSnippetVars[] = $snippetVar;
+            }
+        }
+
+        return $modelSnippetVars;
+    }
+
+    /**
+     * Saves multiple models to database.
+     * @param backend\models\SnippetVar [] $modelSnippetVars snippetVars to be saved.
+     * @return boolean wheter saving of models was unsuccessful
+     */
+    public static function saveMultiple($modelSnippetVars)
+    {
+        foreach ($modelSnippetVars as $var) {
+            $var->snippet_id = $model->id;
+
+            if (!$var->save(false)) {
+                return false;
+            }
+        }
+
+        // Parent ids change back to id of parent.
+        foreach ($modelSnippetVars as $savedVar) {
+            
+            // Get parent with temporary id.
+            $parent = self::find()
+                    ->where(['tmp_id' => $savedVar->parent_id])
+                    ->andWhere(['not', ['tmp_id' => null]])
+                    ->one();
+            
+            // Change parent_id from temporary parent id to parent id (after parent was saved)
+            if ($parent) {
+                $savedVar->parent_id = strval($parent->id);
+                
+                if (!$savedVar->save()) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    
+
 }

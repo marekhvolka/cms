@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_code".
@@ -19,6 +20,7 @@ use Yii;
  */
 class SnippetCode extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -55,11 +57,11 @@ class SnippetCode extends \yii\db\ActiveRecord
             'snippet_id' => 'Snippet ID',
         ];
     }
-    
+
     public function beforeDelete()
     {
         $this->unlinkAll('snippets', false);
-        
+
         return parent::beforeDelete();
     }
 
@@ -78,4 +80,32 @@ class SnippetCode extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Snippet::className(), ['id' => 'snippet_id']);
     }
+
+    /**
+     * Returns array of newly created SnippetCodes from given data.
+     * @return backend\models\SnippetCode []
+     */
+    public static function createMultipleFromData($snippetCodeData)
+    {
+        $modelSnippetCodes = [];
+        if (!$snippetCodeData) {
+            return $modelSnippetCodes;
+        }
+        
+        foreach ($snippetCodeData as $codeData) {
+            if (isset($codeData['name'])) {
+                $snippetCode = new SnippetCode();
+
+                $snippetCode->name = $codeData['name'];
+                $snippetCode->code = $codeData['code'];
+                $snippetCode->popis = $codeData['popis'];
+                $snippetCode->portal = $codeData['portal'];
+
+                $modelSnippetCodes[] = $snippetCode;
+            }
+        }
+        
+        return $modelSnippetCodes;
+    }
+
 }
