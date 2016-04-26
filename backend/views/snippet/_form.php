@@ -92,7 +92,6 @@ use yii\web\View;
 $urlForAppendVar = Url::to(['/snippet/append-var']);
 $urlForAppendCode = Url::to(['/snippet/append-code']);
 $listIdJs = VarType::find()->where(['type' => 'list'])->one()->id;
-//$variableCodeJs = $this->render('_variable', ['snippetVar' => new SnippetVar()]);
 
 $js = <<<JS
 

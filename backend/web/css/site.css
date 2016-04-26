@@ -180,3 +180,19 @@ a.desc:after {
 ul {
     list-style-type: none;
 }
+
+.remove-item-code, .remove-item-vars {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+.add-item-code {
+    position: absolute;
+    right: 45px;
+    top: 10px;
+}
+
+.panel-codes, .variable {
+    position: relative;
+}

@@ -10,10 +10,17 @@ use yii\helpers\BaseHtml;
 $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
 ?>
 
-<div class="item panel panel-default"><!-- widgetBody -->
-    <button type="button" class="remove-item btn btn-danger btn-xs">
+<div class="item panel panel-default panel-codes"><!-- widgetBody -->
+    
+    
+    <button type="button" class="remove-item-code btn btn-danger btn-xs">
         <i class="glyphicon glyphicon-minus"></i>
     </button>
+    
+    <button type="button" class="add-item-code btn btn-success btn-xs">
+        <i class="glyphicon glyphicon-plus"></i>
+    </button>
+     
 
     <div class="panel-heading"> 
         <div class="input-group">
@@ -25,12 +32,6 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                     'data-attribute-name' => 'name',
                     'name' => "SnippetCode[$arrayFirstDymensionValue][name]",
                 ]); ?>
-            <div class="pull-right">
-                <button type="button" class="add-item-code btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i>
-                </button>
-            </div>
-            <div class="clearfix"></div>
         </div>
     </div>
     <div class="panel-body">
