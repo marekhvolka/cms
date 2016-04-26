@@ -132,5 +132,16 @@ class SnippetCode extends \yii\db\ActiveRecord
         return true;
     }
     
+    public static function deleteMultiple($modelSnippetCodes, $snippet)
+    {
+        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');
+        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
+        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
+
+        foreach ($codesIDsToDelete as $codeID) {
+            SnippetCode::findOne($codeID)->delete();
+        }
+    }
+    
 
 }

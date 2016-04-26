@@ -117,6 +117,7 @@ class SnippetController extends BaseController
         $modelSnippetCodes = $model->snippetCodes;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            //Creating multiple SnippetVars and SnippetCodes from posted data.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
@@ -139,74 +140,27 @@ class SnippetController extends BaseController
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
 
-                try {
-                    $oldCodesIDs = ArrayHelper::map($model->snippetCodes, 'id', 'id');
-                    $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
-                    $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
+                try {                    
+                    $flag = $model->save(false);
                     
-                    foreach ($codesIDsToDelete as $codeID) {
-                        SnippetCode::findOne($codeID)->delete();
-                    }
+                    // Deleting and saving multiple SnippetCodes and SnippetVars in database.
+                    SnippetCode::deleteMultiple($modelSnippetCodes, $model);
+                    SnippetVar::deleteMultiple($modelSnippetVars, $model);
 
+                    $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
+                    $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
                     
-                    $oldVarsIDs = ArrayHelper::map($model->snippetVars, 'id', 'id');
-                    $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
-                    $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
-                    
-                    foreach ($varsIDsToDelete as $varID) {
-                        $snippetVarToDelete = SnippetVar::findOne($varID);
-                        if ($snippetVarToDelete) {
-                            $snippetVarToDelete->delete();
-                        }
-                    }
-                
-                    if ($flag = $model->save(false)) {
-
-                        foreach ($modelSnippetCodes as $modelSnippetCode) {
-                            $modelSnippetCode->link('snippet', $model);
-
-                            //TODO here will be code for change portals.
-                            // Update snippet portals (alternatives of snippet).
-//                            $portals_array = Yii::$app->request->post('snippet_code_portals');
-//                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
-//                            $modelSnippetCode->portal = $portals_ids;
-
-                            if (!($flag = $modelSnippetCode->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-                        
-                        foreach ($modelSnippetVars as $var) {
-                            $var->snippet_id = $model->id;
-                            $flag = $var->save(false);
-                            
-                            if (!($flag)) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-                        
-                        // TODO --> to model
-                        // Parent ids change back to id of parent.
-                        foreach ($modelSnippetVars as $savedVar) {
-                            $parent = SnippetVar::find()
-                                    ->where(['tmp_id' => $savedVar->parent_id])
-                                    ->andWhere(['not', ['tmp_id' => null]])
-                                    ->one(); 
-                                if ($parent) {
-                                    $savedVar->parent_id = strval($parent->id);
-                                    $savedVar->save();
-                                }
-                            
-                        }
-                    }
-                    if ($flag) {
+                    if ($flag && $flagCodes && $flagVars) {
                         $transaction->commit();
                         return $this->redirect(['index']);
+                    } else {    // TODO does not have to be else{}
+                        $transaction->rollBack();
+                        return;     // TODO - handle error
                     }
+                    
                 } catch (Exception $e) {
                     $transaction->rollBack();
+                    return;     // TODO - handle error
                 }
             }
         } else {
