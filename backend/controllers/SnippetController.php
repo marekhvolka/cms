@@ -81,23 +81,11 @@ class SnippetController extends BaseController
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        foreach ($modelSnippetCodes as $modelSnippetCode) {
-                            $modelSnippetCode->link('snippet', $model);
-
-                            //TODO here will be code for change portals.
-                            // Update snippet portals (alternatives of snippet).
-//                            $portals_array = Yii::$app->request->post('snippet_code_portals');
-//                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
-//                            $modelSnippetCode->portal = $portals_ids;
-
-                            if (!($flag = $modelSnippetCode->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-
-                        $flag = SnippetVar::saveMultiple($modelSnippetVars);
-                        if (!$flag) {
+                        
+                        $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
+                        $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
+                        
+                        if (!$flagCodes || !$flagVars) {
                             $transaction->rollBack();
                         }
                     }
@@ -129,59 +117,11 @@ class SnippetController extends BaseController
         $modelSnippetCodes = $model->snippetCodes;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      
-            $modelSnippetCodes = [];
-
-            //TODO - !!! this is hardcoded! as in above create action - should be refactored.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
-            $oldCodesIDs = ArrayHelper::map($model->snippetCodes, 'id', 'id');
-            foreach ($snippetCodeData as $codeData) {
-                if (isset($codeData['name'])) {
-                    $snippetCode = SnippetCode::findOne($codeData['id']) ? : new SnippetCode();
-
-                    $snippetCode->name = $codeData['name'];
-                    $snippetCode->code = $codeData['code'];
-                    $snippetCode->popis = $codeData['popis'];
-                    $snippetCode->portal = $codeData['portal'];
-
-                    $modelSnippetCodes[] = $snippetCode;
-                }
-            }
-            $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
-            $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
-
-            $modelSnippetVars = [];
-
-            $snippetVarData = Yii::$app->request->post('SnippetVar');
+            $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
-            if ($snippetVarData > 0) {
-                foreach ($snippetVarData as $varData) {
-                    //if (isset($varData['identifier']) && $varData['identifier']) {
-                        if (isset($varData['id']) && $varData['id']) {
-                            $snippetVar = SnippetVar::findOne($varData['id']);  // Updating existing var.
-                            $snippetVar->id = $varData['id'];
-                        } else {
-                            $snippetVar = new SnippetVar();     // Creating new var.
-                        }
-                        
-                        $snippetVar->identifier = $varData['identifier'];
-                        $snippetVar->type_id = $varData['type_id'];
-                        $snippetVar->default_value = $varData['default_value'];
-                        $snippetVar->description = $varData['description'];
-                        $snippetVar->tmp_id = $varData['tmp_id'];
-
-                        if (isset($varData['parent_id']) && $varData['parent_id']) {
-                            $snippetVar->parent_id = $varData['parent_id'];
-                        }
-                        
-                        $modelSnippetVars[] = $snippetVar;
-                }
-            }
-
-            $oldVarsIDs = ArrayHelper::map($model->snippetVars, 'id', 'id');
-            $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
-
-            $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
+            $snippetVarData = Yii::$app->request->post('SnippetVar');
+            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
             
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -200,10 +140,19 @@ class SnippetController extends BaseController
                 $transaction = \Yii::$app->db->beginTransaction();
 
                 try {
+                    $oldCodesIDs = ArrayHelper::map($model->snippetCodes, 'id', 'id');
+                    $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
+                    $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
+                    
                     foreach ($codesIDsToDelete as $codeID) {
                         SnippetCode::findOne($codeID)->delete();
                     }
 
+                    
+                    $oldVarsIDs = ArrayHelper::map($model->snippetVars, 'id', 'id');
+                    $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
+                    $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
+                    
                     foreach ($varsIDsToDelete as $varID) {
                         $snippetVarToDelete = SnippetVar::findOne($varID);
                         if ($snippetVarToDelete) {

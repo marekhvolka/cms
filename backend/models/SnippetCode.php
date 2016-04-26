@@ -107,5 +107,30 @@ class SnippetCode extends \yii\db\ActiveRecord
         
         return $modelSnippetCodes;
     }
+    
+    /**
+     * Saves multiple models to database.
+     * @param backend\models\SnippetCode [] $modelSnippetCodes snippetCodes to be saved.
+     * @return boolean whether saving of models was unsuccessful
+     */
+    public static function saveMultiple($modelSnippetCodes, $snippet)
+    {
+        foreach ($modelSnippetCodes as $modelSnippetCode) {
+            $modelSnippetCode->link('snippet', $snippet);
+
+            //TODO here will be code for change portals.
+            // Update snippet portals (alternatives of snippet).
+//                            $portals_array = Yii::$app->request->post('snippet_code_portals');
+//                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
+//                            $modelSnippetCode->portal = $portals_ids;
+
+            if (!($flag = $modelSnippetCode->save(false))) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
 
 }

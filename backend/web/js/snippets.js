@@ -57,6 +57,11 @@ function attachAddItemCodeEvent() {
     var editor = CodeMirror.fromTextArea(textArea, {
         lineNumbers: true
     });
+    
+    //TODO - this is for Select2
+//    var select = element.find('select').first()[0];
+//    select.select2();
+
 }
 
 // Attachment event for changing variable type to list.

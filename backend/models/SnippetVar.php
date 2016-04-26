@@ -183,12 +183,12 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * Saves multiple models to database.
      * @param backend\models\SnippetVar [] $modelSnippetVars snippetVars to be saved.
-     * @return boolean wheter saving of models was unsuccessful
+     * @return boolean whether saving of models was unsuccessful
      */
-    public static function saveMultiple($modelSnippetVars)
+    public static function saveMultiple($modelSnippetVars, $snippet)
     {
         foreach ($modelSnippetVars as $var) {
-            $var->snippet_id = $model->id;
+            $var->snippet_id = $snippet->id;
 
             if (!$var->save(false)) {
                 return false;

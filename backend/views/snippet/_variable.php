@@ -126,9 +126,7 @@ $js = <<<JS
 
 // Last remove button was clicked - last form must be cleared.
 $('.remove-item-vars').bind('click', function() {
-    //var varId = $(this).attr('data-var-id');
-    //$('.var-id-' + varId).remove();
-        $(this).parents('li').first().remove();
+    $(this).parents('li').first().remove();
 });     
         
 JS;

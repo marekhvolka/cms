@@ -4,6 +4,9 @@ use yii\helpers\Html;
 use conquer\codemirror\CodemirrorAsset;
 use conquer\codemirror\CodemirrorWidget;
 use yii\helpers\BaseHtml;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
+use backend\models\Portal;
 
 ?>
 <?php
@@ -87,6 +90,26 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 <label class="control-label" for="snippetcode-portal">
                     <?= $snippetCode->getAttributeLabel('portal'); ?>
                 </label>
+                
+                <?php
+//                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'id');
+//                
+//                echo Select2::widget([
+//                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
+//                    'value' => [], // initial value
+//                    'data' => $data,
+//                    'options' => [
+//                        'placeholder' => 'Select portals ...',
+//                        'multiple' => true,
+//                        'class' => 'form-control code-portal attribute',
+//                        'data-attribute-name' => 'portal',
+//                    ],
+//                    'pluginOptions' => [
+//                        'tags' => true,
+//                    ],
+//                ]);
+                ?>
+                
                 <?php
                 echo BaseHtml::activeTextInput($snippetCode, "portal", [
                     'maxlength' => true, 
@@ -104,3 +127,18 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
             ]); ?>
     </div>
 </div>
+
+<?php
+
+$js = <<<JS
+
+// Remove button clicked - code must be removed.
+$('.remove-item-code').bind('click', function() {
+    $(this).parent().remove();
+});     
+        
+JS;
+$this->registerJs($js);
+?>
+
+
