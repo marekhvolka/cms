@@ -142,6 +142,5 @@ class SnippetCode extends \yii\db\ActiveRecord
             SnippetCode::findOne($codeID)->delete();
         }
     }
-    
 
 }
