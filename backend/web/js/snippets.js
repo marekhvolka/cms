@@ -48,6 +48,15 @@ function attachAddItemCodeEvent() {
     setNewHashedNamesToFields(element, 'SnippetCode'); 
     $('.container-items-codes').append(element);     // Append new variable to list of variables.
     
+    // Quick bugfix for strange behavior (adding codemirror textarea to first item and cloning it)
+    var codes = $('.panel-codes').first().find('.cm-s-default:not(first-child)');
+    
+    for (var i = 0; i < codes.length; i++) {
+        if (i != 1) {
+            codes[i].remove();
+        }
+    }
+    
     var addBtn = element.find('.add-item-code');
     addBtn.click(function() {
         attachAddItemCodeEvent();

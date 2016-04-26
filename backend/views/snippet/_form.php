@@ -39,11 +39,11 @@ use yii\web\View;
         <div class="panel panel-default">
             <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Alternatívy</h4></div>
             <div class="panel-body">
-                <div class="container-items-codes">
-                    <?php foreach ($snippetCodes as $i => $snippetCode): ?>
-                    <?= $this->render('_code', ['snippetCode' => $snippetCode, 'i' => $i, 'form' => $form]) ;?>
-                    <?php endforeach;?>
-                </div>
+                <ul class="container-items-codes">
+                <?php foreach ($snippetCodes as $i => $snippetCode): ?>
+                <?= $this->render('_code', ['snippetCode' => $snippetCode, 'i' => $i, 'form' => $form]) ;?>
+                <?php endforeach;?>
+                </ul>
             </div>
         </div>
     </div>

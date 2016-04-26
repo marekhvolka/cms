@@ -13,8 +13,7 @@ use backend\models\Portal;
 $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
 ?>
 
-<div class="item panel panel-default panel-codes"><!-- widgetBody -->
-    
+<li class="item panel panel-default panel-codes"><!-- widgetBody --> 
     
     <button type="button" class="remove-item-code btn btn-danger btn-xs">
         <i class="glyphicon glyphicon-minus"></i>
@@ -126,7 +125,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
             'data-attribute-name' => 'id',
             ]); ?>
     </div>
-</div>
+</li>
 
 <?php
 
