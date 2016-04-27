@@ -57,6 +57,11 @@ use yii\web\View;
             <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
             <div class="panel-body">
                 <?php
+                Select2::widget([
+                   'name' => "test",
+                ]);
+                ?>
+                <?php
                 $snippetVars = $model->snippetVars;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 ?>

@@ -68,8 +68,10 @@ function attachAddItemCodeEvent() {
     });
     
     //TODO - this is for Select2
-//    var select = element.find('select').first()[0];
-//    select.select2();
+    var select = element.find('select').first()[0];
+    select.select2({
+        tags: true
+    });
 
 }
 

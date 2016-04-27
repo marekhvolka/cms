@@ -91,9 +91,9 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 </label>
                 
                 <?php
-//                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'id');
-//                
-//                echo Select2::widget([
+                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
+                
+//                 Select2::widget([
 //                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
 //                    'value' => [], // initial value
 //                    'data' => $data,
@@ -110,7 +110,16 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 ?>
                 
                 <?php
-                echo BaseHtml::activeTextInput($snippetCode, "portal", [
+//                 BaseHtml::activeTextInput($snippetCode, "portal", [
+//                    'maxlength' => true, 
+//                    'class' => 'form-control code-portal attribute',
+//                    'data-attribute-name' => 'portal',
+//                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
+//                ]);
+                ?>
+                
+                <?php
+                echo BaseHtml::activeDropDownList($snippetCode, "portal", $data, [
                     'maxlength' => true, 
                     'class' => 'form-control code-portal attribute',
                     'data-attribute-name' => 'portal',
