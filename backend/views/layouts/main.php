@@ -34,8 +34,10 @@ AppAsset::register($this);
     
     <?php
     $session = Yii::$app->session;
-    $portalId = $session->get('portal_id');
-    $portal = Portal::find()->where(['id' => $portalId])->one();
+    
+    $portal = Portal::find()
+            ->where(['id' => $session->get('portal_id')])
+            ->one();
     $portalName = isset($portal->name) ? $portal->name : '';
     
     NavBar::begin([
@@ -56,13 +58,9 @@ AppAsset::register($this);
     
     echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-left'],
-                'items' => [
-         
-                            ['label' => '', 'items' => $items],
-         
-                    ],
-     
+                'items' => [['label' => '', 'items' => $items]],
             ]);
+    
     echo Breadcrumbs::widget([
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         'options' => ['class' => 'navbar-nav nav breadcrumb-nav'],
