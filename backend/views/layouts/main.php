@@ -10,6 +10,8 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+use backend\models\Portal;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -29,15 +31,38 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
+    
     <?php
+    $session = Yii::$app->session;
+    $portalId = $session->get('portal_id');
+    $portal = Portal::find()->where(['id' => $portalId])->one();
+    $portalName = isset($portal->name) ? $portal->name : '';
+    
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => $portalName,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-
+    
+    $items = [];
+    $portals = Portal::find()->all();
+    foreach ($portals as $portal) {
+        $url = Url::to(['/portal/change-current/', 'id' => $portal->id]);
+        $item = ['label' => $portal->name, 'url' => $url];
+        $items[] = $item;
+    }
+    
+    echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-left'],
+                'items' => [
+         
+                            ['label' => '', 'items' => $items],
+         
+                    ],
+     
+            ]);
     echo Breadcrumbs::widget([
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         'options' => ['class' => 'navbar-nav nav breadcrumb-nav'],
@@ -92,12 +117,14 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
 </footer>
-
+    
+    <?php 
+    $session = Yii::$app->session;
+    var_dump($session->get('portal_id'));
+    ?>
+    
 <?php $this->endBody() ?>
 </body>
 </html>

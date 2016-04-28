@@ -205,6 +205,13 @@ class PortalController extends BaseController
 
         return $this->redirect(['index']);
     }
+    
+    public function actionChangeCurrent($id)
+    {
+        $session = Yii::$app->session;
+        $session->set('portal_id', $id);
+        return $this->goHome();
+    }
 
     /**
      * Finds the Portal model based on its primary key value.
