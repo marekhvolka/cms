@@ -74,7 +74,7 @@ $js = <<<JS
 
 $('#help-block-prod-types').hide();
 $('#submit-form').click(function(){
-    if ($('#campaign-device').val() == null) {
+    if ($('#product_types').val() == null) {
         $('#help-block-prod-types').show();
         return false;
     }

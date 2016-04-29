@@ -37,7 +37,7 @@ class ProductVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'identifier'], 'required'],
+            [['name', 'identifier', 'type_id'], 'required'],
             [['type_id', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],

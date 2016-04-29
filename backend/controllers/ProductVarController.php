@@ -50,10 +50,11 @@ class ProductVarController extends BaseController
         $model = new ProductVar();
 
         if (Yii::$app->request->isPost) {
-            $pruductTypeIdsArray = Yii::$app->request->post('product_type_ids');
-            //$productTypesIds = $pruductTypeIdsArray ? implode($pruductTypeIdsArray, ',') : '';
-            //$model->product_type = $productTypesIds;
             $loaded = $model->load(Yii::$app->request->post());
+            $pruductTypeIdsArray = Yii::$app->request->post('product_type_ids');
+            $productTypesIds = $pruductTypeIdsArray ? implode($pruductTypeIdsArray, ',') : '';
+            $model->product_type = $productTypesIds;
+            
             if ( $model->save()) {
                 return $this->redirect(['index']);
             }
