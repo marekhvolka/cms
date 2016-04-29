@@ -111,6 +111,6 @@ var snippetVarParams = {
 JS;
 
 $this->registerJs($js, View::POS_BEGIN);
-
+$this->registerJsFile('@web/js/snippets.js');
 ?>
 
