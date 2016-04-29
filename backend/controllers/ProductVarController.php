@@ -7,6 +7,8 @@ use backend\models\ProductVar;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\components\IdentifierComponent;
+
 
 /**
  * ProductVarController implements the CRUD actions for ProductVar model.
@@ -39,6 +41,14 @@ class ProductVarController extends BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionSlug()
+    {
+        if (Yii::$app->request->isPost) {
+            $name = Yii::$app->request->post('name');
+            echo IdentifierComponent::generateIdentifier($name, '');
+        }
+    }
 
     /**
      * Creates a new ProductVar model.
@@ -48,7 +58,7 @@ class ProductVarController extends BaseController
     public function actionCreate()
     {
         $model = new ProductVar();
-
+        
         if (Yii::$app->request->isPost) {
             $loaded = $model->load(Yii::$app->request->post());
             $pruductTypeIdsArray = Yii::$app->request->post('product_type_ids');

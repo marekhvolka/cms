@@ -5,6 +5,10 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 
+/* @var $this yii\web\View */
+/* @var $model backend\models\ProductVar */
+/* @var $type string */
+
 $type_exploded = explode("\\", $type);
 $property_name = lcfirst($type_exploded[sizeof($type_exploded) - 1]) . 'Values';; 
 

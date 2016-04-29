@@ -6,6 +6,8 @@ use backend\models\VarType;
 use yii\helpers\ArrayHelper;
 use backend\models\ProductType;
 use kartik\select2\Select2;
+use yii\helpers\Url;
+use backend\components\IdentifierWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\ProductVar */
@@ -68,7 +70,7 @@ use kartik\select2\Select2;
 </div>
 
 <?php
-
+$url = Url::to(['site/generate-identifier']);
 //TODO refactoring - this may be validated by using Yii2 validation in model and controller
 $js = <<<JS
 
@@ -85,3 +87,9 @@ $('#submit-form').click(function(){
 JS;
 $this->registerJs($js);
 ?>
+
+<?=IdentifierWidget::widget([
+    'idTextFrom' => 'productvar-name', 
+    'idTextTo' => 'productvar-identifier',
+    'delimiter' => '_',
+])?>

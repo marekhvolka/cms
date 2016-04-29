@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\behaviors\SluggableBehavior;
 
 /**
  * This is the model class for table "product_var".
@@ -22,13 +23,24 @@ use Yii;
  * @property ProductVarValue[] $productVarValues
  */
 class ProductVar extends \yii\db\ActiveRecord
-{
+{   
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return 'product_var';
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'slugAttribute' => 'identifier',
+            ],
+        ];
     }
 
     /**
@@ -37,7 +49,7 @@ class ProductVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'identifier', 'type_id'], 'required'],
+            [['name', 'type_id'], 'required'],
             [['type_id', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
