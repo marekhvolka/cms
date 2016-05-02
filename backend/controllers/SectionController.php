@@ -8,11 +8,12 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * SectionController implements the CRUD actions for Section model.
  */
-class SectionController extends Controller
+class SectionController extends BaseController
 {
     /**
      * @inheritdoc
@@ -44,6 +45,40 @@ class SectionController extends Controller
         ]);
     }
 
+    /**
+     * Displays options of a single Section model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionGetOptions($id)
+    {
+        $model = $this->findModel($id);
+        $options = Json::decode($model->options);
+        return $this->renderAjax('_options', [
+            'options' => $options,
+        ]);
+    }
+    
+    /**
+     * Sets options of a single Section model.
+     */
+    public function actionSetOptions()
+    {
+        $id = Yii::$app->request->post('options');
+        
+        if ($id) {
+            //$options = Json::decode($optionJson);
+            $model = $this->findModel($id);
+            $optionJson = Yii::$app->request->post('options');
+            $model->options = $optionJson;
+
+//            return $this->renderAjax('_options', [
+//                'options' => $options,
+//            ]);
+        }
+        
+    }
+    
     /**
      * Displays a single Section model.
      * @param integer $id
