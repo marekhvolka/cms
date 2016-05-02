@@ -76,6 +76,7 @@ abstract class BaseController extends Controller
                         ['label' => 'Administrácia oprávnení', 'url' => Url::to(['/tag/index'])],
                     ],
                 ],
+                ['label' => '<i class="fa fa-fw fa-thumbs-o-up"></i> Sections', 'url' => Url::to(['/tracking-code/index'])],
             ];
     }
 }
