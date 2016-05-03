@@ -7,13 +7,13 @@ use yii\helpers\BaseHtml;
 
 <div class="form-group">
     <label>ID</label>
-    <?= BaseHtml::textInput('section-id', $options->id, ['placeholder' => 'ID', 'class' => 'form-control'])?>
+    <?= BaseHtml::textInput('section-id', isset($options) ? $options->id : '', ['placeholder' => 'ID', 'class' => 'form-control'])?>
 </div>
 <div class="form-group">
     <label>Class</label>
-    <?= BaseHtml::textInput('section-class', $options->class, ['placeholder' => 'Class', 'class' => 'form-control'])?>
+    <?= BaseHtml::textInput('section-class', isset($options) ? $options->class : '', ['placeholder' => 'Class', 'class' => 'form-control'])?>
 </div>
 <div class="form-group">
     <label>Style</label>
-    <?= BaseHtml::textarea('section-style', $options->style, ['placeholder' => 'Style', 'class' => 'form-control', 'rows' => 6])?>
+    <?= BaseHtml::textarea('section-style', isset($options) ? $options->style : '', ['placeholder' => 'Style', 'class' => 'form-control', 'rows' => 6])?>
 </div>

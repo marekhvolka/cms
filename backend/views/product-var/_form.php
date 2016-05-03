@@ -91,5 +91,5 @@ $this->registerJs($js);
 <?=IdentifierWidget::widget([
     'idTextFrom' => 'productvar-name', 
     'idTextTo' => 'productvar-identifier',
-    'delimiter' => '_',
+    'delimiter' => '-',
 ])?>

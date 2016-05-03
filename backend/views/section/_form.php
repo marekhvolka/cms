@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\BaseHtml;
 use yii\bootstrap\Modal;
+use yii\bootstrap\Nav;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Section */
@@ -32,20 +33,39 @@ use yii\bootstrap\Modal;
 
 
     <div class="panel panel-default" style="position: relative;">
-        <div class="sortableDrag"></div>
-        <div class="btn-group btn-position-user">
-            <button type="button" style="margin-right: 10px;" id="sett_butt_2583554" onclick="openBlockSettings('2583554', 'sekcia')" data-target="#settModalAdd" data-toggle="modal" class="btn btn-primary dropdown-toggle btn-xs popover2" title="" data-content="<dl class=&quot;dl-horizontal dl-settings&quot;><dt>id</dt><dd>-</dd><dt>class</dt><dd>-</dd><dt>style</dt><dd>-</dd></dl>" data-original-title="Nastavenia"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-success dropdown-toggle btn-xs" style="border-radius: 3px !important;" data-toggle="dropdown" aria-expanded="false" title="Vložiť nový blok"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-            <ul class="dropdown-menu simple_with_no_drag" role="menu"><span><a href="#" onclick="getLayoutBlock('', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal"></a></span><span><a href="#" onclick="getLayoutBlock('1', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">Fullwidth blok</a></span><span><a href="#" onclick="getLayoutBlock('2', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">2 stĺpcový blok</a></span><span><a href="#" onclick="getLayoutBlock('3', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">3 stĺpcový blok</a></span><span><a href="#" onclick="getLayoutBlock('4', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">4 stĺpcový blok</a></span><span><a href="#" onclick="getLayoutBlock('2_1', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">2/1 blok</a></span><span><a href="#" onclick="getLayoutBlock('1_2', 'layoutAppend_2583554', '2583554', 'header')" data-toggle="modal">1/2 blok</a></span>
-            </ul>
-            <button type="button" class="btn btn-danger btn-xs btn-remove-sekcia" title="Zmazať" onclick="removeSection('2583554')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+        <div class="btn-group section-buttons">
+            <div class="section-button">
+                <button class="btn btn-primary dropdown-toggle btn-xs" >
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="dropdown dropdown-blocks section-button">
+                <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs" 
+                    title="Vložiť nový blok" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Fullwidth blok</a></li>
+                    <li><a href="#">2 stĺpcový blok</a></li>
+                    <li><a href="#">3 stĺpcový blok</a></li>
+                    <li><a href="#">4 stĺpcový blok</a></li>
+                    <li><a href="#">2/1 blok</a></li>
+                    <li><a href="#">1/2 blok</a></li>
+                  </ul>
+                </div>
+            <div class="section-button">
+                <button type="button" class="btn btn-danger btn-xs btn-remove-section" title="Zmazať" >
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
+        
         <div class="panel-heading"><h3 class="panel-title">Sekcia</h3></div>
         <div class="panel-body">
             <div class="col-sm-12"> 
                 <div class="col-sm-12 sekcia_master">
-                    <ol class="sortable" id="layoutAppend_2583554">
-                        <li data-name="1" data-id="master_2621824">
+                    <ol>
+                        <li>
                             <div class="row">
                                 <div class="col-md-12 layoutWrap">
                                     <div class="panel panel-default">
@@ -80,19 +100,7 @@ use yii\bootstrap\Modal;
                                     </div>
                                 </div>
                                 <input type="hidden" name="block_sett[header][12621824]" id="12621824_sett" value="">
-                                <script>
-                                    $(document).ready(function ()
-                                    {
-                                        var list = document.getElementById("ul_12621824");
-                                        new Sortable(list, {
-                                            group: "omega",
-                                            animation: 150,
-                                            onSort: function (evt) {
-                                                sortable_new(evt);
-                                            }
-                                        });
-                                    })
-                                </script>
+                                
                             </div>
                             <button type="button" class="btn btn-danger btn-sm delete-btn-block" onclick="deleteBlock($(this), '2583554');">Zmazať blok</button><div class="clearfix"></div>
                         </li>
