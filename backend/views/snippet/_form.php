@@ -37,7 +37,7 @@ use yii\web\View;
 
     <div class="form-group">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Alternatívy</h4></div>
+            <div class="panel-heading"><h4>Alternatívy</h4></div>
             <div class="panel-body">
                 <ul class="container-items-codes">
                 <?php foreach ($snippetCodes as $i => $snippetCode): ?>
@@ -54,7 +54,7 @@ use yii\web\View;
     
     <div class="form-group">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné</h4></div>
+            <div class="panel-heading"><h4>Premenné</h4></div>
             <div class="panel-body">
                 <?php
                 Select2::widget([

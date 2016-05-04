@@ -10,26 +10,30 @@ use yii\helpers\BaseHtml;
 ?>
 
 <li class="item variable panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
-    <button type="button" class="remove-item-vars btn btn-danger btn-xs" data-var-id="<?= $snippetVar->id; ?>">
-        <i class="glyphicon glyphicon-minus"></i>
-    </button>
 
+    <div class="panel-heading form-inline">
+        <label class="control-label" for="snippetvar-identifier">
+            <?= $snippetVar->getAttributeLabel('identifier'); ?>
+        </label>
+        <?php
+        $arrayFirstDimensionValue = $snippetVar->id ? : 'placeholder';
+        echo BaseHtml::activeTextInput($snippetVar, "identifier", [
+            'maxlength' => true,
+            'class' => 'form-control var-identifier attribute',
+            'data-attribute-name' => 'identifier',
+            'name' => "SnippetVar[$arrayFirstDimensionValue][identifier]",
+        ]);
+        ?>
+
+        <button type="button" class="remove-item-vars btn btn-danger btn-xs pull-right" data-var-id="<?= $snippetVar->id; ?>">
+            <i class="glyphicon glyphicon-minus"></i>
+        </button>
+    </div>
     <div class="panel-body">
 
         <div class="row">
             <div class="col-sm-12">
-                <label class="control-label" for="snippetvar-identifier">
-                    <?= $snippetVar->getAttributeLabel('identifier'); ?>
-                </label>
-                <?php
-                $arrayFirstDymensionValue = $snippetVar->id ? : 'placeholder';
-                echo BaseHtml::activeTextInput($snippetVar, "identifier", [
-                    'maxlength' => true, 
-                    'class' => 'form-control var-identifier attribute',
-                    'data-attribute-name' => 'identifier',
-                    'name' => "SnippetVar[$arrayFirstDymensionValue][identifier]",
-                ]);
-                ?>
+
             </div>
         </div>
 
@@ -40,13 +44,13 @@ use yii\helpers\BaseHtml;
                 </label>
                 <?php
                 $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                $data = ArrayHelper::map($allVars, 'id', 'type');
+                $data = ArrayHelper::map($allVars, 'id', 'label');
                 
                 echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
                     'class' => 'form-control select-var-type attribute',
-                    'prompt'=>'Select...',
+                    'prompt'=>'Vyber typ premennej',
                     'data-attribute-name' => 'type_id',
-                    'name' => "SnippetVar[$arrayFirstDymensionValue][type_id]",
+                    'name' => "SnippetVar[$arrayFirstDimensionValue][type_id]",
                 ]);
                 ?>
             </div>
@@ -60,22 +64,22 @@ use yii\helpers\BaseHtml;
                 <?= BaseHtml::activeTextInput($snippetVar, "default_value", [
                     'class' => 'form-control var-default-value attribute',
                     'data-attribute-name' => 'default_value',
-                    'name' => "SnippetVar[$arrayFirstDymensionValue][default_value]",
+                    'name' => "SnippetVar[$arrayFirstDimensionValue][default_value]",
                     ]);?>
             </div>
         </div>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][parent_id]", $snippetVar->parent_id ? : '', [
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][parent_id]", $snippetVar->parent_id ? : '', [
             'class' => 'parent-id attribute',
             'data-attribute-name' => 'parent_id',
             ]); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][id]", $snippetVar->id, [
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][id]", $snippetVar->id, [
             'class' => 'item-id attribute',
             'data-attribute-name' => 'id',
             ]); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDymensionValue][tmp_id]", '', [
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][tmp_id]", '', [
             'class' => 'tmp-id attribute',
             'data-attribute-name' => 'tmp_id',
             ]); ?>
@@ -89,7 +93,7 @@ use yii\helpers\BaseHtml;
                     'rows' => '4', 
                     'class' => 'form-control var-description attribute',
                     'data-attribute-name' => 'description',
-                    'name' => "SnippetVar[$arrayFirstDymensionValue][description]",
+                    'name' => "SnippetVar[$arrayFirstDimensionValue][description]",
                     ]);?>
             </div>
         </div>
@@ -97,12 +101,15 @@ use yii\helpers\BaseHtml;
         <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->type == 'list') ? '' : 'hidden="hidden"' ?>>
             <div class="col-sm-11 col-sm-offset-1">
                 <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
-                    <button type="button" class="btn btn-success btn-xs btn-add-var" 
-                            data-toggle="dropdown" aria-expanded="false" title="Pridať premennú" 
-                            onclick="">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </button>
-                    <div class="panel-heading">Premenné pre položku zoznamu</div>
+                    <div class="panel-heading">
+                        Premenné pre položku zoznamu
+
+                        <button type="button" class="btn btn-success btn-xs btn-add-var pull-right"
+                                data-toggle="dropdown" aria-expanded="false" title="Pridať premennú"
+                                onclick="">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
                     <div class="panel-body">
                         <input type="hidden" value="0" id="">
                         <ul style="list-style: none;">

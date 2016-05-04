@@ -165,8 +165,8 @@ class SnippetController extends BaseController
             }
         } else {
             return $this->render('update', [
-                        'model' => $model,
-                        'snippetCodes' => (empty($modelSnippetCodes)) ? [new SnippetCode()] : $modelSnippetCodes,
+                'model' => $model,
+                'snippetCodes' => (empty($modelSnippetCodes)) ? [new SnippetCode()] : $modelSnippetCodes,
             ]);
         }
     }

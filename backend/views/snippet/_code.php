@@ -10,31 +10,26 @@ use backend\models\Portal;
 
 ?>
 <?php
-$arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
+$arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
 ?>
 
-<li class="item panel panel-default panel-codes"><!-- widgetBody --> 
-    
-    <button type="button" class="remove-item-code btn btn-danger btn-xs">
-        <i class="glyphicon glyphicon-minus"></i>
-    </button>
-    
-    <button type="button" class="add-item-code btn btn-success btn-xs">
-        <i class="glyphicon glyphicon-plus"></i>
-    </button>
-     
-
+<li class="item panel panel-default panel-codes"><!-- widgetBody -->
     <div class="panel-heading"> 
         <div class="input-group">
-            <label class="control-label" for="snippetcode-name">
-                <?= $snippetCode->getAttributeLabel('name'); ?>
-            </label>
-            <?= BaseHtml::activeTextInput($snippetCode, "name", [ 
+            <?= BaseHtml::activeTextInput($snippetCode, "name", [
                     'class' => 'form-control code-name attribute',
                     'data-attribute-name' => 'name',
-                    'name' => "SnippetCode[$arrayFirstDymensionValue][name]",
+                    'name' => "SnippetCode[$arrayFirstDimensionValue][name]",
+                    'style'=>'width:400px'
                 ]); ?>
         </div>
+        <button type="button" class="add-item-code btn btn-success btn-xs pull-right">
+            <i class="glyphicon glyphicon-plus"></i>
+        </button>
+
+        <button type="button" class="remove-item-code btn btn-danger btn-xs pull-right">
+            <i class="glyphicon glyphicon-minus"></i>
+        </button>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -44,7 +39,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 </label>
                 <?php
                 echo CodemirrorWidget::widget([
-                        'name' => "SnippetCode[$arrayFirstDymensionValue][code]",
+                        'name' => "SnippetCode[$arrayFirstDimensionValue][code]",
                         'value' => $snippetCode->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
@@ -63,7 +58,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
                             'autofocus' => 'false',
-                            'name' => "SnippetCode[$arrayFirstDymensionValue][code]",
+                            'name' => "SnippetCode[$arrayFirstDimensionValue][code]",
                         ]
                     ]
                 );
@@ -79,7 +74,7 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                 echo BaseHtml::activeTextarea($snippetCode, "popis", [ 
                     'class' => 'form-control code-popis attribute',
                     'data-attribute-name' => 'popis',
-                    'name' => "SnippetCode[$arrayFirstDymensionValue][popis]",
+                    'name' => "SnippetCode[$arrayFirstDimensionValue][popis]",
                 ]);
                 ?>
             </div>
@@ -123,13 +118,13 @@ $arrayFirstDymensionValue = $snippetCode->id ? : 'placeholder';
                     'maxlength' => true, 
                     'class' => 'form-control code-portal attribute',
                     'data-attribute-name' => 'portal',
-                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
+                    'name' => "SnippetCode[$arrayFirstDimensionValue][portal]",
                 ]);
                 ?>
             </div>
         </div>
         
-        <?= BaseHtml::hiddenInput("SnippetCode[$arrayFirstDymensionValue][id]", $snippetCode->id, [
+        <?= BaseHtml::hiddenInput("SnippetCode[$arrayFirstDimensionValue][id]", $snippetCode->id, [
             'class' => 'code-id attribute',
             'data-attribute-name' => 'id',
             ]); ?>

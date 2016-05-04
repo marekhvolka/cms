@@ -181,6 +181,10 @@ ul {
     list-style-type: none;
 }
 
+ul.container-items-codes {
+    padding-left: 0px;
+}
+
 .remove-item-code, .remove-item-vars {
     position: absolute;
     right: 15px;

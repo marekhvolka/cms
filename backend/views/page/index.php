@@ -9,7 +9,7 @@ use backend\models\User;
 /* @var $searchModel backend\models\PageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Pages';
+$this->title = 'Podstránky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="page-index">
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Page', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= $this->render('_search', [
@@ -44,29 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'parent.name'
             ],
             'active',
-            // 'in_menu',
-            // 'parent_id',
-            // 'poradie',
-            // 'product_id',
-            // 'presmerovanie',
-            // 'utm',
-            // 'presmerovanie_aktivne',
-            // 'seo_title',
-            // 'seo_description',
-            // 'seo_keywords',
-            // 'layout_poradie',
-            // 'layout_poradie_id',
-            // 'layout_element:ntext',
-            // 'layout_element_type:ntext',
-            // 'layout_element_active:ntext',
-            // 'layout_element_time_from:ntext',
-            // 'layout_element_time_to:ntext',
-            // 'layout_color_scheme',
-            // 'sidebar',
-            // 'sidebar_side',
-            // 'sidebar_size',
-            // 'footer',
-            // 'header',
             'last_edit',
             [
                 'label' => 'Naposledy editoval',
