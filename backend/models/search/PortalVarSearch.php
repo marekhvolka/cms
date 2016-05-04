@@ -19,7 +19,7 @@ class PortalVarSearch extends PortalVar
     {
         return [
             [['id', 'type_id', 'last_edit_user'], 'integer'],
-            [['vlastnost', 'identifikator', 'popis', 'last_edit'], 'safe'],
+            [['name', 'identifier', 'description', 'last_edit'], 'safe'],
         ];
     }
 
@@ -62,9 +62,9 @@ class PortalVarSearch extends PortalVar
             'last_edit_user' => $this->last_edit_user,
         ]);
 
-        $query->andFilterWhere(['like', 'vlastnost', $this->vlastnost])
-            ->andFilterWhere(['like', 'identifikator', $this->identifikator])
-            ->andFilterWhere(['like', 'popis', $this->popis]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'identifier', $this->identifier])
+            ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
     }

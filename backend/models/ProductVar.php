@@ -12,7 +12,7 @@ use yii\behaviors\SluggableBehavior;
  * @property integer $id
  * @property string $name
  * @property string $identifier
- * @property string $popis
+ * @property string $description
  * @property integer $type_id
  * @property string $product_type
  * @property string $last_edit
@@ -68,7 +68,7 @@ class ProductVar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Názov',
             'identifier' => 'Identifikátor',
-            'popis' => 'Popis',
+            'description' => 'Popis',
             'type_id' => 'Var Type',
             'product_type' => 'For Product Types',
             'last_edit' => 'Last Edit',

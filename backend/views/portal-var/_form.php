@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'popis')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(VarType::find()->all(), 'id', 'type')

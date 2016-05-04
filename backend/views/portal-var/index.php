@@ -29,11 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($data) {
-                    return Html::a($data->vlastnost,'?r=portal-var/update&id='. $data->id);
+                    return Html::a($data->name,'?r=portal-var/update&id='. $data->id);
                 },
             ],
-            'identifikator',
-            'popis:ntext',
+            'identifier',
+            'description:ntext',
             'type_id',
             // 'last_edit',
             // 'last_edit_user',

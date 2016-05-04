@@ -11,7 +11,7 @@ use Yii;
  * @property integer $id
  * @property string $name
  * @property string $identifier
- * @property string $popis
+ * @property string $description
  * @property integer $type_id
  * @property string $last_edit
  * @property integer $last_edit_user
@@ -37,7 +37,7 @@ class PortalVar extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'identifier', 'type_id'], 'required'],
-            [['popis'], 'string'],
+            [['description'], 'string'],
             [['type_id', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
@@ -55,7 +55,7 @@ class PortalVar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Názov',
             'identifier' => 'Identifikator',
-            'popis' => 'Popis',
+            'description' => 'Popis',
             'type_id' => 'Type ID',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Naposledy editoval',

@@ -19,7 +19,7 @@ class ProductVarSearch extends ProductVar
     {
         return [
             [['id', 'type_id', 'last_edit_user'], 'integer'],
-            [['name', 'identifier', 'popis', 'product_type', 'last_edit'], 'safe'],
+            [['name', 'identifier', 'description', 'product_type', 'last_edit'], 'safe'],
         ];
     }
 
@@ -64,7 +64,7 @@ class ProductVarSearch extends ProductVar
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'identifier', $this->identifier])
-            ->andFilterWhere(['like', 'popis', $this->popis])
+            ->andFilterWhere(['like', 'description', $this->popis])
             ->andFilterWhere(['like', 'product_type', $this->product_type]);
 
         return $dataProvider;
