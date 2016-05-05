@@ -5,6 +5,7 @@ use yii\helpers\BaseHtml;
 /* @var $options object */
 ?>
 
+
 <div class="form-group">
     <label>ID</label>
     <?= BaseHtml::textInput('section-id', isset($options) ? $options->id : '', ['placeholder' => 'ID', 'class' => 'form-control'])?>
