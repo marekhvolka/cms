@@ -20,8 +20,8 @@ class PageSearch extends Page
     public function rules()
     {
         return [
-            [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'presmerovanie_aktivne', 'sidebar', 'sidebar_size', 'footer', 'header', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'url', 'presmerovanie', 'utm', 'seo_title', 'seo_description', 'seo_keywords', 'layout_poradie', 'layout_poradie_id', 'layout_element', 'layout_element_type', 'layout_element_active', 'layout_element_time_from', 'layout_element_time_to', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
+            [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_size', 'last_edit_user'], 'integer'],
+            [['globalSearch', 'name', 'url', 'presmerovanie', 'utm', 'seo_title', 'seo_description', 'seo_keywords', 'layout_poradie', 'layout_poradie_id', 'layout_element', 'layout_element_type', 'layout_element_active', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
         ];
     }
 
