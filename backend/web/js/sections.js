@@ -69,12 +69,20 @@ $('.btn-save-options').click(function(){
     var optionsJson = JSON.stringify(options);
     optionsElement.attr('data-options', optionsJson);
     
-    $('#options').find('[name="section-id"]').val('');
-    $('#options').find('[name="section-class"]').val('');
-    $('#options').find('[name="section-style"]').val('');
+    clearOptions();
     
     return true;
 });
+
+$('#modal-options').on('hidden.bs.modal', function () {
+    clearOptions();
+});
+
+function clearOptions() {
+    $('#options').find('[name="section-id"]').val('');
+    $('#options').find('[name="section-class"]').val('');
+    $('#options').find('[name="section-style"]').val('');
+}
 
 function getRowColumnsClasses(rowType) {
     switch (rowType) {
