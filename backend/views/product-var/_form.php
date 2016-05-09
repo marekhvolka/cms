@@ -22,10 +22,10 @@ use backend\components\IdentifierWidget;
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'popis')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'description')->textArea(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
-        ArrayHelper::map(VarType::find()->where(['show_product' => 1])->all(), 'id', 'type')
+        ArrayHelper::map(VarType::find()->where(['show_product' => 1])->all(), 'id', 'label')
     ) ?>
 
     <label class="control-label" for="productvar-product_type">For Product Types</label>

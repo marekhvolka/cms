@@ -70,7 +70,7 @@ abstract class BaseController extends Controller
                     'items' => [
                         ['label' => 'Administrácia portálov', 'url' => Url::to(['/portal/index'])],
                         ['label' => 'Administrácia používateľov', 'url' => Url::to(['/user/index'])],
-                        ['label' => 'Portálové premenné', 'url' => Url::to(['/product-var/index'])],
+                        ['label' => 'Portálové premenné', 'url' => Url::to(['/portal-var/index'])],
                         ['label' => 'Administrácia krajín', 'url' => Url::to(['/language/index'])],
                         ['label' => 'Administrácia rolí', 'url' => Url::to(['/product-type/index'])],
                         ['label' => 'Administrácia oprávnení', 'url' => Url::to(['/tag/index'])],

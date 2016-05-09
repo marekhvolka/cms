@@ -29,9 +29,9 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
                 <label class="col-sm-2 control-label label-var"><?=$var_value->var->name?></label>
                 <div class="col-sm-10 var-value">
                     <div class="input-group">
-                        <?php if($var_value->var->popis): ?>
+                        <?php if($var_value->var->description): ?>
                         <span class="input-group-addon">
-                            <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var_value->var->popis?>">
+                            <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var_value->var->description?>">
                                 <!-- The class CANNOT be tooltip... -->
                                 <i class='glyphicon glyphicon-question-sign'></i>
                             </a>
@@ -94,9 +94,9 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
         <label class="col-sm-2 control-label label-var"><?=$var->name?></label>
         <div class="col-sm-10 var-value">
             <div class="input-group">
-                <?php if($var->popis): ?>
+                <?php if($var->description): ?>
                 <span class="input-group-addon">
-                    <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var->popis?>">
+                    <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var->description?>">
                         <!-- The class CANNOT be tooltip... -->
                         <i class='glyphicon glyphicon-question-sign'></i>
                     </a>

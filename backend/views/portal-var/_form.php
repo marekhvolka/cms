@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
-        ArrayHelper::map(VarType::find()->all(), 'id', 'type')
+        ArrayHelper::map(VarType::find()->all(), 'id', 'label')
     ) ?>
 
     <div class="form-group">

@@ -36,7 +36,7 @@ class SnippetCode extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['code', 'popis'], 'string'],
+            [['code', 'description'], 'string'],
             [['snippet_id'], 'integer'],
             [['name', 'portal'], 'string', 'max' => 50],
             [['name', 'snippet_id'], 'unique', 'targetAttribute' => ['name', 'snippet_id'], 'message' => 'The combination of Name and Snippet ID has already been taken.']
@@ -52,7 +52,7 @@ class SnippetCode extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'code' => 'Kód',
-            'popis' => 'Popis',
+            'description' => 'Popis',
             'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'Snippet ID',
         ];
@@ -98,7 +98,7 @@ class SnippetCode extends \yii\db\ActiveRecord
 
                 $snippetCode->name = $codeData['name'];
                 $snippetCode->code = $codeData['code'];
-                $snippetCode->popis = $codeData['popis'];
+                $snippetCode->description = $codeData['description'];
                 $snippetCode->portal = $codeData['portal'];
 
                 $modelSnippetCodes[] = $snippetCode;

@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'identifier') ?>
 
-    <?= $form->field($model, 'popis') ?>
+    <?= $form->field($model, 'description') ?>
 
     <?php // echo $form->field($model, 'type_id') ?>
 

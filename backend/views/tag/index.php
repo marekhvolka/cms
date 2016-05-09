@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\TagSearch */
@@ -27,8 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label'=>'Názov',
                 'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data->nazov_system,'?r=tag/update&id='. $data->id);
+                'value'=>function ($dataProvider) {
+                    return Html::a($dataProvider->name, Url::to(['/tag/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'name',

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PortalVarSearch */
@@ -21,15 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             [
                 'label'=>'Názov',
                 'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data->name,'?r=portal-var/update&id='. $data->id);
+                'value'=>function ($dataProvider) {
+                    return Html::a($dataProvider->name, Url::to(['/portal-var/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'identifier',

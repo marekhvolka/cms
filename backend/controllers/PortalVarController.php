@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\ProductVar;
+use backend\models\PortalVar;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -11,9 +11,9 @@ use backend\components\IdentifierComponent;
 
 
 /**
- * ProductVarController implements the CRUD actions for ProductVar model.
+ * PortalVarController implements the CRUD actions for PortalVar model.
  */
-class ProductVarController extends BaseController
+class PortalVarController extends BaseController
 {
     public function behaviors()
     {
@@ -28,20 +28,20 @@ class ProductVarController extends BaseController
     }
 
     /**
-     * Lists all ProductVar models.
+     * Lists all PortalVar models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => ProductVar::find(),
+            'query' => PortalVar::find(),
         ]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
     public function actionSlug()
     {
         if (Yii::$app->request->isPost) {
@@ -51,20 +51,17 @@ class ProductVarController extends BaseController
     }
 
     /**
-     * Creates a new ProductVar model.
+     * Creates a new PortalVar model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new ProductVar();
-        
+        $model = new PortalVar();
+
         if (Yii::$app->request->isPost) {
             $loaded = $model->load(Yii::$app->request->post());
-            $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
-            $productTypesIds = $productTypeIdsArray ? implode($productTypeIdsArray, ',') : '';
-            $model->product_type = $productTypesIds;
-            
+
             if ( $model->save()) {
                 return $this->redirect(['index']);
             }
@@ -76,7 +73,7 @@ class ProductVarController extends BaseController
     }
 
     /**
-     * Updates an existing ProductVar model.
+     * Updates an existing PortalVar model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -86,9 +83,7 @@ class ProductVarController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
-            $productTypesIds = !$productTypeIdsArray ? : implode($productTypeIdsArray, ',');
-            $model->product_type = $productTypesIds;
+
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['index']);
             }
@@ -100,7 +95,7 @@ class ProductVarController extends BaseController
     }
 
     /**
-     * Deletes an existing ProductVar model.
+     * Deletes an existing PortalVar model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -113,15 +108,15 @@ class ProductVarController extends BaseController
     }
 
     /**
-     * Finds the ProductVar model based on its primary key value.
+     * Finds the PortalVar model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return ProductVar the loaded model
+     * @return PortalVar the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ProductVar::findOne($id)) !== null) {
+        if (($model = PortalVar::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

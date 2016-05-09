@@ -68,13 +68,13 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
         <div class="row">
             <div class="col-sm-12">                
                 <label class="control-label" for="snippetcode-popis">
-                    <?= $snippetCode->getAttributeLabel('popis'); ?>
+                    <?= $snippetCode->getAttributeLabel('description'); ?>
                 </label>
                 <?php
-                echo BaseHtml::activeTextarea($snippetCode, "popis", [ 
+                echo BaseHtml::activeTextarea($snippetCode, "description", [
                     'class' => 'form-control code-popis attribute',
                     'data-attribute-name' => 'popis',
-                    'name' => "SnippetCode[$arrayFirstDimensionValue][popis]",
+                    'name' => "SnippetCode[$arrayFirstDimensionValue][description]",
                 ]);
                 ?>
             </div>

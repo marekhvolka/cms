@@ -15,7 +15,6 @@ use yii\helpers\ArrayHelper;
  * @property string $default_value
  * @property string $snippet_id
  * @property string $parent_id
- * @property integer $page_var
  * @property integer $tmp_id
  *
  * @property SnippetDropdown[] $snippetDropdowns
@@ -45,7 +44,7 @@ class SnippetVar extends \yii\db\ActiveRecord
         return [
             [['identifier', 'type_id'], 'required'],
             [['type_id', 'description', 'default_value', 'parent_id'], 'string'],
-            [['snippet_id', 'page_var'], 'integer'],
+            [['snippet_id'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
             [['tmp_id'], 'string', 'max' => 45],
             [['identifier', 'snippet_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
@@ -68,7 +67,6 @@ class SnippetVar extends \yii\db\ActiveRecord
             'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
-            'page_var' => 'Page Var',
         ];
     }
     

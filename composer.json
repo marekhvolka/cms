@@ -16,14 +16,14 @@
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": ">=2.0.6",
-        "yiisoft/yii2-bootstrap": "^2.0",
         "yiisoft/yii2-swiftmailer": "*",
         "kartik-v/yii2-widget-select2": "@dev",
         "kartik-v/yii2-widget-switchinput": "*",
         "wbraganca/yii2-dynamicform": "*",
         "kartik-v/yii2-tree-manager": "@dev",
         "kartik-v/yii2-widget-sidenav": "*",
-        "conquer/codemirror": "*"
+        "conquer/codemirror": "*",
+        "yiisoft/yii2-bootstrap": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
