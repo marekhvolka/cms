@@ -49,8 +49,15 @@ class TagController extends BaseController
     {
         $model = new Tag();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if (Yii::$app->request->isPost) {
+            $loaded = $model->load(Yii::$app->request->post());
+            $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
+            $productTypesIds = $productTypeIdsArray ? implode($productTypeIdsArray, ',') : '';
+            $model->product_type = $productTypesIds;
+
+            if ( $model->save()) {
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -69,7 +76,13 @@ class TagController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
+            $productTypesIds = !$productTypeIdsArray ? : implode($productTypeIdsArray, ',');
+            $model->product_type = $productTypesIds;
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,

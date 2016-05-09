@@ -89,6 +89,7 @@ class ProductVarController extends BaseController
             $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
             $productTypesIds = !$productTypeIdsArray ? : implode($productTypeIdsArray, ',');
             $model->product_type = $productTypesIds;
+
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['index']);
             }

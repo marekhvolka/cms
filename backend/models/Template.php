@@ -40,11 +40,11 @@ class Template extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'sablona', 'active'], 'required'],
+            [['name', 'identifier', 'active'], 'required'],
             [['active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
-            [['sablona'], 'string', 'max' => 100]
+            [['identifier'], 'string', 'max' => 100]
         ];
     }
 
@@ -56,8 +56,8 @@ class Template extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'popis' => 'Popis',
-            'sablona' => 'Sablona',
+            'description' => 'Popis',
+            'identifier' => 'Sablona',
             'active' => 'Active',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',

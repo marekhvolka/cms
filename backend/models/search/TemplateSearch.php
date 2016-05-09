@@ -19,7 +19,7 @@ class TemplateSearch extends Template
     {
         return [
             [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'popis', 'sablona', 'last_edit'], 'safe'],
+            [['name', 'description', 'identifier', 'last_edit'], 'safe'],
         ];
     }
 
@@ -63,8 +63,8 @@ class TemplateSearch extends Template
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'popis', $this->popis])
-            ->andFilterWhere(['like', 'sablona', $this->sablona]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'identifier', $this->identifier]);
 
         return $dataProvider;
     }

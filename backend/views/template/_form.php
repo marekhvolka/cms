@@ -15,9 +15,9 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'popis')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'sablona')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
