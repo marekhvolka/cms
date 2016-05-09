@@ -214,9 +214,13 @@ ul.container-items-codes {
 
 .dropdown-blocks {
     display: inline-block;
-    
+
 }
 
 .section-button {
     display: inline-block;
+}
+
+.section {
+    position: relative;
 }
