@@ -69,10 +69,10 @@ $this->registerJsFile('@web/js/sections.js');
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#" class="add-row" data-row-type-width="12">Fullwidth blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="6">2 stĺpcový blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="4">3 stĺpcový blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="3">4 stĺpcový blok</a></li>
+                <li><a href="#" class="add-row" data-row-type-width="1">Fullwidth blok</a></li>
+                <li><a href="#" class="add-row" data-row-type-width="2">2 stĺpcový blok</a></li>
+                <li><a href="#" class="add-row" data-row-type-width="3">3 stĺpcový blok</a></li>
+                <li><a href="#" class="add-row" data-row-type-width="4">4 stĺpcový blok</a></li>
                 <li><a href="#" class="add-row" data-row-type-width="2/1">2/1 blok</a></li>
                 <li><a href="#" class="add-row" data-row-type-width="1/2">1/2 blok</a></li>
             </ul>
@@ -94,9 +94,7 @@ $this->registerJsFile('@web/js/sections.js');
 
 <!--ROW TO ADD-->
 <div class="row cloned-row" hidden="hidden">
-    <div class="layout-wrapper">
-        
-    </div>
+    
 </div>
 
 <!--COLUMN TO ADD-->
@@ -122,7 +120,7 @@ $this->registerJsFile('@web/js/sections.js');
             </ul>
         </div>
         <div class="section-button">
-            <button type="button" class="btn btn-danger btn-xs btn-remove-column" title="Zmazať" >
+            <button type="button" class="btn btn-danger btn-xs btn-remove-row" title="Zmazať" >
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
         </div>

@@ -1,7 +1,5 @@
 
 $('.btn-add-section').click(function(e) {
-    
-    
     var sectionClone = $('.cloned-section').clone();
     sectionClone.removeAttr('hidden');
     sectionClone.removeClass('cloned-section')
@@ -18,14 +16,21 @@ $('.btn-add-section').click(function(e) {
         rowClone.removeClass('cloned-row');
         rowClone.removeAttr('hidden');
         
-        var columnWrapper = rowClone.find('.layout-wrapper');
-        columnWrapper.addClass('col-sm-12');
-        
-        var columnClone = $('.cloned-column').clone();
-        columnClone.removeClass('cloned-column');
-        columnClone.removeAttr('hidden');
-        
-        columnWrapper.append(columnClone);
+        var columns = getRowColumnsClasses($(this).data('row-type-width'));
+        for (var i = 0; i < columns.length; i++) {
+            var columnWrapper = $('<div class="column-wrapper col-sm-' + columns[i] + '"></div>').appendTo(rowClone);
+            var columnClone = $('.cloned-column').clone();
+            
+            columnClone.removeClass('cloned-column');
+            columnClone.removeAttr('hidden');
+
+            columnWrapper.append(columnClone);
+            
+            // Remove row event attached.
+            columnClone.find('.btn-remove-row').click(function() {
+                $(this).parents('.row').first().remove();
+            })    
+        }
         
         var sectionRows = sectionClone.find('.section-rows');
         sectionRows.append(rowClone);
@@ -34,3 +39,23 @@ $('.btn-add-section').click(function(e) {
     return false;
 });
 
+
+
+
+
+function getRowColumnsClasses(rowType) {
+    switch (rowType) {
+        case 1:
+            return ['12'];
+        case 2:
+            return ['6', '6'];
+        case 3:
+            return ['4', '4', '4'];
+        case 4:
+            return ['3', '3', '3', '3'];
+        case '2/1':
+            return ['8', '4'];
+        case '1/2':
+            return ['4', '8'];
+    }
+}
