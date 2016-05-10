@@ -5,10 +5,15 @@ use yii\widgets\ActiveForm;
 use yii\helpers\BaseHtml;
 use yii\bootstrap\Modal;
 use yii\bootstrap\Nav;
+use kartik\sortable\Sortable;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Section */
 /* @var $form yii\widgets\ActiveForm */
+?>
+
+<?php
+Sortable::widget();
 ?>
 
 <div class="section-form">
@@ -28,8 +33,8 @@ use yii\bootstrap\Nav;
     Modal::end();
     ?>
 
-    <div class="sections">
-    </div>
+    <ul class="sections">
+    </ul>
 
     <div class="col-sm-10 col-sm-offset-2">
         <button type="button" class="btn btn-success btn-sm btn-add-section">
@@ -44,14 +49,19 @@ $js = <<<JS
 
 //$('#modal-1').modal({"show":false});
         
+$('.sections').sortable({});
+$('.section-rows').sortable({});
+        
 JS;
 $this->registerJs($js);
 
 $this->registerJsFile('@web/js/sections.js');
 ?>
 
+
+
 <!--SECTION TO ADD-->
-<div class="panel panel-default section cloned-section" 
+<li class="panel panel-default section cloned-section" 
      data-options="{}" hidden="hidden">
     <div class="btn-group section-buttons">
         <div class="section-button">
@@ -82,11 +92,11 @@ $this->registerJsFile('@web/js/sections.js');
 
     <div class="panel-heading"><h3 class="panel-title">Sekcia</h3></div>
     <div class="panel-body">
-        <div class="col-sm-12 section-rows"> 
-            
+        <div class="col-sm-12">
+            <ul class="section-rows"></ul>
         </div>
     </div>
-</div>
+</li>
 
 <!--ROW TO ADD-->
 <div class="row cloned-row" hidden="hidden">

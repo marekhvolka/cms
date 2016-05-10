@@ -13,7 +13,7 @@ $('.btn-add-section').click(function(e) {
     
     // Attach add row event.
     sectionClone.find('.add-row').click(function() {
-        var row = $('<div class="row"></div>');
+        var row = $('<li class="row"></li>');
         
         var columns = getRowColumnsClasses($(this).data('row-type-width'));
         for (var i = 0; i < columns.length; i++) {
@@ -35,11 +35,13 @@ $('.btn-add-section').click(function(e) {
         
         var sectionRows = sectionClone.find('.section-rows');
         sectionRows.append(row);
+        
+        $('.section-rows').sortable('reload');  // Attach event for sorting sections.
     });
     
     attachOptionsButtonEvent(sectionClone.find('.options-btn'));
     
-    
+    $('.sections').sortable('reload');  // Attach event for sorting sections.
     return false;
 });
 
