@@ -21,7 +21,7 @@ class PageSearch extends Page
     {
         return [
             [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_size', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'url', 'presmerovanie', 'utm', 'seo_title', 'seo_description', 'seo_keywords', 'layout_poradie', 'layout_poradie_id', 'layout_element', 'layout_element_type', 'layout_element_active', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'url', 'seo_title', 'seo_description', 'seo_keywords', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
         ];
     }
 

@@ -17,25 +17,15 @@ use common\models\User;
  * @property integer $parent_id
  * @property integer $poradie
  * @property integer $product_id
- * @property string $presmerovanie
- * @property string $utm
- * @property integer $presmerovanie_aktivne
  * @property string $seo_title
  * @property string $seo_description
  * @property string $seo_keywords
- * @property string $layout_poradie
- * @property string $layout_poradie_id
- * @property string $layout_element
- * @property string $layout_element_type
- * @property string $layout_element_active
- * @property string $layout_element_time_from
- * @property string $layout_element_time_to
  * @property string $color_scheme
- * @property integer $sidebar
+ * @property integer $sidebar_active
  * @property string $sidebar_side
  * @property integer $sidebar_size
- * @property integer $footer
- * @property integer $header
+ * @property integer $footer_active
+ * @property integer $header_active
  * @property string $last_edit
  * @property integer $last_edit_user
  *
@@ -44,12 +34,6 @@ use common\models\User;
  * @property Page $parent
  * @property Page[] $pages
  * @property Product $product
- * @property PageBlockSett[] $pageBlockSetts
- * @property PageFooter[] $pageFooters
- * @property PageFormSett[] $pageFormSetts
- * @property PageHeader[] $pageHeaders
- * @property PageSidebar[] $pageSidebars
- * @property PageSnippet[] $pageSnippets
  */
 class Page extends \yii\db\ActiveRecord
 {
@@ -72,15 +56,13 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'url', 'portal_id', 'active', 'in_menu', 'poradie', 'presmerovanie_aktivne', 'layout_poradie', 'layout_poradie_id', 'layout_element', 'layout_element_type', 'layout_element_active', 'layout_element_time_from', 'layout_element_time_to', 'color_scheme', 'sidebar', 'sidebar_side', 'footer', 'header'], 'required'],
-            [['portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'presmerovanie_aktivne', 'sidebar', 'sidebar_size', 'footer', 'header', 'last_edit_user'], 'integer'],
-            [['seo_description', 'layout_element', 'layout_element_type', 'layout_element_active', 'layout_element_time_from', 'layout_element_time_to'], 'string'],
+            [['name', 'url', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
+            [['portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
+            [['seo_description'], 'string'],
             [['last_edit'], 'safe'],
-            [['name', 'url', 'presmerovanie', 'layout_poradie', 'color_scheme'], 'string', 'max' => 50],
+            [['name', 'url', 'color_scheme'], 'string', 'max' => 50],
             [['utm'], 'string', 'max' => 200],
             [['seo_title'], 'string', 'max' => 150],
-            [['layout_poradie_id'], 'string', 'max' => 255],
-            [['sidebar_side'], 'string', 'max' => 5],
             [['url', 'portal_id', 'parent_id'], 'unique', 'targetAttribute' => ['url', 'portal_id', 'parent_id'], 'message' => 'The combination of Url, Portal ID and Parent ID has already been taken.']
         ];
     }

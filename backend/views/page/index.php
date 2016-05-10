@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use backend\models\User;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PageSearch */
@@ -34,8 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label'=>'Názov',
                 'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data->name,'?r=page/update&id='. $data->id);
+                'value'=>function ($dataProvider) {
+                    return Html::a($dataProvider->name,Url::to(['/page/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'url',
