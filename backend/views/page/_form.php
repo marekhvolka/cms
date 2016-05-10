@@ -33,28 +33,20 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Page::find()->all(), 'id', 'name'),
         'language' => 'en',
-        'options' => ['placeholder' => 'Select a state ...'],
+        'options' => ['placeholder' => 'Výber rodiča ...'],
         'pluginOptions' => [
             'allowClear' => true
         ],
     ]); ?>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-    'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
-    'language' => 'en',
-    'options' => ['placeholder' => 'Select a state ...'],
-    'pluginOptions' => [
-    'allowClear' => true
-    ],
+        'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
+        'language' => 'en',
+        'options' => ['placeholder' => 'Výber produktu ...'],
+        'pluginOptions' => [
+        'allowClear' => true
+        ],
     ]); ?>
-
-    <?= $form->field($model, 'presmerovanie')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'utm')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'presmerovanie_aktivne')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
 
     <?= $form->field($model, 'seo_title')->textInput(['maxlength' => true]) ?>
 
@@ -62,23 +54,9 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'seo_keywords')->textarea() ?>
 
-    <?= $form->field($model, 'layout_poradie')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'layout_poradie_id')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'layout_element')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'layout_element_type')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'layout_element_active')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'layout_element_time_from')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'layout_element_time_to')->textarea(['rows' => 6]) ?>
-
     <?= $form->field($model, 'color_scheme')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'sidebar')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'sidebar_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
@@ -86,11 +64,11 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
-    <?= $form->field($model, 'footer')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'footer_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?= $form->field($model, 'header')->widget(SwitchInput::classname(), [
+    <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
