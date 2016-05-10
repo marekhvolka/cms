@@ -12,7 +12,7 @@ use Yii;
  * @property integer $order
  *
  * @property Row $row
- * @property SnippetValue[] $snippetValues
+ * @property PageBlock[] $snippetValues
  */
 class Column extends \yii\db\ActiveRecord
 {
@@ -60,6 +60,6 @@ class Column extends \yii\db\ActiveRecord
      */
     public function getSnippetValues()
     {
-        return $this->hasMany(SnippetValue::className(), ['column_id' => 'id']);
+        return $this->hasMany(PageBlock::className(), ['column_id' => 'id']);
     }
 }

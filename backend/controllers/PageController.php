@@ -2,9 +2,15 @@
 
 namespace backend\controllers;
 
+use backend\models\Language;
+use backend\models\PageBlock;
+use backend\models\Product;
+use common\components\CacheEngine;
+use common\components\ParseEngine;
 use Yii;
 use backend\models\Page;
 use backend\models\search\PageSearch;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -104,5 +110,37 @@ class PageController extends BaseController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGenerate()
+    {
+        $cacheEngine = new CacheEngine();
+
+        $cacheEngine->init();
+
+        //$cacheEngine->cacheDictionary(Language::findOne(['identifier' => 'cz']));
+
+        $cacheEngine->createProductFile(Language::findOne(['identifier' => 'cz']));
+
+        $products = Product::find()->all();
+
+        foreach($products as $product)
+            $cacheEngine->cacheProduct($product);
+
+        $cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));
+    }
+
+    public function actionParse()
+    {
+        $parseEngine = new ParseEngine();
+
+        $parseEngine->parseMasterContent();
+
+        die();
+
+        $parseEngine->parsePageGlobalSection('page_header', 'page');
+        $parseEngine->parsePageGlobalSection('page_footer', 'page');
+
+        $parseEngine->parsePageGlobalSection('portal_global', 'portal');
     }
 }

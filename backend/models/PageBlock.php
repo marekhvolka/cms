@@ -15,22 +15,23 @@ use Yii;
  * @property integer $parent_id
  * @property integer $order
  * @property string $data
+ * @property string $type
  *
  * @property Product $product
  * @property Column $column
- * @property SnippetValue $parent
- * @property SnippetValue[] $snippetValues
+ * @property PageBlock $parent
+ * @property PageBlock[] $pageBlocks
  * @property Portal $portal
- * @property Snippet $snippet
+ * @property SnippetCode $snippetCode
  */
-class SnippetValue extends \yii\db\ActiveRecord
+class PageBlock extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'snippet_value';
+        return 'page_block';
     }
 
     /**
@@ -40,10 +41,10 @@ class SnippetValue extends \yii\db\ActiveRecord
     {
         return [
             [['snippet_id', 'product_id', 'portal_id', 'column_id', 'parent_id', 'order'], 'integer'],
-            [['data'], 'string'],
+            [['data', 'type'], 'string'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetValue::className(), 'targetAttribute' => ['parent_id' => 'id']],
+            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => PageBlock::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
         ];
@@ -63,6 +64,7 @@ class SnippetValue extends \yii\db\ActiveRecord
             'parent_id' => 'Parent ID',
             'order' => 'Order',
             'data' => 'Data',
+            'type' => 'Typ bloku'
         ];
     }
 
@@ -87,15 +89,15 @@ class SnippetValue extends \yii\db\ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(SnippetValue::className(), ['id' => 'parent_id']);
+        return $this->hasOne(PageBlock::className(), ['id' => 'parent_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetValues()
+    public function getPageBlocks()
     {
-        return $this->hasMany(SnippetValue::className(), ['parent_id' => 'id']);
+        return $this->hasMany(PageBlock::className(), ['parent_id' => 'id']);
     }
 
     /**
@@ -109,8 +111,8 @@ class SnippetValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippet()
+    public function getSnippetCode()
     {
-        return $this->hasOne(Snippet::className(), ['id' => 'snippet_id']);
+        return $this->hasOne(SnippetCode::className(), ['id' => 'snippet_code_id']);
     }
 }
