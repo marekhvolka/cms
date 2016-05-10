@@ -147,4 +147,13 @@ return array (
       '@kartik/tree' => $vendorDir . '/kartik-v/yii2-tree-manager',
     ),
   ),
+  'kartik-v/yii2-sortable' => 
+  array (
+    'name' => 'kartik-v/yii2-sortable',
+    'version' => '1.2.0.0',
+    'alias' => 
+    array (
+      '@kartik/sortable' => $vendorDir . '/kartik-v/yii2-sortable',
+    ),
+  ),
 );

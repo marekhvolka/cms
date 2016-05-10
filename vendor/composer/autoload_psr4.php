@@ -17,6 +17,7 @@ return array(
     'wbraganca\\dynamicform\\' => array($vendorDir . '/wbraganca/yii2-dynamicform'),
     'kartik\\tree\\' => array($vendorDir . '/kartik-v/yii2-tree-manager'),
     'kartik\\switchinput\\' => array($vendorDir . '/kartik-v/yii2-widget-switchinput'),
+    'kartik\\sortable\\' => array($vendorDir . '/kartik-v/yii2-sortable'),
     'kartik\\sidenav\\' => array($vendorDir . '/kartik-v/yii2-widget-sidenav'),
     'kartik\\select2\\' => array($vendorDir . '/kartik-v/yii2-widget-select2'),
     'kartik\\form\\' => array($vendorDir . '/kartik-v/yii2-widget-activeform'),
