@@ -79,9 +79,10 @@ use yii\helpers\BaseHtml;
             'data-attribute-name' => 'id',
             ]); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][tmp_id]", '', [
-            'class' => 'tmp-id attribute',
-            'data-attribute-name' => 'tmp_id',
+        <?= BaseHtml::checkbox("SnippetVar[$arrayFirstDimensionValue][existing]", $snippetVar->id ? true : false,[
+            'hidden' => 'hidden',
+            'class' => 'attribute',
+            'data-attribute-name' => 'existing',
             ]); ?>
         
         <div class="row">

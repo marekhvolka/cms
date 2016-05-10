@@ -154,9 +154,10 @@ class SnippetVar extends \yii\db\ActiveRecord
         
         foreach ($snippetVarData as $varData) {
             if (isset($varData['identifier']) && $varData['identifier']) {
-                if (isset($varData['id']) && $varData['id']) {
-                    $snippetVar = SnippetVar::findOne($varData['id']);
-                    $snippetVar->id = $varData['id'];
+                
+                if ($varData['existing'] == 'true') {
+                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']]);
+                    
                 } else {
                     $snippetVar = new SnippetVar();
                 }
@@ -166,7 +167,6 @@ class SnippetVar extends \yii\db\ActiveRecord
                 $snippetVar->type_id = $varData['type_id'];
                 $snippetVar->default_value = $varData['default_value'];
                 $snippetVar->description = $varData['description'];
-                $snippetVar->tmp_id = $varData['tmp_id'];
 
                 // Set parent if SnippetVar is item of list type parent SnippetVar.   
                 $snippetVar->parent_id = $varData['parent_id'];
@@ -185,6 +185,11 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public static function saveMultiple($modelSnippetVars, $snippet)
     {
+        foreach ($modelSnippetVars as $var) {
+            
+        }
+        
+        
         foreach ($modelSnippetVars as $var) {
             $var->snippet_id = $snippet->id;
 
