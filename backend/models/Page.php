@@ -10,7 +10,7 @@ use common\models\User;
  *
  * @property integer $id
  * @property string $name
- * @property string $url
+ * @property string $identifier
  * @property integer $portal_id
  * @property integer $active
  * @property integer $in_menu
@@ -56,14 +56,13 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'url', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
+            [['name', 'identifier', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
             [['portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
             [['seo_description'], 'string'],
             [['last_edit'], 'safe'],
-            [['name', 'url', 'color_scheme'], 'string', 'max' => 50],
-            [['utm'], 'string', 'max' => 200],
+            [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
             [['seo_title'], 'string', 'max' => 150],
-            [['url', 'portal_id', 'parent_id'], 'unique', 'targetAttribute' => ['url', 'portal_id', 'parent_id'], 'message' => 'The combination of Url, Portal ID and Parent ID has already been taken.']
+            [['identifier', 'portal_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'portal_id', 'parent_id'], 'message' => 'The combination of Identifier, Portal ID and Parent ID has already been taken.']
         ];
     }
 
@@ -75,6 +74,7 @@ class Page extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'identifier' => 'Identifikátor',
             'url' => 'Url',
             'portal_id' => 'Portál',
             'active' => 'Active',
@@ -104,6 +104,16 @@ class Page extends \yii\db\ActiveRecord
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];
+    }
+
+    public function getUrl()
+    {
+        if (isset($this->parent))
+            $url = $this->parent->url;
+        else
+            $url = '/';
+
+        return  $url . $this->identifier . '/';
     }
 
     /**

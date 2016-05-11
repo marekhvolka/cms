@@ -31,148 +31,13 @@ class CacheEngine extends Component
 
     public function init()
     {
-        $this->cacheDirectory = Yii::getAlias('@publicDirectory') . '/cache';
+        $this->cacheDirectory = Yii::getAlias('@publicDirectory') . '/cache/';
 
         $this->latteRenderer = new Engine();
 
         $this->latteRenderer->setLoader(new FileLoader());
 
         $this->latteRenderer->setTempDirectory(__DIR__.'/tmp');
-    }
-
-    /** Metoda na vytvorenie adresara pri pridani novej krajiny
-     * @param Language $language
-     */
-    public function createLanguageCacheDirectory(Language $language)
-    {
-        $directoryPath = $this->cacheDirectory . '/' . $language->identifier;
-
-        if (!file_exists($directoryPath))
-        {
-            mkdir($directoryPath, 0777, true);
-
-            mkdir($directoryPath . '/portal', 0777, true); //vytvori priecinok pre portaly
-            mkdir($directoryPath . '/products', 0777, true); //vytvori priecinok pre produkty
-        }
-    }
-
-    /** Metoda na vytvorenie adresara pri pridavani portalu
-     * @param Portal $portal
-     */
-    public function createPortalCacheDirectory(Portal $portal)
-    {
-        $directoryPath = $this->cacheDirectory . '/' . $portal->language->identifier . '/portal/';
-
-        $directoryPath .= $portal->domain;
-
-        if (!file_exists($directoryPath))
-        {
-            mkdir($directoryPath, 0777, true);
-        }
-    }
-
-    public function createProductFile(Language $language)
-    {
-        $query = 'SELECT identifier FROM product WHERE language_id = :language_id ORDER BY parent_id';
-
-        $products = Yii::$app->db->createCommand(
-                $query,
-                [
-                    ':language_id' => $language['id']
-                ]
-            )
-            ->queryAll();
-
-        $buffer = '<?php ' . PHP_EOL;
-
-        foreach($products as $key => $product)
-        {
-            $buffer .= 'include "' . $this->cacheDirectory . '/cz/products/' . $product['identifier'] . '.php"; ' . PHP_EOL;
-        }
-
-        $buffer .= ' ?>';
-
-        $directoryPath = $this->cacheDirectory . '/' . $language->identifier;
-
-        $file = fopen($directoryPath . '/products.php', 'w+');
-        fwrite($file, $buffer);
-        fclose($file);
-    }
-
-    /** Metoda na cachovanie slovnika
-     * @param Language $language
-     */
-    public function cacheDictionary(Language $language)
-    {
-        $buffer = '<?php ' . PHP_EOL . '$slovnik = ';
-
-        $query = 'SELECT identifier, translation FROM dictionary
-          JOIN dictionary_translation ON (dictionary.id = word_id)
-          WHERE language_id = :language_id';
-
-        $words = (object)ArrayHelper::map(Yii::$app->db->createCommand($query,
-            [':language_id' => $language['id']])
-            ->queryAll(), 'identifier', 'translation');
-
-        $buffer .= var_export($words, true) . '; ?>';
-
-        $directoryPath = $this->cacheDirectory . '/' . $language->identifier;
-
-        if (!file_exists($directoryPath))
-            $this->createLanguageCacheDirectory($language);
-
-        $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
-
-        $file = fopen($directoryPath . '/dictionary.php', 'w+');
-        fwrite($file, $buffer);
-        fclose($file);
-    }
-
-    /** Metoda na cachovanie vsetkych produktov pre dany jazyk
-     * @param Product $product
-     */
-    public function cacheProduct(Product $product)
-    {
-        $buffer = '<?php ' . PHP_EOL;
-
-        $query = 'SELECT identifier, value FROM product_var
-          JOIN product_var_value ON (product_var.id = var_id)
-          WHERE product_id = :product_id';
-
-        $productVars = ArrayHelper::map(Yii::$app->db->createCommand($query,
-            [':product_id' => $product['id']])
-            ->queryAll(), 'identifier', 'value');
-
-        if (isset($product->parent)) // ak ma produkt rodica
-        {
-            $buffer .= '$' . $product->identifier . ' = array_merge($' . $product->parent->identifier . '
-                , ' . var_export($productVars, true) . '); ?>';
-        }
-        else
-        {
-            $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
-        }
-
-        $directoryPath = $this->cacheDirectory . '/' . $product->language->identifier;
-
-        if (!file_exists($directoryPath))
-            $this->createLanguageCacheDirectory($product->language);
-
-        $file = fopen($directoryPath . '/products/' . $product->identifier . '.php', 'w+');
-
-        fwrite($file, $buffer);
-
-        fclose($file);
-    }
-
-    public function cachePortal(Portal $portal)
-    {
-
-    }
-
-    public function cachePage(Page $page)
-    {
-
     }
 
     public function compileBlock(PageBlock $pageBlock)
@@ -203,11 +68,7 @@ class CacheEngine extends Component
 
         $path = $this->cacheDirectory . '/block_cache.latte';
 
-        $file = fopen($path, 'w+');
-
-        fwrite($file, $buffer);
-
-        fclose($file);
+        $this->writeToFile($path, 'w+', $buffer);
 
         $result = $this->latteRenderer->renderToString($path, array());
 
@@ -252,4 +113,197 @@ class CacheEngine extends Component
         return $renderedString;
     }
 
+    //region ========================  CACHE SEKCIA  =================================
+    /** Metoda na cachovanie slovnika
+     * @param Language $language
+     */
+    public function cacheDictionary(Language $language)
+    {
+        $buffer = '<?php ' . PHP_EOL . '$slovnik = ';
+
+        $query = 'SELECT identifier, translation FROM dictionary
+          JOIN dictionary_translation ON (dictionary.id = word_id)
+          WHERE language_id = :language_id';
+
+        $words = (object)ArrayHelper::map(Yii::$app->db->createCommand($query,
+            [':language_id' => $language['id']])
+            ->queryAll(), 'identifier', 'translation');
+
+        $buffer .= var_export($words, true) . '; ?>';
+
+        $directoryPath = $this->cacheDirectory . '/' . $language->identifier;
+
+        if (!file_exists($directoryPath))
+            $this->createLanguageCacheDirectory($language);
+
+        $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
+
+        $this->writeToFile($directoryPath . 'dictionary.php', 'w+', $buffer);
+    }
+
+    /** Metoda na cachovanie vsetkych produktov pre dany jazyk
+     * @param Product $product
+     */
+    public function cacheProduct(Product $product)
+    {
+        $buffer = '<?php ' . PHP_EOL;
+
+        $query = 'SELECT identifier, value FROM product_var
+          JOIN product_var_value ON (product_var.id = var_id)
+          WHERE product_id = :product_id';
+
+        $productVars = ArrayHelper::map(Yii::$app->db->createCommand($query,
+            [':product_id' => $product['id']])
+            ->queryAll(), 'identifier', 'value');
+
+        if (isset($product->parent)) // ak ma produkt rodica
+        {
+            $buffer .= '$' . $product->identifier . ' = array_merge($' . $product->parent->identifier . '
+                , ' . var_export($productVars, true) . '); ?>';
+        }
+        else
+        {
+            $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
+        }
+
+        $directoryPath = $this->getProductsCacheDirectory($product->language);
+
+        $this->writeToFile($directoryPath . $product->identifier . '.php', 'w+', $buffer);
+    }
+
+    public function cachePortal(Portal $portal)
+    {
+
+    }
+
+    public function cachePage(Page $page)
+    {
+        $directoryPath = $this->getPageCacheDirectory($page);
+
+        $buffer = '<?php ' . PHP_EOL;
+
+        $buffer .= '$url = ' . $page->url;
+
+        $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
+
+        $this->writeToFile($directoryPath . 'page_var.php', 'w+', $buffer);
+    }
+    //endregion
+
+
+    //region ========================  CREATE SEKCIA  =================================
+    /** Metoda na vytvorenie adresara pri pridani novej krajiny
+     * @param Language $language
+     */
+    public function createLanguageCacheDirectory(Language $language)
+    {
+        $directoryPath = $this->getLanguageCacheDirectory($language);
+
+        if (!file_exists($directoryPath))
+        {
+            mkdir($directoryPath, 0777, true);
+
+            mkdir($directoryPath . 'portal', 0777, true); //vytvori priecinok pre portaly
+            mkdir($directoryPath . 'products', 0777, true); //vytvori priecinok pre produkty
+        }
+    }
+
+    /** Metoda na vytvorenie adresara pri pridavani portalu
+     * @param Portal $portal
+     */
+    public function createPortalCacheDirectory(Portal $portal)
+    {
+        $directoryPath = $this->getPortalCacheDirectory($portal);
+
+        if (!file_exists($directoryPath))
+        {
+            mkdir($directoryPath, 0777, true);
+        }
+    }
+
+    public function createProductFile(Language $language)
+    {
+        $directoryPath = $this->getLanguageCacheDirectory($language);
+
+        $query = 'SELECT identifier FROM product WHERE language_id = :language_id ORDER BY parent_id';
+
+        $products = Yii::$app->db->createCommand(
+            $query,
+            [
+                ':language_id' => $language['id']
+            ]
+        )
+            ->queryAll();
+
+        $buffer = '<?php ' . PHP_EOL;
+
+        foreach($products as $key => $product)
+        {
+            $buffer .= 'include "' . $directoryPath . $product['identifier'] . '.php"; ' . PHP_EOL;
+        }
+
+        $buffer .= ' ?>';
+
+
+        $this->writeToFile($directoryPath . 'products.php', 'w+', $buffer);
+    }
+
+    public function createPageCacheDirectory(Page $page)
+    {
+        $directoryPath = $this->getPageCacheDirectory($page);
+
+        mkdir($directoryPath, 0777, true);
+    }
+    //endregion
+
+
+    //region ========================  GET SEKCIA  =================================*/
+    /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany jazyk
+     * @param Language $language
+     * @return string
+     */
+    public function getLanguageCacheDirectory(Language $language)
+    {
+        return $this->cacheDirectory . $language->identifier . '/';
+    }
+
+    /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany portal
+     * @param Portal $portal
+     * @return string
+     */
+    public function getPortalCacheDirectory(Portal $portal)
+    {
+        return $this->getLanguageCacheDirectory($portal->language) . $portal->domain . '/';
+    }
+
+    /** Vrati cestu k adresaru, kde su ulozene cache subory pre danu podstranku
+     * @param Page $page
+     * @return string
+     */
+    public function getPageCacheDirectory(Page $page)
+    {
+        return $this->getPortalCacheDirectory($page->portal) . 'page' . $page->id . '/';
+    }
+
+    /** Vrati cestu k adresaru, kde su ulozene cache subory pre produkty daneho jazyka
+     * @param Language $language
+     * @return string
+     */
+    public function getProductsCacheDirectory(Language $language)
+    {
+        return $this->getLanguageCacheDirectory($language) . 'products/';
+    }
+    //endregion
+
+    /** Funkcia na zapis do suboru
+     * @param $path - cesta k suboru
+     * @param $mode - mod zapisu (napr. w, w+)
+     * @param $string - retazec, ktory sa ma zapisat
+     */
+    private function writeToFile($path, $mode, $string)
+    {
+        $file = fopen($path, $mode);
+        fwrite($file, $string);
+        fclose($file);
+    }
 }
