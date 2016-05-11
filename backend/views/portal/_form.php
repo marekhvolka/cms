@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\PortalVar;
+use backend\models\Variable;
 use yii\widgets\ActiveForm;
 use backend\models\Template;
 use yii\helpers\ArrayHelper;
@@ -49,4 +50,4 @@ use backend\components\VariableWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?=VariableWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
+    <?=VariableWidget::widget(['type' => Variable::className(), 'model' => $model])?>

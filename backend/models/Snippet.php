@@ -22,12 +22,10 @@ use common\models\User;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
- * @property PortalSnippet[] $portalSnippets
- * @property ProductSnippet[] $productSnippets
  * @property SnippetCode $defaultCode
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes
- * @property SnippetVar[] $snippetVars
+ * @property VariableValue[] $snippetVars
  */
 class Snippet extends \yii\db\ActiveRecord
 {
@@ -80,22 +78,6 @@ class Snippet extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPortalSnippets()
-    {
-        return $this->hasMany(PortalSnippet::className(), ['snippet_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductSnippets()
-    {
-        return $this->hasMany(ProductSnippet::className(), ['snippet_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getDefaultCode()
     {
         return $this->hasOne(SnippetCode::className(), ['id' => 'default_code_id']);
@@ -122,6 +104,6 @@ class Snippet extends \yii\db\ActiveRecord
      */
     public function getSnippetVars()
     {
-        return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
+        return $this->hasMany(Variable::className(), ['snippet_id' => 'id']);
     }
 }

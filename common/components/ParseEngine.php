@@ -11,6 +11,9 @@ namespace common\components;
 
 class ParseEngine
 {
+    /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabuliek page_block
+     * @param $type
+     */
     public function parsePortalProductSnippet($type)
     {
         if ($type == 'product')

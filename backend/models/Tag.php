@@ -17,7 +17,7 @@ use Yii;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
- * @property ProductTag[] $productTags
+ * @property Tag[] $products
  * @property User $lastEditUser
  */
 class Tag extends \yii\db\ActiveRecord
@@ -70,9 +70,10 @@ class Tag extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProductTags()
+    public function getProducts()
     {
-        return $this->hasMany(ProductTag::className(), ['tag_id' => 'id']);
+        //TODO: fix
+        return $this->hasMany(Product::className(), ['tag_id' => 'id']);
     }
 
     /**

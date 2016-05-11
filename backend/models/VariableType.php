@@ -8,25 +8,23 @@ use Yii;
  * This is the model class for table "var_type".
  *
  * @property integer $id
- * @property string $type
- * @property string $popis
+ * @property string $identifier
+ * @property string $description
  * @property integer $show_snippet
  * @property integer $show_portal
  * @property integer $show_product
  * @property string $tbl_type
  *
- * @property PortalVar[] $portalVars
- * @property ProductVar[] $productVars
- * @property SnippetVar[] $snippetVars
+ * @property Variable[] $variables
  */
-class VarType extends \yii\db\ActiveRecord
+class VariableType extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'var_type';
+        return 'variable_type';
     }
 
     /**
@@ -35,10 +33,10 @@ class VarType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'show_snippet', 'show_portal', 'show_product', 'tbl_type'], 'required'],
-            [['popis'], 'string'],
+            [['identifier', 'show_snippet', 'show_portal', 'show_product', 'tbl_type'], 'required'],
+            [['description'], 'string'],
             [['show_snippet', 'show_portal', 'show_product'], 'integer'],
-            [['type'], 'string', 'max' => 50],
+            [['identifier'], 'string', 'max' => 50],
             [['tbl_type'], 'string', 'max' => 7]
         ];
     }
@@ -50,8 +48,8 @@ class VarType extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'type' => 'Type',
-            'popis' => 'Popis',
+            'identifier' => 'Názov typu',
+            'description' => 'Popis',
             'show_snippet' => 'Show Snippet',
             'show_portal' => 'Show Portal',
             'show_product' => 'Show Product',
@@ -62,24 +60,8 @@ class VarType extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPortalVars()
+    public function getVariables()
     {
-        return $this->hasMany(PortalVar::className(), ['type_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductVars()
-    {
-        return $this->hasMany(ProductVar::className(), ['type_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSnippetVars()
-    {
-        return $this->hasMany(SnippetVar::className(), ['type_id' => 'id']);
+        return $this->hasMany(Variable::className(), ['type_id' => 'id']);
     }
 }

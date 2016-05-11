@@ -13,7 +13,6 @@ use Yii;
  * @property string $identifier
  * @property integer $active
  *
- * @property DictionaryTranslation[] $dictionaryTranslations
  * @property Portal[] $portals
  * @property Product[] $products
  */
@@ -58,14 +57,6 @@ class Language extends \yii\db\ActiveRecord
             'identifier' => 'Identifier',
             'active' => 'Active',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDictionaryTranslations()
-    {
-        return $this->hasMany(DictionaryTranslation::className(), ['lng' => 'id']);
     }
 
     /**

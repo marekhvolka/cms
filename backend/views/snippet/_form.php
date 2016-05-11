@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\VariableType;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
@@ -63,7 +64,7 @@ use yii\web\View;
                 ?>
                 <?php
                 $snippetVars = $model->snippetVars;
-                $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
+                $snippetVars = (empty($snippetVars)) ? [new Variable()] : $snippetVars;
                 ?>
                 <div><!-- widgetContainer -->
                     <ul style="list-style: none;" class="container-items-vars">
@@ -96,7 +97,7 @@ use yii\web\View;
 <?php
 $urlForAppendVar = Url::to(['/snippet/append-var']);
 $urlForAppendCode = Url::to(['/snippet/append-code']);
-$listIdJs = VarType::find()->where(['type' => 'list'])->one()->id;
+$listIdJs = VariableType::find()->where(['identifier' => 'list'])->one()->id;
 
 $js = <<<JS
 

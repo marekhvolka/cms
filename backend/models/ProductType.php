@@ -16,7 +16,6 @@ use Yii;
  *
  * @property Product[] $products
  * @property User $lastEditUser
- * @property SnippetProductValue[] $snippetProductValues
  */
 class ProductType extends \yii\db\ActiveRecord
 {
@@ -74,13 +73,5 @@ class ProductType extends \yii\db\ActiveRecord
     public function getLastEditUser()
     {
         return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSnippetProductValues()
-    {
-        return $this->hasMany(SnippetProductValue::className(), ['product_type_id' => 'id']);
     }
 }

@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
  * @property string $id
  * @property string $identifier
  * @property string $description
- * @property integer $type_id
+ * @property integer $variable_type_id
  * @property string $default_value
  * @property string $snippet_id
  * @property string $parent_id
@@ -19,12 +19,13 @@ use yii\helpers\ArrayHelper;
  * @property SnippetDropdown[] $snippetDropdowns
  * @property SnippetProductValue[] $snippetProductValues
  * @property ProductType[] $productTypes
- * @property SnippetVar $parent
- * @property SnippetVar[] $children
+ * @property Variable $parent
+ * @property Variable[] $children
  * @property Snippet $snippet
- * @property VarType $type
+ * @property VariableType $variableType
+ * @property string $product_type
  */
-class SnippetVar extends \yii\db\ActiveRecord
+class Variable extends \yii\db\ActiveRecord
 {
 
     /**
@@ -32,7 +33,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'snippet_var';
+        return 'variable';
     }
 
     /**
@@ -41,7 +42,7 @@ class SnippetVar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['identifier', 'type_id'], 'required'],
+            [['identifier', 'variable_type_id'], 'required'],
             [['type_id', 'description', 'default_value', 'parent_id'], 'string'],
             [['snippet_id'], 'integer'],
             [['identifier'], 'string', 'max' => 50],
@@ -62,7 +63,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'identifier' => 'Názov',
             'description' => 'Popis',
-            'type_id' => 'Typ premennej',
+            'variable_type_id' => 'Typ premennej',
             'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
@@ -88,7 +89,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getSnippetDropdowns()
     {
-        return $this->hasMany(SnippetDropdown::className(), ['var_id' => 'id']);
+        return $this->hasMany(SnippetDropdown::className(), ['variable_id' => 'id']);
     }
 
     /**
@@ -96,7 +97,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getSnippetProductValues()
     {
-        return $this->hasMany(SnippetProductValue::className(), ['var_id' => 'id']);
+        return $this->hasMany(SnippetProductValue::className(), ['variable_id' => 'id']);
     }
 
     /**
@@ -104,7 +105,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getProductTypes()
     {
-        return $this->hasMany(ProductType::className(), ['id' => 'product_type_id'])->viaTable('snippet_product_value', ['var_id' => 'id']);
+        return $this->hasMany(ProductType::className(), ['id' => 'product_type_id'])->viaTable('snippet_product_value', ['variable_id' => 'id']);
     }
 
     /**
@@ -112,7 +113,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(SnippetVar::className(), ['id' => 'parent_id']);
+        return $this->hasOne(Variable::className(), ['id' => 'parent_id']);
     }
 
     /**
@@ -120,7 +121,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getChildren()
     {
-        return $this->hasMany(SnippetVar::className(), ['parent_id' => 'id']);
+        return $this->hasMany(Variable::className(), ['parent_id' => 'id']);
     }
 
     /**
@@ -134,14 +135,14 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getVariableType()
     {
-        return $this->hasOne(VarType::className(), ['id' => 'type_id']);
+        return $this->hasOne(VariableType::className(), ['id' => 'variable_type_id']);
     }
 
     /**
-     * Returns array of newly created SnippetVars from given data.
-     * @return backend\models\SnippetVar []
+     * Returns array of newly created Variables from given data.
+     * @return Variable []
      */
     public static function createMultipleFromData($snippetVarData)
     {
@@ -155,10 +156,10 @@ class SnippetVar extends \yii\db\ActiveRecord
             if (isset($varData['identifier']) && $varData['identifier']) {
                 
                 if ($varData['existing'] == 'true') {
-                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']]);
+                    $snippetVar = Variable::find()->where(['id' => $varData['id']]);
                     
                 } else {
-                    $snippetVar = new SnippetVar();
+                    $snippetVar = new Variable();
                 }
 
                 // Set all neccessary attributes.
@@ -179,7 +180,7 @@ class SnippetVar extends \yii\db\ActiveRecord
 
     /**
      * Saves multiple models to database.
-     * @param backend\models\SnippetVar [] $modelSnippetVars snippetVars to be saved.
+     * @param Variable [] $modelSnippetVars snippetVars to be saved.
      * @return boolean whether saving of models was unsuccessful
      */
     public static function saveMultiple($modelSnippetVars, $snippet)
@@ -187,7 +188,6 @@ class SnippetVar extends \yii\db\ActiveRecord
         foreach ($modelSnippetVars as $var) {
             
         }
-        
         
         foreach ($modelSnippetVars as $var) {
             $var->snippet_id = $snippet->id;
@@ -226,11 +226,29 @@ class SnippetVar extends \yii\db\ActiveRecord
         $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
 
         foreach ($varsIDsToDelete as $varID) {
-            $snippetVarToDelete = SnippetVar::findOne($varID);
+            $snippetVarToDelete = Variable::findOne($varID);
             if ($snippetVarToDelete) {
                 $snippetVarToDelete->delete();
             }
         }
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public static function getAllThatDoesntBelongToProduct($product_id)
+    {
+        $query = "variable.id not in (select variable_id from variable_value where product_id = $product_id)";
+        return Variable::find()->where($query);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public static function getAllThatBelongToProduct($product_id)
+    {
+        $query = "variable.id in (select variable_id from variable_value where product_id = $product_id)";
+        return Variable::find()->where($query);
     }
 
 }

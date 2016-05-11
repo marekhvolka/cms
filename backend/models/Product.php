@@ -25,8 +25,8 @@ use Yii;
  * @property Product $parent
  * @property Product[] $products
  * @property ProductSnippet[] $productSnippets
- * @property ProductTag[] $productTags
- * @property ProductVarValue[] $productVarValues
+ * @property Tag[] $tags
+ * @property VariableValue[] $variableValues
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -122,29 +122,29 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSnippets()
     {
-        return $this->hasMany(ProductSnippet::className(), ['product_id' => 'id']);
+        return $this->hasMany(PageBlock::className(), ['product_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProductTags()
+    public function getTags()
     {
-        return $this->hasMany(ProductTag::className(), ['product_id' => 'id']);
+        return $this->hasMany(Tag::className(), ['product_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProductVarValues()
+    public function getVariableValues()
     {
-        return $this->hasMany(ProductVarValue::className(), ['product_id' => 'id']);
+        return $this->hasMany(VariableValue::className(), ['product_id' => 'id']);
     }
 
     public function relations()
     {
         return array(
-            'product_vars' => array(self::HAS_MANY, 'ProductVar', 'product_var_value(product_id, var_id)'),
+            'product_vars' => array(self::HAS_MANY, 'Variables', 'product_var_value(product_id, var_id)'),
             'product_vars_value' => array(self::MANY_MANY, 'ProductVar', 'product_var_value(product_id, var_id)'),
         );
     }

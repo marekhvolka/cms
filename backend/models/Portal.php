@@ -18,12 +18,10 @@ use Yii;
  * @property integer $cached
  *
  * @property Page[] $pages
- * @property PageInclude[] $pageIncludes
  * @property Language $language
  * @property Template $template
- * @property PortalGlobal[] $portalGlobals
- * @property PortalSnippet[] $portalSnippets
- * @property PortalVarValue[] $portalVarValues
+ * @property PageBlock[] $portalSnippets
+ * @property VariableValue[] $variableValues
  */
 class Portal extends \yii\db\ActiveRecord
 {
@@ -82,14 +80,6 @@ class Portal extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageIncludes()
-    {
-        return $this->hasMany(PageInclude::className(), ['portal_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getLanguage()
     {
         return $this->hasOne(Language::className(), ['id' => 'language_id']);
@@ -106,24 +96,16 @@ class Portal extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPortalGlobals()
-    {
-        return $this->hasMany(PortalGlobal::className(), ['portal_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPortalSnippets()
     {
-        return $this->hasMany(PortalSnippet::className(), ['portal_id' => 'id']);
+        return $this->hasMany(PageBlock::className(), ['portal_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPortalVarValues()
+    public function getVariableValues()
     {
-        return $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id']);
+        return $this->hasMany(VariableValue::className(), ['portal_id' => 'id']);
     }
 }

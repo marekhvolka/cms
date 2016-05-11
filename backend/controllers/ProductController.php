@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
+use backend\models\Variable;
+use backend\models\VariableValue;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Product;
@@ -55,17 +57,17 @@ class ProductController extends BaseController
     public function actionCreate()
     {
         $model = new Product();
-        $modelsProductVarValue = [new ProductVarValue()];
+        $modelsProductVarValue = [new VariableValue()];
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
+            $modelsProductVarValue = Model::createMultiple(VariableValue::classname());
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             
             // TODO - refactor this - same code in PortalController
             $vars = Yii::$app->request->post('var');
             foreach ($vars as $id_var => $value) {
-                $productVarValue = new ProductVarValue();
+                $productVarValue = new VariableValue();
                 $productVarValue->product_id = $model->id;
                 $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
@@ -108,7 +110,7 @@ class ProductController extends BaseController
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new VariableValue()] : $modelsProductVarValue,
             ]);
         }
     }
@@ -122,12 +124,12 @@ class ProductController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $modelsProductVarValue = $model->productVarValues;
+        $modelsProductVarValue = $model->variableValues;
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $oldIDs = ArrayHelper::map($modelsProductVarValue, 'id', 'id');
-            $modelsProductVarValue = Model::createMultiple(ProductVar::classname(), $modelsProductVarValue);
+            $modelsProductVarValue = Model::createMultiple(Variable::classname(), $modelsProductVarValue);
             Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsProductVarValue, 'id', 'id')));
 
@@ -138,7 +140,7 @@ class ProductController extends BaseController
             }
             
             foreach ($vars as $id_var => $value) {
-                $productVarValue = new ProductVarValue();
+                $productVarValue = new VariableValue();
                 $productVarValue->product_id = $model->id;
                 $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
@@ -164,7 +166,7 @@ class ProductController extends BaseController
                 try {
                     if ($flag = $model->save(false)) {
                         if (! empty($deletedIDs)) {
-                            ProductVar::deleteAll(['id' => $deletedIDs]);
+                            Variable::deleteAll(['id' => $deletedIDs]);
                         }
                         foreach ($modelsProductVarValue as $modelProductVarValue) {
                             $modelProductVarValue->snippet_id = $model->id;
@@ -187,7 +189,7 @@ class ProductController extends BaseController
         {
             return $this->render('update', [
                 'model' => $model,
-                'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new VariableValue()] : $modelsProductVarValue,
             ]);
         }
     }

@@ -15,6 +15,7 @@ use Yii;
  * @property integer $parent_id
  * @property integer $order
  * @property string $data
+ * @property string $compiled_data
  * @property string $type
  *
  * @property Product $product
@@ -41,7 +42,7 @@ class PageBlock extends \yii\db\ActiveRecord
     {
         return [
             [['snippet_id', 'product_id', 'portal_id', 'column_id', 'parent_id', 'order'], 'integer'],
-            [['data', 'type'], 'string'],
+            [['data', 'type', 'compiled_data'], 'string'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => PageBlock::className(), 'targetAttribute' => ['parent_id' => 'id']],

@@ -130,7 +130,10 @@ class PageController extends BaseController
 
         $cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));*/
 
-        $cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
+        //$cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
+
+        $cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
+        $cacheEngine->compilePage(Page::findOne(['identifier' => 'pujcky']));
     }
 
     public function actionParse()

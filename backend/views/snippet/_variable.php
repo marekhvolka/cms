@@ -1,10 +1,10 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $snippetVar backend\models\SnippetVar */
+/* @var $snippetVar backend\models\Variable */
 
+use backend\models\VariableType;
 use yii\helpers\ArrayHelper;
-use backend\models\VarType;
 use yii\helpers\BaseHtml;
 
 ?>
@@ -40,17 +40,17 @@ use yii\helpers\BaseHtml;
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-type_id">
-                    <?= $snippetVar->getAttributeLabel('type_id'); ?>
+                    <?= $snippetVar->getAttributeLabel('variable_type_id'); ?>
                 </label>
                 <?php
-                $allVars = VarType::find()->where(['show_snippet' => 1])->all();
+                $allVars = VariableType::find()->where(['show_snippet' => 1])->all();
                 $data = ArrayHelper::map($allVars, 'id', 'label');
                 
-                echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
+                echo BaseHtml::activeDropDownList($snippetVar, 'variable_type_id', $data, [
                     'class' => 'form-control select-var-type attribute',
                     'prompt'=>'Vyber typ premennej',
                     'data-attribute-name' => 'type_id',
-                    'name' => "SnippetVar[$arrayFirstDimensionValue][type_id]",
+                    'name' => "SnippetVar[$arrayFirstDimensionValue][variable_type_id]",
                 ]);
                 ?>
             </div>
@@ -99,7 +99,7 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
         
-        <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->type == 'list') ? '' : 'hidden="hidden"' ?>>
+        <div class="row child-var" <?= (isset($snippetVar->variableType) && $snippetVar->variableType->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
             <div class="col-sm-11 col-sm-offset-1">
                 <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
                     <div class="panel-heading">

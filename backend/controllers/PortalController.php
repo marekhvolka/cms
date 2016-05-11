@@ -5,6 +5,8 @@ namespace backend\controllers;
 use backend\models\Model;
 use backend\models\PortalVar;
 use backend\models\PortalVarValue;
+use backend\models\Variable;
+use backend\models\VariableValue;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Portal;
@@ -55,16 +57,16 @@ class PortalController extends BaseController
     public function actionCreate()
     {
         $model = new Portal();
-        $modelsPortalVarValue = [new PortalVarValue()];
+        $modelsPortalVarValue = [new VariableValue()];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $modelsPortalVarValue = Model::createMultiple(PortalVarValue::classname());
+            $modelsPortalVarValue = Model::createMultiple(VariableValue::classname());
             Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
 
             // TODO - refactor this - same code in ProductController
             $vars = Yii::$app->request->post('var');
             foreach ($vars as $id_var => $value) {
-                $productVarValue = new PortalVarValue();
+                $productVarValue = new VariableValue();
                 $productVarValue->portal_id = $model->id;
                 $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
@@ -109,7 +111,7 @@ class PortalController extends BaseController
         {
             return $this->render('create', [
                 'model' => $model,
-                'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new PortalVarValue()] : $modelsPortalVarValue,
+                'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new VariableValue()] : $modelsPortalVarValue,
 
             ]);
         }
@@ -124,12 +126,12 @@ class PortalController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $modelsPortalVarValue = $model->portalVarValues;
+        $modelsPortalVarValue = $model->variableValues;
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $oldIDs = ArrayHelper::map($modelsPortalVarValue, 'id', 'id');
-            $modelsPortalVarValue = Model::createMultiple(PortalVar::classname(), $modelsPortalVarValue);
+            $modelsPortalVarValue = Model::createMultiple(Variable::classname(), $modelsPortalVarValue);
             Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPortalVarValue, 'id', 'id')));
 
@@ -139,7 +141,7 @@ class PortalController extends BaseController
             }
             
             foreach ($vars as $id_var => $value) {
-                $productVarValue = new PortalVarValue();
+                $productVarValue = new VariableValue();
                 $productVarValue->portal_id = $model->id;
                 $productVarValue->var_id = $id_var;
                 $productVarValue->value = $value[0];
@@ -165,7 +167,7 @@ class PortalController extends BaseController
                 try {
                     if ($flag = $model->save(false)) {
                         if (! empty($deletedIDs)) {
-                            PortalVar::deleteAll(['id' => $deletedIDs]);
+                            Variable::deleteAll(['id' => $deletedIDs]);
                         }
                         foreach ($modelsPortalVarValue as $modelPortalVarValue) {
                             $modelPortalVarValue->portal_id = $model->id;
@@ -188,7 +190,7 @@ class PortalController extends BaseController
         {
             return $this->render('update', [
                 'model' => $model,
-                'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new PortalVarValue()] : $modelsPortalVarValue,
+                'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new VariableValue()] : $modelsPortalVarValue,
             ]);
         }
     }

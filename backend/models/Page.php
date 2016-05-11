@@ -33,6 +33,7 @@ use common\models\User;
  * @property User $lastEditUser
  * @property Page $parent
  * @property Page[] $pages
+ * @property Section[] $sections
  * @property Product $product
  */
 class Page extends \yii\db\ActiveRecord
@@ -142,6 +143,14 @@ class Page extends \yii\db\ActiveRecord
     public function getPages()
     {
         return $this->hasMany(Page::className(), ['parent_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSections()
+    {
+        return $this->hasMany(Section::className(), ['page_id' => 'id']);
     }
 
     /**

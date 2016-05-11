@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\ProductVar;
+use backend\models\Variable;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use backend\models\Product;
@@ -46,4 +47,4 @@ use backend\components\VariableWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
     
-    <?=VariableWidget::widget(['type' => ProductVar::className(), 'model' => $model])?>
+    <?=VariableWidget::widget(['type' => Variable::className(), 'model' => $model])?>

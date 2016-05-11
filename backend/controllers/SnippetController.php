@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\SnippetCode;
+use backend\models\Variable;
 use Exception;
 use Yii;
 use backend\models\Model;
@@ -178,7 +179,7 @@ class SnippetController extends BaseController
     
     public function actionAppendVar()
     {
-        return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
+        return $this->renderAjax('_variable', ['snippetVar' => new Variable()]);
     }
 
     /**
