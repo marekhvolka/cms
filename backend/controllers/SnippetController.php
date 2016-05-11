@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\SnippetCode;
-use backend\models\Variable;
+use backend\models\SnippetVar;
 use Exception;
 use Yii;
 use backend\models\Model;
@@ -14,7 +14,6 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use backend\models\SnippetVar;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.
@@ -63,7 +62,7 @@ class SnippetController extends BaseController
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = Variable::createMultipleFromData($snippetVarData);
+            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -84,7 +83,7 @@ class SnippetController extends BaseController
                     if ($flag = $model->save(false)) {
                         
                         $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
-                        $flagVars = Variable::saveMultiple($modelSnippetVars, $model);
+                        $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
                         
                         if (!$flagCodes || !$flagVars) {
                             $transaction->rollBack();
@@ -100,8 +99,8 @@ class SnippetController extends BaseController
             }
         } else {
             return $this->render('create', [
-                        'model' => $model,
-                        'snippetCodes' => [new SnippetCode()],
+                'model' => $model,
+                'snippetCodes' => [new SnippetCode()],
             ]);
         }
     }
@@ -123,7 +122,7 @@ class SnippetController extends BaseController
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = Variable::createMultipleFromData($snippetVarData);
+            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
             
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -146,10 +145,10 @@ class SnippetController extends BaseController
                     
                     // Deleting and saving multiple SnippetCodes and SnippetVars in database.
                     SnippetCode::deleteMultiple($modelSnippetCodes, $model);
-                    Variable::deleteMultiple($modelSnippetVars, $model);
+                    SnippetVar::deleteMultiple($modelSnippetVars, $model);
 
                     $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
-                    $flagVars = Variable::saveMultiple($modelSnippetVars, $model);
+                    $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
                     
                     if ($flag && $flagCodes && $flagVars) {
                         $transaction->commit();
@@ -179,7 +178,7 @@ class SnippetController extends BaseController
     
     public function actionAppendVar()
     {
-        return $this->renderAjax('_variable', ['snippetVar' => new Variable()]);
+        return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
     }
 
     /**

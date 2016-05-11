@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'identifier',
             [
                 'label' => 'Typ',
-                'value' => 'type.type'
+                'value' => 'type.label'
             ],
             // 'product_type',
             'last_edit',

@@ -1,8 +1,8 @@
 <?php
 
+use backend\models\VarType;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use backend\models\VarType;
 use yii\helpers\ArrayHelper;
 use backend\models\ProductType;
 use kartik\select2\Select2;

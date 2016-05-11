@@ -15,16 +15,15 @@ use Yii;
  * @property integer $show_product
  * @property string $tbl_type
  *
- * @property Variable[] $variables
  */
-class VariableType extends \yii\db\ActiveRecord
+class VarType extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'variable_type';
+        return 'var_type';
     }
 
     /**
@@ -55,13 +54,5 @@ class VariableType extends \yii\db\ActiveRecord
             'show_product' => 'Show Product',
             'tbl_type' => 'Tbl Type',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVariables()
-    {
-        return $this->hasMany(Variable::className(), ['type_id' => 'id']);
     }
 }

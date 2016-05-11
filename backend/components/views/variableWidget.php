@@ -12,48 +12,48 @@ use kartik\select2\Select2;
 $type_exploded = explode("\\", $type);
 $property_name = lcfirst($type_exploded[sizeof($type_exploded) - 1]) . 'Values';; 
 
-$all_variables = $type::find()->all();
+$all_vars = $type::find()->all();
 
 if ($model->id) {
     $selected_var_values = $model->{$property_name};
 }
 
-$all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
+$all_vars_data = ArrayHelper::map($all_vars, 'id', 'name');
 
 ?>
     
     <div id="dynamic-fields" class="row">
         <?php if(isset($selected_var_values)):?>
             <?php foreach ($selected_var_values as $i => $var_value):?>
-            <div class="form-group field-<?=$var_value->variable_id?> active-field">
-                <label class="col-sm-2 control-label label-var"><?=$var_value->variable->name?></label>
+            <div class="form-group field-<?=$var_value->var_id?> active-field">
+                <label class="col-sm-2 control-label label-var"><?=$var_value->var->name?></label>
                 <div class="col-sm-10 var-value">
                     <div class="input-group">
-                        <?php if($var_value->variable->description): ?>
+                        <?php if($var_value->var->description): ?>
                         <span class="input-group-addon">
-                            <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var_value->variable->description?>">
+                            <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="<?=$var_value->var->description?>">
                                 <!-- The class CANNOT be tooltip... -->
                                 <i class='glyphicon glyphicon-question-sign'></i>
                             </a>
                         </span>
                         <?php endif;?>
-                        <?php switch($var_value->variable->variableType->identifier):
+                        <?php switch($var_value->var->type->identifier):
                         case 'textarea': ?>
-                            <textarea id="field-<?=$var_value->variable_id?>" class="form-control" rows="5"
-                                      placeholder="<?=$var_value->variable->name?>"
-                                      data-type="<?=$var_value->variable->variableType->identifier?>" data-name="<?=$var_value->variable->name?>"
-                                      name="var[<?=$var_value->variable_id?>][]">
-                                      <?=$var_value->value_text?>
+                            <textarea id="field-<?=$var_value->var_id?>" class="form-control" rows="5"
+                                      placeholder="<?=$var_value->var->name?>"
+                                      data-type="<?=$var_value->var->type->identifier?>" data-name="<?=$var_value->var->name?>"
+                                      name="var[<?=$var_value->var_id?>][]">
+                                      <?=$var_value->value?>
                             </textarea>
                             <?php break; ?>
                         <?php default: ?>
                             <input type="text" class="form-control" 
-                                   value="<?=$var_value->value_text?>" placeholder="<?=$var_value->variable->name?>"
-                                   data-type="<?=$var_value->variable->variableType->identifier?>" data-name="<?=$var_value->variable->name?>"
-                                   name="var[<?=$var_value->variable_id?>][]">
+                                   value="<?=$var_value->value?>" placeholder="<?=$var_value->var->name?>"
+                                   data-type="<?=$var_value->var->type->identifier?>" data-name="<?=$var_value->var->name?>"
+                                   name="var[<?=$var_value->var_id?>][]">
                             <?php break; ?>
                         <?php endswitch; ?>
-                        <span class="input-group-btn rmv-btn" data-field-id="<?=$var_value->variable_id?>">
+                        <span class="input-group-btn rmv-btn" data-field-id="<?=$var_value->var_id?>">
                             <button class="btn btn-danger remove-field" type="button" >
                             <span class="glyphicon glyphicon-remove"></span></button>
                         </span>   
@@ -69,7 +69,7 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
     echo '<label class="control-label">Variables</label>';
     echo Select2::widget([
         'name' => 'vars',
-        'data' => $all_variables_data,
+        'data' => $all_vars_data,
         'options' => [
             'placeholder' => 'Select var ...',
             'id' => 'types-dropdown',
@@ -89,7 +89,7 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
 </div>
 
 <div id="input-types-list">
-    <?php foreach ($all_variables as $i => $var):?>
+    <?php foreach ($all_vars as $i => $var):?>
     <div class="form-group hidden field-<?=$var->id?>">
         <label class="col-sm-2 control-label label-var"><?=$var->name?></label>
         <div class="col-sm-10 var-value">
@@ -102,17 +102,16 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
                     </a>
                 </span>
                 <?php endif;?>
-
-                <?php switch($var->variableType->identifier):
+                <?php switch($var->type->identifier):
                 case 'textarea': ?>
                     <textarea id="field-<?=$var->id?>" class="form-control" rows="5" 
                               placeholder="<?=$var->name?>" 
-                              data-type="<?=$var->variableType->identifier?>" data-name="<?=$var->name?>"></textarea>
+                              data-type="<?=$var->type->identifier?>" data-name="<?=$var->name?>"></textarea>
                     <?php break; ?>
                 <?php default: ?>
                     <input type="text" class="form-control" 
                            value="" placeholder="<?=$var->name?>" 
-                           data-type="<?=$var->variableType->identifier?>" data-name="<?=$var->name?>">
+                           data-type="<?=$var->type->identifier?>" data-name="<?=$var->name?>">
                     <?php break; ?>
                 <?php endswitch; ?>
                 <span class="input-group-btn rmv-btn" data-field-id="<?=$var->id?>">
@@ -128,12 +127,12 @@ $all_variables_data = ArrayHelper::map($all_variables, 'id', 'name');
 <?php
 
 // Additional javascript (will be injected into js code).
-// List of variables data - id and name.
+// List of vars data - id and name.
 $vars_data_js = '{';
 // Concatening of string which will be used as javascript code.
-for ($i = 0; $i < sizeof($all_variables); $i++) {
-    $data_object = '' . $all_variables[$i]->id .  ': "' . $all_variables[$i]->name . '"';
-    if ($i != sizeof($all_variables) - 1) {
+for ($i = 0; $i < sizeof($all_vars); $i++) {
+    $data_object = '' . $all_vars[$i]->id .  ': "' . $all_vars[$i]->name . '"';
+    if ($i != sizeof($all_vars) - 1) {
         $data_object .= ',';
     }
     
@@ -143,12 +142,12 @@ $vars_data_js .= '}';
 
 
 // Additional javascript (will be injected into js code).
-// Array of IDs of product variables which was allready set to product.
+// Array of IDs of product vars which was allready set to product.
 $selected_var_values_js = '[]';
 
-// IDs of selected product variables.
-if (isset($selected_var_values)) {  // Update of product which have set variables.
-    $selected_var_values_ids = ArrayHelper::getColumn($selected_var_values, 'variable_id');
+// IDs of selected product vars.
+if (isset($selected_var_values)) {  // Update of product which have set vars.
+    $selected_var_values_ids = ArrayHelper::getColumn($selected_var_values, 'var_id');
     $selected_var_values_js = '[';
     // Concatening of string which will be used as javascript code.
     for ($i = 0; $i < sizeof($selected_var_values_ids); $i++) {

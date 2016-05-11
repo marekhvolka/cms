@@ -21,7 +21,7 @@ use Yii;
  * @property Language $language
  * @property Template $template
  * @property PageBlock[] $portalSnippets
- * @property VariableValue[] $variableValues
+ * @property SnippetVarValue[] $portalVarValues
  */
 class Portal extends \yii\db\ActiveRecord
 {
@@ -104,8 +104,8 @@ class Portal extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getVariableValues()
+    public function getPortalVarValues()
     {
-        return $this->hasMany(VariableValue::className(), ['portal_id' => 'id']);
+        return $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id']);
     }
 }

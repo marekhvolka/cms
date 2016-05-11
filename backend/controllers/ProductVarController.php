@@ -2,8 +2,8 @@
 
 namespace backend\controllers;
 
-use Yii;
 use backend\models\ProductVar;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -11,7 +11,7 @@ use backend\components\IdentifierComponent;
 
 
 /**
- * ProductVarController implements the CRUD actions for ProductVar model.
+ * ProductVariableController implements the CRUD actions for ProductVar model.
  */
 class ProductVarController extends BaseController
 {

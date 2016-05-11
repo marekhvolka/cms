@@ -2,8 +2,8 @@
 
 namespace backend\controllers;
 
-use Yii;
 use backend\models\PortalVar;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

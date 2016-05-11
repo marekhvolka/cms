@@ -13,7 +13,7 @@ use Yii;
  * @property integer $parent_id
  * @property integer $type_id
  * @property string $identifier
- * @property string $popis
+ * @property string $description
  * @property integer $language_id
  * @property integer $active
  * @property string $last_edit
@@ -26,7 +26,7 @@ use Yii;
  * @property Product[] $products
  * @property ProductSnippet[] $productSnippets
  * @property Tag[] $tags
- * @property VariableValue[] $variableValues
+ * @property ProductVarValue[] $productVarValues
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -69,7 +69,7 @@ class Product extends \yii\db\ActiveRecord
             'parent_id' => 'Rodič',
             'type_id' => 'Typ produktu',
             'identifier' => 'Identifikátor',
-            'popis' => 'Popis',
+            'description' => 'Popis',
             'language_id' => 'Krajina',
             'active' => 'Active',
             'last_edit' => 'Last Edit',
@@ -136,9 +136,9 @@ class Product extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getVariableValues()
+    public function getProductVarValues()
     {
-        return $this->hasMany(VariableValue::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductVarValue::className(), ['product_id' => 'id']);
     }
 
     public function relations()

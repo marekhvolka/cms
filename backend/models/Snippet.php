@@ -25,7 +25,7 @@ use common\models\User;
  * @property SnippetCode $defaultCode
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes
- * @property VariableValue[] $snippetVars
+ * @property SnippetVar[] $snippetVariables
  */
 class Snippet extends \yii\db\ActiveRecord
 {
@@ -102,8 +102,8 @@ class Snippet extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetVars()
+    public function getSnippetVariables()
     {
-        return $this->hasMany(Variable::className(), ['snippet_id' => 'id']);
+        return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
     }
 }

@@ -1,17 +1,11 @@
 <?php
 
-use backend\models\VariableType;
+use backend\models\SnippetVar;
+use backend\models\VarType;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use wbraganca\dynamicform\DynamicFormWidget;
 use kartik\switchinput\SwitchInput;
-use conquer\codemirror\CodemirrorWidget;
-use conquer\codemirror\CodemirrorAsset;
 use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
-use backend\models\Portal;
-use backend\models\VarType;
-use backend\models\SnippetVar;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -63,8 +57,8 @@ use yii\web\View;
                 ]);
                 ?>
                 <?php
-                $snippetVars = $model->snippetVars;
-                $snippetVars = (empty($snippetVars)) ? [new Variable()] : $snippetVars;
+                $snippetVars = $model->snippetVariables;
+                $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 ?>
                 <div><!-- widgetContainer -->
                     <ul style="list-style: none;" class="container-items-vars">
@@ -97,7 +91,7 @@ use yii\web\View;
 <?php
 $urlForAppendVar = Url::to(['/snippet/append-var']);
 $urlForAppendCode = Url::to(['/snippet/append-code']);
-$listIdJs = VariableType::find()->where(['identifier' => 'list'])->one()->id;
+$listIdJs = VarType::find()->where(['identifier' => 'list'])->one()->id;
 
 $js = <<<JS
 

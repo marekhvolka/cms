@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 /* @var $snippetVar backend\models\Variable */
 
-use backend\models\VariableType;
+use backend\models\VarType;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
@@ -44,14 +44,14 @@ use yii\helpers\BaseHtml;
                     <?= $snippetVar->getAttributeLabel('variable_type_id'); ?>
                 </label>
                 <?php
-                $allVars = VariableType::find()->where(['show_snippet' => 1])->all();
+                $allVars = VarType::find()->where(['show_snippet' => 1])->all();
                 $data = ArrayHelper::map($allVars, 'id', 'label');
                 
-                echo BaseHtml::activeDropDownList($snippetVar, 'variable_type_id', $data, [
+                echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
                     'class' => 'form-control select-var-type attribute',
                     'prompt'=>'Vyber typ premennej',
                     'data-attribute-name' => 'type_id',
-                    'name' => "SnippetVar[$arrayFirstDimensionValue][variable_type_id]",
+                    'name' => "SnippetVar[$arrayFirstDimensionValue][type_id]",
                 ]);
                 ?>
             </div>
@@ -101,7 +101,7 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
         
-        <div class="row child-var" <?= (isset($snippetVar->variableType) && $snippetVar->variableType->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
+        <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
             <div class="col-sm-11 col-sm-offset-1">
                 <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
                     <div class="panel-heading">

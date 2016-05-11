@@ -3,6 +3,7 @@
 namespace backend\models\search;
 
 use backend\models\ProductVar;
+use backend\models\ProductVar;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -64,7 +65,7 @@ class ProductVarSearch extends ProductVar
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'identifier', $this->identifier])
-            ->andFilterWhere(['like', 'description', $this->popis])
+            ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'product_type', $this->product_type]);
 
         return $dataProvider;
