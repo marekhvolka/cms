@@ -138,18 +138,18 @@ class SnippetVar extends \yii\db\ActiveRecord
     {
         return $this->hasOne(VarType::className(), ['id' => 'type_id']);
     }
-
+    
     /**
      * Returns array of newly created SnippetVars from given data.
      * @return backend\models\SnippetVar []
      */
-    public static function createMultipleFromData($snippetVarData)
+    public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
     {
-        $modelSnippetVars = [];      // Array of created SnippetVars.
-
         if (!$snippetVarData) {
             return $modelSnippetVars;
         }
+        
+        $modelSnippetVars = [];      // Array of created SnippetVars.
 
         foreach ($snippetVarData as $varData) {
             if (isset($varData['identifier']) && $varData['identifier']) {
@@ -176,19 +176,21 @@ class SnippetVar extends \yii\db\ActiveRecord
         return $modelSnippetVars;
     }
 
-    private static function handleChild($var, $modelSnippetVars, $snippet)
+    
+    // TODO - this may be extracted to behavior or helper.
+    private function handleChild($snippetVars, $snippet)
     {
-        $previousId = $var->id;
+        $previousId = $this->id;
         
-        $var->snippet_id = $snippet->id;
-        if (!$var->save(false)) {
+        $this->snippet_id = $snippet->id;
+        if (!$this->save(false)) {
             return false;
         }
 
-        foreach ($modelSnippetVars as $potentialChild) {
+        foreach ($snippetVars as $potentialChild) {
             if ($potentialChild->parent_id == $previousId) {
-                $potentialChild->parent_id = $var->id;
-                $saved = SnippetVar::handleChild($potentialChild, $modelSnippetVars, $snippet);
+                $potentialChild->parent_id = $this->id;
+                $saved = $potentialChild->handleChild($snippetVars, $snippet);
                 if (!$saved) {
                     return false;
                 }
@@ -203,10 +205,10 @@ class SnippetVar extends \yii\db\ActiveRecord
      * @param backend\models\SnippetVar [] $modelSnippetVars snippetVars to be saved.
      * @return boolean whether saving of models was unsuccessful
      */
-    public static function saveMultiple($modelSnippetVars, $snippet)
+    public static function saveMultiple($snippetVars, $snippet)
     {
-        foreach ($modelSnippetVars as $var) {
-            $saved = SnippetVar::handleChild($var, $modelSnippetVars, $snippet);
+        foreach ($snippetVars as $var) {
+            $saved = $var->handleChild($snippetVars, $snippet);
             if (!$saved) {
                 return false;
             }
