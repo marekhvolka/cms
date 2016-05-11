@@ -40,7 +40,7 @@ class Variable extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'identifier' => 'Názov',
+            'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'type_id' => 'Typ premennej',
         ];

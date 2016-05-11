@@ -35,7 +35,7 @@ class VarType extends \yii\db\ActiveRecord
             [['identifier', 'show_snippet', 'show_portal', 'show_product', 'tbl_type'], 'required'],
             [['description'], 'string'],
             [['show_snippet', 'show_portal', 'show_product'], 'integer'],
-            [['identifier'], 'string', 'max' => 50],
+            [['identifier', 'name'], 'string', 'max' => 50],
             [['tbl_type'], 'string', 'max' => 7]
         ];
     }
@@ -47,7 +47,7 @@ class VarType extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'identifier' => 'Názov typu',
+            'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'show_snippet' => 'Show Snippet',
             'show_portal' => 'Show Portal',

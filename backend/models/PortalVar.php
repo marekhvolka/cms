@@ -45,7 +45,7 @@ class PortalVar extends Variable
      */
     public static function getAllThatDoesntBelongToPortal($portal_id)
     {
-        $query = "variable.id not in (select variable_id from portal_var_value where portal_id = $portal_id)";
+        $query = "variable.id not in (select var_id from portal_var_value where portal_id = $portal_id)";
         return PortalVar::find()->where($query);
     }
 
@@ -54,7 +54,7 @@ class PortalVar extends Variable
      */
     public static function getAllThatBelongToPortal($portal_id)
     {
-        $query = "variable.id in (select variable_id from portal_var_value where portal_id = $portal_id)";
+        $query = "variable.id in (select var_id from portal_var_value where portal_id = $portal_id)";
         return PortalVar::find()->where($query);
     }
 }
