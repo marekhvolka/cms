@@ -21,7 +21,7 @@ class PageSearch extends Page
     {
         return [
             [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_size', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'identifier', 'seo_title', 'seo_description', 'seo_keywords', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'identifier', 'title', 'description', 'keywords', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
         ];
     }
 

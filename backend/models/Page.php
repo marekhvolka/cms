@@ -17,9 +17,9 @@ use common\models\User;
  * @property integer $parent_id
  * @property integer $poradie
  * @property integer $product_id
- * @property string $seo_title
- * @property string $seo_description
- * @property string $seo_keywords
+ * @property string $title
+ * @property string $description
+ * @property string $keywords
  * @property string $color_scheme
  * @property integer $sidebar_active
  * @property string $sidebar_side
@@ -58,10 +58,10 @@ class Page extends \yii\db\ActiveRecord
         return [
             [['name', 'identifier', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
             [['portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
-            [['seo_description'], 'string'],
+            [['description'], 'string'],
             [['last_edit'], 'safe'],
             [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
-            [['seo_title'], 'string', 'max' => 150],
+            [['title'], 'string', 'max' => 150],
             [['identifier', 'portal_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'portal_id', 'parent_id'], 'message' => 'The combination of Identifier, Portal ID and Parent ID has already been taken.']
         ];
     }
@@ -85,27 +85,23 @@ class Page extends \yii\db\ActiveRecord
             'presmerovanie' => 'Presmerovanie',
             'utm' => 'Utm',
             'presmerovanie_aktivne' => 'Presmerovanie Aktivne',
-            'seo_title' => 'Seo Title',
-            'seo_description' => 'Seo Description',
-            'seo_keywords' => 'Seo Keywords',
-            'layout_poradie' => 'Layout Poradie',
-            'layout_poradie_id' => 'Layout Poradie ID',
-            'layout_element' => 'Layout Element',
-            'layout_element_type' => 'Layout Element Type',
-            'layout_element_active' => 'Layout Element Active',
-            'layout_element_time_from' => 'Layout Element Time From',
-            'layout_element_time_to' => 'Layout Element Time To',
+            'title' => 'Title',
+            'description' => 'Description',
+            'keywords' => 'Keywords',
             'color_scheme' => 'Farebná schéma',
-            'sidebar' => 'Sidebar',
+            'sidebar_active' => 'Sidebar',
             'sidebar_side' => 'Sidebar Side',
             'sidebar_size' => 'Sidebar Size',
-            'footer' => 'Footer',
-            'header' => 'Header',
+            'footer_active' => 'Footer',
+            'header_active' => 'Header',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];
     }
 
+    /** Metoda na vyskladanie URL pre podstranku
+     * @return string
+     */
     public function getUrl()
     {
         if (isset($this->parent))

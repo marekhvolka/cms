@@ -182,7 +182,10 @@ class CacheEngine extends Component
 
         $buffer = '<?php ' . PHP_EOL;
 
-        $buffer .= '$url = ' . $page->url;
+        $buffer .= '$url = \'' . $page->url . '\';' . PHP_EOL;
+        $buffer .= '$title = \'' . $page->title . '\';' . PHP_EOL;
+        $buffer .= '$description = \'' . $page->description . '\';' . PHP_EOL;
+        $buffer .= '$keywords = \'' . $page->keywords . '\';' . PHP_EOL;
 
         $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
 
