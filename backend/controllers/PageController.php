@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Language;
 use backend\models\PageBlock;
+use backend\models\Portal;
 use backend\models\Product;
 use common\components\CacheEngine;
 use common\components\ParseEngine;
@@ -120,14 +121,16 @@ class PageController extends BaseController
 
         //$cacheEngine->cacheDictionary(Language::findOne(['identifier' => 'cz']));
 
-        $cacheEngine->createProductFile(Language::findOne(['identifier' => 'cz']));
+        //$cacheEngine->createProductFile(Language::findOne(['identifier' => 'cz']));
 
-        $products = Product::find()->all();
+        /*$products = Product::find()->all();
 
         foreach($products as $product)
             $cacheEngine->cacheProduct($product);
 
-        $cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));
+        $cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));*/
+
+        $cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
     }
 
     public function actionParse()

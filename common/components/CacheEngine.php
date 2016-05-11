@@ -173,21 +173,52 @@ class CacheEngine extends Component
 
     public function cachePortal(Portal $portal)
     {
+        $directoryPath = $this->getPortalCacheDirectory($portal);
 
+        if (!file_exists($directoryPath))
+        {
+            $this->createPortalCacheDirectory($portal);
+        }
+
+        $buffer = '<?php ' . PHP_EOL;
+
+        $buffer .= '$domain = \'' . $portal->domain . '\';' . PHP_EOL;
+        $buffer .= '$name = \'' . $portal->name . '\';' . PHP_EOL;
+        $buffer .= '$lang = \'' . $portal->language->identifier . '\';' . PHP_EOL;
+        $buffer .= '$currency = \'' . $portal->language->currency . '\';' . PHP_EOL;
+        $buffer .= '$template = \'' . $portal->template->identifier . '\';' . PHP_EOL;
+
+        //$buffer .= '$color_scheme = \'' . $portal->color_scheme . '\';' . PHP_EOL;
+
+        //TODO: doplnit dalsie premenne pre podstranku
+
+        $buffer .= '?>';
+
+        $this->writeToFile($directoryPath . 'portal_var.php', 'w+', $buffer);
     }
 
     public function cachePage(Page $page)
     {
         $directoryPath = $this->getPageCacheDirectory($page);
 
+        if (!file_exists($directoryPath))
+        {
+            $this->createPageCacheDirectory($page);
+        }
+
         $buffer = '<?php ' . PHP_EOL;
 
         $buffer .= '$url = \'' . $page->url . '\';' . PHP_EOL;
+        $buffer .= '$name = \'' . $page->name . '\';' . PHP_EOL;
         $buffer .= '$title = \'' . $page->title . '\';' . PHP_EOL;
         $buffer .= '$description = \'' . $page->description . '\';' . PHP_EOL;
         $buffer .= '$keywords = \'' . $page->keywords . '\';' . PHP_EOL;
 
-        $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
+        $buffer .= '$color_scheme = \'' . $page->color_scheme . '\';' . PHP_EOL;
+
+        //TODO: doplnit dalsie premenne pre podstranku
+
+        $buffer .= '?>';
 
         $this->writeToFile($directoryPath . 'page_var.php', 'w+', $buffer);
     }
@@ -231,11 +262,11 @@ class CacheEngine extends Component
         $query = 'SELECT identifier FROM product WHERE language_id = :language_id ORDER BY parent_id';
 
         $products = Yii::$app->db->createCommand(
-            $query,
-            [
-                ':language_id' => $language['id']
-            ]
-        )
+                $query,
+                [
+                    ':language_id' => $language['id']
+                ]
+            )
             ->queryAll();
 
         $buffer = '<?php ' . PHP_EOL;
