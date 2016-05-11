@@ -145,7 +145,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public static function createMultipleFromData($snippetVarData)
     {
-        $modelSnippetVars = [];     // Array of created SnippetVars.
+        $modelSnippetVars = [];      // Array of created SnippetVars.
         
         if (!$snippetVarData) {
             return $modelSnippetVars;
