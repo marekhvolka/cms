@@ -68,7 +68,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             'parent_id' => 'Parent ID',
         ];
     }
-    
+
     public function beforeSave($insert)
     {
         if (!$this->parent_id) {
@@ -146,19 +146,18 @@ class SnippetVar extends \yii\db\ActiveRecord
     public static function createMultipleFromData($snippetVarData)
     {
         $modelSnippetVars = [];      // Array of created SnippetVars.
-        
+
         if (!$snippetVarData) {
             return $modelSnippetVars;
-        }  
-        
+        }
+
         foreach ($snippetVarData as $varData) {
             if (isset($varData['identifier']) && $varData['identifier']) {
-                
                 if ($varData['existing'] == 'true') {
-                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']]);
-                    
+                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']])->one();
                 } else {
                     $snippetVar = new SnippetVar();
+                    $snippetVar->id = $varData['id'];
                 }
 
                 // Set all neccessary attributes.
@@ -169,12 +168,34 @@ class SnippetVar extends \yii\db\ActiveRecord
 
                 // Set parent if SnippetVar is item of list type parent SnippetVar.   
                 $snippetVar->parent_id = $varData['parent_id'];
-                
+
                 $modelSnippetVars[] = $snippetVar;
             }
         }
 
         return $modelSnippetVars;
+    }
+
+    private static function handleChild($var, $modelSnippetVars, $snippet)
+    {
+        $previousId = $var->id;
+        
+        $var->snippet_id = $snippet->id;
+        if (!$var->save(false)) {
+            return false;
+        }
+
+        foreach ($modelSnippetVars as $potentialChild) {
+            if ($potentialChild->parent_id == $previousId) {
+                $potentialChild->parent_id = $var->id;
+                $saved = SnippetVar::handleChild($potentialChild, $modelSnippetVars, $snippet);
+                if (!$saved) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     }
 
     /**
@@ -185,40 +206,15 @@ class SnippetVar extends \yii\db\ActiveRecord
     public static function saveMultiple($modelSnippetVars, $snippet)
     {
         foreach ($modelSnippetVars as $var) {
-            
-        }
-        
-        
-        foreach ($modelSnippetVars as $var) {
-            $var->snippet_id = $snippet->id;
-
-            if (!$var->save(false)) {
+            $saved = SnippetVar::handleChild($var, $modelSnippetVars, $snippet);
+            if (!$saved) {
                 return false;
             }
         }
 
-        // Parent ids change back to id of parent.
-        foreach ($modelSnippetVars as $savedVar) {
-            
-            // Get parent with temporary id.
-            $parent = self::find()
-                    ->where(['tmp_id' => $savedVar->parent_id])
-                    ->andWhere(['not', ['tmp_id' => null]])
-                    ->one();
-            
-            // Change parent_id from temporary parent id to parent id (after parent was saved)
-            if ($parent) {
-                $savedVar->parent_id = strval($parent->id);
-                
-                if (!$savedVar->save()) {
-                    return false;
-                }
-            }
-        }
-        
         return true;
     }
-    
+
     public static function deleteMultiple($modelSnippetVars, $snippet)
     {
         $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
