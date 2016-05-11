@@ -20,7 +20,7 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
     'type' => SwitchInput::CHECKBOX
@@ -48,11 +48,11 @@ use kartik\switchinput\SwitchInput;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'seo_title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'seo_description')->textarea() ?>
+    <?= $form->field($model, 'description')->textarea() ?>
 
-    <?= $form->field($model, 'seo_keywords')->textarea() ?>
+    <?= $form->field($model, 'keywords')->textarea() ?>
 
     <?= $form->field($model, 'color_scheme')->textInput(['maxlength' => true]) ?>
 

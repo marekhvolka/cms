@@ -10,8 +10,8 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
- * @property string $popis
- * @property string $sablona
+ * @property string $description
+ * @property string $identifier
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
@@ -57,7 +57,7 @@ class Template extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Popis',
-            'identifier' => 'Sablona',
+            'identifier' => 'Adresár šablóny',
             'active' => 'Active',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
