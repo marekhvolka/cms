@@ -25,7 +25,8 @@ use yii\helpers\BaseHtml;
         ]);
         ?>
 
-        <button type="button" class="remove-item-vars btn btn-danger btn-xs pull-right" data-var-id="<?= $snippetVar->id; ?>">
+        <button type="button" class="remove-item-vars btn btn-danger btn-xs pull-right" 
+                data-var-id="<?= $snippetVar->id; ?>">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
@@ -69,7 +70,8 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][parent_id]", $snippetVar->parent_id ? : '', [
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][parent_id]", 
+                $snippetVar->parent_id ? : '', [
             'class' => 'parent-id attribute',
             'data-attribute-name' => 'parent_id',
             ]); ?>
@@ -79,9 +81,9 @@ use yii\helpers\BaseHtml;
             'data-attribute-name' => 'id',
             ]); ?>
         
-        <?= BaseHtml::checkbox("SnippetVar[$arrayFirstDimensionValue][existing]", $snippetVar->id ? true : false,[
-            'hidden' => 'hidden',
-            'class' => 'attribute',
+        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][existing]",
+                $snippetVar->id ? 'true' : 'false', [
+            'class' => 'existing attribute',
             'data-attribute-name' => 'existing',
             ]); ?>
         

@@ -144,22 +144,21 @@ class Variable extends \yii\db\ActiveRecord
      * Returns array of newly created Variables from given data.
      * @return Variable []
      */
-    public static function createMultipleFromData($snippetVarData)
+    public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
     {
-        $modelSnippetVars = [];      // Array of created SnippetVars.
-        
         if (!$snippetVarData) {
             return $modelSnippetVars;
-        }  
+        }
         
+        $modelSnippetVars = [];      // Array of created SnippetVars.
+
         foreach ($snippetVarData as $varData) {
             if (isset($varData['identifier']) && $varData['identifier']) {
-                
                 if ($varData['existing'] == 'true') {
-                    $snippetVar = Variable::find()->where(['id' => $varData['id']]);
-                    
+                    $snippetVar = Variable::find()->where(['id' => $varData['id']])->one();
                 } else {
                     $snippetVar = new Variable();
+                    $snippetVar->id = $varData['id'];
                 }
 
                 // Set all neccessary attributes.
@@ -170,7 +169,7 @@ class Variable extends \yii\db\ActiveRecord
 
                 // Set parent if SnippetVar is item of list type parent SnippetVar.   
                 $snippetVar->parent_id = $varData['parent_id'];
-                
+
                 $modelSnippetVars[] = $snippetVar;
             }
         }
@@ -178,47 +177,47 @@ class Variable extends \yii\db\ActiveRecord
         return $modelSnippetVars;
     }
 
+
+    // TODO - this may be extracted to behavior or helper.
+    private function handleChild($snippetVars, $snippet)
+    {
+        $previousId = $this->id;
+
+        $this->snippet_id = $snippet->id;
+        if (!$this->save(false)) {
+            return false;
+        }
+
+        foreach ($snippetVars as $potentialChild) {
+            if ($potentialChild->parent_id == $previousId) {
+                $potentialChild->parent_id = $this->id;
+                $saved = $potentialChild->handleChild($snippetVars, $snippet);
+                if (!$saved) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Saves multiple models to database.
      * @param Variable [] $modelSnippetVars snippetVars to be saved.
      * @return boolean whether saving of models was unsuccessful
      */
-    public static function saveMultiple($modelSnippetVars, $snippet)
+    public static function saveMultiple($snippetVars, $snippet)
     {
-        foreach ($modelSnippetVars as $var) {
-            
-        }
-        
-        foreach ($modelSnippetVars as $var) {
-            $var->snippet_id = $snippet->id;
-
-            if (!$var->save(false)) {
+        foreach ($snippetVars as $var) {
+            $saved = $var->handleChild($snippetVars, $snippet);
+            if (!$saved) {
                 return false;
             }
         }
 
-        // Parent ids change back to id of parent.
-        foreach ($modelSnippetVars as $savedVar) {
-            
-            // Get parent with temporary id.
-            $parent = self::find()
-                    ->where(['tmp_id' => $savedVar->parent_id])
-                    ->andWhere(['not', ['tmp_id' => null]])
-                    ->one();
-            
-            // Change parent_id from temporary parent id to parent id (after parent was saved)
-            if ($parent) {
-                $savedVar->parent_id = strval($parent->id);
-                
-                if (!$savedVar->save()) {
-                    return false;
-                }
-            }
-        }
-        
         return true;
     }
-    
+
     public static function deleteMultiple($modelSnippetVars, $snippet)
     {
         $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
