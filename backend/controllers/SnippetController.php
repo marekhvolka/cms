@@ -63,7 +63,7 @@ class SnippetController extends BaseController
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
+            $modelSnippetVars = Variable::createMultipleFromData($snippetVarData);
 
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -84,7 +84,7 @@ class SnippetController extends BaseController
                     if ($flag = $model->save(false)) {
                         
                         $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
-                        $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
+                        $flagVars = Variable::saveMultiple($modelSnippetVars, $model);
                         
                         if (!$flagCodes || !$flagVars) {
                             $transaction->rollBack();
@@ -123,7 +123,7 @@ class SnippetController extends BaseController
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
             
             $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
+            $modelSnippetVars = Variable::createMultipleFromData($snippetVarData);
             
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -146,10 +146,10 @@ class SnippetController extends BaseController
                     
                     // Deleting and saving multiple SnippetCodes and SnippetVars in database.
                     SnippetCode::deleteMultiple($modelSnippetCodes, $model);
-                    SnippetVar::deleteMultiple($modelSnippetVars, $model);
+                    Variable::deleteMultiple($modelSnippetVars, $model);
 
                     $flagCodes = SnippetCode::saveMultiple($modelSnippetCodes, $model);
-                    $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
+                    $flagVars = Variable::saveMultiple($modelSnippetVars, $model);
                     
                     if ($flag && $flagCodes && $flagVars) {
                         $transaction->commit();
