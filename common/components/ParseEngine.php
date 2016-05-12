@@ -9,7 +9,15 @@
 namespace common\components;
 
 
+use backend\models\ListItem;
+use backend\models\ListVar;
+use backend\models\Page;
 use backend\models\PageBlock;
+use backend\models\Product;
+use backend\models\SnippetVar;
+use backend\models\SnippetVarValue;
+use Yii;
+use yii\helpers\BaseVarDumper;
 use yii\helpers\VarDumper;
 
 class ParseEngine
@@ -196,6 +204,8 @@ class ParseEngine
     {
         $pageBlocks = PageBlock::findAll(['type' => 'snippet']);
 
+        $transaction = Yii::$app->db->beginTransaction();
+
         foreach($pageBlocks as $pageBlock)
         {
             $data = $pageBlock->data;
@@ -207,10 +217,121 @@ class ParseEngine
 
             foreach($json as $key => $value)
             {
-                VarDumper::dump($key);
+                /* @var $snippetVar SnippetVar */
+                $snippetVar = SnippetVar::findOne([
+                    'identifier' => $key,
+                    'snippet_id' => $pageBlock->snippetCode->snippet_id]);
+
+                $snippetVarValue = new SnippetVarValue();
+
+                $snippetVarValue->page_block_id = $pageBlock->id;
+                $snippetVarValue->var_id = $snippetVar->id;
+
+                switch($snippetVar->type->identifier)
+                {
+                    case 'list':
+                        $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock);
+
+                        break;
+                    case 'page':
+
+                        $page = Page::findOne(['id' => substr($value, 8)]);
+
+                        $snippetVarValue->value_page_id = $page->id;
+
+                        break;
+
+                    case 'product':
+
+                        $product = Product::findOne(['identifier' => $value]);
+
+                        $snippetVarValue->value_product_id = $product->id;
+
+                        break;
+                    case 'tag':
+
+                        break;
+                    default:
+                        $snippetVarValue->value_text = $value;
+                }
+
+                $snippetVarValue->save();
+            }
+            $transaction->commit();
+            //$transaction->rollBack();
+
+            die();
+        }
+    }
+
+    private function parseSnippetList($value, $pageBlock)
+    {
+        $list = new ListVar();
+        $list->save();
+
+        foreach($value as $item)
+        {
+            $listItem = new ListItem();
+            $listItem->active = $item->active;
+            $listItem->list_id = $list->id;
+
+            $listItem->save();
+
+            foreach($item as $itemVarIdentifier => $itemVarValue)
+            {
+                /* @var $snippetListVar SnippetVar */
+                $snippetListVar = SnippetVar::findOne([
+                    'identifier' => $itemVarIdentifier,
+                    'snippet_id' => $pageBlock->snippetCode->snippet_id]);
+
+                if ($snippetListVar != null)
+                {
+                    /* @var $snippetListVarValue SnippetVarValue */
+                    $snippetListVarValue = new SnippetVarValue();
+
+                    $snippetListVarValue->var_id = $snippetListVar->id;
+                    $snippetListVarValue->list_item_id = $listItem->id;
+
+                    switch($snippetListVar->type->identifier)
+                    {
+                        case 'list':
+                            $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock);
+
+                            break;
+                        case 'page':
+
+                            $page = Page::findOne(['id' => substr($itemVarValue, 8)]);
+
+                            $snippetListVarValue->value_page_id = $page->id;
+
+                            break;
+
+                        case 'product':
+
+                            $product = Product::findOne(['identifier' => $itemVarValue]);
+
+                            $snippetListVarValue->value_product_id = $product->id;
+
+                            break;
+                        case 'tag':
+
+                            break;
+                        default:
+                            $snippetListVarValue->value_text = $itemVarValue;
+                    }
+
+                    //BaseVarDumper::dump($snippetListVarValue, 10, true);
+
+                    $snippetListVarValue->validate(null, false);
+
+                    BaseVarDumper::dump($snippetListVarValue->getErrors());
+
+                    $snippetListVarValue->save();
+                }
             }
         }
 
-        die();
+        return $list->id;
     }
+
 }

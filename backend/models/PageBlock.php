@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "snippet_value".
  *
  * @property integer $id
- * @property string $snippet_id
+ * @property string $snippet_code_id
  * @property string $product_id
  * @property integer $portal_id
  * @property integer $column_id
@@ -41,13 +41,13 @@ class PageBlock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['snippet_id', 'product_id', 'portal_id', 'column_id', 'parent_id', 'order'], 'integer'],
+            [['snippet_code_id', 'product_id', 'portal_id', 'column_id', 'parent_id', 'order'], 'integer'],
             [['data', 'type', 'compiled_data'], 'string'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => PageBlock::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
-            [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
+            [['snippet_code_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetCode::className(), 'targetAttribute' => ['snippet_code_id' => 'id']],
         ];
     }
 
