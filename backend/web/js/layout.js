@@ -13,7 +13,7 @@ $('.btn-add-section').click(function(e) {
     
     // Attach add row event.
     sectionClone.find('.add-row').click(function() {
-        var row = $('<li class="row"></li>');
+        var row = $('<li class="row section-row"></li>');
         
         var columns = getRowColumnsClasses($(this).data('row-type-width'));
         for (var i = 0; i < columns.length; i++) {

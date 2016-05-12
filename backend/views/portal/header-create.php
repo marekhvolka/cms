@@ -1,23 +1,33 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\BaseHtml;
 use yii\widgets\ActiveForm;
 use backend\components\LayoutWidget;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="dictionary-form">
+<?= LayoutWidget::widget()?>
 
-    <?php $form = ActiveForm::begin(); ?>
+<?= BaseHtml::buttonInput('Save', [
+    'id' => 'save-btn',
+    'class' => 'btn btn-success btn-sm'
+    ])?>
 
-    <?= LayoutWidget::widget()?>
+<?php
+$url = Url::to(['portal/header-create']);
 
-    <div class="form-group">
-        <?= Html::submitButton('Create', ['class' => 'btn btn-success']) ?>
-    </div>
+$js = <<<JS
 
-    <?php ActiveForm::end(); ?>
+var pageParams = {};
 
-</div>
+pageParams.url = '$url';
+        
+JS;
+
+$this->registerJs($js);
+$this->registerJsFile('@web/js/portal-elements.js');
+?>
+

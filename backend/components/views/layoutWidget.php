@@ -55,7 +55,7 @@ $('.section-rows').sortable({});
 JS;
 $this->registerJs($js);
 
-$this->registerJsFile('@web/js/sections.js');
+$this->registerJsFile('@web/js/layout.js');
 ?>
 
 
