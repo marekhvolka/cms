@@ -118,11 +118,6 @@ AppAsset::register($this);
     </div>
 </footer>
     
-    <?php 
-    $session = Yii::$app->session;
-    var_dump($session->get('portal_id'));
-    ?>
-    
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -37,17 +37,22 @@ class PageSearch extends Page
     /**
      * Creates data provider instance with search query applied
      *
-     * @param array $params
+     * @param array $params, $byPortal indicates if returned dataProvider is bound to current Portal
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $byPortal = null)
     {
         $query = Page::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        
+        if ($byPortal) {
+            $portalID = Yii::$app->session->get('portal_id');
+            $query->andWhere(['portal_id' => $portalID]);
+        }
 
         $this->load($params);
 
