@@ -212,6 +212,11 @@ class PortalController extends BaseController
         $session->set('portal_id', $id);
         return $this->goHome();
     }
+    
+    public function actionHeaderCreate()
+    {
+        return $this->render('header-create', []);
+    }
 
     /**
      * Finds the Portal model based on its primary key value.

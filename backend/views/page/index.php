@@ -13,6 +13,7 @@ use yii\helpers\Url;
 $this->title = 'Podstránky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="page-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
