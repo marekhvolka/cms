@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -32,8 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label'=>'Názov',
                 'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data->word,'?r=dictionary/update&id='. $data->id);
+                'value'=>function ($dataProvider) {
+                    return Html::a($dataProvider->word,Url::to(['/dictionary/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'identifier',

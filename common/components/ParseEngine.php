@@ -9,6 +9,9 @@
 namespace common\components;
 
 
+use backend\models\PageBlock;
+use yii\helpers\VarDumper;
+
 class ParseEngine
 {
     /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabuliek page_block
@@ -187,5 +190,27 @@ class ParseEngine
                 }
             }
         }
+    }
+
+    public function parseSnippetVarValues()
+    {
+        $pageBlocks = PageBlock::findAll(['type' => 'snippet']);
+
+        foreach($pageBlocks as $pageBlock)
+        {
+            $data = $pageBlock->data;
+
+            if ($data == '[]')
+                continue;
+
+            $json = (object)(json_decode($data));
+
+            foreach($json as $key => $value)
+            {
+                VarDumper::dump($key);
+            }
+        }
+
+        die();
     }
 }

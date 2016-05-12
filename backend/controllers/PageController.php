@@ -140,7 +140,9 @@ class PageController extends BaseController
     {
         $parseEngine = new ParseEngine();
 
-        $parseEngine->parseMasterContent();
+        //$parseEngine->parseMasterContent();
+
+        $parseEngine->parseSnippetVarValues();
 
         die();
 
