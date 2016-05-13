@@ -2,12 +2,21 @@
 
 namespace backend\models;
 
+use common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_var".
+ * @property string $id
+ * @property string $identifier
+ * @property string $description
+ * @property integer $type_id
+ * @property VarType $type
+ * @property string $product_type
+ * @property integer $last_edit_user
  *
+ * @property User $lastEditUser
  * @property string $default_value
  * @property string $snippet_id
  * @property string $parent_id
@@ -17,7 +26,7 @@ use yii\helpers\ArrayHelper;
  * @property SnippetVar[] $children
  * @property Snippet $snippet
  */
-class SnippetVar extends Variable
+class SnippetVar extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -33,6 +42,9 @@ class SnippetVar extends Variable
     public function rules()
     {
         return [
+            [['identifier', 'type_id'], 'required'],
+            [['type_id', 'description'], 'string'],
+            [['identifier'], 'string', 'max' => 50],
             [['default_value'], 'string'],
             [['snippet_id', 'parent_id'], 'integer'],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
@@ -47,12 +59,15 @@ class SnippetVar extends Variable
      */
     public function attributeLabels()
     {
-        return array_merge(parent::attributeLabels(),
-         [
+        return [
+            'id' => 'ID',
+            'identifier' => 'Identifikátor',
+            'description' => 'Popis',
+            'type_id' => 'Typ premennej',
             'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
-        ]);
+        ];
     }
 
     public function beforeSave($insert)
@@ -115,6 +130,22 @@ class SnippetVar extends Variable
     public function getSnippet()
     {
         return $this->hasOne(Snippet::className(), ['id' => 'snippet_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getType()
+    {
+        return $this->hasOne(VarType::className(), ['id' => 'type_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastEditUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
     }
 
     /**

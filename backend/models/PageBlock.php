@@ -24,6 +24,7 @@ use Yii;
  * @property PageBlock[] $pageBlocks
  * @property Portal $portal
  * @property SnippetCode $snippetCode
+ * @property SnippetVarValue[] $snippetVarValues
  */
 class PageBlock extends \yii\db\ActiveRecord
 {
@@ -115,5 +116,13 @@ class PageBlock extends \yii\db\ActiveRecord
     public function getSnippetCode()
     {
         return $this->hasOne(SnippetCode::className(), ['id' => 'snippet_code_id']);
+    }
+
+    /**
+     * @return SnippetVarValue[]
+     */
+    public function getSnippetVarValues()
+    {
+        return $this->hasMany(SnippetVarValue::className(), ['page_block_id' => 'id']);
     }
 }

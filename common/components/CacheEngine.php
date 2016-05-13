@@ -8,6 +8,7 @@ use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Product;
 use backend\models\PageBlock;
+use backend\models\SnippetVarValue;
 use Latte\Loaders\FileLoader;
 use Yii;
 use yii\base\Component;
@@ -58,8 +59,7 @@ class CacheEngine extends Component
                 {
                     VarDumper::dump('dasd');
 
-
-                    foreach($column->snippetValues as $pageBlock)
+                    foreach($column->pageBlocks as $pageBlock)
                     {
                         $this->compileBlock($pageBlock, $prefix);
                     }
@@ -80,11 +80,9 @@ class CacheEngine extends Component
 
                 break;
 
-            case 'html' :
+            default:
 
                 $blockData = $pageBlock->data;
-
-                break;
         }
 
         $buffer .= $blockData;
@@ -113,11 +111,12 @@ class CacheEngine extends Component
             $buffer .= '$' . $snippetVar->identifier . ' = \'' . $snippetVar->default_value . '\';' . PHP_EOL;
         }
 
-        $snippetVarValues = json_decode($pageBlock->data, true);
+        $snippetVarValues = $pageBlock->snippetVarValues;
 
-        foreach($snippetVarValues as $identifier => $value)
+        /* @var $snippetVarValue SnippetVarValue */
+        foreach($snippetVarValues as $snippetVarValue)
         {
-            $buffer .= '$' . $identifier . ' = \'' . $value . '\';' . PHP_EOL;
+            $buffer .= '$' . $snippetVarValue->var->identifier . ' = \'' . $snippetVarValue->value_text . '\';' . PHP_EOL;
         }
 
         $buffer .= '?>' . PHP_EOL;

@@ -128,11 +128,13 @@ class PageController extends BaseController
         foreach($products as $product)
             $cacheEngine->cacheProduct($product);
 
-        $cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));*/
+        */
 
         //$cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
 
-        $cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
+        //$cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));
+
+        //$cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
         $cacheEngine->compilePage(Page::findOne(['identifier' => 'pujcky']));
     }
 
@@ -142,13 +144,17 @@ class PageController extends BaseController
 
         //$parseEngine->parseMasterContent();
 
-        $parseEngine->parseSnippetVarValues();
+        //$parseEngine->parseSnippetVarValues();
 
-        die();
+        //die();
+
+        $transaction = Yii::$app->db->beginTransaction();
 
         $parseEngine->parsePageGlobalSection('page_header', 'page');
-        $parseEngine->parsePageGlobalSection('page_footer', 'page');
+        //$parseEngine->parsePageGlobalSection('page_footer', 'page');
 
-        $parseEngine->parsePageGlobalSection('portal_global', 'portal');
+        //$parseEngine->parsePageGlobalSection('portal_global', 'portal');
+
+        $transaction->commit();
     }
 }

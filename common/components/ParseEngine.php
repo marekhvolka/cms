@@ -9,21 +9,26 @@
 namespace common\components;
 
 
+use backend\models\Column;
 use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\PageBlock;
 use backend\models\Product;
+use backend\models\Row;
+use backend\models\Section;
+use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use Yii;
+use yii\db\Query;
 use yii\helpers\BaseVarDumper;
 use yii\helpers\VarDumper;
 
 class ParseEngine
 {
     /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabuliek page_block
-     * @param $type
+     * @param $type string
      */
     public function parsePortalProductSnippet($type)
     {
@@ -40,7 +45,7 @@ class ParseEngine
             ->createCommand()
             ->queryAll();
 
-
+        //TODO: dokoncit
     }
 
     public function parseMasterContent()
@@ -86,7 +91,6 @@ class ParseEngine
             {
                 $json = json_decode($row);
 
-
                 $command = Yii::$app->db->createCommand('UPDATE row
                         SET
                         VALUES(:section_id, :id)');
@@ -99,107 +103,179 @@ class ParseEngine
         }
     }
 
+    /** Parsovanie dat z glob. hlavicky a paticky
+     * @param $tableName string
+     * @param $dataType string
+     * @throws \yii\db\Exception
+     */
     public function parsePageGlobalSection($tableName, $dataType)
     {
-        $command = (new Query())
-            ->createCommand()
-            ->delete('section');
-
         $result = $command = (new Query())
             ->select('*')
             ->from($tableName)
+            ->where('id < 438')
             ->createCommand()
             ->queryAll();
 
         foreach($result as $tableRow)
         {
-            if ($tableRow['sekcia_settings'] == '')
+            VarDumper::dump($tableRow['id']);
+
+            if ($tableRow['sekcia_settings'] == '' || $tableRow['layout_element'] == '')
                 continue;
 
             if (isset(json_decode($tableRow['layout_element'], true)['header']))
+            {
                 $type = 'header';
+            }
             else if (isset(json_decode($tableRow['layout_element'], true)['footer']))
+            {
                 $type = 'footer';
+            }
 
             $sectionsLayoutElement = json_decode($tableRow['layout_element'], true)[$type];
             $sectionsCssSettings = json_decode($tableRow['sekcia_settings'], true)[$type];
             $sectionsBlockPoradie = json_decode($tableRow['block_poradie'], true)[$type];
+            $sectionsLayoutElementType = json_decode($tableRow['layout_element_type'], true)[$type];
             $sectionsLayoutElementActive = json_decode($tableRow['layout_element_active'], true)[$type];
             $sectionsLayoutElementTimeFrom = json_decode($tableRow['layout_element_time_from'], true)[$type];
             $sectionsLayoutElementTimeTo = json_decode($tableRow['layout_element_time_to'], true)[$type];
             $sectionsJsonSmartsnippet = json_decode($tableRow['json_smart_snippet'], true)[$type];
             $sectionsBlockSettings = json_decode($tableRow['block_settings'], true)[$type];
 
-            foreach ($sectionsLayoutElement as $sectionId => $section)
+            foreach ($sectionsLayoutElement as $sectionId => $sectionData)
             {
                 try
                 {
-                    $command = Yii::$app->db->createCommand('INSERT IGNORE INTO section
-                        (page_id, portal_id, id, type, css_style, css_class, css_id)
-                        VALUES(:page_id, :portal_id, :id, :type, :css_style, :css_class, :css_id)');
+                    $section = new Section();
 
                     if ($dataType == 'page')
                     {
-                        $command->bindValue(':page_id', $tableRow['page_id']);
-                        $command->bindValue(':portal_id', NULL);
+                        $section->page_id = $tableRow['page_id'];
+                        $section->portal_id = NULL;
                     }
                     else if ($dataType == 'portal')
                     {
-                        $command->bindValue(':portal_id', $tableRow['portal_id']);
-                        $command->bindValue(':page_id', NULL);
+                        $section->portal_id = $tableRow['portal_id'];
+                        $section->page_id = NULL;
                     }
 
-                    $command->bindValue(':id', $sectionId);
-                    $command->bindValue(':type', $type);
-                    $command->bindValue(':css_style', json_decode($sectionsCssSettings[$sectionId], true)['style_sett']);
-                    $command->bindValue(':css_class', json_decode($sectionsCssSettings[$sectionId], true)['class_sett']);
-                    $command->bindValue(':css_id', json_decode($sectionsCssSettings[$sectionId], true)['id_sett']);
+                    $section->type = $type;
+                    $section->css_style = json_decode($sectionsCssSettings[$sectionId], true)['style_sett'];
+                    $section->css_class = json_decode($sectionsCssSettings[$sectionId], true)['class_sett'];
+                    $section->css_id = json_decode($sectionsCssSettings[$sectionId], true)['id_sett'];
 
-                    $command->execute();
-
-                    foreach ($section as $rowId => $row)
+                    if ($section->validate())
                     {
-                        $command = Yii::$app->db->createCommand('INSERT IGNORE INTO row
-                        (section_id, id)
-                        VALUES(:section_id, :id)');
+                        $section->save();
+                    }
+                    else
+                    {
+                        BaseVarDumper::dump($section->errors);
+                    }
 
-                        $command->bindValue(':section_id', $sectionId);
-                        $command->bindValue(':id', $rowId);
+                    foreach ($sectionData as $columnId => $columnData)
+                    {
+                        $rowId = intval(substr($columnId, 1));
 
-                        $command->execute();
+                        $row = Row::findOne(['id' => $rowId]);
 
-                        foreach ($row as $tempId => $snippetCodeId)
+                        if ($row == NULL)
+                            $row = new Row();
+
+                        $row->section_id = $section->id;
+
+                        if ($row->validate())
                         {
-                            $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$rowId][$tempId], true);
-
-                            //VarDumper::dump($json);
-
-                            if (!isset($json['snippet']) || !is_array($json['snippet']))
-                                continue;
-
-                            $command = Yii::$app->db->createCommand('INSERT IGNORE INTO page_block
-                                (column_id, data, active, snippet_code_id, type)
-                                VALUES(:column_id, :data, :active, :snippet_code_id, \'snippet\')');
-
-                            $command->bindValue(':snippet_code_id', $json['code_select']);
-                            $command->bindValue(':column_id', NULL);
-                            $command->bindValue(':data', json_encode($json['snippet']));
-                            $command->bindValue(':active', $sectionsLayoutElementActive[$sectionId][$rowId][$tempId]);
-
-                            $command->execute();
+                            $row->save();
+                        }
+                        else
+                        {
+                            BaseVarDumper::dump($row->errors);
                         }
 
-                    }
+                        $column = new Column();
 
+                        $column->row_id = $row->id;
+                        $column->order = substr($columnId, 0, 1);
+
+                        if ($column->validate())
+                        {
+                            $column->save();
+                        }
+                        else
+                        {
+                            BaseVarDumper::dump($column->errors);
+                        }
+
+                        foreach ($columnData as $tempId => $snippetCodeId)
+                        {
+                            $pageBlockType = $sectionsLayoutElementType[$sectionId][$columnId][$tempId];
+
+                            $pageBlock = new PageBlock();
+
+                            $pageBlock->column_id = $column->id;
+                            $pageBlock->active = $sectionsLayoutElementActive[$sectionId][$columnId][$tempId];
+
+                            switch($pageBlockType)
+                            {
+                                case 'smart_snippet' :
+
+                                    $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$columnId][$tempId], true);
+
+                                    $pageBlock->type = 'snippet';
+
+                                    if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
+                                        continue;
+
+                                    $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
+
+                                    if ($snippetCode == NULL)
+                                        continue;
+
+                                    $pageBlock->snippet_code_id = $json['code_select'];
+
+                                    $pageBlock->data = json_encode($json['snippet']);
+
+                                    break;
+
+                                case 'html' :
+
+                                    $pageBlock->type = 'html';
+                                    $pageBlock->snippet_code_id = NULL;
+                                    $pageBlock->data = json_encode(
+                                        $sectionsLayoutElement[$sectionId][$columnId][$tempId], true
+                                    );
+
+                                    break;
+                            }
+
+                            if ($pageBlock->validate())
+                            {
+                                $pageBlock->save();
+                            }
+                            else
+                            {
+                                BaseVarDumper::dump($pageBlock->errors);
+
+                                BaseVarDumper::dump($pageBlock->snippet_code_id);
+                                BaseVarDumper::dump($section->page_id);
+                            }
+                        }
+                    }
                 }
                 catch (Exception $e)
                 {
                     VarDumper::dump($e);
                 }
             }
+            //die();
         }
     }
 
+    /** Parsovanie dat vyplnenych snippetov z JSONU do tabulky snippet_var_value
+     * @throws \yii\db\Exception
+     */
     public function parseSnippetVarValues()
     {
         $pageBlocks = PageBlock::findAll(['type' => 'snippet']);
@@ -264,7 +340,12 @@ class ParseEngine
         }
     }
 
-    private function parseSnippetList($value, $pageBlock)
+    /** Pomocna metoda pre parsovanie zoznamov - rekurzivne sa vola pre zoznamy nizsich urovni
+     * @param $value - cast jsonu, z ktorej sa parsuju data
+     * @param $pageBlock PageBlock - blok, ktoreho sa zoznamy tykaju
+     * @return int
+     */
+    private function parseSnippetList($value, PageBlock $pageBlock)
     {
         $list = new ListVar();
         $list->save();

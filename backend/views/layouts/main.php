@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use backend\assets\AppAsset;
+use backend\components\GlobalSearchWidget;
 use kartik\sidenav\SideNav;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -65,6 +66,11 @@ AppAsset::register($this);
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         'options' => ['class' => 'navbar-nav nav breadcrumb-nav'],
     ]);
+
+    /*echo GlobalSearchWidget::widget([
+            'model' => $this->params['globalSearchModel'],
+        ]
+    );*/
 
     if (Yii::$app->user->isGuest) {
         $loginMenu[] = ['label' => 'Login', 'url' => ['/site/login']];
