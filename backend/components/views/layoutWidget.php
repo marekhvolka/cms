@@ -16,6 +16,7 @@ use kartik\sortable\Sortable;
 Sortable::widget();
 ?>
 
+
 <div class="section-form">
 
     <?php
@@ -23,7 +24,6 @@ Sortable::widget();
         'header' => '<h4 class="modal-title">Nastavenia sekcie</h4>',
         'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
                 <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
-        // 'toggleButton' => ['label' => 'click me2'],
         'size' => 'modal-lg',
         'id' => 'modal-options',
     ]);
@@ -32,6 +32,25 @@ Sortable::widget();
 
     Modal::end();
     ?>
+    
+    <?php
+    Modal::begin([
+        'header' => '<h4 class="modal-title">Pridať text</h4>',
+        'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
+                <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
+        // 'toggleButton' => ['label' => 'click me2'],
+        'size' => 'modal-lg',
+        'id' => 'modal-text',
+    ]);
+    
+    echo '<textarea class="text-textarea"></textarea>';
+
+    Modal::end();
+    ?>
+    
+    <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-text">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    </button>
 
     <ul class="sections">
     </ul>
@@ -57,6 +76,7 @@ $this->registerJs($js);
 
 $this->registerJsFile('@web/js/layout.js');
 ?>
+
 
 
 
@@ -118,11 +138,11 @@ $this->registerJsFile('@web/js/layout.js');
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#">Text</a></li>
-                <li><a href="#">HTML</a></li>
-                <li><a href="#">Smart snippet</a></li>
-                <li><a href="#">Produktový snippet</a></li>
-                <li><a href="#">Portálový snippet</a></li>
+                <li><a href="#" class="column-option text-option" data-toggle="modal" data-target="#modal-text">Text</a></li>
+                <li><a href="#" class="column-option html-option">HTML</a></li>
+                <li><a href="#" class="column-option smart-snippet-option">Smart snippet</a></li>
+                <li><a href="#" class="column-option product-snippet-option">Produktový snippet</a></li>
+                <li><a href="#" class="column-option portal-snippet-option">Portálový snippet</a></li>
             </ul>
         </div>
         <div class="section-button">
@@ -133,6 +153,27 @@ $this->registerJsFile('@web/js/layout.js');
     </div>
 
     <div class="panel-heading">1. stĺpec</div>
-    <div class="panel-body"></div>
+    <div class="panel-body">
+        <ul class="column-elements">
+            
+        </ul>
+    </div>
 
+</div>
+
+
+
+<div class="btn-group column-element column-text cloned-column-element" 
+     data-content="" role="group" hidden="hidden">
+    <button type="button" class="btn btn-default btn-sm" title="Nastevenie publikovania">
+        <span class="glyphicon glyphicon-globe"></span>
+    </button>
+
+    <button type="button" id="" 
+            class="btn btn-default btn-sm text-content-btn">
+    </button>
+    
+    <button type="button" class="btn btn-danger btn-sm" title="Zmazať element">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
 </div>
