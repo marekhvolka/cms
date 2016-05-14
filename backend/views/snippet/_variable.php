@@ -116,7 +116,7 @@ use yii\helpers\BaseHtml;
                     <div class="panel-body">
                         <input type="hidden" value="0" id="">
                         <ul style="list-style: none;">
-                            <?php foreach ($snippetVar->children as $child):?>
+                            <?php foreach ($snippetVar->children as $child) : ?>
                             <li>
                                 <?= $this->render('_variable', ['snippetVar' => $child]); ?>
                             </li>

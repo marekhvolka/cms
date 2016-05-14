@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\LayoutWidget\LayoutWidget;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -12,6 +13,8 @@ use kartik\switchinput\SwitchInput;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $headerSections \backend\models\Section */
+/* @var $footerSections \backend\models\Section */
 ?>
 
 <div class="page-form">
@@ -71,6 +74,20 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
+
+    <h3 class="page-header">Hlavička stránky</h3>
+
+    <?= LayoutWidget::widget([
+            'sections' => $headerSections
+        ]
+    )?>
+
+    <h3 class="page-header">Patička stránky</h3>
+
+    <?= LayoutWidget::widget([
+            'sections' => $footerSections
+        ]
+    )?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">

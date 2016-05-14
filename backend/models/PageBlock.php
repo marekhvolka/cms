@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\BaseVarDumper;
 
 /**
  * This is the model class for table "snippet_value".
@@ -18,6 +19,8 @@ use Yii;
  * @property string $compiled_data
  * @property string $type
  *
+ *
+ * @property string $name
  * @property Product $product
  * @property Column $column
  * @property PageBlock $parent
@@ -124,5 +127,31 @@ class PageBlock extends \yii\db\ActiveRecord
     public function getSnippetVarValues()
     {
         return $this->hasMany(SnippetVarValue::className(), ['page_block_id' => 'id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        $name = '';
+
+        switch ($this->type)
+        {
+            case 'html':
+                $name = 'HTML';
+
+                break;
+
+            case 'snippet':
+                $name = $this->snippetCode->snippet->name;
+
+                break;
+
+            default:
+                $name = 'undefined';
+        }
+
+        return $name;
     }
 }

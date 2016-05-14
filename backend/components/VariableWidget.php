@@ -7,7 +7,6 @@ use yii\helpers\Html;
 
 class VariableWidget extends Widget
 {
-
     public $type;
     public $model;
 
@@ -18,7 +17,10 @@ class VariableWidget extends Widget
 
     public function run()
     {
-        return $this->render('variableWidget',['type' => $this->type, 'model' => $this->model]);
+        return $this->render('variableWidget', [
+            'type' => $this->type,
+            'model' => $this->model
+        ]);
     }
 
 }

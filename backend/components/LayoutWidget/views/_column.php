@@ -1,0 +1,53 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: MarekHvolka
+ * Date: 15.05.16
+ * Time: 0:30
+ */
+
+/* @var $column backend\models\Column */
+
+?>
+
+<!--COLUMN TO ADD-->
+<div class="panel panel-default cloned-column" data-options="{}">
+    <div class="btn-group section-buttons">
+        <div class="section-button">
+            <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div class="dropdown dropdown-column-content section-button">
+            <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
+                    title="Vložiť nový blok" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="column-option text-option" data-toggle="modal" data-target="#modal-text">Text</a></li>
+                <li><a href="#" class="column-option html-option">HTML</a></li>
+                <li><a href="#" class="column-option smart-snippet-option">Smart snippet</a></li>
+                <li><a href="#" class="column-option product-snippet-option">Produktový snippet</a></li>
+                <li><a href="#" class="column-option portal-snippet-option">Portálový snippet</a></li>
+            </ul>
+        </div>
+        <div class="section-button">
+            <button type="button" class="btn btn-danger btn-xs btn-remove-row" title="Zmazať" >
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="panel-heading">1. stĺpec</div>
+    <div class="panel-body">
+        <ul class="column-elements">
+            <?php foreach ($column->pageBlocks as $pageBlock) : ?>
+                <li>
+                    <?= $this->render('_page-block', ['pageBlock' => $pageBlock]); ?>
+                </li>
+            <?php endforeach;?>
+        </ul>
+    </div>
+
+</div>
+

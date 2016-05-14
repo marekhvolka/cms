@@ -6,6 +6,7 @@ use backend\models\Language;
 use backend\models\PageBlock;
 use backend\models\Portal;
 use backend\models\Product;
+use backend\models\Section;
 use common\components\CacheEngine;
 use common\components\ParseEngine;
 use Yii;
@@ -75,11 +76,23 @@ class PageController extends BaseController
     {
         $model = $this->findModel($id);
 
+        $headerSections = Section::findAll([
+            'type' => 'header',
+            'page_id' => $id
+        ]);
+
+        $footerSections = Section::findAll([
+            'type' => 'footer',
+            'page_id' => $id
+        ]);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'headerSections' => $headerSections,
+                'footerSections' => $footerSections,
             ]);
         }
     }

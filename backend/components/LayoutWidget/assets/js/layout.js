@@ -1,8 +1,7 @@
 var optionsElement;
 
-
 // Add section.
-$('.btn-add-section').click(function (e) {
+/*$('.btn-add-section').click(function (e) {
     var sectionClone = $('.cloned-section').clone();
     sectionClone.removeAttr('hidden');
     sectionClone.removeClass('cloned-section')
@@ -118,5 +117,5 @@ $(function () {
         $('.text-textarea').val('');
     });
 });
-
+*/
 

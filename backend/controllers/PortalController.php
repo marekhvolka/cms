@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Model;
 use backend\models\PortalVar;
 use backend\models\PortalVarValue;
+use backend\models\Section;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Portal;
@@ -215,7 +216,26 @@ class PortalController extends BaseController
     
     public function actionHeaderCreate()
     {
-        return $this->render('header-create', []);
+        $sections = Section::findAll([
+            'type' => 'header',
+            'portal_id' => 4
+        ]);
+
+        return $this->render('header-create', [
+            'sections' => $sections
+        ]);
+    }
+
+    public function actionFooterCreate()
+    {
+        $sections = Section::findAll([
+            'type' => 'footer',
+            'portal_id' => 4
+        ]);
+
+        return $this->render('header-create', [
+            'sections' => $sections
+        ]);
     }
 
     /**

@@ -236,10 +236,10 @@ class ParseEngine
 
                                     $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$columnId][$tempId], true);
 
-                                    $pageBlock->type = 'snippet';
-
                                     if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
                                         continue;
+
+                                    $pageBlock->type = 'snippet';
 
                                     $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
 

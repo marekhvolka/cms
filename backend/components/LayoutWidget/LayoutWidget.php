@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\components;
+namespace backend\components\LayoutWidget;
 
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -10,6 +10,8 @@ use yii\helpers\Html;
  */
 class LayoutWidget extends Widget
 {
+    public $sections;
+
     public function init()
     {
         parent::init();
@@ -17,7 +19,11 @@ class LayoutWidget extends Widget
 
     public function run()
     {
-        return $this->render('layoutWidget');
+        AssetBundle::register($this->getView());
+
+        return $this->render('layoutWidget', [
+            'sections' => $this->sections
+        ]);
     }
 
 }
