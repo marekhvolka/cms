@@ -29,7 +29,7 @@ AppAsset::register($this);
 <div id="wrapper">
     <?= $this->render('_top-bar') ?>
     <?= \common\widgets\Navigation::widget([
-        'items' => $this->params['menuItems']
+        'items' => Yii::$app->params['menuItems']
     ]) ?>
     <div id="page-wrapper">
         <?= Alert::widget() ?>
