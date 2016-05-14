@@ -19,7 +19,7 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'nazov_system')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
@@ -53,8 +53,15 @@ use kartik\select2\Select2;
 
     ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <div class="navbar-fixed-bottom">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="form-group">
+                <?= Html::submitButton('Uložiť', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id' => 'submit-btn'
+                ]) ?>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

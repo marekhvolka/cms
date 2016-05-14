@@ -60,20 +60,33 @@ class ParseEngine
         {
             $rowIds = explode(',', $page['layout_poradie_id']);
 
-            $section = Yii::$app->db->createCommand('SELECT * FROM section WHERE page_id=:page_id',
-                [':page_id' => $page['id']])
-                ->queryOne();
+            $rowWidth = explode(',', $page['layout_poradie']);
+
+            $section = Section::findOne(['page_id' => $page['id']]);
 
             for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
             {
-                $command = Yii::$app->db->createCommand('INSERT IGNORE INTO row
-                        (section_id, id)
-                        VALUES(:section_id, :id)');
+                $row = new Row();
 
-                $command->bindValue(':section_id', $section['id']);
-                $command->bindValue(':id', $rowIds[$i]);
+                $row->section_id = $section;
 
-                $command->execute();
+                if ($row->validate())
+                {
+                    $row->save();
+                }
+                else
+                {
+                    BaseVarDumper::dump($row->errors);
+                }
+
+                $columns = json_decode($page['layout_element'], true)['content']['master'];
+
+                foreach($columns as $columnId => $columnData)
+                {
+                    $column = new Column();
+                    $column->row_id = $row->id;
+                }
+
             }
         }
 

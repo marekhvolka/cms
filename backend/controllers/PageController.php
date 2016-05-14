@@ -142,15 +142,15 @@ class PageController extends BaseController
     {
         $parseEngine = new ParseEngine();
 
-        //$parseEngine->parseMasterContent();
-
         //$parseEngine->parseSnippetVarValues();
 
         //die();
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        $parseEngine->parsePageGlobalSection('page_header', 'page');
+        $parseEngine->parseMasterContent();
+
+        //$parseEngine->parsePageGlobalSection('page_header', 'page');
         //$parseEngine->parsePageGlobalSection('page_footer', 'page');
 
         //$parseEngine->parsePageGlobalSection('portal_global', 'portal');

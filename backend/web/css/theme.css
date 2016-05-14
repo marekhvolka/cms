@@ -2002,4 +2002,11 @@ table {
     background: #293846;
 }
 
+.navbar-fixed-bottom {
+    left: 225px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+    padding-top: 15px;
+}
+
 
