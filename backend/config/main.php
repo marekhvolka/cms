@@ -6,6 +6,8 @@ $params = array_merge(
     require(__DIR__ . '/params-local.php')
 );
 
+$params["menuItems"] = require(__DIR__ . '/side-menu.php');
+
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
