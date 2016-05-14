@@ -1885,6 +1885,15 @@ ul.alert-dropdown {
 }
 
 /* Side Navigation */
+.side-nav {
+    background-color: #2F4050;
+}
+
+.side-nav li a:hover,
+.side-nav li a:focus {
+    outline: none;
+    background-color: #293846 !important;
+}
 
 @media (min-width: 768px) {
     .side-nav {
@@ -1896,17 +1905,16 @@ ul.alert-dropdown {
         border: none;
         border-radius: 0;
         overflow-y: auto;
-        background-color: #2F4050;
     }
 
     .side-nav > li > a {
         width: 225px;
     }
+}
 
-    .side-nav li a:hover,
-    .side-nav li a:focus {
-        outline: none;
-        background-color: #293846 !important;
+@media (max-width: 767px) {
+    li {
+        padding-left: 10px;
     }
 }
 
