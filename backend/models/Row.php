@@ -55,7 +55,8 @@ class Row extends \yii\db\ActiveRecord
      */
     public function getColumns()
     {
-        return $this->hasMany(Column::className(), ['row_id' => 'id']);
+        return $this->hasMany(Column::className(), ['row_id' => 'id'])
+            ->orderBy('order');
     }
 
     /**

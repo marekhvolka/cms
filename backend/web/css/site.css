@@ -155,3 +155,21 @@ ul.container-items-codes {
 .column-element {
     margin: 3px 2px; height: 30px; display: block;
 }
+
+.navbar-fixed-bottom {
+    left: 225px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+    padding-top: 15px;
+}
+
+.cloned-column {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.section-rows > li {
+    min-height: 10px;
+    background: gray;
+    margin-top: 5px;
+}

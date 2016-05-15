@@ -49,6 +49,25 @@ class PageController extends BaseController
     }
 
     /**
+     * Lists all Page models.
+     * @return mixed
+     */
+    public function actionIndex2()
+    {
+        $searchModel = new PageSearch();
+
+        $pages = Page::findAll([
+            'portal_id' => Yii::$app->session->get('portal_id'),
+            'parent_id' => NULL
+        ]);
+
+        return $this->render('index2', [
+            'pages' => $pages,
+            'searchModel' => $searchModel
+        ]);
+    }
+
+    /**
      * Creates a new Page model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -86,6 +105,16 @@ class PageController extends BaseController
             'page_id' => $id
         ]);
 
+        $contentSections = Section::findAll([
+            'type' => 'content',
+            'page_id' => $id
+        ]);
+
+        $sidebarSections = Section::findAll([
+            'type' => 'sidebar',
+            'page_id' => $id
+        ]);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
@@ -93,6 +122,8 @@ class PageController extends BaseController
                 'model' => $model,
                 'headerSections' => $headerSections,
                 'footerSections' => $footerSections,
+                'contentSections' => $contentSections,
+                'sidebarSections' => $sidebarSections,
             ]);
         }
     }

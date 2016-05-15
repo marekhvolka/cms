@@ -10,6 +10,10 @@ use Yii;
  * @property integer $id
  * @property integer $row_id
  * @property integer $order
+ * @property integer $width
+ * @property string $css_id
+ * @property string $css_style
+ * @property string $css_class
  *
  * @property Row $row
  * @property PageBlock[] $pageBlocks
@@ -30,7 +34,8 @@ class Column extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['row_id', 'order'], 'integer'],
+            [['row_id', 'order', 'width'], 'integer'],
+            [['css_style', 'css_class', 'css_id'], 'string'],
             [['row_id'], 'exist', 'skipOnError' => true, 'targetClass' => Row::className(), 'targetAttribute' => ['row_id' => 'id']],
         ];
     }
@@ -44,6 +49,10 @@ class Column extends \yii\db\ActiveRecord
             'id' => 'ID',
             'row_id' => 'Row ID',
             'order' => 'Order',
+            'width' => 'Width',
+            'css_id' => 'ID stĺpca',
+            'css_class' => 'Class stĺpca',
+            'css_style' => 'Štýly stĺpca'
         ];
     }
 
@@ -60,6 +69,7 @@ class Column extends \yii\db\ActiveRecord
      */
     public function getPageBlocks()
     {
-        return $this->hasMany(PageBlock::className(), ['column_id' => 'id']);
+        return $this->hasMany(PageBlock::className(), ['column_id' => 'id'])
+            ->orderBy(['order' => SORT_ASC]);
     }
 }

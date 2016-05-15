@@ -11,7 +11,7 @@
 ?>
 
 <!--COLUMN TO ADD-->
-<div class="panel panel-default cloned-column" data-options="{}">
+<div class="col-md-<?php echo $column->width; ?> panel panel-default cloned-column" data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="panel-heading">1. stĺpec</div>
+    <div class="panel-heading"><?php echo $column->order; ?>. stĺpec</div>
     <div class="panel-body">
         <ul class="column-elements">
             <?php foreach ($column->pageBlocks as $pageBlock) : ?>
@@ -48,6 +48,5 @@
             <?php endforeach;?>
         </ul>
     </div>
-
 </div>
 

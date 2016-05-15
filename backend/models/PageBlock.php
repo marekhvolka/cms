@@ -18,6 +18,7 @@ use yii\helpers\BaseVarDumper;
  * @property string $data
  * @property string $compiled_data
  * @property string $type
+ * @property boolean $active
  *
  *
  * @property string $name
@@ -69,7 +70,8 @@ class PageBlock extends \yii\db\ActiveRecord
             'parent_id' => 'Parent ID',
             'order' => 'Order',
             'data' => 'Data',
-            'type' => 'Typ bloku'
+            'type' => 'Typ bloku',
+            'active' => 'Aktívny'
         ];
     }
 
@@ -144,10 +146,19 @@ class PageBlock extends \yii\db\ActiveRecord
                 break;
 
             case 'snippet':
-                $name = $this->snippetCode->snippet->name;
+                //TODO: fix with valid database
+
+                if ($this->snippetCode)
+                    $name = $this->snippetCode->snippet->name;
+                else
+                    $name = 'Zmazaný kód snippetu';
 
                 break;
 
+            case 'text':
+                $name = 'TEXT';
+
+                break;
             default:
                 $name = 'undefined';
         }

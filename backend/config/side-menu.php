@@ -36,6 +36,5 @@ return [
             ['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
             ['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],
         ],
-    ],
-    ['icon' => 'thumbs-o-up', 'title' => 'Sections', 'controller' => 'TODO', 'action' => 'index']
+    ]
 ];

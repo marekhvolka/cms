@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "snippet_code".
@@ -15,6 +16,8 @@ use yii\helpers\ArrayHelper;
  * @property string $portal
  * @property integer $snippet_id
  *
+ *
+ * @property string $url
  * @property Snippet[] $snippets
  * @property Snippet $snippet
  */
@@ -82,8 +85,21 @@ class SnippetCode extends \yii\db\ActiveRecord
     }
 
     /**
-     * Returns array of newly created SnippetCodes from given data.
-     * @return backend\models\SnippetCode []
+     * @return string
+     */
+    public function getUrl()
+    {
+        return Url::to(
+            [
+                '/snippet/update/',
+                'id' => $this->snippet_id,
+                '#' => 'code' . $this->id
+            ]);
+    }
+
+    /** Returns array of newly created SnippetCodes from given data.
+     * @param $snippetCodeData
+     * @return array
      */
     public static function createMultipleFromData($snippetCodeData)
     {

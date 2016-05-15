@@ -69,10 +69,12 @@ use yii\web\View;
                         <?php endforeach; ?>
                     </ul>
                 </div>
-                
-                <button type="button" class="add-item-var btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i>Add
-                </button>
+
+                <div class="col-sm-offset-2">
+                    <button type="button" class="add-item-var btn btn-success">
+                        Pridať premennú
+                    </button>
+                </div>
             </div>
         </div>
     </div>

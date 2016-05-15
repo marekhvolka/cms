@@ -13,7 +13,7 @@ use backend\models\Portal;
 $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
 ?>
 
-<li class="item panel panel-default panel-codes"><!-- widgetBody -->
+<li class="item panel panel-default panel-codes" id="code<?php echo $snippetCode->id; ?>"><!-- widgetBody -->
     <div class="panel-heading"> 
         <div class="input-group">
             <?= BaseHtml::activeTextInput($snippetCode, "name", [

@@ -15,7 +15,7 @@ use common\models\User;
  * @property integer $active
  * @property integer $in_menu
  * @property integer $parent_id
- * @property integer $poradie
+ * @property integer $order
  * @property integer $product_id
  * @property string $title
  * @property string $description
@@ -58,7 +58,7 @@ class Page extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'identifier', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
-            [['portal_id', 'active', 'in_menu', 'parent_id', 'poradie', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
+            [['portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
             [['description'], 'string'],
             [['last_edit'], 'safe'],
             [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
@@ -81,7 +81,7 @@ class Page extends \yii\db\ActiveRecord
             'active' => 'Active',
             'in_menu' => 'In Menu',
             'parent_id' => 'Predok',
-            'poradie' => 'Poradie',
+            'order' => 'Poradie',
             'product_id' => 'Produkt',
             'presmerovanie' => 'Presmerovanie',
             'utm' => 'Utm',

@@ -65,7 +65,8 @@ class Section extends \yii\db\ActiveRecord
      */
     public function getRows()
     {
-        return $this->hasMany(Row::className(), ['section_id' => 'id']);
+        return $this->hasMany(Row::className(), ['section_id' => 'id'])
+            ->orderBy('order');
     }
 
     /**

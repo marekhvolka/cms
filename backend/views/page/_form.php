@@ -15,6 +15,8 @@ use kartik\switchinput\SwitchInput;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $headerSections \backend\models\Section */
 /* @var $footerSections \backend\models\Section */
+/* @var $contentSections \backend\models\Section */
+/* @var $sidebarSections \backend\models\Section */
 ?>
 
 <div class="page-form">
@@ -79,6 +81,20 @@ use kartik\switchinput\SwitchInput;
 
     <?= LayoutWidget::widget([
             'sections' => $headerSections
+        ]
+    )?>
+
+    <h3 class="page-header">Hlavný obsah</h3>
+
+    <?= LayoutWidget::widget([
+            'sections' => $contentSections
+        ]
+    )?>
+
+    <h3 class="page-header">Sidebar</h3>
+
+    <?= LayoutWidget::widget([
+            'sections' => $sidebarSections
         ]
     )?>
 

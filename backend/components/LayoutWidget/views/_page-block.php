@@ -5,6 +5,7 @@
  * Date: 15.05.16
  * Time: 0:31
  */
+use yii\helpers\Html;
 
 /* @var $pageBlock \backend\models\PageBlock */
 
@@ -18,6 +19,20 @@
     <button type="button" id="" class="btn btn-default btn-sm text-content-btn">
         <?php echo $pageBlock->name; ?>
     </button>
+
+    <?php if ($pageBlock->type == 'snippet') : ?>
+
+    <?= Html::a(
+            '<span class="glyphicon glyphicon-link"></span>',
+            $pageBlock->snippetCode->url,
+            [
+                'class' => 'btn btn-info btn-sm',
+                'title' => 'Upraviť snippet',
+                'target' => '_blank'
+            ]
+        ) ?>
+
+    <?php endif; ?>
 
     <button type="button" class="btn btn-danger btn-sm" title="Zmazať element">
         <span class="glyphicon glyphicon-remove"></span>

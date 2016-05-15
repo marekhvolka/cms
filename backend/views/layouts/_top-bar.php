@@ -32,7 +32,9 @@ foreach ($portals as $portal) {
 
 echo Nav::widget([
     'options' => ['class' => 'navbar-nav navbar-right'],
-    'items'   => [['label' => '', 'items' => $items]],
+    'items'   => [
+        ['label' => $portalName, 'items' => $items]
+    ],
 ]);
 
 
@@ -49,6 +51,7 @@ if (!Yii::$app->user->isGuest) {
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items'   => $loginMenu,
+
     ]);
 }
 

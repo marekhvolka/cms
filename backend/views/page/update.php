@@ -18,7 +18,9 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $this->render('_form', [
         'model' => $model,
         'headerSections' => $headerSections,
-        'footerSections' => $footerSections
+        'footerSections' => $footerSections,
+        'contentSections' => $contentSections,
+        'sidebarSections' => $sidebarSections
     ]) ?>
 
 </div>
