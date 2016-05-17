@@ -7,7 +7,7 @@
  */
 use yii\helpers\Html;
 
-/* @var $pageBlock \backend\models\Block */
+/* @var $block \backend\models\Block */
 
 ?>
 
@@ -17,21 +17,21 @@ use yii\helpers\Html;
 $clonedClass = $block->id == null ? 'cloned' : ''; 
 ?>
 
-<div class="btn-group block <?=$block ?>" 
+<div class="btn-group block <?=$block->id ?>"
      data-content="" role="group">
     <button type="button" class="btn btn-default btn-sm" title="Nastavenie publikovania">
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
     <button type="button" id="" class="btn btn-default btn-sm text-content-btn">
-        <?php echo $pageBlock->name; ?>
+        <?php echo $block->name; ?>
     </button>
 
-    <?php if ($pageBlock->type == 'snippet') : ?>
+    <?php if ($block->type == 'snippet') : ?>
 
     <?= Html::a(
             '<span class="glyphicon glyphicon-link"></span>',
-            $pageBlock->snippetCode->url,
+            $block->snippetCode->url,
             [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',

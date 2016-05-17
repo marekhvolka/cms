@@ -16,7 +16,7 @@ use Yii;
  * @property string $css_class
  *
  * @property Row $row
- * @property Block[] $pageBlocks
+ * @property Block[] $blocks
  */
 class Column extends \yii\db\ActiveRecord
 {
@@ -67,7 +67,7 @@ class Column extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageBlocks()
+    public function getBlocks()
     {
         return $this->hasMany(Block::className(), ['column_id' => 'id'])
             ->orderBy(['order' => SORT_ASC]);

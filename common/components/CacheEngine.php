@@ -110,27 +110,32 @@ class CacheEngine extends Component
         array_map('unlink', glob(__DIR__ . '/tmp/*'));
     }
 
-    public function compileBlock(Block $pageBlock, $includeHead)
+    public function compileBlock(Block $block, $includeHead)
     {
         $buffer = $includeHead;
 
-        $result = '';
+        $path = '';
 
-        switch($pageBlock->type)
+        if (isset($block->page))
+            $path = $this->getPageBlocksMainCacheDirectory($block->page);
+        else if (isset($block->portal))
+            $path = $this->getPortalBlocksMainCacheDirectory($block->portal);
+
+        switch($block->type)
         {
             case 'snippet' :
 
-                $blockData = $this->compileSnippet($pageBlock);
+                $blockData = $this->compileSnippet($block);
 
-                $path = $this->getPageBlockCacheDirectory($pageBlock) . 'snippet_cache' . $pageBlock->id . '.latte';
+                $path .= 'snippet_cache' . $block->id . '.latte';
 
                 break;
 
             default:
 
-                $path = $this->getPageBlockCacheDirectory($pageBlock) . 'block_cache' . $pageBlock->id . '.latte';
+                $path .= 'block_cache' . $block->id . '.latte';
 
-                $blockData = $pageBlock->data;
+                $blockData = $block->data;
         }
 
         $buffer .= $blockData;
@@ -139,22 +144,22 @@ class CacheEngine extends Component
 
         $result = $this->latteRenderer->renderToString($path, array());
 
-        $pageBlock->compiled_data = $result;
+        $block->compiled_data = $result;
 
-        $pageBlock->save();
+        $block->save();
 
         VarDumper::dump($result);
 
         $this->index++;
     }
 
-    private function compileSnippet(Block $pageBlock)
+    private function compileSnippet(Block $block)
     {
         $buffer = '<?php ' . PHP_EOL;
 
-        $buffer .= 'include "' . $this->getSnippetMainFile($pageBlock->snippetCode->snippet) . '";' . PHP_EOL;
+        $buffer .= 'include "' . $this->getSnippetMainFile($block->snippetCode->snippet) . '";' . PHP_EOL;
 
-        $snippetVarValues = $pageBlock->snippetVarValues;
+        $snippetVarValues = $block->snippetVarValues;
 
         /* @var $snippetVarValue SnippetVarValue */
         foreach($snippetVarValues as $snippetVarValue)
@@ -164,29 +169,9 @@ class CacheEngine extends Component
 
         $buffer .= '?>' . PHP_EOL;
 
-        $buffer .= file_get_contents($this->getSnippetCodeFile($pageBlock->snippetCode));
+        $buffer .= file_get_contents($this->getSnippetCodeFile($block->snippetCode));
 
         return $buffer;
-    }
-
-    private function createTemplate()
-    {
-        $fileName = '';
-
-        $stringTemplate = '<?php $nadpis = "asddasd"; ?><h1>{$nadpis}</h1>';
-
-        return $fileName;
-    }
-
-    private function renderTemplate($fileName)
-    {
-        $this->latteRenderer->setLoader(new StringLoader());
-
-        $string = '<?php $nadpis = "asddasd"; ?><h1>{$nadpis}</h1>';
-
-        $renderedString = $this->latteRenderer->renderToString($string, array());
-
-        return $renderedString;
     }
 
     //region ========================  CACHE SEKCIA  =================================
@@ -375,7 +360,7 @@ class CacheEngine extends Component
         if (!file_exists($directoryPath))
         {
             mkdir($directoryPath, 0777, true);
-            mkdir($this->getPagesMainCacheDirectory($portal), 0777, true);
+            mkdir($this->getPortalBlocksMainCacheDirectory($portal), 0777, true);
         }
     }
 
@@ -547,28 +532,22 @@ class CacheEngine extends Component
         return $this->getSnippetDirectory($snippetCode->snippet) . 'code' . $snippetCode->id . '.php';
     }
 
-    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych snippetov
+    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych blokov podstranky
+     * @param Page $page
      * @return string
      */
-    public function getPageBlocksMainCacheDirectory()
+    public function getPageBlocksMainCacheDirectory(Page $page)
     {
-        return $this->cacheDirectory . 'page_blocks/';
+        return $this->getPageMainCacheDirectory($page) . 'blocks/';
     }
 
-    /** Vrati cestu k adresaru, do ktoreho sa ma cachovat pageblock
-     * @param Block $pageBlock
+    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych blokov pre portal
+     * @param Portal $portal
      * @return string
      */
-    public function getPageBlockCacheDirectory(Block $pageBlock)
+    public function getPortalBlocksMainCacheDirectory(Portal $portal)
     {
-        $path = '';
-
-        if (isset($pageBlock->page))
-            $path = $this->getPageMainCacheDirectory($pageBlock->page) . 'cache/';
-        else if (isset($pageBlock->portal))
-            $path = $this->getPortalCacheDirectory($pageBlock->portal) . 'cache/';
-
-        return $path;
+        return $this->getPortalCacheDirectory($portal) . 'blocks/';
     }
 
     //endregion
