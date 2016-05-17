@@ -7,7 +7,7 @@
  */
 use yii\helpers\Html;
 
-/* @var $pageBlock \backend\models\PageBlock */
+/* @var $pageBlock \backend\models\Block */
 
 ?>
 

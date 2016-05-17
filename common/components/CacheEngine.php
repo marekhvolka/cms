@@ -7,7 +7,9 @@ use backend\models\Language;
 use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Product;
-use backend\models\PageBlock;
+use backend\models\Block;
+use backend\models\Snippet;
+use backend\models\SnippetCode;
 use backend\models\SnippetVarValue;
 use Latte\Loaders\FileLoader;
 use Yii;
@@ -24,6 +26,8 @@ class CacheEngine extends Component
      * @var string adresar, v ktorom sa nachadza cache
      */
     public $cacheDirectory = '';
+
+    public $index = 0;
 
     /**
      * @var Engine
@@ -43,22 +47,22 @@ class CacheEngine extends Component
 
     public function compilePage(Page $page)
     {
+        $this->index = 0;
+
         $prefix = '<?php ' . PHP_EOL;
 
         $prefix .= 'include "' . $this->getDictionaryCacheFile($page->portal->language) . '";' . PHP_EOL;
-        $prefix .= 'include "' . $this->getProductsCacheFile($page->portal->language) . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->getProductsMainCacheFile($page->portal->language) . '";' . PHP_EOL;
         $prefix .= 'include "' . $this->getPortalCacheFile($page->portal) . '";' . PHP_EOL;
         $prefix .= 'include "' . $this->getPageCacheFile($page) . '";' . PHP_EOL;
         $prefix .= '?>' . PHP_EOL;
 
-        foreach($page->sections as $section)
+        foreach($page->headerSections as $section)
         {
             foreach($section->rows as $row)
             {
                 foreach ($row->columns as $column)
                 {
-                    VarDumper::dump('dasd');
-
                     foreach($column->pageBlocks as $pageBlock)
                     {
                         $this->compileBlock($pageBlock, $prefix);
@@ -66,11 +70,51 @@ class CacheEngine extends Component
                 }
             }
         }
+
+        foreach($page->contentSection->rows as $row)
+        {
+            foreach ($row->columns as $column)
+            {
+                foreach($column->pageBlocks as $pageBlock)
+                {
+                    $this->compileBlock($pageBlock, $prefix);
+                }
+            }
+        }
+
+        foreach($page->sidebarSection->rows as $row)
+        {
+            foreach ($row->columns as $column)
+            {
+                foreach($column->pageBlocks as $pageBlock)
+                {
+                    $this->compileBlock($pageBlock, $prefix);
+                }
+            }
+        }
+
+        foreach($page->footerSections as $section)
+        {
+            foreach($section->rows as $row)
+            {
+                foreach ($row->columns as $column)
+                {
+                    foreach($column->pageBlocks as $pageBlock)
+                    {
+                        $this->compileBlock($pageBlock, $prefix);
+                    }
+                }
+            }
+        }
+
+        array_map('unlink', glob(__DIR__ . '/tmp/*'));
     }
 
-    public function compileBlock(PageBlock $pageBlock, $includeHead)
+    public function compileBlock(Block $pageBlock, $includeHead)
     {
         $buffer = $includeHead;
+
+        $result = '';
 
         switch($pageBlock->type)
         {
@@ -78,16 +122,18 @@ class CacheEngine extends Component
 
                 $blockData = $this->compileSnippet($pageBlock);
 
+                $path = $this->getPageBlockCacheDirectory($pageBlock) . 'snippet_cache' . $pageBlock->id . '.latte';
+
                 break;
 
             default:
+
+                $path = $this->getPageBlockCacheDirectory($pageBlock) . 'block_cache' . $pageBlock->id . '.latte';
 
                 $blockData = $pageBlock->data;
         }
 
         $buffer .= $blockData;
-
-        $path = $this->cacheDirectory . '/block_cache.latte';
 
         $this->writeToFile($path, 'w+', $buffer);
 
@@ -98,30 +144,27 @@ class CacheEngine extends Component
         $pageBlock->save();
 
         VarDumper::dump($result);
+
+        $this->index++;
     }
 
-    private function compileSnippet(PageBlock $pageBlock)
+    private function compileSnippet(Block $pageBlock)
     {
         $buffer = '<?php ' . PHP_EOL;
 
-        $snippetDefaultValues = $pageBlock->snippetCode->snippet->snippetVars;
-
-        foreach($snippetDefaultValues as $snippetVar)
-        {
-            $buffer .= '$' . $snippetVar->identifier . ' = \'' . $snippetVar->default_value . '\';' . PHP_EOL;
-        }
+        $buffer .= 'include "' . $this->getSnippetMainFile($pageBlock->snippetCode->snippet) . '";' . PHP_EOL;
 
         $snippetVarValues = $pageBlock->snippetVarValues;
 
         /* @var $snippetVarValue SnippetVarValue */
         foreach($snippetVarValues as $snippetVarValue)
         {
-            $buffer .= '$' . $snippetVarValue->var->identifier . ' = \'' . $snippetVarValue->value_text . '\';' . PHP_EOL;
+            $buffer .= '$' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
         }
 
         $buffer .= '?>' . PHP_EOL;
 
-        $buffer .= $pageBlock->snippetCode->code;
+        $buffer .= file_get_contents($this->getSnippetCodeFile($pageBlock->snippetCode));
 
         return $buffer;
     }
@@ -171,7 +214,7 @@ class CacheEngine extends Component
 
         $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
 
-        $this->writeToFile($this->getDictionaryCacheFile(), 'w+', $buffer);
+        $this->writeToFile($this->getDictionaryCacheFile($language), 'w+', $buffer);
     }
 
     /** Metoda na cachovanie vsetkych produktov pre dany jazyk
@@ -196,12 +239,10 @@ class CacheEngine extends Component
         }
         else
         {
-            $buffer .= '$' . $product->identifier . '= ' .var_export($productVars, true) . '; ?>';
+            $buffer .= '$' . $product->identifier . ' = ' . var_export($productVars, true) . '; ?>';
         }
 
-        $directoryPath = $this->getProductsCacheDirectory($product->language);
-
-        $this->writeToFile($directoryPath . $product->identifier . '.php', 'w+', $buffer);
+        $this->writeToFile($this->getProductCacheFile($product), 'w+', $buffer);
     }
 
     public function cachePortal(Portal $portal)
@@ -215,24 +256,23 @@ class CacheEngine extends Component
 
         $buffer = '<?php ' . PHP_EOL;
 
-        $buffer .= '$domain = \'' . $portal->domain . '\';' . PHP_EOL;
-        $buffer .= '$name = \'' . $portal->name . '\';' . PHP_EOL;
-        $buffer .= '$lang = \'' . $portal->language->identifier . '\';' . PHP_EOL;
-        $buffer .= '$currency = \'' . $portal->language->currency . '\';' . PHP_EOL;
-        $buffer .= '$template = \'' . $portal->template->identifier . '\';' . PHP_EOL;
-
-        //$buffer .= '$color_scheme = \'' . $portal->color_scheme . '\';' . PHP_EOL;
+        $buffer .= '$domain = \'' . $this->normalizeString($portal->domain) . '\';' . PHP_EOL;
+        $buffer .= '$name = \'' . $this->normalizeString($portal->name) . '\';' . PHP_EOL;
+        $buffer .= '$lang = \'' . $this->normalizeString($portal->language->identifier) . '\';' . PHP_EOL;
+        $buffer .= '$currency = \'' . $this->normalizeString($portal->language->currency) . '\';' . PHP_EOL;
+        $buffer .= '$template = \'' . $this->normalizeString($portal->template->identifier) . '\';' . PHP_EOL;
+        $buffer .= '$color_scheme = \'' . $this->normalizeString($portal->color_scheme) . '\';' . PHP_EOL;
 
         //TODO: doplnit dalsie premenne pre podstranku
 
         $buffer .= '?>';
 
-        $this->writeToFile($this->getPortalCacheFile(), 'w+', $buffer);
+        $this->writeToFile($this->getPortalCacheFile($portal), 'w+', $buffer);
     }
 
-    public function cachePage(Page $page)
+    public function cachePageVars(Page $page)
     {
-        $directoryPath = $this->getPageCacheDirectory($page);
+        $directoryPath = $this->getPageMainCacheDirectory($page);
 
         if (!file_exists($directoryPath))
         {
@@ -241,26 +281,69 @@ class CacheEngine extends Component
 
         $buffer = '<?php ' . PHP_EOL;
 
-        $buffer .= '$url = \'' . $page->url . '\';' . PHP_EOL;
-        $buffer .= '$name = \'' . $page->name . '\';' . PHP_EOL;
-        $buffer .= '$title = \'' . $page->title . '\';' . PHP_EOL;
-        $buffer .= '$description = \'' . $page->description . '\';' . PHP_EOL;
-        $buffer .= '$keywords = \'' . $page->keywords . '\';' . PHP_EOL;
+        $buffer .= '$url = \'' . $this->normalizeString($page->url) . '\';' . PHP_EOL;
+        $buffer .= '$name = \'' . $this->normalizeString($page->name) . '\';' . PHP_EOL;
+        $buffer .= '$title = \'' . $this->normalizeString($page->title) . '\';' . PHP_EOL;
+        $buffer .= '$description = \'' . $this->normalizeString($page->description) . '\';' . PHP_EOL;
+        $buffer .= '$keywords = \'' . $this->normalizeString($page->keywords) . '\';' . PHP_EOL;
 
-        $buffer .= '$color_scheme = \'' . $page->color_scheme . '\';' . PHP_EOL;
+        $buffer .= '$color_scheme = \'' . $this->normalizeString($page->color_scheme) . '\';' . PHP_EOL;
 
         $buffer .= '/* Product Variables */' . PHP_EOL;
 
-        $pageProduct = isset($page->product) ? $page->product : $page->parent->product;
-
-        foreach($pageProduct->productVarValues as $productVarValue)
+        if (isset($page->product))
         {
-            $buffer .= '$' . $productVarValue->var->identifier . ' = "' . $productVarValue->value . '";' . PHP_EOL;
+            foreach ($page->product->productVarValues as $productVarValue)
+            {
+                $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
+                '$' . $page->product->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
+            }
         }
-
         $buffer .= '?>';
 
         $this->writeToFile($directoryPath . 'page_var.php', 'w+', $buffer);
+    }
+
+    /** Cachovanie zakladnych informacii o snippete (premenne a default hodnoty)
+     * @param Snippet $snippet
+     */
+    public function cacheSnippet(Snippet $snippet)
+    {
+        $directoryPath = $this->getSnippetDirectory($snippet);
+
+        if (!file_exists($directoryPath))
+        {
+            $this->createSnippetDirectory($snippet);
+        }
+
+        $buffer = '<?php ' . PHP_EOL;
+
+        foreach($snippet->snippetVariables as $snippetVar)
+        {
+            if (isset($snippetVar->default_value))
+                $buffer .= '$' . $snippetVar->identifier . ' = "' . $this->normalizeString($snippetVar->default_value) . '";' . PHP_EOL;
+        }
+
+        $buffer .= '?>' . PHP_EOL;
+
+        $this->writeToFile($this->getSnippetMainFile($snippet), 'w+', $buffer);
+    }
+
+    /** Cachovanie zakladnych informacii o kode snippetu (kod)
+     * @param SnippetCode $snippetCode
+     */
+    public function cacheSnippetCode(SnippetCode $snippetCode)
+    {
+        $directoryPath = $this->getSnippetDirectory($snippetCode->snippet);
+
+        if (!file_exists($directoryPath))
+        {
+            $this->createSnippetDirectory($snippetCode->snippet);
+        }
+
+        $buffer = $snippetCode->code;
+
+        $this->writeToFile($this->getSnippetCodeFile($snippetCode), 'w+', $buffer);
     }
     //endregion
 
@@ -277,7 +360,7 @@ class CacheEngine extends Component
         {
             mkdir($directoryPath, 0777, true);
 
-            mkdir($directoryPath . 'portal', 0777, true); //vytvori priecinok pre portaly
+            mkdir($directoryPath . 'portals', 0777, true); //vytvori priecinok pre portaly
             mkdir($directoryPath . 'products', 0777, true); //vytvori priecinok pre produkty
         }
     }
@@ -292,39 +375,45 @@ class CacheEngine extends Component
         if (!file_exists($directoryPath))
         {
             mkdir($directoryPath, 0777, true);
+            mkdir($this->getPagesMainCacheDirectory($portal), 0777, true);
         }
     }
 
-    public function createProductFile(Language $language)
+    /** Metoda na vytvorenie centralneho suboru, ktory obsahuje cesty ku vsetkym suborom jednotlivych produktov
+     * @param Language $language
+     */
+    public function createProductsMainCacheFile(Language $language)
     {
-        $directoryPath = $this->getLanguageCacheDirectory($language);
-
-        $query = 'SELECT identifier FROM product WHERE language_id = :language_id ORDER BY parent_id';
-
-        $products = Yii::$app->db->createCommand(
-                $query,
-                [
-                    ':language_id' => $language['id']
-                ]
-            )
-            ->queryAll();
-
         $buffer = '<?php ' . PHP_EOL;
 
-        foreach($products as $key => $product)
+        foreach($language->products as $product)
         {
-            $buffer .= 'include "' . $directoryPath . $product['identifier'] . '.php"; ' . PHP_EOL;
+            $buffer .= 'include "' . $this->getProductCacheFile($product) . '";' . PHP_EOL;
         }
 
         $buffer .= ' ?>';
 
 
-        $this->writeToFile($this->getProductsCacheFile(), 'w+', $buffer);
+        $this->writeToFile($this->getProductsMainCacheFile($language), 'w+', $buffer);
     }
 
     public function createPageCacheDirectory(Page $page)
     {
-        $directoryPath = $this->getPageCacheDirectory($page);
+        $directoryPath = $this->getPageMainCacheDirectory($page);
+
+        mkdir($directoryPath, 0777, true);
+    }
+
+    public function createSnippetsMainDirectory()
+    {
+        $directoryPath = $this->getSnippetsMainDirectory();
+
+        mkdir($directoryPath, 0777, true);
+    }
+
+    public function createSnippetDirectory(Snippet $snippet)
+    {
+        $directoryPath = $this->getSnippetDirectory($snippet);
 
         mkdir($directoryPath, 0777, true);
     }
@@ -356,7 +445,7 @@ class CacheEngine extends Component
      */
     public function getPortalCacheDirectory(Portal $portal)
     {
-        return $this->getLanguageCacheDirectory($portal->language) . $portal->domain . '/';
+        return $this->getLanguageCacheDirectory($portal->language) . 'portals/' . $portal->domain . '/';
     }
 
     /** Vrati cestu k suboru, v ktorom nacachovane data k portalu
@@ -368,13 +457,22 @@ class CacheEngine extends Component
         return $this->getPortalCacheDirectory($portal) . 'portal_var.php';
     }
 
+    /** Vrati cestu k hlavnemu adresaru, v ktorom su ulozene nacachovane podstranky pre dany portal
+     * @param Portal $portal
+     * @return string
+     */
+    public function getPagesMainCacheDirectory(Portal $portal)
+    {
+        return $this->getPortalCacheDirectory($portal) . 'pages/';
+    }
+
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre danu podstranku
      * @param Page $page
      * @return string
      */
-    public function getPageCacheDirectory(Page $page)
+    public function getPageMainCacheDirectory(Page $page)
     {
-        return $this->getPortalCacheDirectory($page->portal) . 'page' . $page->id . '/';
+        return $this->getPagesMainCacheDirectory($page->portal) . 'page' . $page->id . '/';
     }
 
     /** Vrati cestu k suboru, v ktorom su ulozene premenne podstranky
@@ -383,7 +481,7 @@ class CacheEngine extends Component
      */
     public function getPageCacheFile(Page $page)
     {
-        return $this->getPageCacheDirectory($page) . 'page_var.php';
+        return $this->getPageMainCacheDirectory($page) . 'page_var.php';
     }
 
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre produkty daneho jazyka
@@ -395,14 +493,84 @@ class CacheEngine extends Component
         return $this->getLanguageCacheDirectory($language) . 'products/';
     }
 
-    /** Vrati cestu k suboru, v ktorom su includnute vsetky nacachovane subory pre produkty daneho jazyka
+    /** Vrati cestu k hlavnemu suboru, v ktorom su includnute vsetky nacachovane subory pre produkty daneho jazyka
      * @param Language $language
      * @return string
      */
-    public function getProductsCacheFile(Language $language)
+    public function getProductsMainCacheFile(Language $language)
     {
-        return $this->getProductsCacheDirectory($language) . 'products.php';
+        return $this->getLanguageCacheDirectory($language) . 'products.php';
     }
+
+    /** Vrati cestu k suboru, v ktorom je nacachovany produkt
+     * @param Product $product
+     * @return string
+     */
+    public function getProductCacheFile(Product $product)
+    {
+        return $this->getProductsCacheDirectory($product->language) . $product->identifier . '.php';
+    }
+
+    /** vrati cestu k hlavnemu adresaru, kde su ulozene informacie k snippetom
+     * @return string
+     */
+    public function getSnippetsMainDirectory()
+    {
+        return $this->cacheDirectory . 'snippets/';
+    }
+
+    /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
+     * @param Snippet $snippet
+     * @return string
+     */
+    public function getSnippetDirectory(Snippet $snippet)
+    {
+        return $this->getSnippetsMainDirectory() . 'snippet' . $snippet->id . '/';
+    }
+
+    /** Metoda na vratenie cesty k hlavnemu suboru pre dany snippet (obsahuje premenne snippetu
+     * s default hodnotami a nastavenia snippetu)
+     * @param Snippet $snippet
+     * @return string
+     */
+    public function getSnippetMainFile(Snippet $snippet)
+    {
+        return $this->getSnippetDirectory($snippet) . 'snippet.php';
+    }
+
+    /** Vrati cestu k nacachovanemu suboru, kde su ulozene informacie o kode snippetu a jeho premennych
+     * @param SnippetCode $snippetCode
+     * @return string
+     */
+    public function getSnippetCodeFile(SnippetCode $snippetCode)
+    {
+        return $this->getSnippetDirectory($snippetCode->snippet) . 'code' . $snippetCode->id . '.php';
+    }
+
+    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych snippetov
+     * @return string
+     */
+    public function getPageBlocksMainCacheDirectory()
+    {
+        return $this->cacheDirectory . 'page_blocks/';
+    }
+
+    /** Vrati cestu k adresaru, do ktoreho sa ma cachovat pageblock
+     * @param Block $pageBlock
+     * @return string
+     */
+    public function getPageBlockCacheDirectory(Block $pageBlock)
+    {
+        $path = '';
+
+        if (isset($pageBlock->page))
+            $path = $this->getPageMainCacheDirectory($pageBlock->page) . 'cache/';
+        else if (isset($pageBlock->portal))
+            $path = $this->getPortalCacheDirectory($pageBlock->portal) . 'cache/';
+
+        return $path;
+    }
+
     //endregion
 
     /** Funkcia na zapis do suboru
@@ -415,5 +583,47 @@ class CacheEngine extends Component
         $file = fopen($path, $mode);
         fwrite($file, $string);
         fclose($file);
+    }
+
+    private function normalizeString($string)
+    {
+        /*$re = '~
+			(?P<comment>\\*.*?\\*{\n{0,2})|
+			(?P<macro>(?:
+				\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"|
+				\{(?:\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"|[^\'"{}])*+\}|
+				[^\'"{}]
+			)+?)
+			}
+			(?P<rmargin>[ \t]*(?=\n))?
+		~xsiA';
+
+		preg_match($re, $var, $matches);
+
+		foreach ($matches as $match ) {
+			$match = str_replace("{", "' . ", $match);
+		}*/
+
+        $re = '/{\$[\w->]+}/';
+
+        //$code = str_replace("stdClass::__set_state", "(object)", $code);
+
+        preg_match_all($re, $string, $matches);
+
+        //print_r($matches);
+
+        foreach ($matches[0] as $match )
+        {
+            $newString = str_replace("{", "' . ", $match);
+            $newString = str_replace("}", " . '", $newString);
+
+            //echo $newString;
+
+            $string = str_replace($match, $newString, $string);
+        }
+
+        $string = addslashes($string);
+
+        return $string;
     }
 }

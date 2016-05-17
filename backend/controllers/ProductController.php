@@ -99,6 +99,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
+                        $this->cacheEngine->cacheProduct($model);
                         return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
@@ -176,6 +177,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
+                        $this->cacheEngine->cacheProduct($model);
                         return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {

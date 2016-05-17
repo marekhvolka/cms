@@ -72,6 +72,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['language_id' => 'id']);
+        return $this->hasMany(Product::className(), ['language_id' => 'id'])
+            ->orderBy('parent_id');
     }
 }

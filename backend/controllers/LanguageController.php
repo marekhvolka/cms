@@ -49,9 +49,14 @@ class LanguageController extends BaseController
     {
         $model = new Language();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
+            $this->cacheEngine->createLanguageCacheDirectory($model); //vytvori sa adresar pre dany jazyk
+
             return $this->redirect(['index']);
-        } else {
+        }
+        else
+        {
             return $this->render('create', [
                 'model' => $model,
             ]);

@@ -35,6 +35,11 @@ use common\models\User;
  * @property Page[] $pages
  * @property Section[] $sections
  * @property Product $product
+ *
+ * @property Section[] $headerSections
+ * @property Section[] $footerSections
+ * @property Section $contentSection
+ * @property Section $sidebarSection
  */
 class Page extends \yii\db\ActiveRecord
 {
@@ -96,7 +101,7 @@ class Page extends \yii\db\ActiveRecord
             'footer_active' => 'Footer',
             'header_active' => 'Header',
             'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit_user' => 'Last Edit User'
         ];
     }
 
@@ -158,54 +163,54 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        $product = $this->hasOne(Product::className(), ['id' => 'product_id']);
+
+        if (!isset($product) && (isset($this->parent)))
+            return $this->parent->product;
+        return $product;
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageBlockSetts()
+    public function getHeaderSections()
     {
-        return $this->hasMany(PageBlockSett::className(), ['page_id' => 'id']);
+        return Section::findAll([
+            'page_id' => $this->id,
+            'type' => 'header'
+        ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageFooters()
+    public function getFooterSections()
     {
-        return $this->hasMany(PageFooter::className(), ['page_id' => 'id']);
+        return Section::findAll([
+            'page_id' => $this->id,
+            'type' => 'footer'
+        ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageFormSetts()
+    public function getContentSection()
     {
-        return $this->hasMany(PageFormSett::className(), ['page_id' => 'id']);
+        return Section::findOne([
+            'page_id' => $this->id,
+            'type' => 'content'
+        ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageHeaders()
+    public function getSidebarSection()
     {
-        return $this->hasMany(PageHeader::className(), ['page_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPageSidebars()
-    {
-        return $this->hasMany(PageSidebar::className(), ['page_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPageSnippets()
-    {
-        return $this->hasMany(PageSnippet::className(), ['page_id' => 'id']);
+        return Section::findOne([
+            'page_id' => $this->id,
+            'type' => 'sidebar'
+        ]);
     }
 }

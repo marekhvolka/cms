@@ -12,7 +12,7 @@ use Yii;
  * @property integer $language_id
  * @property string $domain
  * @property integer $template_id
- * @property string $template_settings
+ * @property string $color_scheme
  * @property integer $active
  * @property integer $published
  * @property integer $cached
@@ -20,7 +20,7 @@ use Yii;
  * @property Page[] $pages
  * @property Language $language
  * @property Template $template
- * @property PageBlock[] $portalSnippets
+ * @property Block[] $portalSnippets
  * @property SnippetVarValue[] $portalVarValues
  */
 class Portal extends \yii\db\ActiveRecord
@@ -44,9 +44,9 @@ class Portal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'language_id', 'domain', 'template_id', 'template_settings', 'active', 'published', 'cached'], 'required'],
+            [['name', 'language_id', 'domain', 'template_id', 'color_scheme', 'active', 'published', 'cached'], 'required'],
             [['language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
-            [['template_settings'], 'string'],
+            [['color_scheme'], 'string'],
             [['name', 'domain'], 'string', 'max' => 50]
         ];
     }
@@ -62,9 +62,9 @@ class Portal extends \yii\db\ActiveRecord
             'language_id' => 'Krajina',
             'domain' => 'Doména',
             'template_id' => 'Šablóna',
-            'template_settings' => 'Template Settings',
+            'color_scheme' => 'Farebná schéma',
             'active' => 'Active',
-            'published' => 'Publikovana',
+            'published' => 'Publikovaný',
             'cached' => 'Cache',
         ];
     }
@@ -98,7 +98,7 @@ class Portal extends \yii\db\ActiveRecord
      */
     public function getPortalSnippets()
     {
-        return $this->hasMany(PageBlock::className(), ['portal_id' => 'id']);
+        return $this->hasMany(Block::className(), ['portal_id' => 'id']);
     }
 
     /**
