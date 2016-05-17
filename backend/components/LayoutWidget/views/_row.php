@@ -11,7 +11,7 @@
 ?>
 
 <!--ROW TO ADD-->
-<div class="row layout-row<?=$row->id == null ? 'cloned-row' : '' ?>">
+<div class="row layout-row<?=$row->id == null ? 'cloned-row' : ''; // Check for existing row. If new is created, is used for javascript cloning whole element and adding as new (dynamic adding).  ?>">
     <?php foreach ($row->columns as $column) : ?>
         <?= $this->render('_column', ['column' => $column]); ?>
     <?php endforeach;?>

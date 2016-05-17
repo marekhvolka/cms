@@ -11,7 +11,7 @@
 ?>
 
 <!--COLUMN TO ADD-->
-<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$column->id == null ? 'cloned-column' : '' ?>" 
+<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$column->id == null ? 'cloned-column' : '';// Check for existing column. If new is created, is used for javascript cloning whole element and adding as new (dynamic adding).  ?>" 
      data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
