@@ -17,7 +17,7 @@ use yii\helpers\Html;
 $clonedClass = $block->id == null ? 'cloned' : ''; 
 ?>
 
-<div class="btn-group block <?=$block ?>" 
+<div class="btn-group block <?=$block->id ?>"
      data-content="" role="group">
     <button type="button" class="btn btn-default btn-sm" title="Nastavenie publikovania">
         <span class="glyphicon glyphicon-globe"></span>
