@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\GlobalSearchWidget;
-use common\components\CacheEngine;
+//use common\components\CacheEngine;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -16,13 +16,13 @@ abstract class BaseController extends Controller
     /**
      * @var CacheEngine
      */
-    public $cacheEngine;
+   // public $cacheEngine;
 
     public function init()
     {
         parent::init();
 
-        $this->cacheEngine = new CacheEngine();
+      //  $this->cacheEngine = new CacheEngine();
 
         $this->view->params['globalSearchModel'] = new GlobalSearchWidget();
     }

@@ -48,9 +48,9 @@ $clonedClass = $column->id == null ? 'cloned' : '';
     <div class="panel-heading"><?php echo $column->order; ?>. stĺpec</div>
     <div class="panel-body">
         <ul class="column-elements">
-            <?php foreach ($column->pageBlocks as $pageBlock) : ?>
+            <?php foreach ($column->blocks as $block) : ?>
                 <li>
-                    <?= $this->render('_block', ['pageBlock' => $pageBlock]); ?>
+                    <?= $this->render('_block', ['block' => $block]); ?>
                 </li>
             <?php endforeach;?>
         </ul>

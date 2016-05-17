@@ -7,7 +7,7 @@
  */
 use yii\helpers\Html;
 
-/* @var $pageBlock \backend\models\Block */
+/* @var $block \backend\models\Block */
 
 ?>
 
@@ -24,14 +24,14 @@ $clonedClass = $block->id == null ? 'cloned' : '';
     </button>
 
     <button type="button" id="" class="btn btn-default btn-sm text-content-btn">
-        <?php echo $pageBlock->name; ?>
+        <?php echo $block->name; ?>
     </button>
 
-    <?php if ($pageBlock->type == 'snippet') : ?>
+    <?php if ($block->type == 'snippet') : ?>
 
     <?= Html::a(
             '<span class="glyphicon glyphicon-link"></span>',
-            $pageBlock->snippetCode->url,
+            $block->snippetCode->url,
             [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',
