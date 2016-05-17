@@ -1,7 +1,13 @@
 var optionsElement;
 
 // Add section.
-/*$('.btn-add-section').click(function (e) {
+$.get(snippetVarParams.appendVarUrl, function (data) {
+    snippetVarParams.variableHtml = data;
+});
+
+
+
+$('.btn-add-section').click(function (e) {
     var sectionClone = $('.cloned-section').clone();
     sectionClone.removeAttr('hidden');
     sectionClone.removeClass('cloned-section')
@@ -42,13 +48,10 @@ var optionsElement;
 
         var sectionRows = sectionClone.find('.section-rows');
         sectionRows.append(row);
-
-        $('.section-rows').sortable('reload');  // Attach event for sorting sections.
     });
 
     attachOptionsButtonEvent(sectionClone.find('.options-btn'));
 
-    $('.sections').sortable('reload');  // Attach event for sorting sections.
     return false;
 });
 
@@ -117,5 +120,5 @@ $(function () {
         $('.text-textarea').val('');
     });
 });
-*/
+
 

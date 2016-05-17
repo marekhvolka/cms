@@ -7,6 +7,11 @@ use yii\bootstrap\Modal;
 use yii\bootstrap\Nav;
 use kartik\sortable\Sortable;
 
+use backend\models\Section;
+use backend\models\Row;
+use backend\models\Column;
+use backend\models\PageBlock;
+
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections \backend\models\Section */
@@ -57,6 +62,13 @@ use kartik\sortable\Sortable;
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
     </div>
+</div>
+
+<div class="new-items">
+    <?= $this->render('_section', ['section' => new Section()]); ?>
+    <?= $this->render('_row', ['row' => new Row()]); ?>
+    <?= $this->render('_column', ['column' => new Column()]); ?>
+    <?= $this->render('_page-block', ['pageBlock' => new PageBlock()]); ?>
 </div>
 
 <?php

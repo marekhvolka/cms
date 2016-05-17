@@ -11,7 +11,8 @@ use yii\helpers\Html;
 
 ?>
 
-<div class="btn-group column-element column-text cloned-column-element" data-content="" role="group">
+<div class="btn-group column-page-block column-text <?=$pageBlock->id == null ? 'cloned-page-block' : '' ?>" 
+     data-content="" role="group">
     <button type="button" class="btn btn-default btn-sm" title="Nastavenie publikovania">
         <span class="glyphicon glyphicon-globe"></span>
     </button>

@@ -11,7 +11,7 @@
 ?>
 
 <!--ROW TO ADD-->
-<div class="row cloned-row">
+<div class="row layout-row<?=$row->id == null ? 'cloned-row' : '' ?>">
     <?php foreach ($row->columns as $column) : ?>
         <?= $this->render('_column', ['column' => $column]); ?>
     <?php endforeach;?>

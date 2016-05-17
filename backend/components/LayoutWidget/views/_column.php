@@ -11,7 +11,8 @@
 ?>
 
 <!--COLUMN TO ADD-->
-<div class="col-md-<?php echo $column->width; ?> panel panel-default cloned-column" data-options="{}">
+<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$column->id == null ? 'cloned-column' : '' ?>" 
+     data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">

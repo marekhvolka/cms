@@ -11,12 +11,19 @@ namespace backend\components\LayoutWidget;
 
 class AssetBundle extends \yii\web\AssetBundle
 {
+    public $basePath = '@app/components/LayoutWidget/assets';
+    
     public $css = [
         'css/style.css'
     ];
 
     public $js = [
         'js/layout.js'
+    ];
+    
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
     ];
 
     public function init()

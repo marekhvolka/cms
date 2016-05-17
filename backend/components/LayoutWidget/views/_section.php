@@ -11,7 +11,7 @@
 ?>
 
 <!--SECTION TO ADD-->
-<li class="panel panel-default section cloned-section" data-options="{}">
+<li class="panel panel-default section <?=$section->id == null ? 'cloned-section' : '' ?>" data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
