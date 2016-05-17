@@ -64,7 +64,7 @@ use backend\models\Block;
     </div>
 </div>
 
-<div class="new-items">
+<div class="new-items" hidden="hidden">
     <?= $this->render('_section', ['section' => new Section()]); ?>
     <?= $this->render('_row', ['row' => new Row()]); ?>
     <?= $this->render('_column', ['column' => new Column()]); ?>
