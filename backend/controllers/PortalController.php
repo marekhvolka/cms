@@ -58,13 +58,15 @@ class PortalController extends BaseController
         $model = new Portal();
         $modelsPortalVarValue = [new PortalVarValue()];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             $modelsPortalVarValue = Model::createMultiple(PortalVarValue::classname());
             Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
 
             // TODO - refactor this - same code in ProductController
             $vars = Yii::$app->request->post('var');
-            foreach ($vars as $id_var => $value) {
+            foreach ($vars as $id_var => $value)
+            {
                 $productVarValue = new PortalVarValue();
                 $productVarValue->portal_id = $model->id;
                 $productVarValue->var_id = $id_var;
@@ -73,7 +75,8 @@ class PortalController extends BaseController
             }
             
             // ajax validation
-            if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->isAjax)
+            {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(
                     ActiveForm::validateMultiple($modelsPortalVarValue),
@@ -85,23 +88,32 @@ class PortalController extends BaseController
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelsPortalVarValue) && $valid;
 
-            if ($valid) {
+            if ($valid)
+            {
                 $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsPortalVarValue as $modelPortalVarValue) {
+                try
+                {
+                    if ($flag = $model->save(false))
+                    {
+                        foreach ($modelsPortalVarValue as $modelPortalVarValue)
+                        {
                             $modelPortalVarValue->portal_id = $model->id;
-                            if (!($flag = $modelPortalVarValue->save(false))) {
+                            if (!($flag = $modelPortalVarValue->save(false)))
+                            {
                                 $transaction->rollBack();
                                 break;
                             }
                         }
                     }
-                    if ($flag) {
+                    if ($flag)
+                    {
                         $transaction->commit();
+                        $this->cacheEngine->cachePortal($model);
                         return $this->redirect(['index']);
                     }
-                } catch (Exception $e) {
+                }
+                catch (Exception $e)
+                {
                     $transaction->rollBack();
                 }
             }
@@ -135,11 +147,13 @@ class PortalController extends BaseController
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPortalVarValue, 'id', 'id')));
 
             $vars = Yii::$app->request->post('var');
-            foreach ($model->portalVarValues as $var_value) {
+            foreach ($model->portalVarValues as $var_value)
+            {
                 $var_value->delete();
             }
             
-            foreach ($vars as $id_var => $value) {
+            foreach ($vars as $id_var => $value)
+            {
                 $productVarValue = new PortalVarValue();
                 $productVarValue->portal_id = $model->id;
                 $productVarValue->var_id = $id_var;
@@ -148,7 +162,8 @@ class PortalController extends BaseController
             }
             
             // ajax validation
-            if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->isAjax)
+            {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(
                     ActiveForm::validateMultiple($modelsPortalVarValue),
@@ -161,26 +176,36 @@ class PortalController extends BaseController
 
             $valid = Model::validateMultiple($modelsPortalVarValue) && $valid;
 
-            if ($valid) {
+            if ($valid)
+            {
                 $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        if (! empty($deletedIDs)) {
+                try
+                {
+                    if ($flag = $model->save(false))
+                    {
+                        if (! empty($deletedIDs))
+                        {
                             PortalVar::deleteAll(['id' => $deletedIDs]);
                         }
-                        foreach ($modelsPortalVarValue as $modelPortalVarValue) {
+                        foreach ($modelsPortalVarValue as $modelPortalVarValue)
+                        {
                             $modelPortalVarValue->portal_id = $model->id;
-                            if (! ($flag = $modelPortalVarValue->save(false))) {
+                            if (! ($flag = $modelPortalVarValue->save(false)))
+                            {
                                 $transaction->rollBack();
                                 break;
                             }
                         }
                     }
-                    if ($flag) {
+                    if ($flag)
+                    {
                         $transaction->commit();
+                        $this->cacheEngine->cachePortal($model);
                         return $this->redirect(['index']);
                     }
-                } catch (Exception $e) {
+                }
+                catch (Exception $e)
+                {
                     $transaction->rollBack();
                 }
             }

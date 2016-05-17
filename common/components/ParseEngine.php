@@ -13,7 +13,7 @@ use backend\models\Column;
 use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\Page;
-use backend\models\PageBlock;
+use backend\models\Block;
 use backend\models\Product;
 use backend\models\Row;
 use backend\models\Section;
@@ -53,7 +53,7 @@ class ParseEngine
         $pages = $command = (new Query())
             ->select('*')
             ->from('page')
-            ->where(['id' => '962'])
+            ->where('id = 356')
             ->createCommand()
             ->queryAll();
 
@@ -81,7 +81,7 @@ class ParseEngine
 
             for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
             {
-                VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
+                //VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
 
                 $row = new Row();
 
@@ -97,16 +97,19 @@ class ParseEngine
                     BaseVarDumper::dump($row->errors);
                 }
 
-                $columns = json_decode($page['layout_element'], true)['content']['master'];
+                $layoutData = json_decode($page['layout_element'], true);
+
+                if (!isset($layoutData['content']))
+                    continue;
+
+                $columns = $layoutData['content']['master'];
 
                 $columnsCount = strlen($rowWidth[$i]) > 1 ? 2 : intval($rowWidth[$i]);
 
 
                 for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
                 {
-                    VarDumper::dump('Column ' . $columnIndex . $rowIds[$i] . PHP_EOL);
-
-                    $columnData = $columns[$columnIndex . $rowIds[$i]];
+                    //VarDumper::dump('Column ' . $columnIndex . $rowIds[$i] . PHP_EOL);
 
                     $column = new Column();
                     $column->row_id = $row->id;
@@ -138,13 +141,16 @@ class ParseEngine
 
                     $data = json_decode($page['layout_element'], true)['content']['master'];
 
+                    if (!isset($data[$columnIndex . $rowIds[$i]]))
+                        continue;
+
                     foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId)
                     {
                         $pageBlockType = json_decode($page['layout_element_type'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
-                        VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
+                        //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
 
-                        $pageBlock = new PageBlock();
+                        $pageBlock = new Block();
 
                         $pageBlock->order = $pageBlockOrder++;
 
@@ -332,7 +338,7 @@ class ParseEngine
                             BaseVarDumper::dump($row->errors);
                         }
 
-                        BaseVarDumper::dump($columnsCount . PHP_EOL);
+                        //BaseVarDumper::dump($columnsCount . PHP_EOL);
 
                         for($index = 1; $index <= $columnsCount; $index++)
                         {
@@ -377,7 +383,7 @@ class ParseEngine
                             {
                                 $pageBlockType = $sectionsLayoutElementType[$sectionId][$index . $poradieID][$tempId];
 
-                                $pageBlock = new PageBlock();
+                                $pageBlock = new Block();
 
                                 $pageBlock->order = $pageBlockOrder++;
 
@@ -402,7 +408,7 @@ class ParseEngine
                                         else
                                             $pageBlock->snippet_code_id = $json['code_select'];
 
-                                        $pageBlock->data = $json['snippet'];
+                                        $pageBlock->data = json_encode($json['snippet']);
 
                                         break;
 
@@ -450,9 +456,9 @@ class ParseEngine
      */
     public function parseSnippetVarValues()
     {
-        $pageBlocks = PageBlock::findAll(['type' => 'snippet']);
-
-        $transaction = Yii::$app->db->beginTransaction();
+        $pageBlocks = Block::findAll([
+            'type' => 'snippet',
+        ]);
 
         foreach($pageBlocks as $pageBlock)
         {
@@ -505,19 +511,15 @@ class ParseEngine
 
                 $snippetVarValue->save();
             }
-            $transaction->commit();
-            //$transaction->rollBack();
-
-            die();
         }
     }
 
     /** Pomocna metoda pre parsovanie zoznamov - rekurzivne sa vola pre zoznamy nizsich urovni
      * @param $value - cast jsonu, z ktorej sa parsuju data
-     * @param $pageBlock PageBlock - blok, ktoreho sa zoznamy tykaju
+     * @param $pageBlock Block - blok, ktoreho sa zoznamy tykaju
      * @return int
      */
-    private function parseSnippetList($value, PageBlock $pageBlock)
+    private function parseSnippetList($value, Block $pageBlock)
     {
         $list = new ListVar();
         $list->save();

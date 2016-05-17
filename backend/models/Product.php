@@ -122,7 +122,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSnippets()
     {
-        return $this->hasMany(PageBlock::className(), ['product_id' => 'id']);
+        return $this->hasMany(Block::className(), ['product_id' => 'id']);
     }
 
     /**

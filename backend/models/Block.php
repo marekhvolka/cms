@@ -24,20 +24,20 @@ use yii\helpers\BaseVarDumper;
  * @property string $name
  * @property Product $product
  * @property Column $column
- * @property PageBlock $parent
- * @property PageBlock[] $pageBlocks
+ * @property Block $parent
+ * @property Block[] $pageBlocks
  * @property Portal $portal
  * @property SnippetCode $snippetCode
  * @property SnippetVarValue[] $snippetVarValues
  */
-class PageBlock extends \yii\db\ActiveRecord
+class Block extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'page_block';
+        return 'block';
     }
 
     /**
@@ -50,7 +50,7 @@ class PageBlock extends \yii\db\ActiveRecord
             [['data', 'type', 'compiled_data'], 'string'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => PageBlock::className(), 'targetAttribute' => ['parent_id' => 'id']],
+            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Block::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
             [['snippet_code_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetCode::className(), 'targetAttribute' => ['snippet_code_id' => 'id']],
         ];
@@ -96,7 +96,7 @@ class PageBlock extends \yii\db\ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(PageBlock::className(), ['id' => 'parent_id']);
+        return $this->hasOne(Block::className(), ['id' => 'parent_id']);
     }
 
     /**
@@ -104,7 +104,7 @@ class PageBlock extends \yii\db\ActiveRecord
      */
     public function getPageBlocks()
     {
-        return $this->hasMany(PageBlock::className(), ['parent_id' => 'id']);
+        return $this->hasMany(Block::className(), ['parent_id' => 'id']);
     }
 
     /**

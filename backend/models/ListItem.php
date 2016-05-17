@@ -11,6 +11,8 @@ use Yii;
  * @property integer $list_id
  * @property integer $active
  *
+ * @property SnippetVarValue[] $values
+ *
  * @property ListVar $list
  */
 class ListItem extends \yii\db\ActiveRecord
@@ -54,4 +56,25 @@ class ListItem extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ListVar::className(), ['id' => 'list_id']);
     }
+
+    public function getValues()
+    {
+        return SnippetVarValue::findAll([
+            'list_item_id' => $this->id,
+        ]);
+    }
+
+    public function getValue()
+    {
+        $buffer = '(object) array(';
+
+        foreach($this->values as $snippetVarValue)
+        {
+            $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->value . ', ';
+        }
+
+        $buffer .= ')';
+
+        return $buffer;
+   }
 }

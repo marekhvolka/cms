@@ -3,10 +3,11 @@
 namespace backend\controllers;
 
 use backend\models\Language;
-use backend\models\PageBlock;
+use backend\models\Block;
 use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Section;
+use backend\models\Snippet;
 use common\components\CacheEngine;
 use common\components\ParseEngine;
 use Yii;
@@ -163,36 +164,66 @@ class PageController extends BaseController
 
         $cacheEngine->init();
 
-        //$cacheEngine->cacheDictionary(Language::findOne(['identifier' => 'cz']));
+        $languages = Language::find()->all();
 
-        //$cacheEngine->createProductFile(Language::findOne(['identifier' => 'cz']));
+        /*foreach ($languages as $language)
+        {
+            $cacheEngine->createLanguageCacheDirectory($language);
+            $cacheEngine->cacheDictionary($language);
+            $cacheEngine->createProductsMainCacheFile($language);
+        }*/
 
         /*$products = Product::find()->all();
 
         foreach($products as $product)
+        {
             $cacheEngine->cacheProduct($product);
+        }*/
 
-        */
+        /*$portals = Portal::find()->all();
+
+        foreach($portals as $portal)
+        {
+            $cacheEngine->cachePortal($portal);
+
+            foreach($portal->pages as $page)
+            {
+                $cacheEngine->cachePage($page);
+            }
+        }*/
+
+        $snippets = Snippet::find()->all();
+
+        foreach($snippets as $snippet)
+        {
+            $cacheEngine->cacheSnippet($snippet);
+
+            foreach($snippet->snippetCodes as $code)
+            {
+                $cacheEngine->cacheSnippetCode($code);
+            }
+        }
+
 
         //$cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
 
-        //$cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));
+        //$cacheEngine->compileBlock(Block::findOne(['id' => 2050]));
 
         //$cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
-        $cacheEngine->compilePage(Page::findOne(['identifier' => 'pujcky']));
+        $cacheEngine->compilePage(Page::findOne(['id' => '356']));
     }
 
     public function actionParse()
     {
         $parseEngine = new ParseEngine();
 
-        //$parseEngine->parseSnippetVarValues();
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $parseEngine->parseSnippetVarValues();
 
         //die();
 
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $parseEngine->parseMasterContent();
+        //$parseEngine->parseMasterContent();
 
         //$parseEngine->parsePageGlobalSection('page_header', 'page');
         //$parseEngine->parsePageGlobalSection('page_footer', 'page');

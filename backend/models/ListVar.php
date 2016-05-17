@@ -57,4 +57,21 @@ class ListVar extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SnippetVarValue::className(), ['value_list_id' => 'id']);
     }
+
+    public function getValue()
+    {
+        $buffer = 'array(';
+
+        foreach($this->listItems as $listItem)
+        {
+            if ($listItem->active)
+            {
+                $buffer .= '\'' . $listItem->id . '\' => ' . $listItem->value . ', ';
+            }
+        }
+
+        $buffer .= ')';
+
+        return $buffer;
+    }
 }
