@@ -10,8 +10,14 @@
 
 ?>
 
+<?php 
+// Check for column existence. 
+// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
+$clonedClass = $column->id == null ? 'cloned' : ''; 
+?>
+
 <!--COLUMN TO ADD-->
-<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$column->id == null ? 'cloned-column' : '';// Check for existing column. If new is created, is used for javascript cloning whole element and adding as new (dynamic adding).  ?>" 
+<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$clonedClass?>" 
      data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
@@ -44,7 +50,7 @@
         <ul class="column-elements">
             <?php foreach ($column->pageBlocks as $pageBlock) : ?>
                 <li>
-                    <?= $this->render('_page-block', ['pageBlock' => $pageBlock]); ?>
+                    <?= $this->render('_block', ['pageBlock' => $pageBlock]); ?>
                 </li>
             <?php endforeach;?>
         </ul>

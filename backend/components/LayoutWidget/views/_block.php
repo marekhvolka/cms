@@ -11,7 +11,13 @@ use yii\helpers\Html;
 
 ?>
 
-<div class="btn-group column-page-block column-text <?=$pageBlock->id == null ? 'cloned-page-block' : '' ; // Check for existing pageBlock. If new created, is used for javascript cloning whole element and adding as new (dynamic adding). ?>" 
+<?php 
+// Check for block existence. 
+// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
+$clonedClass = $block->id == null ? 'cloned' : ''; 
+?>
+
+<div class="btn-group block <?=$block ?>" 
      data-content="" role="group">
     <button type="button" class="btn btn-default btn-sm" title="Nastavenie publikovania">
         <span class="glyphicon glyphicon-globe"></span>

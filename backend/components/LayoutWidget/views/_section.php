@@ -10,8 +10,14 @@
 
 ?>
 
+<?php 
+// Check for section existence. 
+// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
+$clonedClass = $section->id == null ? 'cloned' : ''; 
+?>
+
 <!--SECTION TO ADD-->
-<li class="panel panel-default section <?=$section->id == null ? 'cloned-section' : ''; // Check for existing section. If new created, is used for javascript cloning whole element and adding as new (dynamic adding). ?>" 
+<li class="panel panel-default section <?=$clonedClass?>" 
     data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">

@@ -10,7 +10,7 @@ use kartik\sortable\Sortable;
 use backend\models\Section;
 use backend\models\Row;
 use backend\models\Column;
-use backend\models\PageBlock;
+use backend\models\Block;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
@@ -68,7 +68,7 @@ use backend\models\PageBlock;
     <?= $this->render('_section', ['section' => new Section()]); ?>
     <?= $this->render('_row', ['row' => new Row()]); ?>
     <?= $this->render('_column', ['column' => new Column()]); ?>
-    <?= $this->render('_page-block', ['pageBlock' => new PageBlock()]); ?>
+    <?= $this->render('_block', ['block' => new Block()]); ?>
 </div>
 
 <?php
