@@ -66,4 +66,28 @@ class Row extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Section::className(), ['id' => 'section_id']);
     }
+
+    public function getPrefix()
+    {
+        return '<div class="row">' . PHP_EOL;
+    }
+
+    public function getPostfix()
+    {
+        return '</div> <!-- row end -->' . PHP_EOL;
+    }
+
+    public function getContent()
+    {
+        $result = $this->getPrefix();
+
+        foreach($this->columns as $column)
+        {
+            $result .= $column->getContent();
+        }
+
+        $result .= $this->getPostfix();
+
+        return $result;
+    }
 }

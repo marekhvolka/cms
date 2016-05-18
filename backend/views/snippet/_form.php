@@ -112,6 +112,8 @@ var snippetVarParams = {
 JS;
 
 $this->registerJs($js, View::POS_BEGIN);
-$this->registerJsFile('@web/js/snippets.js');
+$this->registerJsFile('@web/js/snippets.js', [
+    'depends' => [\yii\web\JqueryAsset::className()]
+]);
 ?>
 

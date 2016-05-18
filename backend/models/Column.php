@@ -72,4 +72,28 @@ class Column extends \yii\db\ActiveRecord
         return $this->hasMany(Block::className(), ['column_id' => 'id'])
             ->orderBy(['order' => SORT_ASC]);
     }
+
+    public function getPrefix()
+    {
+        return '<div class="col-md-' . $this->width . '">' . PHP_EOL;
+    }
+
+    public function getPostfix()
+    {
+        return '</div> <!-- col end -->' . PHP_EOL;
+    }
+
+    public function getContent()
+    {
+        $result = $this->getPrefix();
+
+        foreach ($this->blocks as $block)
+        {
+            $result .= $block->getContent();
+        }
+
+        $result .= $this->getPostfix();
+
+        return $result;
+    }
 }

@@ -1,13 +1,12 @@
 <?php
 
+use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\models\VarType;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use backend\models\ProductType;
 use kartik\select2\Select2;
-use yii\helpers\Url;
-use backend\components\IdentifierWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\ProductVar */
@@ -22,13 +21,19 @@ use backend\components\IdentifierWidget;
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
+    <?=IdentifierGenerator::widget([
+        'idTextFrom' => 'productvar-name',
+        'idTextTo' => 'productvar-identifier',
+        'delimiter' => '_',
+    ])?>
+
     <?= $form->field($model, 'description')->textArea(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(VarType::find()->where(['show_product' => 1])->all(), 'id', 'label')
     ) ?>
 
-    <label class="control-label" for="productvar-product_type">For Product Types</label>
+    <label class="control-label" for="productvar-product_type">Zobrazovanie pre typy produktov: </label>
     <?php
     $productTypes = ProductType::find()->all();
     $productTypesData = ArrayHelper::map($productTypes, 'id', 'name');
@@ -73,7 +78,6 @@ use backend\components\IdentifierWidget;
 </div>
 
 <?php
-$url = Url::to(['site/generate-identifier']);
 //TODO refactoring - this may be validated by using Yii2 validation in model and controller
 $js = <<<JS
 
@@ -90,9 +94,3 @@ $('#submit-form').click(function(){
 JS;
 $this->registerJs($js);
 ?>
-
-<?=IdentifierWidget::widget([
-    'idTextFrom' => 'productvar-name', 
-    'idTextTo' => 'productvar-identifier',
-    'delimiter' => '-',
-])?>

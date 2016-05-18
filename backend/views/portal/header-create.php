@@ -40,6 +40,9 @@ pageParams.url = '$url';
 JS;
 
 $this->registerJs($js);
-$this->registerJsFile('@web/js/portal-elements.js');
+$this->registerJsFile('@web/js/portal-elements.js', [
+    'position' => \yii\web\View::POS_END,
+    'depends' => [\yii\web\JqueryAsset::className()]
+    ]);
 ?>
 

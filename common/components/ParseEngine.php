@@ -248,7 +248,7 @@ class ParseEngine
         $result = $command = (new Query())
             ->select('*')
             ->from($tableName)
-            ->where('page_id = 356')
+            //->where('page_id = 356')
             ->createCommand()
             ->queryAll();
 
@@ -379,6 +379,8 @@ class ParseEngine
                             }
 
                             $pageBlockOrder = 1;
+                            if (!isset($sectionsLayoutElement[$sectionId]))
+                                continue;
                             foreach ($sectionsLayoutElement[$sectionId][$index . $poradieID] as $tempId => $snippetCodeId)
                             {
                                 $pageBlockType = $sectionsLayoutElementType[$sectionId][$index . $poradieID][$tempId];

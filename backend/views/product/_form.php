@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\models\ProductVar;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -9,7 +10,7 @@ use backend\models\Language;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
-use backend\components\VariableWidget;
+use backend\components\VarManager\VarManagerWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
@@ -23,6 +24,12 @@ use backend\components\VariableWidget;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+
+    <?=IdentifierGenerator::widget([
+        'idTextFrom' => 'product-name',
+        'idTextTo' => 'product-identifier',
+        'delimiter' => '_',
+    ])?>
 
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
@@ -47,7 +54,7 @@ use backend\components\VariableWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
     
-    <?=VariableWidget::widget(['type' => ProductVar::className(), 'model' => $model])?>
+    <?=VarManagerWidget::widget(['type' => ProductVar::className(), 'model' => $model])?>
 
     <?php
         //TODO: Variable Widget nema mat save button

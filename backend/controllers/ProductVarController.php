@@ -7,7 +7,6 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\components\IdentifierComponent;
 
 
 /**
@@ -40,14 +39,6 @@ class ProductVarController extends BaseController
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
-    }
-    
-    public function actionSlug()
-    {
-        if (Yii::$app->request->isPost) {
-            $name = Yii::$app->request->post('name');
-            echo IdentifierComponent::generateIdentifier($name, '');
-        }
     }
 
     /**

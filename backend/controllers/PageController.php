@@ -77,11 +77,20 @@ class PageController extends BaseController
     {
         $model = new Page();
 
+        $headerSections = [new Section()];
+        $footerSections = [new Section()];
+        $contentSections = [new Section()];
+        $sidebarSections = [new Section()];
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'headerSections' => $headerSections,
+                'footerSections' => $footerSections,
+                'contentSections' => $contentSections,
+                'sidebarSections' => $sidebarSections,
             ]);
         }
     }
@@ -177,7 +186,7 @@ class PageController extends BaseController
 
         foreach($products as $product)
         {
-            $cacheEngine->cacheProduct($product);
+            $product->getMainFile();
         }*/
 
         /*$portals = Portal::find()->all();
@@ -192,25 +201,29 @@ class PageController extends BaseController
             }
         }*/
 
-        $snippets = Snippet::find()->all();
+        /*$snippets = Snippet::find()->all();
 
         foreach($snippets as $snippet)
         {
-            $cacheEngine->cacheSnippet($snippet);
+            $snippet->getMainFile();
 
             foreach($snippet->snippetCodes as $code)
             {
-                $cacheEngine->cacheSnippetCode($code);
+                $code->getMainFile();
             }
-        }
+        }*/
 
 
         //$cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
 
         //$cacheEngine->compileBlock(Block::findOne(['id' => 2050]));
 
-        //$cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
-        $cacheEngine->compilePage(Page::findOne(['id' => '356']));
+        //$cacheEngine->cachePageVars(Page::findOne(['id' => '356']));
+
+        //$string = Page::findOne(['id' => '356'])->getMainCacheFile();
+
+        //echo file_get_contents($string);
+
     }
 
     public function actionParse()
@@ -219,7 +232,7 @@ class PageController extends BaseController
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        $parseEngine->parseSnippetVarValues();
+        //$parseEngine->parseSnippetVarValues();
 
         //die();
 
@@ -228,7 +241,7 @@ class PageController extends BaseController
         //$parseEngine->parsePageGlobalSection('page_header', 'page');
         //$parseEngine->parsePageGlobalSection('page_footer', 'page');
 
-        //$parseEngine->parsePageGlobalSection('portal_global', 'portal');
+        $parseEngine->parsePageGlobalSection('portal_global', 'portal');
 
         $transaction->commit();
     }

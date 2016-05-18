@@ -165,4 +165,86 @@ class Block extends \yii\db\ActiveRecord
 
         return $name;
     }
+
+    public function getContent()
+    {
+        return $this->compileBlock();
+    }
+
+    public function compileBlock()
+    {
+        $path = '';
+        $buffer = '';
+
+        if (!isset($this->compiled_data))
+        {
+            if (isset($this->portal)) //portalovy snippet
+            {
+                $path = $this->portal->getPortalSnippetCacheDirectory();
+            }
+            else if (isset($this->product)) //produktovy snippet
+            {
+                $path = $this->product->getProductSnippetCacheDirectory();
+            }
+            else if (isset($this->column->row->section->page)) //block podstranky
+            {
+                $buffer = $this->column->row->section->page->getIncludePrefix();
+                $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
+            }
+            else if (isset($this->column->row->section->portal)) //block portalu
+            {
+                $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
+            }
+
+            switch ($this->type)
+            {
+                case 'snippet' :
+
+                    $blockData = $this->compileSnippet();
+
+                    $path .= 'snippet_cache' . $this->id . '.latte';
+
+                    break;
+
+                default:
+
+                    $path .= 'block_cache' . $this->id . '.latte';
+
+                    $blockData = $this->data;
+            }
+
+            $buffer .= $blockData;
+
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+
+            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($path, array());
+
+            $this->compiled_data = $result;
+
+            $this->save();
+        }
+
+        return $this->compiled_data;
+    }
+
+    private function compileSnippet()
+    {
+        $buffer = '<?php ' . PHP_EOL;
+
+        $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
+
+        $snippetVarValues = $this->snippetVarValues;
+
+        /* @var $snippetVarValue SnippetVarValue */
+        foreach($snippetVarValues as $snippetVarValue)
+        {
+            $buffer .= '$' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
+        }
+
+        $buffer .= '?>' . PHP_EOL;
+
+        $buffer .= file_get_contents($this->snippetCode->getMainFile());
+
+        return $buffer;
+    }
 }

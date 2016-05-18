@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use backend\models\Language;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
-use backend\components\VariableWidget;
+use backend\components\VarManager\VarManagerWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
@@ -50,7 +50,7 @@ use backend\components\VariableWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?=VariableWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
+    <?=VarManagerWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
 
     <?php
     //TODO: Variable Widget nema mat save button

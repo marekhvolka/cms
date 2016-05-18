@@ -159,4 +159,18 @@ class SnippetCode extends \yii\db\ActiveRecord
         }
     }
 
+    /** Vrati cestu k nacachovanemu suboru, kde su ulozene informacie o kode snippetu a jeho premennych
+     * @return string
+     */
+    public function getMainFile()
+    {
+        $path = $this->snippet->getDirectory() . 'code' . $this->id . '.php';
+
+        if (!file_exists($path))
+        {
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->code);
+        }
+
+        return $path;
+    }
 }

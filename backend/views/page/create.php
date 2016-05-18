@@ -7,6 +7,8 @@ use yii\helpers\Html;
 /* @var $model backend\models\Page */
 /* @var $headerSections \backend\models\Section */
 /* @var $footerSections \backend\models\Section */
+/* @var $sidebarSections \backend\models\Section */
+/* @var $contentSections \backend\models\Section */
 
 $this->title = 'Create Page';
 $this->params['breadcrumbs'][] = ['label' => 'Pages', 'url' => ['index']];
@@ -18,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form', [
         'model' => $model,
         'headerSections' => $headerSections,
-        'footerSections' => $footerSections
+        'footerSections' => $footerSections,
+        'contentSections' => $contentSections,
+        'sidebarSections' => $sidebarSections
     ]) ?>
 
 </div>

@@ -55,15 +55,6 @@ class SiteController extends BaseController
         ];
     }
     
-    public function actionGenerateIdentifier()
-    {
-        if (Yii::$app->request->isPost) {
-            $name = Yii::$app->request->post('name');
-            $delimiter = Yii::$app->request->post('delimiter');
-            echo IdentifierComponent::generateIdentifier($name, $delimiter);
-        }
-    }
-    
     public function actionIndex()
     {
         return $this->render('index');

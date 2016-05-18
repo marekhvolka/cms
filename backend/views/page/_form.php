@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -26,6 +27,12 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+
+    <?=IdentifierGenerator::widget([
+        'idTextFrom' => 'page-name',
+        'idTextTo' => 'page-identifier',
+        'delimiter' => '-',
+    ])?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
     'type' => SwitchInput::CHECKBOX

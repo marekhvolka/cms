@@ -31,6 +31,10 @@ return [
                 ],
             ],
         ],
+        'cacheEngine' => [
+            'class' => 'common\components\CacheEngine',
+        ],
+
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -46,4 +50,5 @@ return [
         */
     ],
     'params' => $params,
+
 ];

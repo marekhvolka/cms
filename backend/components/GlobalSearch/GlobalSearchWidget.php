@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\components;
+namespace backend\components\GlobalSearch;
 
 use yii\base\Widget;
 

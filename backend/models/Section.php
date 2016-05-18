@@ -10,7 +10,6 @@ use Yii;
  * @property integer $id
  * @property string $page_id
  * @property integer $portal_id
- * @property string $options
  * @property string $type
  * @property string css_class
  * @property string css_id
@@ -39,7 +38,7 @@ class Section extends \yii\db\ActiveRecord
             [['type'], 'required'],
             [['id'], 'unique'],
             [['page_id', 'portal_id'], 'integer'],
-            [['options', 'css_class', 'css_style', 'css_id'], 'string'],
+            [['css_class', 'css_style', 'css_id'], 'string'],
             [['type'], 'string', 'max' => 10],
             [['page_id'], 'exist', 'skipOnError' => true, 'targetClass' => Page::className(), 'targetAttribute' => ['page_id' => 'id']],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
@@ -55,7 +54,6 @@ class Section extends \yii\db\ActiveRecord
             'id' => 'ID',
             'page_id' => 'Page ID',
             'portal_id' => 'Portal ID',
-            'options' => 'Options',
             'type' => 'Type',
         ];
     }
@@ -83,5 +81,31 @@ class Section extends \yii\db\ActiveRecord
     public function getPortal()
     {
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
+    }
+
+    public function getPrefix()
+    {
+        return '<div class="wrapper">' . PHP_EOL .
+                '<div class="container">' . PHP_EOL;
+    }
+
+    public function getPostfix()
+    {
+        return '</div> <!-- container end --> ' . PHP_EOL .
+            '</div> <!-- section end -->' . PHP_EOL;
+    }
+
+    public function getContent()
+    {
+        $result = $this->getPrefix();
+
+        foreach($this->rows as $row)
+        {
+            $result .= $row->getContent();
+        }
+
+        $result .= $this->getPostfix();
+
+        return $result;
     }
 }

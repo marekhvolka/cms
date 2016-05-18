@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\models\VarType;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -17,6 +18,12 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+
+    <?=IdentifierGenerator::widget([
+        'idTextFrom' => 'portalvar-name',
+        'idTextTo' => 'portalvar-identifier',
+        'delimiter' => '_',
+    ])?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

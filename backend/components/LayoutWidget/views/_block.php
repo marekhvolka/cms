@@ -27,7 +27,7 @@ $clonedClass = $block->id == null ? 'cloned' : '';
         <?php echo $block->name; ?>
     </button>
 
-    <?php if ($block->type == 'snippet') : ?>
+    <?php if (($block->type == 'snippet') && isset($block->snippetCode)) : ?>
 
     <?= Html::a(
             '<span class="glyphicon glyphicon-link"></span>',

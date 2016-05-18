@@ -1,11 +1,10 @@
 <?php
 
-namespace backend\components;
+namespace backend\components\VarManager;
 
 use yii\base\Widget;
-use yii\helpers\Html;
 
-class VariableWidget extends Widget
+class VarManagerWidget extends Widget
 {
     public $type;
     public $model;

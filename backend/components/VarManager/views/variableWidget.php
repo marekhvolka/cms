@@ -10,7 +10,7 @@ use kartik\select2\Select2;
 /* @var $type string */
 
 $type_exploded = explode("\\", $type);
-$property_name = lcfirst($type_exploded[sizeof($type_exploded) - 1]) . 'Values';; 
+$property_name = lcfirst($type_exploded[sizeof($type_exploded) - 1]) . 'Values';
 
 $all_vars = $type::find()->all();
 
@@ -21,7 +21,6 @@ if ($model->id) {
 $all_vars_data = ArrayHelper::map($all_vars, 'id', 'name');
 
 ?>
-    
     <div id="dynamic-fields" class="row">
         <?php if(isset($selected_var_values)):?>
             <?php foreach ($selected_var_values as $i => $var_value):?>

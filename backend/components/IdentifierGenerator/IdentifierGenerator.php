@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\components;
+namespace backend\components\IdentifierGenerator;
 
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -11,7 +11,7 @@ use yii\helpers\Html;
  * Inserted javascript also implements events - how is identifier generated on browser.
  * (After blur from source text, etc.)
  */
-class IdentifierWidget extends Widget
+class IdentifierGenerator extends Widget
 {
 
     public $idTextFrom; // HTML id attribute of input as source of identifier.
@@ -25,7 +25,7 @@ class IdentifierWidget extends Widget
 
     public function run()
     {
-        return $this->render('identifierWidget',[
+        return $this->render('identifierGenerator',[
             'idTextFrom' => $this->idTextFrom, 
             'idTextTo' => $this->idTextTo,
             'delimiter' => $this->delimiter,
