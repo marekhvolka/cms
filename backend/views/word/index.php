@@ -6,10 +6,10 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\DictionarySearch */
+/* @var $searchModel backend\models\WordSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Dictionaries';
+$this->title = 'Slovník';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="dictionary-index">
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Dictionary', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Pridať slovo', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= $this->render('_search', [
@@ -30,13 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'label'=>'Názov',
+                'label'=>'Identifikátor',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->word,Url::to(['/dictionary/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->identifier,Url::to(['/word/update/', 'id' => $dataProvider->id]));
                 },
             ],
-            'identifier',
             'last_edit',
             [
                 'label' => 'Naposledy editoval',

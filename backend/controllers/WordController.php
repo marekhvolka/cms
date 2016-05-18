@@ -2,11 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\Language;
 use backend\models\Model;
+use backend\models\WordTranslation;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
-use backend\models\Dictionary;
-use backend\models\search\DictionarySearch;
+use backend\models\Word;
+use backend\models\search\WordSearch;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,9 +16,9 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 
 /**
- * DictionaryController implements the CRUD actions for Dictionary model.
+ * WordController implements the CRUD actions for Word model.
  */
-class DictionaryController extends BaseController
+class WordController extends BaseController
 {
     public function behaviors()
     {
@@ -31,12 +33,12 @@ class DictionaryController extends BaseController
     }
 
     /**
-     * Lists all Dictionary models.
+     * Lists all Word models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new DictionarySearch();
+        $searchModel = new WordSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -46,14 +48,22 @@ class DictionaryController extends BaseController
     }
 
     /**
-     * Creates a new Dictionary model.
+     * Creates a new Word model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Dictionary();
+        $model = new Word();
         $modelsWordTranslation = [new WordTranslation()];
+
+        foreach(Language::find()->all() as $language)
+        {
+            $wordTranslation = new WordTranslation();
+            $wordTranslation->language_id = $language->id;
+
+            $modelsWordTranslation[] = $wordTranslation;
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -102,7 +112,7 @@ class DictionaryController extends BaseController
     }
 
     /**
-     * Updates an existing Dictionary model.
+     * Updates an existing Word model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -110,18 +120,20 @@ class DictionaryController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $modelsWordTranslation = $model->wordTranslations;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'modelsWordTranslation' => $modelsWordTranslation
             ]);
         }
     }
 
     /**
-     * Deletes an existing Dictionary model.
+     * Deletes an existing Word model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -134,15 +146,15 @@ class DictionaryController extends BaseController
     }
 
     /**
-     * Finds the Dictionary model based on its primary key value.
+     * Finds the Word model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Dictionary the loaded model
+     * @return Word the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Dictionary::findOne($id)) !== null) {
+        if (($model = Word::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

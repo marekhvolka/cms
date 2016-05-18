@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Dictionary */
+/* @var $model backend\models\Word */
 
-$this->title = 'Create Dictionary';
-$this->params['breadcrumbs'][] = ['label' => 'Dictionaries', 'url' => ['index']];
+$this->title = 'Pridať slovo';
+$this->params['breadcrumbs'][] = ['label' => 'Slovník', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="dictionary-create">

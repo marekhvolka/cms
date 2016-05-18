@@ -5,12 +5,12 @@ namespace backend\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Dictionary;
+use backend\models\Word;
 
 /**
- * DictionarySearch represents the model behind the search form about `backend\models\Dictionary`.
+ * WordSearch represents the model behind the search form about `backend\models\Word`.
  */
-class DictionarySearch extends Dictionary
+class WordSearch extends Word
 {
     public $globalSearch;
 
@@ -21,7 +21,7 @@ class DictionarySearch extends Dictionary
     {
         return [
             [['id', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'word', 'identifier', 'last_edit'], 'safe'],
+            [['globalSearch', 'identifier', 'last_edit'], 'safe'],
         ];
     }
 
@@ -43,7 +43,7 @@ class DictionarySearch extends Dictionary
      */
     public function search($params)
     {
-        $query = Dictionary::find();
+        $query = Word::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,8 +57,7 @@ class DictionarySearch extends Dictionary
             return $dataProvider;
         }
 
-        $query->orFilterWhere(['like', 'word', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
+        $query->orFilterWhere(['like', 'identifier', $this->globalSearch]);
 
         return $dataProvider;
     }

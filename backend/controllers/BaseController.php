@@ -8,7 +8,7 @@ use yii\helpers\Url;
 use yii\web\Controller;
 
 /**
- * DictionaryController implements the CRUD actions for Dictionary model.
+ * WordController implements the CRUD actions for Word model.
  */
 abstract class BaseController extends Controller
 {

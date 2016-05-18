@@ -3,10 +3,11 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Dictionary */
+/* @var $model backend\models\Word */
+/* @var $modelsWordTranslation backend\models\WordTranslation */
 
-$this->title = 'Update Dictionary: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Dictionaries', 'url' => ['index']];
+$this->title = 'Upraviť slovo: ' . ' ' . $model->identifier;
+$this->params['breadcrumbs'][] = ['label' => 'Slovník', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

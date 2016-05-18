@@ -11,7 +11,7 @@ return [
         ],
     ],
     ['icon' => 'thumbs-o-up', 'title' => 'Ďakovačky', 'controller' => 'tracking-code', 'action' => 'index'],
-    ['icon' => 'book', 'title' => 'Slovník', 'controller' => 'dictionary', 'action' => 'index'],
+    ['icon' => 'book', 'title' => 'Slovník', 'controller' => 'word', 'action' => 'index'],
     ['icon' => 'picture-o', 'title' => 'Multimédiá', 'controller' => 'multimedia', 'action' => 'index'],
     ['icon' => 'puzzle-piece', 'title' => 'Snippety', 'controller' => 'snippet', 'action' => 'index'],
     [

@@ -8,25 +8,24 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "dictionary".
+ * This is the model class for table "word".
  *
  * @property integer $id
- * @property string $word
  * @property string $identifier
  * @property string $last_edit
  * @property integer $last_edit_user
  *
  * @property User $lastEditUser
- * @property DictionaryTranslation[] $dictionaryTranslations
+ * @property WordTranslation[] $wordTranslations
  */
-class Dictionary extends ActiveRecord
+class Word extends ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'dictionary';
+        return 'word';
     }
 
     /**
@@ -35,11 +34,10 @@ class Dictionary extends ActiveRecord
     public function rules()
     {
         return [
-            [['word', 'identifier'], 'required'],
+            [['identifier'], 'required'],
             [['last_edit'], 'safe'],
             [['last_edit_user'], 'integer'],
-            [['word'], 'string', 'max' => 255],
-            [['identifier'], 'string', 'max' => 200],
+            [['identifier'], 'string', 'max' => 255],
             [['identifier'], 'unique']
         ];
     }
@@ -51,8 +49,7 @@ class Dictionary extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'word' => 'Word',
-            'identifier' => 'Identifier',
+            'identifier' => 'Identifikátor',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];
@@ -69,11 +66,8 @@ class Dictionary extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDictionaryTranslations()
+    public function getWordTranslations()
     {
-        //return $this->hasMany('DictionaryTranslation', array('post_id' => 'id'));
-        //return $this->hasMany(DictionaryTranslation::className(), ['word_id' => 'id']);
-        return Yii::$app->db->createCommand('SELECT * FROM dictionary_translation WHERE word_id = ' . $this->id)
-            ->queryAll();
+        return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
     }
 }

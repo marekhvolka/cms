@@ -98,14 +98,14 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getDictionaryCacheFile()
     {
-        $path = $this->getCacheDirectory() . 'dictionary.php';
+        $path = $this->getCacheDirectory() . 'word.php';
 
         /*if (!file_exists($path))
         {
             $buffer = '<?php ' . PHP_EOL . '$slovnik = ';
 
-            $query = 'SELECT identifier, translation FROM dictionary
-          JOIN dictionary_translation ON (dictionary.id = word_id)
+            $query = 'SELECT identifier, translation FROM word
+          JOIN dictionary_translation ON (word.id = word_id)
           WHERE language_id = :language_id';
 
             $words = (object)ArrayHelper::map(Yii::$app->db->createCommand($query,
