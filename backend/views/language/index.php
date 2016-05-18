@@ -11,13 +11,12 @@ use yii\helpers\Url;
 $this->title = 'Languages';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať jazyk', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="language-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Language', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

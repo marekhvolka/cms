@@ -8,16 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\search\TagSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tags';
+$this->title = 'Tagy';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať tag', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="tag-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Tag', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

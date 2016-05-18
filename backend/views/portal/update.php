@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
 
-$this->title = 'Update Portal: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Portals', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Úprava portálu: ' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Portály', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Úprava';
 ?>
 <div class="portal-update">
 

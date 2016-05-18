@@ -30,7 +30,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'description')->textArea(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
-        ArrayHelper::map(VarType::find()->where(['show_product' => 1])->all(), 'id', 'label')
+        ArrayHelper::map(VarType::find()->where(['show_product' => 1])->all(), 'id', 'name')
     ) ?>
 
     <label class="control-label" for="productvar-product_type">Zobrazovanie pre typy produktov: </label>

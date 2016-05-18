@@ -10,8 +10,8 @@ use yii\helpers\Html;
 /* @var $sidebarSections \backend\models\Section */
 /* @var $contentSections \backend\models\Section */
 
-$this->title = 'Create Page';
-$this->params['breadcrumbs'][] = ['label' => 'Pages', 'url' => ['index']];
+$this->title = 'Pridanie podstránky';
+$this->params['breadcrumbs'][] = ['label' => 'Podstránky', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="page-create">

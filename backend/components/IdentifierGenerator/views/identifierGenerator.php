@@ -28,7 +28,7 @@ function generate(input, delimiter)
 {
     var output = input.trim(); //odstranenie medzier na zaciatku a konci
 
-    output = output.replace('/ /g', delimiter, output); //nahradenie medzier
+    output = output.replace(/ /g, delimiter, output); //nahradenie medzier
 
     output = output.toLowerCase(); //na male pismena
 

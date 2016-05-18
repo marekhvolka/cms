@@ -7,10 +7,10 @@ use yii\helpers\Html;
 /* @var $headerSections \backend\models\Section */
 /* @var $footerSections \backend\models\Section */
 
-$this->title = 'Update Page: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Pages', 'url' => ['index']];
+$this->title = 'Úprava podstránky: ' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Podstránky', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Úprava';
 ?>
 <div class="page-update">
 

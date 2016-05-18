@@ -8,16 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\TrackingCodeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tracking Codes';
+$this->title = 'Meracie kódy';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať merací kód', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="tracking-code-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Tracking Code', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

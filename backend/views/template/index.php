@@ -8,16 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\TemplateSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Templates';
+$this->title = 'Šablóny';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať šablónu', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="template-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Template', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

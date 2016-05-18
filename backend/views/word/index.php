@@ -12,13 +12,12 @@ use yii\widgets\Pjax;
 $this->title = 'Slovník';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať slovo', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="dictionary-index">
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Pridať slovo', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= $this->render('_search', [
         'model' => $searchModel,

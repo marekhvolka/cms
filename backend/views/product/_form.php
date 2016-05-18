@@ -2,6 +2,7 @@
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\models\ProductVar;
+use backend\models\ProductVarValue;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -10,7 +11,7 @@ use backend\models\Language;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
-use backend\components\VarManager\VarManagerWidget;
+use backend\components\VarManager2\VarManagerWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
@@ -54,7 +55,12 @@ use backend\components\VarManager\VarManagerWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
     
-    <?=VarManagerWidget::widget(['type' => ProductVar::className(), 'model' => $model])?>
+    <?=VarManagerWidget::widget([
+        'model' => $model,
+        'allVariables' => $allVariables,
+        'assignedVariableValues' => $modelsProductVarValue,
+        'variableValueClassName' => ProductVarValue::className()
+    ])?>
 
     <?php
         //TODO: Variable Widget nema mat save button

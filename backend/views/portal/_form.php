@@ -36,7 +36,7 @@ use backend\components\VarManager\VarManagerWidget;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'template_settings')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'color_scheme')->textInput() ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX

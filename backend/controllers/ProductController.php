@@ -55,7 +55,9 @@ class ProductController extends BaseController
     public function actionCreate()
     {
         $model = new Product();
-        $modelsProductVarValue = [new ProductVarValue()];
+        $productVarValues = [new ProductVarValue()];
+
+        $allVariables = ProductVarValue::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -125,6 +127,8 @@ class ProductController extends BaseController
         $model = $this->findModel($id);
         $modelsProductVarValue = $model->productVarValues;
 
+        $allVariables = ProductVar::find()->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $oldIDs = ArrayHelper::map($modelsProductVarValue, 'id', 'id');
@@ -190,6 +194,7 @@ class ProductController extends BaseController
             return $this->render('update', [
                 'model' => $model,
                 'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                'allVariables' => $allVariables
             ]);
         }
     }

@@ -11,13 +11,12 @@ use yii\helpers\Url;
 $this->title = 'Premenné produktu';     // Title of site
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať produktovú premennú', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="product-var-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Product Var', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -34,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'identifier',
             [
                 'label' => 'Typ',
-                'value' => 'type.label'
+                'value' => 'type.name'
             ],
             // 'product_type',
             'last_edit',

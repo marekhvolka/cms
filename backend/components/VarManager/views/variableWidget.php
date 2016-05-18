@@ -70,7 +70,7 @@ $all_vars_data = ArrayHelper::map($all_vars, 'id', 'name');
         'name' => 'vars',
         'data' => $all_vars_data,
         'options' => [
-            'placeholder' => 'Select var ...',
+            'placeholder' => 'Vyber premennú ...',
             'id' => 'types-dropdown',
         ],
     ]);
