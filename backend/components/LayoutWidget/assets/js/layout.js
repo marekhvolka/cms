@@ -1,17 +1,32 @@
 var optionsElement;
 
-// Add section.
-$.get(snippetVarParams.appendVarUrl, function (data) {
-    snippetVarParams.variableHtml = data;
-});
 
+//$.get(snippetVarParams.appendVarUrl, function (data) {
+//    snippetVarParams.variableHtml = data;
+//});
+//
+//$('#save-btn').click(function () {
+//    var data = prepareData();
+//    $.post(pageParams.url, {data: data}, function (result) {
+//        console.log(result);
+//    });
+//});
+//
+//function prepareData() {
+//    // Loop trhough Sections.
+//    var sections = $('.section');
+//    sections.each(function() {
+//        
+//        //$(this)
+//    });
+//}
 
 
 $('.btn-add-section').click(function (e) {
-    var sectionClone = $('.cloned-section').clone();
-    sectionClone.removeAttr('hidden');
-    sectionClone.removeClass('cloned-section')
-    $('.sections').append(sectionClone);
+    var sectionClone = $('.section.cloned').first().clone();
+    sectionClone.removeClass('cloned');
+    var sectionsId = $(this).data('sections-id');
+    $('#sections-' + sectionsId).append(sectionClone);
 
     // Attach remove button event.
     sectionClone.find('.btn-remove-section').first().click(function () {
@@ -19,40 +34,35 @@ $('.btn-add-section').click(function (e) {
     });
 
     // Add row.
-    sectionClone.find('.add-row').click(function () {
-        var row = $('<li class="row section-row"></li>');
+    sectionClone.find('.add-row').click(function (e) {
+        var row = $('<li></li>');
+        var sectionRows = sectionClone.find('.section-rows');
+        row = row.appendTo(sectionRows);
+        var rowClone = $('.layout-row.cloned').first().clone();
+        rowClone.removeClass('cloned');
+        row = rowClone.appendTo(row);
 
-        var columns = getRowColumnsClasses($(this).data('row-type-width'));
+        var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
 
         // Add column.
-        for (var i = 0; i < columns.length; i++) {
-            var columnWrapper = $('<div class="column-wrapper col-sm-' + columns[i] + '"></div>').appendTo(row);
-            var columnClone = $('.cloned-column').clone();
+        for (var i = 0; i < columnsByWidth.length; i++) {
+            var columnClone = $('.column.cloned').first().clone();
+            columnClone.addClass('col-md-' + columnsByWidth[i]);
 
-            columnClone.removeClass('cloned-column');
-            columnClone.removeAttr('hidden');
-
-            columnWrapper.append(columnClone);
+            columnClone.removeClass('cloned');
+            row.append(columnClone);
 
             // Remove row event attached.
             columnClone.find('.btn-remove-row').click(function () {
                 $(this).parents('.row').first().remove();
-            })
+            });
 
-            attachOptionsButtonEvent(columnClone.find('.options-btn'));
-
-//            columnClone.find('.text-option').click(function (e) {
-//                
-//            });
+            //attachOptionsButtonEvent(columnClone.find('.options-btn'));
         }
-
-        var sectionRows = sectionClone.find('.section-rows');
-        sectionRows.append(row);
+        
     });
 
     attachOptionsButtonEvent(sectionClone.find('.options-btn'));
-
-    return false;
 });
 
 function attachOptionsButtonEvent(button) {
@@ -91,7 +101,7 @@ function clearOptions() {
     $('#options').find('[name="section-style"]').val('');
 }
 
-function getRowColumnsClasses(rowType) {
+function getColumnsWidths(rowType) {
     switch (rowType) {
         case 1:
             return ['12'];

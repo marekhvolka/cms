@@ -52,13 +52,16 @@ use backend\models\Block;
     Modal::end(); */
     ?>
 
-    <ul class="sections">
+    <?php
+    $idHash = Yii::$app->security->generateRandomString();
+    ?>
+    <ul class="sections" id="sections-<?= $idHash?>">
         <?php foreach ($sections as $section) : ?>
             <?= $this->render('_section', ['section' => $section]); ?>
         <?php endforeach; ?>
     </ul>
     <div class="col-sm-10 col-sm-offset-2">
-        <button type="button" class="btn btn-success btn-sm btn-add-section">
+        <button type="button" class="btn btn-success btn-sm btn-add-section" data-sections-id="<?=$idHash?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
     </div>

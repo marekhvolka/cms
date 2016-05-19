@@ -31,12 +31,12 @@ $clonedClass = $section->id == null ? 'cloned' : '';
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#" class="add-row" data-row-type-width="1">Fullwidth blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="2">2 stĺpcový blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="3">3 stĺpcový blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="4">4 stĺpcový blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="2/1">2/1 blok</a></li>
-                <li><a href="#" class="add-row" data-row-type-width="1/2">1/2 blok</a></li>
+                <li><div></div><a class="add-row" data-row-type-width="1">Fullwidth blok</a></li>
+                <li><a class="add-row" data-row-type-width="2">2 stĺpcový blok</a></li>
+                <li><a class="add-row" data-row-type-width="3">3 stĺpcový blok</a></li>
+                <li><a class="add-row" data-row-type-width="4">4 stĺpcový blok</a></li>
+                <li><a class="add-row" data-row-type-width="2/1">2/1 blok</a></li>
+                <li><a class="add-row" data-row-type-width="1/2">1/2 blok</a></li>
             </ul>
         </div>
         <div class="section-button">

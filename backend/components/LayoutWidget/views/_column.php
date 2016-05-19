@@ -17,7 +17,7 @@ $clonedClass = $column->id == null ? 'cloned' : '';
 ?>
 
 <!--COLUMN TO ADD-->
-<div class="col-md-<?php echo $column->width; ?> panel panel-default column <?=$clonedClass?>" 
+<div class="<?= $column->width? "col-md-$column->width" : ""; ?> panel panel-default column <?=$clonedClass?>" 
      data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">
@@ -31,11 +31,11 @@ $clonedClass = $column->id == null ? 'cloned' : '';
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#" class="column-option text-option" data-toggle="modal" data-target="#modal-text">Text</a></li>
-                <li><a href="#" class="column-option html-option">HTML</a></li>
-                <li><a href="#" class="column-option smart-snippet-option">Smart snippet</a></li>
-                <li><a href="#" class="column-option product-snippet-option">Produktový snippet</a></li>
-                <li><a href="#" class="column-option portal-snippet-option">Portálový snippet</a></li>
+                <li><a class="column-option text-option" data-toggle="modal" data-target="#modal-text">Text</a></li>
+                <li><a class="column-option html-option">HTML</a></li>
+                <li><a class="column-option smart-snippet-option">Smart snippet</a></li>
+                <li><a class="column-option product-snippet-option">Produktový snippet</a></li>
+                <li><a class="column-option portal-snippet-option">Portálový snippet</a></li>
             </ul>
         </div>
         <div class="section-button">
