@@ -45,11 +45,11 @@ $js = <<<JS
 
 var selectedVarIds = $assignedVariableIds;
 
-for (var i = 0; i < selectedVarIds.length; i++)
-{
+for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true); //skryjeme uz pridane premenne
-    $('#types-dropdown').select2();
 }
+        
+$('#types-dropdown').select2();
 
 
 $('#types-dropdown').change(function(){
@@ -57,7 +57,7 @@ $('#types-dropdown').change(function(){
     var source = $('.field-' + fieldId);
 
 
-    $.get('appendVariableValue', function (data) {
+    $.get('$appendVarValueUrl?id=' + fieldId, function (data) {
         $('#dynamic-fields').append(data); //pripojime vygenerovany view do zoznamu
     });
 

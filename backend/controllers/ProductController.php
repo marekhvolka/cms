@@ -14,6 +14,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use backend\components\VarManager2\VarManagerWidget;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -198,6 +199,16 @@ class ProductController extends BaseController
             ]);
         }
     }
+    
+    public function actionAppendVarValue($id) 
+    {
+        $varValue = new ProductVarValue();
+        $productVar = ProductVar::find()->where(['id' => $id])->one();
+        $varValue->var_id = $id;
+        
+        return (new VarManagerWidget())->appendVariableValue($varValue);
+    }
+    
 
     /**
      * Deletes an existing Product model.

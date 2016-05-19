@@ -12,6 +12,7 @@ use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
 use backend\components\VarManager2\VarManagerWidget;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
@@ -55,11 +56,15 @@ use backend\components\VarManager2\VarManagerWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
     
+    
+    
     <?=VarManagerWidget::widget([
         'model' => $model,
+        'form' => $form,
         'allVariables' => $allVariables,
         'assignedVariableValues' => $modelsProductVarValue,
-        'variableValueClassName' => ProductVarValue::className()
+        'variableValueClassName' => ProductVarValue::className(),
+        'appendVarValueUrl' => Url::to(['product/append-var-value']),
     ])?>
 
     <?php

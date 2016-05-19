@@ -26,6 +26,8 @@ class VarManagerWidget extends Widget
      * @var
      */
     public $variableValueClassName;
+    
+    public $appendVarValueUrl;
 
     public function init()
     {
@@ -39,16 +41,17 @@ class VarManagerWidget extends Widget
         return $this->render('variableWidget', [
             'model' => $this->model,
             'assignedVariableValues' => $this->assignedVariableValues,
-            'allVariables' => $this->allVariables
+            'allVariables' => $this->allVariables,
+            'appendVarValueUrl' => $this->appendVarValueUrl,
         ]);
     }
 
     /** Metoda na vyrendrovanie sablony pre jednu vyplnenu premennu
      * @return string
      */
-    public function actionAppendVariableValue()
+    public function appendVariableValue($varValue)
     {
-        return $this->render('_variable', ['varValue' => new $this->variableValueClassName()]);
+        return $this->render('_variableValue', ['varValue' => $varValue]);
     }
 
 }
