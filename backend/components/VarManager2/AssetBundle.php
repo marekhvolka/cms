@@ -16,6 +16,10 @@ class AssetBundle extends \yii\web\AssetBundle
     public $css = [
         'css/style.css'
     ];
+    
+    public $js = [
+        'js/variable.js'
+    ];
 
     public function init()
     {

@@ -47,6 +47,10 @@ use yii\helpers\Url;
     ) ?>
 
     <?= $form->field($model, 'popis')->textarea() ?>
+    
+    <?= yii\helpers\BaseHtml::textarea('Product[popis]', '', ['class' => 'form-controll', 'id' => 'product-popis'])?>
+    
+    
 
     <?= $form->field($model, 'language_id')->dropDownList(
         ArrayHelper::map(Language::find()->all(), 'id', 'name')
@@ -55,8 +59,6 @@ use yii\helpers\Url;
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
-    
-    
     
     <?=VarManagerWidget::widget([
         'model' => $model,
