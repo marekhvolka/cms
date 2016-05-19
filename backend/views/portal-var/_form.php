@@ -28,7 +28,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
-        ArrayHelper::map(VarType::find()->all(), 'id', 'name')
+        ArrayHelper::map(VarType::find()->all(), 'id', 'label')
     ) ?>
 
     <div class="navbar-fixed-bottom">
