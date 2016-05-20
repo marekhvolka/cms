@@ -17,7 +17,9 @@ use Yii;
  * @property int $page_block_id
  * @property int $value_list_id
  *
- * @property PageBlock $pageBlock
+ * @property Product $valueProduct
+ * @property Page $valuePage
+ * @property Block $pageBlock
  * @property SnippetVar $var
  */
 class SnippetVarValue extends \yii\db\ActiveRecord
@@ -61,7 +63,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      */
     public function getPageBlock()
     {
-        return $this->hasOne(PageBlock::className(), ['id' => 'page_block_id']);
+        return $this->hasOne(Block::className(), ['id' => 'page_block_id']);
     }
 
     /**
@@ -70,5 +72,50 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     public function getVar()
     {
         return $this->hasOne(SnippetVar::className(), ['id' => 'var_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValuePage()
+    {
+        return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValueProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'value_product_id']);
+    }
+
+    public function getValue()
+    {
+        $value = '';
+
+        switch ($this->var->type->identifier)
+        {
+            case 'list' :
+
+                $value = ListVar::findOne(['id' => $this->value_list_id])->value;
+
+                break;
+
+            case 'page' :
+                $value = '$' . $this->valuePage->identifier;
+
+                break;
+
+            case 'product' :
+                $value = '$' . $this->valueProduct->identifier;
+
+                break;
+
+            default:
+                $value = '\'' . $this->value_text . '\'';
+        }
+
+        return $value;
     }
 }

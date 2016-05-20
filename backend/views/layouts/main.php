@@ -37,7 +37,11 @@ AppAsset::register($this);
 
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-12">
-                    <h1><?= Html::encode($this->title) ?></h1>
+                    <h1><?= Html::encode($this->title) ?>
+                        <?php if (isset($this->blocks['button'])): ?>
+                            <?= $this->blocks['button'] ?>
+                        <?php endif; ?>
+                    </h1>
                     <?php
                     if (!empty($this->params['breadcrumbs'])) {
                         echo Breadcrumbs::widget([

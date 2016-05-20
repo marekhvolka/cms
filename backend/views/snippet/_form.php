@@ -69,19 +69,25 @@ use yii\web\View;
                         <?php endforeach; ?>
                     </ul>
                 </div>
-                
-                <button type="button" class="add-item-var btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i>Add
-                </button>
+
+                <div class="col-sm-offset-2">
+                    <button type="button" class="add-item-var btn btn-success">
+                        Pridať premennú
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', [
-            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-            'id' => 'submit-btn'
-            ]) ?>
+
+    <div class="navbar-fixed-bottom">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="form-group">
+                <?= Html::submitButton('Uložiť', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id' => 'submit-btn'
+                ]) ?>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -106,6 +112,8 @@ var snippetVarParams = {
 JS;
 
 $this->registerJs($js, View::POS_BEGIN);
-$this->registerJsFile('@web/js/snippets.js');
+$this->registerJsFile('@web/js/snippets.js', [
+    'depends' => [\yii\web\JqueryAsset::className()]
+]);
 ?>
 

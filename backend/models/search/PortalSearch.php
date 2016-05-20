@@ -19,7 +19,7 @@ class PortalSearch extends Portal
     {
         return [
             [['id', 'language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
-            [['name', 'domain', 'template_settings'], 'safe'],
+            [['name', 'domain'], 'safe'],
         ];
     }
 
@@ -65,8 +65,7 @@ class PortalSearch extends Portal
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'domain', $this->domain])
-            ->andFilterWhere(['like', 'template_settings', $this->template_settings]);
+            ->andFilterWhere(['like', 'domain', $this->domain]);
 
         return $dataProvider;
     }

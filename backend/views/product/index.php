@@ -11,13 +11,12 @@ use yii\helpers\Url;
 $this->title = 'Produkty';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať produkt', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="product-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Vytvoriť produkt', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= $this->render('_search', [
         'model' => $searchModel,

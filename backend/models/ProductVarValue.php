@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $product_id
- * @property integer $variable_id
+ * @property integer $var_id
  * @property string $value
  *
  * @property Product $product
@@ -67,4 +67,5 @@ class ProductVarValue extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ProductVar::className(), ['id' => 'var_id']);
     }
+    
 }

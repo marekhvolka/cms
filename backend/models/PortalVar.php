@@ -41,20 +41,22 @@ class PortalVar extends Variable
     }
 
     /**
+     * @param $portal_id
      * @return \yii\db\ActiveQuery
      */
     public static function getAllThatDoesntBelongToPortal($portal_id)
     {
-        $query = "variable.id not in (select var_id from portal_var_value where portal_id = $portal_id)";
+        $query = "variable.id NOT IN (SELECT var_id FROM portal_var_value WHERE portal_id = $portal_id)";
         return PortalVar::find()->where($query);
     }
 
     /**
+     * @param $portal_id
      * @return \yii\db\ActiveQuery
      */
     public static function getAllThatBelongToPortal($portal_id)
     {
-        $query = "variable.id in (select var_id from portal_var_value where portal_id = $portal_id)";
+        $query = "variable.id IN (SELECT var_id FROM portal_var_value WHERE portal_id = $portal_id)";
         return PortalVar::find()->where($query);
     }
 }

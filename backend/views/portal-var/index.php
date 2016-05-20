@@ -8,16 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\PortalVarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Portal Vars';
+$this->title = 'Portálové premenné';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať portálovú premennú', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="portal-var-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Portal Var', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -25,15 +24,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'label'=>'Názov',
+                'label' => 'Názov',
                 'format' => 'raw',
-                'value'=>function ($dataProvider) {
+                'value' => function ($dataProvider) {
                     return Html::a($dataProvider->name, Url::to(['/portal-var/update/', 'id' => $dataProvider->id]));
                 },
             ],
             'identifier',
+            [
+                'label' => 'Typ premennej',
+                'value' => 'type.name'
+            ],
             'description:ntext',
-            'type_id',
             // 'last_edit',
             // 'last_edit_user',
 

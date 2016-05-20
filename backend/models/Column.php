@@ -10,9 +10,13 @@ use Yii;
  * @property integer $id
  * @property integer $row_id
  * @property integer $order
+ * @property integer $width
+ * @property string $css_id
+ * @property string $css_style
+ * @property string $css_class
  *
  * @property Row $row
- * @property PageBlock[] $pageBlocks
+ * @property Block[] $blocks
  */
 class Column extends \yii\db\ActiveRecord
 {
@@ -30,7 +34,8 @@ class Column extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['row_id', 'order'], 'integer'],
+            [['row_id', 'order', 'width'], 'integer'],
+            [['css_style', 'css_class', 'css_id'], 'string'],
             [['row_id'], 'exist', 'skipOnError' => true, 'targetClass' => Row::className(), 'targetAttribute' => ['row_id' => 'id']],
         ];
     }
@@ -44,6 +49,10 @@ class Column extends \yii\db\ActiveRecord
             'id' => 'ID',
             'row_id' => 'Row ID',
             'order' => 'Order',
+            'width' => 'Width',
+            'css_id' => 'ID stĺpca',
+            'css_class' => 'Class stĺpca',
+            'css_style' => 'Štýly stĺpca'
         ];
     }
 
@@ -58,8 +67,33 @@ class Column extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageBlocks()
+    public function getBlocks()
     {
-        return $this->hasMany(PageBlock::className(), ['column_id' => 'id']);
+        return $this->hasMany(Block::className(), ['column_id' => 'id'])
+            ->orderBy(['order' => SORT_ASC]);
+    }
+
+    public function getPrefix()
+    {
+        return '<div class="col-md-' . $this->width . '">' . PHP_EOL;
+    }
+
+    public function getPostfix()
+    {
+        return '</div> <!-- col end -->' . PHP_EOL;
+    }
+
+    public function getContent()
+    {
+        $result = $this->getPrefix();
+
+        foreach ($this->blocks as $block)
+        {
+            $result .= $block->getContent();
+        }
+
+        $result .= $this->getPostfix();
+
+        return $result;
     }
 }

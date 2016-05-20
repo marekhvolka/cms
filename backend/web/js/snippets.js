@@ -25,7 +25,7 @@ function setNewHashedNamesToFields(element, type) {   //TODO may be refactored s
 $('.add-item-var').bind('click', function() {
     var element = $(snippetVarParams.variableHtml);  // Newly added variable.
         
-    // First dymension of name attribute (array form) have to be distinctive (not to confuse server side).
+    // First dimension of name attribute (array form) have to be distinctive (not to confuse server side).
     setNewHashedNamesToFields(element, 'SnippetVar'); 
     $('.container-items-vars').append(element);     // Append new variable to list of variables.
     attachSelectToListChange(element);      // Event for change to list type is attached.

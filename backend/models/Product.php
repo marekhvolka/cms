@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "product".
@@ -122,7 +123,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSnippets()
     {
-        return $this->hasMany(PageBlock::className(), ['product_id' => 'id']);
+        return $this->hasMany(Block::className(), ['product_id' => 'id']);
     }
 
     /**
@@ -155,5 +156,52 @@ class Product extends \yii\db\ActiveRecord
     public function getProductType()
     {
         return $this->hasOne(ProductType::className(), ['id' => 'type_id']);
+    }
+
+    /** Vrati cestu k suboru, v ktorom je nacachovany produkt
+     * @return string
+     */
+    public function getMainFile()
+    {
+        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '.php';
+
+        /*if (!file_exists($path))
+        {
+            $buffer = '<?php ' . PHP_EOL;
+
+            $query = 'SELECT identifier, value FROM product_var
+          JOIN product_var_value ON (product_var.id = var_id)
+          WHERE product_id = :product_id';
+
+            $productVars = ArrayHelper::map(Yii::$app->db->createCommand($query,
+                [':product_id' => $this['id']])
+                ->queryAll(), 'identifier', 'value');
+
+            if (isset($this->parent)) // ak ma produkt rodica
+            {
+                $buffer .= '$' . $this->identifier . ' = array_merge($' . $this->parent->identifier . '
+                , ' . var_export($productVars, true) . '); ?>';
+            }
+            else
+            {
+                $buffer .= '$' . $this->identifier . ' = ' . var_export($productVars, true) . '; ?>';
+            }
+
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+        }*/
+
+        return $path;
+    }
+
+    public function getProductSnippetCacheDirectory()
+    {
+        $path = $this->language->getProductsCacheDirectory() . 'snippets/';
+
+        if (!file_exists($path))
+        {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
     }
 }

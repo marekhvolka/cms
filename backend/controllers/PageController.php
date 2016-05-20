@@ -3,9 +3,11 @@
 namespace backend\controllers;
 
 use backend\models\Language;
-use backend\models\PageBlock;
+use backend\models\Block;
 use backend\models\Portal;
 use backend\models\Product;
+use backend\models\Section;
+use backend\models\Snippet;
 use common\components\CacheEngine;
 use common\components\ParseEngine;
 use Yii;
@@ -48,6 +50,25 @@ class PageController extends BaseController
     }
 
     /**
+     * Lists all Page models.
+     * @return mixed
+     */
+    public function actionIndex2()
+    {
+        $searchModel = new PageSearch();
+
+        $pages = Page::findAll([
+            'portal_id' => Yii::$app->session->get('portal_id'),
+            'parent_id' => NULL
+        ]);
+
+        return $this->render('index2', [
+            'pages' => $pages,
+            'searchModel' => $searchModel
+        ]);
+    }
+
+    /**
      * Creates a new Page model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -56,11 +77,20 @@ class PageController extends BaseController
     {
         $model = new Page();
 
+        $headerSections = [new Section()];
+        $footerSections = [new Section()];
+        $contentSections = [new Section()];
+        $sidebarSections = [new Section()];
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'headerSections' => $headerSections,
+                'footerSections' => $footerSections,
+                'contentSections' => $contentSections,
+                'sidebarSections' => $sidebarSections,
             ]);
         }
     }
@@ -75,11 +105,35 @@ class PageController extends BaseController
     {
         $model = $this->findModel($id);
 
+        $headerSections = Section::findAll([
+            'type' => 'header',
+            'page_id' => $id
+        ]);
+
+        $footerSections = Section::findAll([
+            'type' => 'footer',
+            'page_id' => $id
+        ]);
+
+        $contentSections = Section::findAll([
+            'type' => 'content',
+            'page_id' => $id
+        ]);
+
+        $sidebarSections = Section::findAll([
+            'type' => 'sidebar',
+            'page_id' => $id
+        ]);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'headerSections' => $headerSections,
+                'footerSections' => $footerSections,
+                'contentSections' => $contentSections,
+                'sidebarSections' => $sidebarSections,
             ]);
         }
     }
@@ -119,41 +173,75 @@ class PageController extends BaseController
 
         $cacheEngine->init();
 
-        //$cacheEngine->cacheDictionary(Language::findOne(['identifier' => 'cz']));
+        $languages = Language::find()->all();
 
-        //$cacheEngine->createProductFile(Language::findOne(['identifier' => 'cz']));
+        /*foreach ($languages as $language)
+        {
+            $cacheEngine->createLanguageCacheDirectory($language);
+            $cacheEngine->cacheDictionary($language);
+            $cacheEngine->createProductsMainCacheFile($language);
+        }*/
 
         /*$products = Product::find()->all();
 
         foreach($products as $product)
-            $cacheEngine->cacheProduct($product);
+        {
+            $product->getMainFile();
+        }*/
 
-        */
+        /*$portals = Portal::find()->all();
+
+        foreach($portals as $portal)
+        {
+            $cacheEngine->cachePortal($portal);
+
+            foreach($portal->pages as $page)
+            {
+                $cacheEngine->cachePage($page);
+            }
+        }*/
+
+        /*$snippets = Snippet::find()->all();
+
+        foreach($snippets as $snippet)
+        {
+            $snippet->getMainFile();
+
+            foreach($snippet->snippetCodes as $code)
+            {
+                $code->getMainFile();
+            }
+        }*/
+
 
         //$cacheEngine->cachePortal(Portal::findOne(['domain' => 'hyperfinance.cz']));
 
-        //$cacheEngine->compileBlock(PageBlock::findOne(['id' => 2050]));
+        //$cacheEngine->compileBlock(Block::findOne(['id' => 2050]));
 
-        //$cacheEngine->cachePage(Page::findOne(['identifier' => 'pujcky']));
-        $cacheEngine->compilePage(Page::findOne(['identifier' => 'pujcky']));
+        //$cacheEngine->cachePageVars(Page::findOne(['id' => '356']));
+
+        //$string = Page::findOne(['id' => '356'])->getMainCacheFile();
+
+        //echo file_get_contents($string);
+
     }
 
     public function actionParse()
     {
         $parseEngine = new ParseEngine();
 
-        //$parseEngine->parseMasterContent();
+        $transaction = Yii::$app->db->beginTransaction();
 
         //$parseEngine->parseSnippetVarValues();
 
         //die();
 
-        $transaction = Yii::$app->db->beginTransaction();
+        //$parseEngine->parseMasterContent();
 
-        $parseEngine->parsePageGlobalSection('page_header', 'page');
+        //$parseEngine->parsePageGlobalSection('page_header', 'page');
         //$parseEngine->parsePageGlobalSection('page_footer', 'page');
 
-        //$parseEngine->parsePageGlobalSection('portal_global', 'portal');
+        $parseEngine->parsePageGlobalSection('portal_global', 'portal');
 
         $transaction->commit();
     }

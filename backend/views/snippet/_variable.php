@@ -41,11 +41,11 @@ use yii\helpers\BaseHtml;
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-type_id">
-                    <?= $snippetVar->getAttributeLabel('variable_type_id'); ?>
+                    Typ premennej
                 </label>
                 <?php
                 $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                $data = ArrayHelper::map($allVars, 'id', 'label');
+                $data = ArrayHelper::map($allVars, 'id', 'name');
                 
                 echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
                     'class' => 'form-control select-var-type attribute',
@@ -102,7 +102,7 @@ use yii\helpers\BaseHtml;
         </div>
         
         <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
-            <div class="col-sm-11 col-sm-offset-1">
+            <div class="col-sm-12">
                 <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
                     <div class="panel-heading">
                         Premenné pre položku zoznamu
@@ -115,8 +115,8 @@ use yii\helpers\BaseHtml;
                     </div>
                     <div class="panel-body">
                         <input type="hidden" value="0" id="">
-                        <ul style="list-style: none;">
-                            <?php foreach ($snippetVar->children as $child):?>
+                        <ul style="list-style: none;" class="container-items-vars">
+                            <?php foreach ($snippetVar->children as $child) : ?>
                             <li>
                                 <?= $this->render('_variable', ['snippetVar' => $child]); ?>
                             </li>

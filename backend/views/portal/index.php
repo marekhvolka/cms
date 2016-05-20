@@ -8,16 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\PortalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Portals';
+$this->title = 'Portály';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať portál', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="portal-index">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Portal', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

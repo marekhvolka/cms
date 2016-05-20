@@ -94,6 +94,10 @@ a.desc:after {
     margin-bottom: 20px;
 }
 
+.form-control.var-identifier {
+    width: 50%;
+}
+
 .label-var {
     text-align: right;
 }
@@ -111,6 +115,10 @@ ul {
 
 ul.container-items-codes {
     padding-left: 0px;
+}
+
+ul.container-items-vars {
+    padding-left: 0px
 }
 
 .remove-item-code, .remove-item-vars {
@@ -181,5 +189,28 @@ ul.container-items-codes {
 
 .dictionary-form .form-group.translation .btn {
     margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+
+.navbar-fixed-bottom {
+    left: 225px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+    padding-top: 15px;
+}
+
+.column {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 10px;
+}
+
+.section-rows > li {
+    min-height: 10px;
+    margin-top: 5px;
+}
+
+.panel-body .row {
     margin-bottom: 5px;
 }

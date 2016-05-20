@@ -42,6 +42,7 @@ class Template extends \yii\db\ActiveRecord
         return [
             [['name', 'identifier', 'active'], 'required'],
             [['active', 'last_edit_user'], 'integer'],
+            [['description'], 'string'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['identifier'], 'string', 'max' => 100]

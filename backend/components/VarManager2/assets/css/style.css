@@ -1,0 +1,7 @@
+.select2-results li[aria-disabled="true"] {
+    display: none;
+}
+
+.cloned {
+    display: none;
+}

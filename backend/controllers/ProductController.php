@@ -14,6 +14,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use backend\components\VarManager2\VarManagerWidget;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -55,7 +56,9 @@ class ProductController extends BaseController
     public function actionCreate()
     {
         $model = new Product();
-        $modelsProductVarValue = [new ProductVarValue()];
+        $productVarValues = [new ProductVarValue()];
+
+        $allVariables = ProductVarValue::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -99,6 +102,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
+                        $this->cacheEngine->cacheProduct($model);
                         return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
@@ -123,6 +127,8 @@ class ProductController extends BaseController
     {
         $model = $this->findModel($id);
         $modelsProductVarValue = $model->productVarValues;
+
+        $allVariables = ProductVar::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -176,6 +182,7 @@ class ProductController extends BaseController
                     }
                     if ($flag) {
                         $transaction->commit();
+                        $this->cacheEngine->cacheProduct($model);
                         return $this->redirect(['index']);
                     }
                 } catch (Exception $e) {
@@ -188,9 +195,20 @@ class ProductController extends BaseController
             return $this->render('update', [
                 'model' => $model,
                 'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                'allVariables' => $allVariables
             ]);
         }
     }
+    
+    public function actionAppendVarValue($id) 
+    {
+        $varValue = new ProductVarValue();
+        $productVar = ProductVar::find()->where(['id' => $id])->one();
+        $varValue->var_id = $id;
+        
+        return (new VarManagerWidget())->appendVariableValue($varValue);
+    }
+    
 
     /**
      * Deletes an existing Product model.

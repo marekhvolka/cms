@@ -1,13 +1,14 @@
 <?php
 
 use backend\models\PortalVar;
+use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\Template;
 use yii\helpers\ArrayHelper;
 use backend\models\Language;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
-use backend\components\VariableWidget;
+use backend\components\VarManager\VarManagerWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
@@ -35,7 +36,7 @@ use backend\components\VariableWidget;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'template_settings')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'color_scheme')->textInput() ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
@@ -49,4 +50,20 @@ use backend\components\VariableWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?=VariableWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
+    <?=VarManagerWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
+
+    <?php
+    //TODO: Variable Widget nema mat save button
+
+    ?>
+
+    <div class="navbar-fixed-bottom">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="form-group">
+                <?= Html::submitButton('Uložiť', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id' => 'submit-btn'
+                ]) ?>
+            </div>
+        </div>
+    </div>

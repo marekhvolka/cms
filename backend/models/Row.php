@@ -55,7 +55,8 @@ class Row extends \yii\db\ActiveRecord
      */
     public function getColumns()
     {
-        return $this->hasMany(Column::className(), ['row_id' => 'id']);
+        return $this->hasMany(Column::className(), ['row_id' => 'id'])
+            ->orderBy('order');
     }
 
     /**
@@ -64,5 +65,29 @@ class Row extends \yii\db\ActiveRecord
     public function getSection()
     {
         return $this->hasOne(Section::className(), ['id' => 'section_id']);
+    }
+
+    public function getPrefix()
+    {
+        return '<div class="row">' . PHP_EOL;
+    }
+
+    public function getPostfix()
+    {
+        return '</div> <!-- row end -->' . PHP_EOL;
+    }
+
+    public function getContent()
+    {
+        $result = $this->getPrefix();
+
+        foreach($this->columns as $column)
+        {
+            $result .= $column->getContent();
+        }
+
+        $result .= $this->getPostfix();
+
+        return $result;
     }
 }

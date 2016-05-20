@@ -19,7 +19,7 @@ class TagSearch extends Tag
     {
         return [
             [['id', 'active', 'last_edit_user'], 'integer'],
-            [['name', 'nazov_system', 'identifier', 'product_type', 'last_edit'], 'safe'],
+            [['name', 'label', 'identifier', 'product_type', 'last_edit'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class TagSearch extends Tag
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'nazov_system', $this->nazov_system])
+            ->andFilterWhere(['like', 'label', $this->label])
             ->andFilterWhere(['like', 'identifier', $this->identifier])
             ->andFilterWhere(['like', 'product_type', $this->product_type]);
 

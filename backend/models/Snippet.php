@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use common\models\User;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "snippet".
@@ -105,5 +106,48 @@ class Snippet extends \yii\db\ActiveRecord
     public function getSnippetVariables()
     {
         return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
+    }
+
+    /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
+     * @return string
+     */
+    public function getDirectory()
+    {
+        $path = Yii::$app->cacheEngine->getSnippetsMainDirectory() . 'snippet' . $this->id . '/';
+
+        if (!file_exists($path))
+        {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
+    }
+
+    /** Metoda na vratenie cesty k hlavnemu suboru pre dany snippet (obsahuje premenne snippetu
+     * s default hodnotami a nastavenia snippetu)
+     * @return string
+     */
+    public function getMainFile()
+    {
+        $path = $this->getDirectory() . 'snippet.php';
+
+        if (!file_exists($path))
+        {
+            $cacheEngine = Yii::$app->cacheEngine;
+
+            $buffer = '<?php ' . PHP_EOL;
+
+            foreach($this->snippetVariables as $snippetVar)
+            {
+                if (isset($snippetVar->default_value))
+                    $buffer .= '$' . $snippetVar->identifier . ' = \'' . $cacheEngine->normalizeString($snippetVar->default_value) . '\';' . PHP_EOL;
+            }
+
+            $buffer .= '?>' . PHP_EOL;
+
+            $cacheEngine->writeToFile($path, 'w+', $buffer);
+        }
+
+        return $path;
     }
 }

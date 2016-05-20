@@ -6,12 +6,12 @@ return [
         'icon'     => 'globe',
         'title'    => 'Globálne nastavenia',
         'children' => [
-            ['title' => 'Globálna hlavička', 'controller' => 'TODO', 'action' => 'index'],
-            ['title' => 'Globálna pätička', 'controller' => 'TODO', 'action' => 'index'],
+            ['title' => 'Globálna hlavička', 'controller' => 'portal', 'action' => 'header-create'],
+            ['title' => 'Globálna pätička', 'controller' => 'portal', 'action' => 'footer-create'],
         ],
     ],
     ['icon' => 'thumbs-o-up', 'title' => 'Ďakovačky', 'controller' => 'tracking-code', 'action' => 'index'],
-    ['icon' => 'book', 'title' => 'Slovník', 'controller' => 'dictionary', 'action' => 'index'],
+    ['icon' => 'book', 'title' => 'Slovník', 'controller' => 'word', 'action' => 'index'],
     ['icon' => 'picture-o', 'title' => 'Multimédiá', 'controller' => 'multimedia', 'action' => 'index'],
     ['icon' => 'puzzle-piece', 'title' => 'Snippety', 'controller' => 'snippet', 'action' => 'index'],
     [
@@ -36,6 +36,5 @@ return [
             ['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
             ['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],
         ],
-    ],
-    ['icon' => 'thumbs-o-up', 'title' => 'Sections', 'controller' => 'TODO', 'action' => 'index']
+    ]
 ];

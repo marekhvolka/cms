@@ -8,15 +8,15 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\SnippetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Snippets';
+$this->title = 'Snippety';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="snippet-index">
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Snippet', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať snippet', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
+
+<div class="snippet-index">
 
     <?= $this->render('_search', [
         'model' => $searchModel,
