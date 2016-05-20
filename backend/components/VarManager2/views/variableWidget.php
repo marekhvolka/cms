@@ -9,11 +9,15 @@ use kartik\select2\Select2;
 /* @var $assignedVariableValues */
 /* @var $allVariables */
 ?>
+<?php
+$modelClassName = \yii\helpers\StringHelper::basename($variableValueClassName);
+?>
+
 <div id="dynamic-fields" class="row">
     <?php foreach ($assignedVariableValues as $variableValue): ?>
         <?= $this->render('_variableValue', [
             'varValue' => $variableValue, 
-            'type' => \yii\helpers\StringHelper::basename($variableValueClassName)
+            'type' => $modelClassName
                 ]); ?>
     <?php endforeach; ?>
 </div>
@@ -32,8 +36,6 @@ Select2::widget([
 ?>
 
 <?php
-
-
 $assignedVariableIds = '[';
 
 foreach ($assignedVariableValues as $assignedVariableValue) {
@@ -44,20 +46,20 @@ $assignedVariableIds = substr($assignedVariableIds, 0, sizeof($assignedVariableI
 $assignedVariableIds .= ']';
 
 // Problems with backslashes in echoing to javascript and in url fixed by changing bacslashes to '-'
-$secondGetParameter = $str = str_replace('\\', '-', $variableValueClassName); 
+$secondGetParameter = $str = str_replace('\\', '-', $variableValueClassName);
 
 $js = <<<JS
 
 var selectedVarIds = $assignedVariableIds;
 var appendUrl = '$appendVarValueUrl?id=';
 var appendUrlSecondPart = '&type=$secondGetParameter';
+var modelClassName = '$modelClassName';
 
 for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true); //skryjeme uz pridane premenne
 }
 
 $('#types-dropdown').select2();
-console.log(appendUrlSecondPart);
 
 $('#types-dropdown').change(function () {
     var fieldId = $(this).val();
@@ -81,7 +83,6 @@ function attachRemove() {
         $('#types-dropdown').select2();
     });
 }
-
         
 JS;
 $this->registerJs($js); //, \yii\web\View::POS_BEGIN);

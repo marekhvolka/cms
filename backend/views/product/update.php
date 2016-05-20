@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = 'Update';
     
     <?= $this->render('_form', [
         'model' => $model,
-        'modelsProductVarValue' => $modelsProductVarValue,
+        'productVarValues' => $productVarValues,
         'allVariables' => $allVariables
     ]) ?>
 

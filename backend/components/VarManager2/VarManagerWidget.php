@@ -54,10 +54,9 @@ class VarManagerWidget extends Widget
     /** Metoda na vyrendrovanie sablony pre jednu vyplnenu premennu
      * @return string
      */
-    public function appendVariableValue($varValue, $type)
+    public function appendVariableValue($varValue)
     {
-        $type = \yii\helpers\StringHelper::basename($type);
-        return $this->render('_variableValue', ['varValue' => $varValue, 'type' => $type]);
+        return $this->render('_variableValue', ['varValue' => $varValue]);
     }
 
 }

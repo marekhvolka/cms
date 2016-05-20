@@ -60,7 +60,7 @@ use yii\helpers\StringHelper;
     <?=VarManagerWidget::widget([
         'model' => $model,
         'allVariables' => $allVariables,
-        'assignedVariableValues' => $modelsProductVarValue,
+        'assignedVariableValues' => $productVarValues,
         'variableValueClassName' => ProductVarValue::className(),
         'appendVarValueUrl' => Url::to(['product/append-var-value']),
     ])?>
@@ -79,3 +79,5 @@ use yii\helpers\StringHelper;
             </div>
         </div>
     </div>
+
+    <?php ActiveForm::end(); ?>
