@@ -1,0 +1,4 @@
+<?php 
+$nadpis = 'TIP';
+$aaaaa = '';
+?>

@@ -1,0 +1,3 @@
+<?php 
+$miesto = '{ulica} {mesto}';
+?>

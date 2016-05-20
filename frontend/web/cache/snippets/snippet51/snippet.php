@@ -1,0 +1,3 @@
+<?php 
+$portal_name = '';
+?>

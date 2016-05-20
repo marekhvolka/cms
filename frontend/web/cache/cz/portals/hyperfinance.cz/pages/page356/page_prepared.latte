@@ -1,0 +1,52 @@
+<?php 
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/dictionary.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/products.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/portal_var.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/pages/page356/page_var.php";
+?><?
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/pages/page356/page_header.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/pages/page356/page_footer.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/pages/page356/page_sidebar.php";
+include "/Users/MarekHvolka/Sites/cms/cms/frontend/web/cache/cz/portals/hyperfinance.cz/pages/page356/page_content.php";
+$bootstrap_css = 'http://www.hyperfinance.cz/css/bootstrap.min.css';
+$bootstrap_js = 'http://www.hyperfinance.cz/js/bootstrap.min.js';
+?>
+<!DOCTYPE html>
+            <html class="no-js">
+            <head>
+              <meta charset="utf-8" />
+              {$include_head}
+              <title>{$title}</title>
+              {$bootstrap_css}
+
+              <meta name="description" content="{$description}" />
+              {$color_scheme}
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+              <link href='http://fonts.googleapis.com/css?family=Open+Sans:700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+
+              {$bootstrap_js}
+
+              {$include_head_end}
+            </head>
+            <body>
+              {$include_body}
+
+              {$global_header}
+
+                <main>
+              {$page_header}
+                <div class="wrapper"><div class="container"><div class="row">
+              {$page_content}
+
+              {$page_sidebar}
+                </div> <!-- row end -->
+                </div> <!--container end -->
+                </div> <!--wrapper end -->
+
+              {$page_footer}
+                </main>
+              {$global_footer}
+              {$include_body_end}
+            </body>
+            </html>

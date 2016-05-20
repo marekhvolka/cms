@@ -34,7 +34,7 @@ class CacheEngine extends Component
 
     public function init()
     {
-        $this->cacheDirectory = Yii::getAlias('@publicDirectory') . '/cache/';
+        $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
 
         $this->latteRenderer = new Engine();
 

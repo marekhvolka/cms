@@ -1,0 +1,4 @@
+<div class="main-form" id="form" style="background: #005998">
+  <h3>{$nadpis}</h3>
+	<iframe width="420" height='980' src="http://stat.porovnej24.cz/pujcka-iframe?afid=1143&productId=340&companyId=164&amountFrom=20000&amountTo=700001&vopUrl=http://www.pujckaceskesporitelny.cz/vseobecne-obchodni-podminky/&personalDataUrl=http://www.pujckaceskesporitelny.cz/souhlas-se-zpracovanim-osobnich-udaju/&steps=1&css=.submitButton{background-color:%23e32a31; color:white;width: auto !important;padding: 11px 15px !important;border-radius: 6px;font-size: 16px;}body{font-family: Helvetica,Arial,sans-serif;}" frameborder="0" scrolling="no"></iframe>
+</div>

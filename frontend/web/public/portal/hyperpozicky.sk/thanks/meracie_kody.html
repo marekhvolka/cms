@@ -1,0 +1,37 @@
+
+<!-- Start Search Console --><meta name="google-site-verification" content="W5xHr6LXl8X7o1bw0M9IXLigWzPj7TLJX37jaAzf6lQ" /><!-- End Search Console --><!-- Start Google Analytics --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21291177-60', 'auto');
+  ga('send', 'pageview');
+
+</script><!-- End Google Analytics -->
+
+<!-- Start cookie-suhlas --><script src="http://www.hypercms.sk/public/js/jquery.cookie.min.js"></script>
+<script src="http://www.hypercms.sk/public/cookies-suhlas/sk/cookie-suhlas-bar.js"></script>
+
+<script>
+    $(function(){
+if($.cookie('cookies-allowed')!=1){
+  
+    $('body').append(generateCookieBar());
+  
+}
+
+$('#allow-cookies-button').click(function(){
+    
+    
+    var date = new Date();
+    date.setFullYear(date.getFullYear() + 10);
+    
+    $.cookie('cookies-allowed', 1, {path:'/', expires:date});
+    
+   $('#cookies-information').hide();
+    
+});
+    
+});
+</script><!-- End cookie-suhlas -->
