@@ -22,19 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'username',
-            'firstname',
-            'lastname',
             'email:email',
-            // 'datum_vytvorenia',
-            // 'active',
-            // 'allowPortal',
-            // 'actualPortal',
-            // 'role',
-            // 'isLog',
-            // 'cookie_hash',
-            // 'lastLog',
+            'role',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

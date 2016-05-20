@@ -31,12 +31,25 @@ foreach ($portals as $portal) {
 }
 
 echo Nav::widget([
-    'options' => ['class' => 'navbar-nav'],
+    'options' => [
+        'class' => 'navbar-nav',
+        'id' => 'portal-nav'
+    ],
     'items'   => [
         ['label' => $portalName, 'items' => $items]
     ],
 ]);
 
+if (!empty($this->params['breadcrumbs'])) {
+    echo Breadcrumbs::widget([
+        'options' => [
+            'class' => 'navbar-nav nav',
+            'id' => 'breadcrumbs',
+        ],
+        'homeLink' => false,
+        'links'    => $this->params['breadcrumbs']
+    ]);
+}
 
 if (!Yii::$app->user->isGuest) {
     $loginMenu[] = '<li>'

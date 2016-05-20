@@ -32,9 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'label',
             'identifier',
-            'active',
-            'last_edit',
-            'last_edit_user',
+            [
+                'label' => 'Aktívny',
+                'value' => 'active',
+                'format' => 'boolean'
+            ],
+            [
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    $dataProvider->lastEditUser->username  . ')';
+                }
+            ],
             ['class' => 'yii\grid\ActionColumn',
             'template' => '{delete}'],
         ],

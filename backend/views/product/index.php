@@ -43,13 +43,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'productType.name'
             ],
             'identifier',
-            // 'popis',
-            // 'language_id',
-            // 'active',
-            'last_edit',
             [
-                'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.username'
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    $dataProvider->lastEditUser->username  . ')';
+                }
             ],
             ['class' => 'yii\grid\ActionColumn',
             'template' => '{delete}'],

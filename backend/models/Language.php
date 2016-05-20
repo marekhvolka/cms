@@ -53,10 +53,10 @@ class Language extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'currency' => 'Currency',
-            'identifier' => 'Identifier',
-            'active' => 'Active',
+            'name' => 'Názov',
+            'currency' => 'Mena',
+            'identifier' => 'Identifikátor',
+            'active' => 'Aktívny',
         ];
     }
 

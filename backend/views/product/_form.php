@@ -60,7 +60,7 @@ use yii\helpers\Url;
     
     <?=VarManagerWidget::widget([
         'model' => $model,
-        'form' => $form,
+        //'form' => $form,
         'allVariables' => $allVariables,
         'assignedVariableValues' => $modelsProductVarValue,
         'variableValueClassName' => ProductVarValue::className(),

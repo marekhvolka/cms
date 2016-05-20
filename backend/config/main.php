@@ -40,6 +40,10 @@ return [
         ],
         'urlManager' => require('url-manager.php'),
         'urlManagerFrontend' => require('../../frontend/config/url-manager.php'),
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'booleanFormat' => ['×', '√'],
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

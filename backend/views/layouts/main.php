@@ -43,17 +43,6 @@ AppAsset::register($this);
                         <?php endif; ?>
                     </h1>
                     <?php
-                    if (!empty($this->params['breadcrumbs'])) {
-                        echo Breadcrumbs::widget([
-                            'homeLink' => [
-                                'label' => 'Domov',
-                                'url'   => Yii::$app->homeUrl,
-                            ],
-                            'links'    => $this->params['breadcrumbs']
-                        ]);
-                    }
-                    ?>
-                    <?php
                     if (!empty($this->params['page-head-btn'])) {
                         echo '<div class="page-head-btn-footer">' . $this->params['page-head-btn'] . '</div>';
                     }

@@ -59,7 +59,7 @@ class Template extends \yii\db\ActiveRecord
             'name' => 'Name',
             'description' => 'Popis',
             'identifier' => 'Adresár šablóny',
-            'active' => 'Active',
+            'active' => 'Aktívna',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];

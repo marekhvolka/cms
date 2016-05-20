@@ -2002,4 +2002,8 @@ table {
     background: #293846;
 }
 
+#breadcrumbs li a, #breadcrumbs li.active {
+    color: #d9e6fc !important;
+}
+
 

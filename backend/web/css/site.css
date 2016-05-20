@@ -185,3 +185,15 @@ ul.container-items-vars {
 .panel-body .row {
     margin-bottom: 5px;
 }
+
+#breadcrumbs {
+    margin-left: 50px;
+}
+
+#breadcrumbs li.active {
+    padding: 15px 15px;
+}
+
+#portal-nav {
+    margin-left: 30px;
+}
