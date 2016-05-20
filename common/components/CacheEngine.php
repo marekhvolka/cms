@@ -36,6 +36,7 @@ class CacheEngine extends Component
     {
         $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
 
+        
         $this->latteRenderer = new Engine();
 
         $this->latteRenderer->setLoader(new FileLoader());
