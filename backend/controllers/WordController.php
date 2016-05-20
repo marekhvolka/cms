@@ -51,6 +51,11 @@ class WordController extends BaseController
         $model = new Word();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $translations = Yii::$app->request->post()['translation'];
+            /** @var WordTranslation[] $original_translations */
+            $original_translations = $model->getTranslations()->indexBy('language_id')->all();
+            $this->saveTranslations($original_translations, $translations, $model);
+
             return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -63,30 +68,46 @@ class WordController extends BaseController
      * Updates an existing Word model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
-     * @param string $updateTranslation
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id, $updateTranslation = '')
+    public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $translations = Yii::$app->request->post()['translation'];
+
+            /** @var WordTranslation[] $original_translations */
+            $original_translations = $model->getTranslations()->indexBy('language_id')->all();
+
+            $this->saveTranslations($original_translations, $translations, $model);
+
             return $this->redirect(['update', 'id' => $id]);
         } else {
-            if (!empty($updateTranslation)) {
-                $translation = WordTranslation::findOne(['id' => $updateTranslation]);
-            } else {
-                $translation = new WordTranslation();
-                $translation->word_id = $id;
-            }
-            if ($translation && $translation->load(Yii::$app->request->post())) {
-                $translation->save();
-            }
-
             return $this->render('update', [
                 'model' => $model,
             ]);
+        }
+    }
+
+    private function saveTranslations($original_translations, $new_translations, $of_word)
+    {
+        foreach ($new_translations as $lang_id => $new_translation) {
+            if (!empty($new_translation)) {
+                if (!isset($original_translations[$lang_id])) {
+                    $new_translation_object = new WordTranslation();
+                    $new_translation_object->language_id = $lang_id;
+                    $new_translation_object->word_id = $of_word->id;
+                    $new_translation_object->translation = $new_translation;
+                    $new_translation_object->save();
+                } else {
+                    if ($original_translations[$lang_id]->translation != $new_translation) {
+                        $original_translations[$lang_id]->translation = $new_translation;
+                        $original_translations[$lang_id]->save();
+                    }
+                }
+            }
         }
     }
 

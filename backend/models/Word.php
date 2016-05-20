@@ -56,7 +56,7 @@ class Word extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDictionaryTranslations()
+    public function getTranslations()
     {
         return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
     }
