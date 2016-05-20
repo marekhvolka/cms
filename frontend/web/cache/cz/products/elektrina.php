@@ -1,3 +1,0 @@
-<?php 
-$elektrina = array (
-); ?>

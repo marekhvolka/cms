@@ -1,1 +1,0 @@
-aj tu je zmena

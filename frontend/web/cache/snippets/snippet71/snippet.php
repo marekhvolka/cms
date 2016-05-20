@@ -1,3 +1,0 @@
-<?php 
-$obsah = 'Obsah snippetu';
-?>

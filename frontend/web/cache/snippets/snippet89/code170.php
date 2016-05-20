@@ -1,1 +1,0 @@
-<a id="comparator"></a>
