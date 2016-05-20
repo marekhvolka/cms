@@ -58,8 +58,6 @@ class ProductController extends BaseController
         $model = new Product();
         $productVarValues = [new ProductVarValue()];
 
-        $allVariables = ProductVarValue::find()->all();
-
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
@@ -126,30 +124,43 @@ class ProductController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $modelsProductVarValue = $model->productVarValues;
+        $productVarValues = $model->productVarValues;
 
         $allVariables = ProductVar::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $oldIDs = ArrayHelper::map($modelsProductVarValue, 'id', 'id');
-            $modelsProductVarValue = Model::createMultiple(ProductVar::classname(), $modelsProductVarValue);
-            Model::loadMultiple($modelsProductVarValue, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsProductVarValue, 'id', 'id')));
-
+            $editedProductVarValuesData = Yii::$app->request->post('ProductVarValue');
+            
+            foreach ($editedProductVarValuesData as $id => $productValueData) {
+                if ($productValueData['existing'] == 'true') {
+                    $productVarValue = ProductVarValue::find()->where(['id' => $id])->one();
+                } else {
+                    $productVarValue = new ProductVarValue();
+                }
+                
+                $productVarValue->attributes = $productValueData;   
+                $validated = $productVarValue->validate();
+                if (!$validated) {
+                    return;
+                }
+            }
+            
+            //$valid = $model->validate(); TODO validation
+            
+            $oldIDs = ArrayHelper::map($productVarValues, 'id', 'id');
+            $newIDs = ArrayHelper::map($editedProductVarValuesData, 'id', 'id');
+            
+            $deletedIDs = array_diff($oldIDs, $newIDs);
+            
+            return;
+            
             $vars = Yii::$app->request->post('var');
             
             foreach ($model->productVarValues as $var_value) {
                 $var_value->delete();
             }
             
-            foreach ($vars as $id_var => $value) {
-                $productVarValue = new ProductVarValue();
-                $productVarValue->product_id = $model->id;
-                $productVarValue->var_id = $id_var;
-                $productVarValue->value = $value[0];
-                $productVarValue->save();
-            }
             
             // ajax validation
             if (Yii::$app->request->isAjax) {
@@ -161,7 +172,7 @@ class ProductController extends BaseController
             }
 
             // validate all models
-            $valid = $model->validate();
+            
 
             $valid = Model::validateMultiple($modelsProductVarValue) && $valid;
 
@@ -194,16 +205,20 @@ class ProductController extends BaseController
         {
             return $this->render('update', [
                 'model' => $model,
-                'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                'productVarValues' => (empty($productVarValues)) ? [new ProductVarValue()] : $productVarValues,
                 'allVariables' => $allVariables
             ]);
         }
     }
     
-    public function actionAppendVarValue($id) 
+    public function actionAppendVarValue($id, $type) 
     {
+        $type = str_replace('-', '\\', $type);
         $varValue = new ProductVarValue();
-        $productVar = ProductVar::find()->where(['id' => $id])->one();
+        
+        $varClassName = str_replace('Value', '', $type);
+        
+        $var = $varClassName::find()->where(['id' => $id])->one();
         $varValue->var_id = $id;
         
         return (new VarManagerWidget())->appendVariableValue($varValue);
