@@ -43,11 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Rodič',
                 'value' => 'parent.name'
             ],
-            'active',
-            'last_edit',
+            'active:boolean',
             [
-                'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.username'
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    $dataProvider->lastEditUser->username  . ')';
+                }
             ]
         ],
     ]); ?>

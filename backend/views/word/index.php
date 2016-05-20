@@ -35,36 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($dataProvider->identifier,Url::to(['/word/update/', 'id' => $dataProvider->id]));
                 },
             ],
-            'last_edit',
             [
-                'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.username'
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit;
+                }
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}'],
         ],
     ]); ?>
     <?php Pjax::end() ?>
-
-    <?php
-
-    $this->registerJs(
-        '$("document").ready(function(){
-        $("#search-form").on("pjax:end", function() {
-            $.pjax.reload({container:"#gridData"});  //Reload GridView
-        });
-    });'
-    );
-    ?>
-
-    <script>
-
-
-        $('form').bind('input', function(event) {
-        //input.addEventListener('input', function(event) {
-            var container = $(this).closest('[data-pjax-container]');
-            $.pjax.submit(event, container);
-        })
-    </script>
-
 </div>

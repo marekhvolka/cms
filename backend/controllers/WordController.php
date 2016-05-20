@@ -2,18 +2,12 @@
 
 namespace backend\controllers;
 
-use backend\models\Language;
-use backend\models\Model;
-use backend\models\WordTranslation;
-use MongoDB\Driver\Exception\Exception;
-use Yii;
 use backend\models\Word;
+use backend\models\WordTranslation;
 use backend\models\search\WordSearch;
-use yii\helpers\ArrayHelper;
-use yii\web\NotFoundHttpException;
+use Yii;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
+use yii\web\NotFoundHttpException;
 
 /**
  * WordController implements the CRUD actions for Word model.
@@ -24,7 +18,7 @@ class WordController extends BaseController
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -42,7 +36,7 @@ class WordController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -55,55 +49,9 @@ class WordController extends BaseController
     public function actionCreate()
     {
         $model = new Word();
-        $modelsWordTranslation = [new WordTranslation()];
 
-        foreach(Language::find()->all() as $language)
-        {
-            $wordTranslation = new WordTranslation();
-            $wordTranslation->language_id = $language->id;
-
-            $modelsWordTranslation[] = $wordTranslation;
-        }
-
-        if ($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            $modelsWordTranslation = Model::createMultiple(WordTranslation::classname());
-            Model::loadMultiple($modelsWordTranslation, Yii::$app->request->post());
-
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                    ActiveForm::validateMultiple($modelsWordTranslation),
-                    ActiveForm::validate($model)
-                );
-            }
-
-            // validate all models
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsWordTranslation) && $valid;
-
-            if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsWordTranslation as $modelWordTranslation) {
-                            $modelWordTranslation->word_id = $model->id;
-                            if (!($flag = $modelWordTranslation->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-                    }
-                    if ($flag) {
-                        $transaction->commit();
-                        return $this->redirect(['index']);
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                }
-            }
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -115,19 +63,29 @@ class WordController extends BaseController
      * Updates an existing Word model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
+     * @param string $updateTranslation
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $updateTranslation = '')
     {
         $model = $this->findModel($id);
-        $modelsWordTranslation = $model->wordTranslations;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['update', 'id' => $id]);
         } else {
+            if (!empty($updateTranslation)) {
+                $translation = WordTranslation::findOne(['id' => $updateTranslation]);
+            } else {
+                $translation = new WordTranslation();
+                $translation->word_id = $id;
+            }
+            if ($translation && $translation->load(Yii::$app->request->post())) {
+                $translation->save();
+            }
+
             return $this->render('update', [
                 'model' => $model,
-                'modelsWordTranslation' => $modelsWordTranslation
             ]);
         }
     }

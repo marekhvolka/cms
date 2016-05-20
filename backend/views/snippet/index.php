@@ -36,10 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'description',
-            'last_edit',
             [
-                'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.username'
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    $dataProvider->lastEditUser->username  . ')';
+                }
             ],
 
             ['class' => 'yii\grid\ActionColumn'],

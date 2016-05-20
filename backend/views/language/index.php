@@ -8,7 +8,7 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\LanguageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Languages';
+$this->title = 'Jazyky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'currency',
             'identifier',
-            'active',
+            'active:boolean',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

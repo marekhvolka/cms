@@ -30,11 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($dataProvider->name,Url::to(['/template/update/', 'id' => $dataProvider->id]));
                 },
             ],
-            'active',
-            'last_edit',
+            'active:boolean',
             [
-                'label' => 'Naposledy editoval',
-                'value' => 'lastEditUser.username'
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    $dataProvider->lastEditUser->username  . ')';
+                }
             ],
 
             ['class' => 'yii\grid\ActionColumn'],

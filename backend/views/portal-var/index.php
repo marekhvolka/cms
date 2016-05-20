@@ -36,8 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'type.name'
             ],
             'description:ntext',
-            // 'last_edit',
-            // 'last_edit_user',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

@@ -2,13 +2,10 @@
 
 namespace backend\models;
 
-
-use common\models\User;
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "word".
+ * This is the model class for table "dictionary".
  *
  * @property integer $id
  * @property string $identifier
@@ -16,9 +13,10 @@ use yii\db\ActiveRecord;
  * @property integer $last_edit_user
  *
  * @property User $lastEditUser
- * @property WordTranslation[] $wordTranslations
+ * @property WordTranslation[] $dictionaryTranslations
+ * @property Language[] $languages
  */
-class Word extends ActiveRecord
+class Word extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -37,7 +35,7 @@ class Word extends ActiveRecord
             [['identifier'], 'required'],
             [['last_edit'], 'safe'],
             [['last_edit_user'], 'integer'],
-            [['identifier'], 'string', 'max' => 255],
+            [['identifier'], 'string', 'max' => 200],
             [['identifier'], 'unique']
         ];
     }
@@ -50,24 +48,24 @@ class Word extends ActiveRecord
         return [
             'id' => 'ID',
             'identifier' => 'Identifikátor',
-            'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit' => 'Posledná úprava',
+            'last_edit_user' => 'Posledne upravil',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastEditUser()
+    public function getDictionaryTranslations()
     {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
+        return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWordTranslations()
+    public function getLanguages()
     {
-        return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
+        return $this->hasMany(Language::className(), ['id' => 'language_id'])->viaTable('dictionary_translation', ['word_id' => 'id']);
     }
 }
