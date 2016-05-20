@@ -13,17 +13,17 @@ use Yii;
  * @property integer $last_edit_user
  *
  * @property User $lastEditUser
- * @property DictionaryTranslation[] $dictionaryTranslations
+ * @property WordTranslation[] $dictionaryTranslations
  * @property Language[] $languages
  */
-class Dictionary extends \yii\db\ActiveRecord
+class Word extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'dictionary';
+        return 'word';
     }
 
     /**
@@ -58,7 +58,7 @@ class Dictionary extends \yii\db\ActiveRecord
      */
     public function getDictionaryTranslations()
     {
-        return $this->hasMany(DictionaryTranslation::className(), ['word_id' => 'id']);
+        return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
     }
 
     /**
