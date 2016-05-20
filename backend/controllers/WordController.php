@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Language;
 use backend\models\Word;
 use backend\models\WordTranslation;
 use backend\models\search\WordSearch;
@@ -60,6 +61,8 @@ class WordController extends BaseController
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'languages' => Language::find()->all(),
+                'defaultLanguage' => Language::findOne(['identifier' => 'sk'])
             ]);
         }
     }
@@ -85,8 +88,12 @@ class WordController extends BaseController
 
             return $this->redirect(['update', 'id' => $id]);
         } else {
+            $lang = Language::findOne(['identifier' => 'sk']);
+
             return $this->render('update', [
                 'model' => $model,
+                'languages' => Language::find()->all(),
+                'defaultLanguage' => Language::findOne(['identifier' => 'sk'])
             ]);
         }
     }
