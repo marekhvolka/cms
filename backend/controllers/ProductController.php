@@ -58,8 +58,6 @@ class ProductController extends BaseController
         $model = new Product();
         $productVarValues = [new ProductVarValue()];
 
-        $allVariables = ProductVarValue::find()->all();
-
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             $modelsProductVarValue = Model::createMultiple(ProductVarValue::classname());
@@ -200,13 +198,16 @@ class ProductController extends BaseController
         }
     }
     
-    public function actionAppendVarValue($id) 
+    public function actionAppendVarValue($id, $type) 
     {
-        $varValue = new ProductVarValue();
-        $productVar = ProductVar::find()->where(['id' => $id])->one();
+        $type = str_replace('-', '\\', $type);
+        $varValue = new $type;
+        $varClassName = str_replace('Value', '', $type);
+        
+        $var = $varClassName::find()->where(['id' => $id])->one();
         $varValue->var_id = $id;
         
-        return (new VarManagerWidget())->appendVariableValue($varValue);
+        return (new VarManagerWidget())->appendVariableValue($varValue, $type);
     }
     
 

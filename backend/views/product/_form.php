@@ -13,6 +13,7 @@ use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
 use backend\components\VarManager2\VarManagerWidget;
 use yii\helpers\Url;
+use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
@@ -48,10 +49,6 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'popis')->textarea() ?>
     
-    <?= yii\helpers\BaseHtml::textarea('Product[popis]', '', ['class' => 'form-controll', 'id' => 'product-popis'])?>
-    
-    
-
     <?= $form->field($model, 'language_id')->dropDownList(
         ArrayHelper::map(Language::find()->all(), 'id', 'name')
     ) ?>
@@ -62,7 +59,6 @@ use yii\helpers\Url;
     
     <?=VarManagerWidget::widget([
         'model' => $model,
-        'form' => $form,
         'allVariables' => $allVariables,
         'assignedVariableValues' => $modelsProductVarValue,
         'variableValueClassName' => ProductVarValue::className(),

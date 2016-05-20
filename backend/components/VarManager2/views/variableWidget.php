@@ -11,7 +11,10 @@ use kartik\select2\Select2;
 ?>
 <div id="dynamic-fields" class="row">
     <?php foreach ($assignedVariableValues as $variableValue): ?>
-        <?= $this->render('_variableValue', ['varValue' => $variableValue, 'form' => $form]); ?>
+        <?= $this->render('_variableValue', [
+            'varValue' => $variableValue, 
+            'type' => \yii\helpers\StringHelper::basename($variableValueClassName)
+                ]); ?>
     <?php endforeach; ?>
 </div>
 
@@ -29,6 +32,8 @@ Select2::widget([
 ?>
 
 <?php
+
+
 $assignedVariableIds = '[';
 
 foreach ($assignedVariableValues as $assignedVariableValue) {
@@ -38,25 +43,27 @@ foreach ($assignedVariableValues as $assignedVariableValue) {
 $assignedVariableIds = substr($assignedVariableIds, 0, sizeof($assignedVariableIds) - 2);
 $assignedVariableIds .= ']';
 
-$test = json_encode($assignedVariableValue);
+// Problems with backslashes in echoing to javascript and in url fixed by changing bacslashes to '-'
+$secondGetParameter = $str = str_replace('\\', '-', $variableValueClassName); 
 
 $js = <<<JS
 
 var selectedVarIds = $assignedVariableIds;
 var appendUrl = '$appendVarValueUrl?id=';
+var appendUrlSecondPart = '&type=$secondGetParameter';
 
 for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true); //skryjeme uz pridane premenne
 }
 
 $('#types-dropdown').select2();
-
+console.log(appendUrlSecondPart);
 
 $('#types-dropdown').change(function () {
     var fieldId = $(this).val();
     var source = $('.field-' + fieldId);
 
-    $.get(appendUrl + fieldId, function (data) {
+    $.get(appendUrl + fieldId + appendUrlSecondPart, function (data) {
         $('#dynamic-fields').append(data); //pripojime vygenerovany view do zoznamu
     });
 

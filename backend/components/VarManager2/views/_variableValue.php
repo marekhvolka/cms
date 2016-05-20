@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 18.05.16
- * Time: 23:24
- */
-/* @var $varValue */
+use yii\helpers\Html;
 
+/* @var $varValue */
+/* @var $type */
 ?>
 
 <div class="form-group field-<?=$varValue->var_id?> active-field">
@@ -23,18 +19,20 @@
             <?php endif;?>
             <?php switch($varValue->var->type->identifier):
                 case 'textarea': ?>
-                    <textarea id="field-<?=$varValue->var_id?>" class="form-control" rows="5"
-                              placeholder="<?=$varValue->var->name?>"
-                              data-type="<?=$varValue->var->type->identifier?>" data-name="<?=$varValue->var->name?>"
-                              name="var[<?=$varValue->var_id?>][]">
-                                      <?=$varValue->value?>
-                    </textarea>
+                    <?=Html::activeTextarea($varValue, 'value', [
+                        'class' => 'form-control',
+                        'rows' => 5,
+                        'placeholder' => $varValue->var->name,
+                    ])?>
+            
+            
                     <?php break; ?>
                 <?php default: ?>
-                    <input type="text" class="form-control"
-                           value="<?=$varValue->value?>" placeholder="<?=$varValue->var->name?>"
-                           data-type="<?=$varValue->var->type->identifier?>" data-name="<?=$varValue->var->name?>"
-                           name="var[<?=$varValue->var_id?>][]">
+                    <?=Html::activeTextInput($varValue, 'value', [
+                        'class' => 'form-control',
+                        'placeholder' => $varValue->var->name,
+                    ])?>
+                  
                     <?php break; ?>
                 <?php endswitch; ?>
             <span class="input-group-btn rmv-btn" data-field-id="<?=$varValue->var_id?>">

@@ -2,9 +2,7 @@
 
 namespace backend\components\VarManager2;
 
-use yii\base\Component;
 use yii\base\Widget;
-use yii\captcha\Captcha;
 
 class VarManagerWidget extends Widget
 {
@@ -28,8 +26,6 @@ class VarManagerWidget extends Widget
      */
     public $variableValueClassName;
     
-    public $form;
-    
     /**
      * Url of controller, which is using whis widget for dynamic
      * append of new row (variable).
@@ -51,16 +47,17 @@ class VarManagerWidget extends Widget
             'assignedVariableValues' => $this->assignedVariableValues,
             'allVariables' => $this->allVariables,
             'appendVarValueUrl' => $this->appendVarValueUrl,
-            'form' => $this->form,
+            'variableValueClassName' => $this->variableValueClassName,
         ]);
     }
 
     /** Metoda na vyrendrovanie sablony pre jednu vyplnenu premennu
      * @return string
      */
-    public function appendVariableValue($varValue)
+    public function appendVariableValue($varValue, $type)
     {
-        return $this->render('_variableValue', ['varValue' => $varValue]);
+        $type = \yii\helpers\StringHelper::basename($type);
+        return $this->render('_variableValue', ['varValue' => $varValue, 'type' => $type]);
     }
 
 }
