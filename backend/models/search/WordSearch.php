@@ -25,6 +25,13 @@ class WordSearch extends Word
         ];
     }
 
+    public function attributeLabels() {
+        return [
+            'globalSearch' => 'Vyhľadávanie'
+        ];
+    }
+
+
     /**
      * @inheritdoc
      */

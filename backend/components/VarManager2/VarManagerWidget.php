@@ -4,6 +4,7 @@ namespace backend\components\VarManager2;
 
 use yii\base\Component;
 use yii\base\Widget;
+use yii\captcha\Captcha;
 
 class VarManagerWidget extends Widget
 {
@@ -23,10 +24,17 @@ class VarManagerWidget extends Widget
     public $allVariables;
 
     /** Nazov triedy (modelu), ktory reprezentuje vyplnenu premennu
-     * @var
+     * @var string
      */
     public $variableValueClassName;
     
+    public $form;
+    
+    /**
+     * Url of controller, which is using whis widget for dynamic
+     * append of new row (variable).
+     * @var string 
+     */
     public $appendVarValueUrl;
 
     public function init()
@@ -43,6 +51,7 @@ class VarManagerWidget extends Widget
             'assignedVariableValues' => $this->assignedVariableValues,
             'allVariables' => $this->allVariables,
             'appendVarValueUrl' => $this->appendVarValueUrl,
+            'form' => $this->form,
         ]);
     }
 

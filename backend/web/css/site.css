@@ -164,6 +164,35 @@ ul.container-items-vars {
     margin: 3px 2px; height: 30px; display: block;
 }
 
+.dictionary-translation-control {
+    margin-top: -10px;
+    height: 32px;
+}
+
+.dictionary-form .form-group {
+    margin-bottom: 5px;
+}
+
+.dictionary-form .input-group {
+    width: 100%;
+}
+
+.dictionary-form .input-group-addon {
+    width: 200px;
+    background-color: rgba(223, 255, 153, 0.2);
+    border-radius: 5px;
+}
+
+.dictionary-form h3 {
+    margin-top: 15px !important;
+}
+
+.dictionary-form .form-group.translation .btn {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+
 .navbar-fixed-bottom {
     left: 225px;
     border-top: 1px solid #ccc;
