@@ -21,9 +21,16 @@ class DictionarySearch extends Dictionary
     {
         return [
             [['id', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'word', 'identifier', 'last_edit'], 'safe'],
+            [['globalSearch', 'identifier', 'last_edit'], 'safe'],
         ];
     }
+
+    public function attributeLabels() {
+        return [
+            'globalSearch' => 'Vyhľadávanie'
+        ];
+    }
+
 
     /**
      * @inheritdoc
@@ -57,8 +64,7 @@ class DictionarySearch extends Dictionary
             return $dataProvider;
         }
 
-        $query->orFilterWhere(['like', 'word', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
+        $query->orFilterWhere(['like', 'identifier', $this->globalSearch]);
 
         return $dataProvider;
     }

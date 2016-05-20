@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\DictionarySearch */
+/* @var $model backend\models\search\DictionarySearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -21,7 +21,7 @@ use yii\widgets\Pjax;
     <?= $form->field($model, 'globalSearch') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Hľadať', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

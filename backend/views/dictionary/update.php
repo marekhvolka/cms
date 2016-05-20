@@ -5,17 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Dictionary */
 
-$this->title = 'Update Dictionary: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Dictionaries', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Upraviť preklad';
+$this->params['breadcrumbs'][] = ['label' => 'Slovník', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Upraviť preklad';
 ?>
 <div class="dictionary-update">
-
-    
     <?= $this->render('_form', [
-        'model' => $model,
-        'modelsWordTranslation' => $modelsWordTranslation,
+        'model' => $model
     ]) ?>
-
 </div>

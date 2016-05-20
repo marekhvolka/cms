@@ -2,12 +2,14 @@
 
 namespace backend\controllers;
 
+use backend\models\DictionaryTranslation;
 use backend\models\Model;
 use MongoDB\Driver\Exception\Exception;
 use Yii;
 use backend\models\Dictionary;
 use backend\models\search\DictionarySearch;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -22,7 +24,7 @@ class DictionaryController extends BaseController
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -40,7 +42,7 @@ class DictionaryController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -53,47 +55,9 @@ class DictionaryController extends BaseController
     public function actionCreate()
     {
         $model = new Dictionary();
-        $modelsWordTranslation = [new WordTranslation()];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            $modelsWordTranslation = Model::createMultiple(WordTranslation::classname());
-            Model::loadMultiple($modelsWordTranslation, Yii::$app->request->post());
-
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                    ActiveForm::validateMultiple($modelsWordTranslation),
-                    ActiveForm::validate($model)
-                );
-            }
-
-            // validate all models
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsWordTranslation) && $valid;
-
-            if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsWordTranslation as $modelWordTranslation) {
-                            $modelWordTranslation->word_id = $model->id;
-                            if (!($flag = $modelWordTranslation->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
-                    }
-                    if ($flag) {
-                        $transaction->commit();
-                        return $this->redirect(['index']);
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                }
-            }
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -107,13 +71,23 @@ class DictionaryController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $updateTranslation = '')
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['update', 'id' => $id]);
         } else {
+            if (!empty($updateTranslation)) {
+                $translation = DictionaryTranslation::findOne(['id' => $updateTranslation]);
+            } else {
+                $translation = new DictionaryTranslation();
+                $translation->word_id = $id;
+            }
+            if ($translation && $translation->load(Yii::$app->request->post())) {
+                $translation->save();
+            }
+
             return $this->render('update', [
                 'model' => $model,
             ]);

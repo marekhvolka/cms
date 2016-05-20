@@ -1,6 +1,9 @@
 <?php
 
+use backend\models\DictionaryTranslation;
+use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -12,51 +15,51 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'word')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
-
-    <div class="panel panel-default">
-        <div class="panel-heading"><h4><i class="glyphicon glyphicon-envelope"></i> Premenné portálu</h4></div>
-        <div class="panel-body">
-
-            <div class="container-items"><!-- widgetContainer -->
-                <?php foreach ($modelsWordTranslation as $i => $modelWordTranslation): ?>
-                    <div class="item panel panel-default"><!-- widgetBody -->
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <div class="col-sm-3">
-                                    <?= $form->field($modelPortalVarValue, '[{$i}]attr_id')->dropDownList(
-                                        ArrayHelper::map(PortalVar::find()->all(), 'id', 'vlastnost')
-                                    ) ?>
-                                </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelWordTranslation, "[{$i}]value")->textInput(['maxlength' => true]) ?>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button type="button" class="add-item btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
-                                    <button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                            <?php
-                            // necessary for update action.
-                            if (! $modelPortalVarValue->isNewRecord) {
-                                echo Html::activeHiddenInput($modelPortalVarValue, "[{$i}]id");
-                            }
-                            ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <?php DynamicFormWidget::end(); ?>
-        </div>
-    </div>
+    <h3>Identifikátor</h3>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true])->label(false) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Vytvoriť' : 'Uložiť', ['class' => $model->isNewRecord ? 'btn 
+        btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
+    <?php if (!$model->isNewRecord): ?>
+        <h3>Preklady</h3>
+
+        <?php
+        /** @var \backend\models\Language $language */
+        foreach (\backend\models\Language::find()->all() as $language) {
+            /** @var DictionaryTranslation $translation */
+            $translation = DictionaryTranslation::findOne(['language_id' => $language->id, 'word_id' => $model->id]);
+
+            if (!$translation) {
+                $translation = new DictionaryTranslation();
+            }
+            ?>
+            <?php $form = ActiveForm::begin(
+                ['action' =>
+                     ['update',
+                         'id'                => $model->id,
+                         'updateTranslation' => $translation->id]
+                ]); ?>
+
+            <div class="form-group translation">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <?= $language->name ?>
+                    </span>
+                    <?= $form->field($translation, 'translation')->textInput(['class' => 'form-control 
+                    dictionary-translation-control'])
+                        ->label(false) ?>
+                    <?= $form->field($translation, 'language_id')->hiddenInput(['value' => $language->id])->label(false) ?>
+                </div>
+
+                <?= Html::submitButton($model->isNewRecord ? 'Vytvoriť' : 'Uložiť', ['class' => 'btn btn-success']) ?>
+            </div>
+            <?php ActiveForm::end(); ?>
+
+        <?php } ?>
+    <?php endif; ?>
 </div>
