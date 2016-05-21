@@ -8,6 +8,7 @@ return [
         'children' => [
             ['title' => 'Globálna hlavička', 'controller' => 'portal', 'action' => 'header-create'],
             ['title' => 'Globálna pätička', 'controller' => 'portal', 'action' => 'footer-create'],
+            ['title' => 'Meracie kódy', 'controller' => 'tracking-code', 'action' => 'index'],
         ],
     ],
     ['icon' => 'thumbs-o-up', 'title' => 'Ďakovačky', 'controller' => 'tracking-code', 'action' => 'index'],

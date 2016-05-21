@@ -48,168 +48,163 @@ class ParseEngine
         //TODO: dokoncit
     }
 
-    public function parseMasterContent()
+    /**
+     *  Metoda na parsovanie hlavneho obsahu stranky - data su ulozene v tabulke page a presunu sa do tabuliek
+     * section, row, column, pageblock
+     * @param $pageDbRow - riadok tabulky
+     */
+    public function parseMasterContent($pageDbRow)
     {
-        $pages = $command = (new Query())
-            ->select('*')
-            ->from('page')
-            ->where('id = 356')
-            ->createCommand()
-            ->queryAll();
+        $rowIds = explode(',', $pageDbRow['layout_poradie_id']);
 
-        foreach ($pages as $page)
+        $rowWidth = explode(',', $pageDbRow['layout_poradie']);
+
+        $section = Section::findOne(
+            [
+                'page_id' => $pageDbRow['id'],
+                'type' => 'content'
+            ]
+        );
+
+        if ($section == NULL)
         {
-            $rowIds = explode(',', $page['layout_poradie_id']);
+            $section = new Section();
+            $section->page_id = $pageDbRow['id'];
+            $section->type = 'content';
 
-            $rowWidth = explode(',', $page['layout_poradie']);
+            $section->save();
+        }
 
-            $section = Section::findOne(
-                [
-                    'page_id' => $page['id'],
-                    'type' => 'content'
-                ]
-            );
+        for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
+        {
+            //VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
 
-            if ($section == NULL)
+            $row = new Row();
+
+            $row->section_id = $section->id;
+            $row->order = $i + 1;
+
+            if ($row->validate())
             {
-                $section = new Section();
-                $section->page_id = $page['id'];
-                $section->type = 'content';
-
-                $section->save();
+                $row->save();
+            }
+            else
+            {
+                BaseVarDumper::dump($row->errors);
             }
 
-            for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
+            $layoutData = json_decode($pageDbRow['layout_element'], true);
+
+            if (!isset($layoutData['content']))
+                continue;
+
+            $columns = $layoutData['content']['master'];
+
+            $columnsCount = strlen($rowWidth[$i]) > 1 ? 2 : intval($rowWidth[$i]);
+
+
+            for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
             {
-                //VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
+                //VarDumper::dump('Column ' . $columnIndex . $rowIds[$i] . PHP_EOL);
 
-                $row = new Row();
+                $column = new Column();
+                $column->row_id = $row->id;
+                $column->order = $columnIndex;
 
-                $row->section_id = $section->id;
-                $row->order = $i + 1;
-
-                if ($row->validate())
+                if ($rowWidth[$i] === '2_1')
                 {
-                    $row->save();
+                    $column->width = 12 - $columnIndex * 4;
+                }
+                else if ($rowWidth[$i] === '1_2')
+                {
+                    $column->width = $columnIndex * 4;
                 }
                 else
                 {
-                    BaseVarDumper::dump($row->errors);
+                    $column->width = 12/$columnsCount;
                 }
 
-                $layoutData = json_decode($page['layout_element'], true);
+                if ($column->validate())
+                {
+                    $column->save();
+                }
+                else
+                {
+                    BaseVarDumper::dump($column->errors);
+                }
 
-                if (!isset($layoutData['content']))
+                $pageBlockOrder = 1;
+
+                $data = json_decode($pageDbRow['layout_element'], true)['content']['master'];
+
+                if (!isset($data[$columnIndex . $rowIds[$i]]))
                     continue;
 
-                $columns = $layoutData['content']['master'];
-
-                $columnsCount = strlen($rowWidth[$i]) > 1 ? 2 : intval($rowWidth[$i]);
-
-
-                for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
+                foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId)
                 {
-                    //VarDumper::dump('Column ' . $columnIndex . $rowIds[$i] . PHP_EOL);
+                    $pageBlockType = json_decode($pageDbRow['layout_element_type'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
-                    $column = new Column();
-                    $column->row_id = $row->id;
-                    $column->order = $columnIndex;
+                    //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
 
-                    if ($rowWidth[$i] === '2_1')
+                    $pageBlock = new Block();
+
+                    $pageBlock->order = $pageBlockOrder++;
+
+                    $pageBlock->column_id = $column->id;
+                    $pageBlock->active = json_decode($pageDbRow['layout_element_active'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                    switch($pageBlockType)
                     {
-                        $column->width = 12 - $columnIndex * 4;
+                        case 'smart_snippet' :
+
+                            $json = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                            if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
+                                continue;
+
+                            $pageBlock->type = 'snippet';
+
+                            $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
+
+                            if ($snippetCode == NULL)
+                                $pageBlock->snippet_code_id = NULL;
+                            else
+                                $pageBlock->snippet_code_id = $json['code_select'];
+
+                            $pageBlock->data = json_decode($json['snippet']);
+
+                            break;
+
+                        case 'html' :
+
+                            $pageBlock->type = 'html';
+                            $pageBlock->data = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                            break;
+
+                        case 'text' :
+
+                            $pageBlock->type = 'text';
+                            $pageBlock->data = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+                            break;
                     }
-                    else if ($rowWidth[$i] === '1_2')
+
+                    if ($pageBlock->validate())
                     {
-                        $column->width = $columnIndex * 4;
+                        $pageBlock->save();
                     }
                     else
                     {
-                        $column->width = 12/$columnsCount;
+                        BaseVarDumper::dump($pageBlock->errors);
+
+                        BaseVarDumper::dump($pageBlock->snippet_code_id);
+                        BaseVarDumper::dump($section->page_id);
                     }
-
-                    if ($column->validate())
-                    {
-                        $column->save();
-                    }
-                    else
-                    {
-                        BaseVarDumper::dump($column->errors);
-                    }
-
-                    $pageBlockOrder = 1;
-
-                    $data = json_decode($page['layout_element'], true)['content']['master'];
-
-                    if (!isset($data[$columnIndex . $rowIds[$i]]))
-                        continue;
-
-                    foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId)
-                    {
-                        $pageBlockType = json_decode($page['layout_element_type'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                        //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
-
-                        $pageBlock = new Block();
-
-                        $pageBlock->order = $pageBlockOrder++;
-
-                        $pageBlock->column_id = $column->id;
-                        $pageBlock->active = json_decode($page['layout_element_active'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                        switch($pageBlockType)
-                        {
-                            case 'smart_snippet' :
-
-                                $json = json_decode($page['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                                if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
-                                    continue;
-
-                                $pageBlock->type = 'snippet';
-
-                                $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
-
-                                if ($snippetCode == NULL)
-                                    $pageBlock->snippet_code_id = NULL;
-                                else
-                                    $pageBlock->snippet_code_id = $json['code_select'];
-
-                                $pageBlock->data = json_decode($json['snippet']);
-
-                                break;
-
-                            case 'html' :
-
-                                $pageBlock->type = 'html';
-                                $pageBlock->data = json_decode($page['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                                break;
-
-                            case 'text' :
-
-                                $pageBlock->type = 'text';
-                                $pageBlock->data = json_decode($page['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-                                break;
-                        }
-
-                        if ($pageBlock->validate())
-                        {
-                            $pageBlock->save();
-                        }
-                        else
-                        {
-                            BaseVarDumper::dump($pageBlock->errors);
-
-                            BaseVarDumper::dump($pageBlock->snippet_code_id);
-                            BaseVarDumper::dump($section->page_id);
-                        }
-                    }
-
                 }
 
             }
         }
+
 
         /*
         $pagesBlockSett = $command = (new Query())
@@ -238,230 +233,409 @@ class ParseEngine
         }*/
     }
 
-    /** Parsovanie dat z glob. hlavicky a paticky
-     * @param $tableName string
-     * @param $dataType string
-     * @throws \yii\db\Exception
-     */
-    public function parsePageGlobalSection($tableName, $dataType)
+    public function parseSidebar($pageDbRow)
     {
-        $result = $command = (new Query())
-            ->select('*')
-            ->from($tableName)
-            //->where('page_id = 356')
-            ->createCommand()
-            ->queryAll();
+        $rowIds = explode(',', $pageDbRow['layout_poradie_id']);
 
-        foreach($result as $tableRow)
+        $rowWidth = explode(',', $pageDbRow['layout_poradie']);
+
+        $section = Section::findOne(
+            [
+                'page_id' => $pageDbRow['id'],
+                'type' => 'sidebar'
+            ]
+        );
+
+        if ($section == NULL)
         {
-            //VarDumper::dump($tableRow['id']);
+            $section = new Section();
+            $section->page_id = $pageDbRow['id'];
+            $section->type = 'sidebar';
 
-            if ($tableRow['sekcia_settings'] == '' || $tableRow['layout_element'] == '')
+            $section->save();
+        }
+
+        for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
+        {
+            //VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
+
+            $row = new Row();
+
+            $row->section_id = $section->id;
+            $row->order = $i + 1;
+
+            if ($row->validate())
+            {
+                $row->save();
+            }
+            else
+            {
+                BaseVarDumper::dump($row->errors);
+            }
+
+            $layoutData = json_decode($pageDbRow['layout_element'], true);
+
+            if (!isset($layoutData['sidebar']))
                 continue;
 
-            if (isset(json_decode($tableRow['layout_element'], true)['header']))
-            {
-                $type = 'header';
-            }
-            else if (isset(json_decode($tableRow['layout_element'], true)['footer']))
-            {
-                $type = 'footer';
-            }
+            $columns = $layoutData['sidebar']['master'];
 
-            $sectionsLayoutElement = json_decode($tableRow['layout_element'], true)[$type];
-            $sectionsCssSettings = json_decode($tableRow['sekcia_settings'], true)[$type];
-            $sectionsBlockPoradie = json_decode($tableRow['block_poradie'], true)[$type];
-            $sectionsLayoutElementType = json_decode($tableRow['layout_element_type'], true)[$type];
-            $sectionsLayoutElementActive = json_decode($tableRow['layout_element_active'], true)[$type];
-            $sectionsLayoutElementTimeFrom = json_decode($tableRow['layout_element_time_from'], true)[$type];
-            $sectionsLayoutElementTimeTo = json_decode($tableRow['layout_element_time_to'], true)[$type];
-            $sectionsJsonSmartsnippet = json_decode($tableRow['json_smart_snippet'], true)[$type];
-            $sectionsBlockSettings = json_decode($tableRow['block_settings'], true)[$type];
+            $columnsCount = strlen($rowWidth[$i]) > 1 ? 2 : intval($rowWidth[$i]);
 
-            foreach ($sectionsBlockPoradie as $sectionId => $sectionData)
+
+            for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
             {
-                BaseVarDumper::dump('Sekcia  ' . $sectionId . PHP_EOL);
+                //VarDumper::dump('Column ' . $columnIndex . $rowIds[$i] . PHP_EOL);
 
-                try
+                $column = new Column();
+                $column->row_id = $row->id;
+                $column->order = $columnIndex;
+
+                if ($rowWidth[$i] === '2_1')
                 {
-                    $section = new Section();
+                    $column->width = 12 - $columnIndex * 4;
+                }
+                else if ($rowWidth[$i] === '1_2')
+                {
+                    $column->width = $columnIndex * 4;
+                }
+                else
+                {
+                    $column->width = 12/$columnsCount;
+                }
 
-                    if ($dataType == 'page')
+                if ($column->validate())
+                {
+                    $column->save();
+                }
+                else
+                {
+                    BaseVarDumper::dump($column->errors);
+                }
+
+                $pageBlockOrder = 1;
+
+                $data = json_decode($pageDbRow['layout_element'], true)['content']['master'];
+
+                if (!isset($data[$columnIndex . $rowIds[$i]]))
+                    continue;
+
+                foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId)
+                {
+                    $pageBlockType = json_decode($pageDbRow['layout_element_type'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                    //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
+
+                    $pageBlock = new Block();
+
+                    $pageBlock->order = $pageBlockOrder++;
+
+                    $pageBlock->column_id = $column->id;
+                    $pageBlock->active = json_decode($pageDbRow['layout_element_active'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                    switch($pageBlockType)
                     {
-                        $section->page_id = $tableRow['page_id'];
-                        $section->portal_id = NULL;
+                        case 'smart_snippet' :
+
+                            $json = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                            if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
+                                continue;
+
+                            $pageBlock->type = 'snippet';
+
+                            $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
+
+                            if ($snippetCode == NULL)
+                                $pageBlock->snippet_code_id = NULL;
+                            else
+                                $pageBlock->snippet_code_id = $json['code_select'];
+
+                            $pageBlock->data = json_decode($json['snippet']);
+
+                            break;
+
+                        case 'html' :
+
+                            $pageBlock->type = 'html';
+                            $pageBlock->data = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                            break;
+
+                        case 'text' :
+
+                            $pageBlock->type = 'text';
+                            $pageBlock->data = json_decode($pageDbRow['layout_element'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+                            break;
                     }
-                    else if ($dataType == 'portal')
-                    {
-                        $section->portal_id = $tableRow['portal_id'];
-                        $section->page_id = NULL;
-                    }
 
-                    $section->type = $type;
-                    $section->css_style = json_decode($sectionsCssSettings[$sectionId], true)['style_sett'];
-                    $section->css_class = json_decode($sectionsCssSettings[$sectionId], true)['class_sett'];
-                    $section->css_id = json_decode($sectionsCssSettings[$sectionId], true)['id_sett'];
-
-                    if ($section->validate())
+                    if ($pageBlock->validate())
                     {
-                        $section->save();
+                        $pageBlock->save();
                     }
                     else
                     {
-                        BaseVarDumper::dump($section->errors);
+                        BaseVarDumper::dump($pageBlock->errors);
+
+                        BaseVarDumper::dump($pageBlock->snippet_code_id);
+                        BaseVarDumper::dump($section->page_id);
+                    }
+                }
+
+            }
+        }
+
+
+        /*
+        $pagesBlockSett = $command = (new Query())
+            ->select('*')
+            ->from('page_block_sett')
+            ->createCommand()
+            ->queryAll();
+
+        foreach ($pagesBlockSett as $page)
+        {
+            $rows = json_decode($page['settings']['content']);
+
+            foreach ($rows as $rowId => $row) //loop through rows
+            {
+                $json = json_decode($row);
+
+                $command = Yii::$app->db->createCommand('UPDATE row
+                        SET
+                        VALUES(:section_id, :id)');
+
+                $command->bindValue(':section_id', $section['id']);
+                $command->bindValue(':id', $rowIds[$i]);
+
+                $command->execute();
+            }
+        }*/
+    }
+
+    /** Parsovanie dat z glob. hlavicky a paticky portalu ale aj podstranky
+     * @param $dataType string typ - page, portal,
+     * @param $dbRow - riadok tabulky, ktory parsujeme
+     */
+    public function parsePageGlobalSection($dataType, $tableRow)
+    {
+        //VarDumper::dump($tableRow['id']);
+
+        if ($tableRow['sekcia_settings'] == '' || $tableRow['layout_element'] == '')
+            return;
+
+        if (isset(json_decode($tableRow['layout_element'], true)['header']))
+        {
+            $type = 'header';
+        }
+        else if (isset(json_decode($tableRow['layout_element'], true)['footer']))
+        {
+            $type = 'footer';
+        }
+
+        $sectionsLayoutElement = json_decode($tableRow['layout_element'], true)[$type];
+        $sectionsCssSettings = json_decode($tableRow['sekcia_settings'], true)[$type];
+        $sectionsBlockPoradie = json_decode($tableRow['block_poradie'], true)[$type];
+        $sectionsLayoutElementType = json_decode($tableRow['layout_element_type'], true)[$type];
+        $sectionsLayoutElementActive = json_decode($tableRow['layout_element_active'], true)[$type];
+        $sectionsLayoutElementTimeFrom = json_decode($tableRow['layout_element_time_from'], true)[$type];
+        $sectionsLayoutElementTimeTo = json_decode($tableRow['layout_element_time_to'], true)[$type];
+        $sectionsJsonSmartsnippet = json_decode($tableRow['json_smart_snippet'], true)[$type];
+        $sectionsBlockSettings = json_decode($tableRow['block_settings'], true)[$type];
+
+        BaseVarDumper::dump('Riadok ' . $tableRow['id']);
+
+        foreach ($sectionsBlockPoradie as $sectionId => $sectionData)
+        {
+            BaseVarDumper::dump('Sekcia  ' . $sectionId . PHP_EOL);
+
+            try
+            {
+                $section = new Section();
+
+                if ($dataType == 'page')
+                {
+                    $section->page_id = $tableRow['page_id'];
+                    $section->portal_id = NULL;
+                }
+                else if ($dataType == 'portal')
+                {
+                    $section->portal_id = $tableRow['portal_id'];
+                    $section->page_id = NULL;
+                }
+
+                $section->type = $type;
+                $section->css_style = json_decode($sectionsCssSettings[$sectionId], true)['style_sett'];
+                $section->css_class = json_decode($sectionsCssSettings[$sectionId], true)['class_sett'];
+                $section->css_id = json_decode($sectionsCssSettings[$sectionId], true)['id_sett'];
+
+                if ($section->validate())
+                {
+                    $section->save();
+                }
+                else
+                {
+                    BaseVarDumper::dump($section->errors);
+                }
+
+                if (!array_key_exists(0, json_decode($sectionsBlockPoradie[$sectionId], true))
+                    || !isset(json_decode($sectionsBlockPoradie[$sectionId], true)[0]))
+                    continue;
+
+                if (!array_key_exists(0, json_decode($sectionsBlockPoradie[$sectionId], true)[0]))
+                    continue;
+
+                $rowType = json_decode($sectionsBlockPoradie[$sectionId], true)[0][0]['name'];
+
+                $sectionData = json_decode($sectionData, true);
+
+                if (empty($sectionData))
+                    continue;
+
+                $rowOrder = 1;
+                foreach ($sectionData[0] as $rowData)
+                {
+                    $columnsCount = strlen($rowData['name']) > 1 ? 2 : intval($rowData['name']);
+
+                    $poradieID = str_replace('master_', '', $rowData["id"]);
+
+                    $row = new Row();
+                    $row->section_id = $section->id;
+                    $row->order = $rowOrder++;
+
+                    if ($row->validate())
+                    {
+                        $row->save();
+                    }
+                    else
+                    {
+                        BaseVarDumper::dump($row->errors);
                     }
 
-                    $columnWidth = json_decode($sectionsBlockPoradie[$sectionId], true)[0][0]['name'];
+                    //BaseVarDumper::dump($columnsCount . PHP_EOL);
 
-                    $sectionData = json_decode($sectionData, true);
-
-                    if (empty($sectionData))
-                        continue;
-
-                    $rowOrder = 1;
-                    foreach ($sectionData[0] as $rowData)
+                    for($index = 1; $index <= $columnsCount; $index++)
                     {
-                        $columnsCount = strlen($rowData['name']) > 1 ? 2 : intval($rowData['name']);
+                        $column = new Column();
 
-                        $poradieID = str_replace('master_', '', $rowData["id"]);
+                        $column->row_id = $row->id;
+                        $column->order = $index;
 
-                        $row = new Row();
-                        $row->section_id = $section->id;
-                        $row->order = $rowOrder++;
+                        $settings = json_decode($sectionsBlockSettings[$index . $poradieID], true);
 
-                        if ($row->validate())
+                        if (!empty($settings))
+                            $column->css_style = $settings['style_sett'];
+                            $column->css_class = $settings['class_sett'];
+                            $column->css_id = $settings['id_sett'];
+
+                        if ($rowType === '2_1')
                         {
-                            $row->save();
+                            $column->width = 12 - $index * 4;
+                        }
+                        else if ($rowType === '1_2')
+                        {
+                            $column->width = $index * 4;
                         }
                         else
                         {
-                            BaseVarDumper::dump($row->errors);
+                            $column->width = 12/$columnsCount;
                         }
 
-                        //BaseVarDumper::dump($columnsCount . PHP_EOL);
+                        //BaseVarDumper::dump('Sirka ' .$column->width . PHP_EOL);
 
-                        for($index = 1; $index <= $columnsCount; $index++)
+                        if ($column->validate())
                         {
-                            $column = new Column();
+                            $column->save();
+                        }
+                        else
+                        {
+                            BaseVarDumper::dump($column->errors);
+                        }
 
-                            $column->row_id = $row->id;
-                            $column->order = $index;
+                        $pageBlockOrder = 1;
+                        if (!isset($sectionsLayoutElement[$sectionId]))
+                            continue;
 
-                            $settings = json_decode($sectionsBlockSettings[$index . $poradieID], true);
+                        if (!isset($sectionsLayoutElement[$sectionId][$index . $poradieID]))
+                            continue;
 
-                            if (!empty($settings))
-                                $column->css_style = $settings['style_sett'];
-                                $column->css_class = $settings['class_sett'];
-                                $column->css_id = $settings['id_sett'];
+                        foreach ($sectionsLayoutElement[$sectionId][$index . $poradieID] as $tempId => $snippetCodeId)
+                        {
+                            $pageBlockType = $sectionsLayoutElementType[$sectionId][$index . $poradieID][$tempId];
 
-                            if ($columnWidth === '2_1')
+                            $pageBlock = new Block();
+
+                            $pageBlock->order = $pageBlockOrder++;
+
+                            $pageBlock->column_id = $column->id;
+                            $pageBlock->active = $sectionsLayoutElementActive[$sectionId][$index . $poradieID][$tempId];
+
+                            switch($pageBlockType)
                             {
-                                $column->width = 12 - $index * 4;
-                            }
-                            else if ($columnWidth === '1_2')
-                            {
-                                $column->width = $index * 4;
-                            }
-                            else
-                            {
-                                $column->width = 12/$columnsCount;
-                            }
+                                case 'smart_snippet' :
 
-                            //BaseVarDumper::dump('Sirka ' .$column->width . PHP_EOL);
+                                    $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$index . $poradieID][$tempId], true);
 
-                            if ($column->validate())
-                            {
-                                $column->save();
-                            }
-                            else
-                            {
-                                BaseVarDumper::dump($column->errors);
-                            }
+                                    if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
+                                        continue;
 
-                            $pageBlockOrder = 1;
-                            if (!isset($sectionsLayoutElement[$sectionId]))
-                                continue;
-                            foreach ($sectionsLayoutElement[$sectionId][$index . $poradieID] as $tempId => $snippetCodeId)
-                            {
-                                $pageBlockType = $sectionsLayoutElementType[$sectionId][$index . $poradieID][$tempId];
+                                    $pageBlock->type = 'snippet';
 
-                                $pageBlock = new Block();
+                                    $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
 
-                                $pageBlock->order = $pageBlockOrder++;
-
-                                $pageBlock->column_id = $column->id;
-                                $pageBlock->active = $sectionsLayoutElementActive[$sectionId][$index . $poradieID][$tempId];
-
-                                switch($pageBlockType)
-                                {
-                                    case 'smart_snippet' :
-
-                                        $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$index . $poradieID][$tempId], true);
-
-                                        if (!isset($json['snippet']) || !isset($json['code_select']) || !is_array($json['snippet']))
-                                            continue;
-
-                                        $pageBlock->type = 'snippet';
-
-                                        $snippetCode = SnippetCode::findOne(['id' => $json['code_select']]);
-
-                                        if ($snippetCode == NULL)
-                                            $pageBlock->snippet_code_id = NULL;
-                                        else
-                                            $pageBlock->snippet_code_id = $json['code_select'];
-
-                                        $pageBlock->data = json_encode($json['snippet']);
-
-                                        break;
-
-                                    case 'html' :
-
-                                        $pageBlock->type = 'html';
+                                    if ($snippetCode == NULL)
                                         $pageBlock->snippet_code_id = NULL;
-                                        $pageBlock->data = $sectionsLayoutElement[$sectionId][$index . $poradieID][$tempId];
+                                    else
+                                        $pageBlock->snippet_code_id = $json['code_select'];
 
-                                        break;
+                                    $pageBlock->data = json_encode($json['snippet']);
 
-                                    case 'text' :
+                                    break;
 
-                                        $pageBlock->type = 'text';
-                                        $pageBlock->data = $sectionsLayoutElement[$sectionId][$index . $poradieID][$tempId];
-                                        break;
-                                }
+                                case 'html' :
 
-                                if ($pageBlock->validate())
-                                {
-                                    $pageBlock->save();
-                                }
-                                else
-                                {
-                                    BaseVarDumper::dump($pageBlock->errors);
+                                    $pageBlock->type = 'html';
+                                    $pageBlock->snippet_code_id = NULL;
+                                    $pageBlock->data = $sectionsLayoutElement[$sectionId][$index . $poradieID][$tempId];
 
-                                    BaseVarDumper::dump($pageBlock->snippet_code_id);
-                                    BaseVarDumper::dump($section->page_id);
-                                }
+                                    break;
+
+                                case 'text' :
+
+                                    $pageBlock->type = 'text';
+                                    $pageBlock->data = $sectionsLayoutElement[$sectionId][$index . $poradieID][$tempId];
+                                    break;
+                            }
+
+                            if ($pageBlock->validate())
+                            {
+                                $pageBlock->save();
+                            }
+                            else
+                            {
+                                BaseVarDumper::dump($pageBlock->errors);
+
+                                BaseVarDumper::dump($pageBlock->snippet_code_id);
+                                BaseVarDumper::dump($section->page_id);
                             }
                         }
                     }
                 }
-                catch (Exception $e)
-                {
-                    VarDumper::dump($e);
-                }
             }
-            //die();
+            catch (Exception $e)
+            {
+                VarDumper::dump($e);
+            }
         }
+        //die();
+
     }
 
     /** Parsovanie dat vyplnenych snippetov z JSONU do tabulky snippet_var_value
-     * @throws \yii\db\Exception
+     * @param $pageBlocks - zoznam blokov, z ktorych budeme parsovat data
      */
-    public function parseSnippetVarValues()
+    public function parseSnippetVarValues($pageBlocks)
     {
-        $pageBlocks = Block::findAll([
-            'type' => 'snippet',
-        ]);
-
         foreach($pageBlocks as $pageBlock)
         {
             $data = $pageBlock->data;
