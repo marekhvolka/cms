@@ -667,7 +667,8 @@ class ParseEngine
 
                         $page = Page::findOne(['id' => substr($value, 8)]);
 
-                        $snippetVarValue->value_page_id = $page->id;
+                        if (isset($page))
+                            $snippetVarValue->value_page_id = $page->id;
 
                         break;
 
@@ -675,7 +676,8 @@ class ParseEngine
 
                         $product = Product::findOne(['identifier' => $value]);
 
-                        $snippetVarValue->value_product_id = $product->id;
+                        if (isset($product))
+                            $snippetVarValue->value_product_id = $product->id;
 
                         break;
                     case 'tag':
@@ -733,7 +735,8 @@ class ParseEngine
 
                             $page = Page::findOne(['id' => substr($itemVarValue, 8)]);
 
-                            $snippetListVarValue->value_page_id = $page->id;
+                            if (isset($page))
+                                $snippetListVarValue->value_page_id = $page->id;
 
                             break;
 
@@ -741,7 +744,8 @@ class ParseEngine
 
                             $product = Product::findOne(['identifier' => $itemVarValue]);
 
-                            $snippetListVarValue->value_product_id = $product->id;
+                            if (isset($product))
+                                $snippetListVarValue->value_product_id = $product->id;
 
                             break;
                         case 'tag':

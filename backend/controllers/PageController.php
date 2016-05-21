@@ -233,7 +233,12 @@ class PageController extends BaseController
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        //$parseEngine->parseSnippetVarValues();
+        $pageBlocks = Block::find()
+            ->andWhere(['type' => 'snippet'])
+            ->andWhere('id >= 6100 AND id < 6300')
+            ->all();
+
+        $parseEngine->parseSnippetVarValues($pageBlocks);
 
         //die();
 
@@ -275,7 +280,7 @@ class PageController extends BaseController
             $parseEngine->parsePageGlobalSection('page', $row);
         }*/
 
-
+        /*
         $rows = $command = (new Query())
             ->select('*')
             ->from('page')
@@ -286,7 +291,7 @@ class PageController extends BaseController
         foreach($rows as $row)
         {
             $parseEngine->parseMasterContent($row);
-        }
+        }*/
 
         $transaction->commit();
     }
