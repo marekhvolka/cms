@@ -33,8 +33,13 @@ abstract class BaseController extends Controller
     {
         parent::init();
 
-        //  $this->cacheEngine = new CacheEngine();
-
         $this->view->params['globalSearchModel'] = new GlobalSearchWidget();
+    }
+
+    public function actionChangeCurrent($id)
+    {
+        $session = Yii::$app->session;
+        $session->set('portal_id', $id);
+        return $this->goBack();
     }
 }

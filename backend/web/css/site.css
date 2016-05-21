@@ -226,3 +226,7 @@ ul.container-items-vars {
 #portal-nav {
     margin-left: 30px;
 }
+
+#login-box li {
+    padding: 8px 8px;
+}

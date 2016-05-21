@@ -12,6 +12,7 @@ class LoginForm extends Model
     public $email;
     public $password;
     public $rememberMe = true;
+    public $portal_id;
 
     private $_user;
 
@@ -23,11 +24,24 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['email', 'password'], 'required'],
+            [['email', 'password', 'portal_id'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'email' => 'Email',
+            'password' => 'Heslo',
+            'rememberMe' => 'Zapamätať prihlásenie',
+            'portal_id' => 'Portál',
         ];
     }
 

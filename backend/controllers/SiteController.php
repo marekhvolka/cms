@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\Portal;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -62,16 +63,24 @@ class SiteController extends BaseController
 
     public function actionLogin()
     {
+        $this->layout = 'login';
+
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
+        $portals = Portal::find()->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+            $this->actionChangeCurrent($model->portal_id);
+
             return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
+                'portals' => $portals
             ]);
         }
     }

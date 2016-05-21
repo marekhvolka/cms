@@ -55,14 +55,17 @@ if (!Yii::$app->user->isGuest) {
     $loginMenu[] = '<li>'
         . Html::beginForm(['/site/logout'], 'post')
         . Html::submitButton(
-            'Logout (' . Yii::$app->user->identity->username . ')',
+            'Odhlásiť (' . Yii::$app->user->identity->username . ')',
             ['class' => 'btn btn-link']
         )
         . Html::endForm()
         . '</li>';
 
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
+        'options' => [
+            'class' => 'navbar-nav navbar-right',
+            'id' => 'login-box'
+        ],
         'items'   => $loginMenu,
 
     ]);
