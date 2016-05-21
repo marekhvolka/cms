@@ -231,6 +231,9 @@ class Block extends \yii\db\ActiveRecord
     {
         $buffer = '<?php ' . PHP_EOL;
 
+        if (!isset($this->snippetCode))
+            return '';
+
         $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
 
         $snippetVarValues = $this->snippetVarValues;

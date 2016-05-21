@@ -1,6 +1,8 @@
 <?php
 
 use backend\models\TrackingCode;
+use conquer\codemirror\CodemirrorAsset;
+use conquer\codemirror\CodemirrorWidget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -18,7 +20,24 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'code')->textarea(['rows' => 6]) ?>
+    <?= CodemirrorWidget::widget([
+            'name' => 'TrackingCode[code]',
+            'value' => $model->code,
+            'assets' => [
+                CodemirrorAsset::MODE_CLIKE,
+                CodemirrorAsset::KEYMAP_EMACS,
+                CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
+                CodemirrorAsset::ADDON_COMMENT,
+                CodemirrorAsset::ADDON_DIALOG,
+                CodemirrorAsset::ADDON_SEARCHCURSOR,
+                CodemirrorAsset::ADDON_SEARCH,
+            ],
+            'settings' => [
+                'lineNumbers' => true,
+                'mode' => 'text/x-csrc',
+            ],
+        ]
+    ) ?>
 
     <?= $form->field($model, 'place_id')->dropDownList(
         ArrayHelper::map(TrackingCode::getPlaces(), 'id', 'name')

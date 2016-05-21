@@ -243,7 +243,7 @@ class PortalController extends BaseController
     {
         $sections = Section::findAll([
             'type' => 'header',
-            'portal_id' => 4
+            'portal_id' => Yii::$app->session->get('portal_id')
         ]);
 
         return $this->render('header-create', [
@@ -255,7 +255,7 @@ class PortalController extends BaseController
     {
         $sections = Section::findAll([
             'type' => 'footer',
-            'portal_id' => 4
+            'portal_id' => Yii::$app->session->get('portal_id')
         ]);
 
         return $this->render('header-create', [

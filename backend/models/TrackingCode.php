@@ -61,10 +61,10 @@ class TrackingCode extends ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'code' => 'Code',
+            'code' => 'Kód',
             'place_id' => 'Umiestnenie',
             'portal_id' => 'Portal ID',
-            'active' => 'Active',
+            'active' => 'Aktívny',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];

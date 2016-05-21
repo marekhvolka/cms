@@ -13,6 +13,7 @@ use common\components\ParseEngine;
 use Yii;
 use backend\models\Page;
 use backend\models\search\PageSearch;
+use yii\db\Query;
 use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -220,7 +221,7 @@ class PageController extends BaseController
 
         //$cacheEngine->cachePageVars(Page::findOne(['id' => '356']));
 
-        //$string = Page::findOne(['id' => '356'])->getMainCacheFile();
+        $string = Page::findOne(['id' => '356'])->getMainCacheFile();
 
         //echo file_get_contents($string);
 
@@ -236,12 +237,56 @@ class PageController extends BaseController
 
         //die();
 
-        //$parseEngine->parseMasterContent();
+        /*$rows = $command = (new Query())
+            ->select('*')
+            ->from('portal_global')
+            //->where('page_id = 356')
+            ->createCommand()
+            ->queryAll();
 
-        //$parseEngine->parsePageGlobalSection('page_header', 'page');
-        //$parseEngine->parsePageGlobalSection('page_footer', 'page');
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('portal', $row);
+        }*/
 
-        $parseEngine->parsePageGlobalSection('portal_global', 'portal');
+
+        /*$rows = $command = (new Query())
+            ->select('*')
+            ->from('page_header')
+            ->where('page_id >= 800')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }*/
+
+
+        /*$rows = $command = (new Query())
+            ->select('*')
+            ->from('page_footer')
+            ->where('page_id >= 1000 AND page_id < 100000')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }*/
+
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page')
+            ->where('id >= 1000 AND id < 1000000')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parseMasterContent($row);
+        }
 
         $transaction->commit();
     }
