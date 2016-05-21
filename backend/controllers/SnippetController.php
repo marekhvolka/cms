@@ -23,14 +23,14 @@ class SnippetController extends BaseController
 
     public function behaviors()
     {
-        return [
+        return array_merge(parent::behaviors(),[
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**
