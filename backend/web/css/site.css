@@ -224,7 +224,14 @@ ul.container-items-vars {
 }
 
 #portal-nav {
-    margin-left: 30px;
+    margin-left: 8px;
+    font-size: 14px;
+}
+
+#portal-nav > li > a:before {
+    font-family: FontAwesome;
+    content: '\f015';
+    margin-right: 10px;
 }
 
 #login-box li {

@@ -6,6 +6,7 @@
 use backend\assets\AppAsset;
 use common\widgets\Box;
 use backend\components\GlobalSearchWidget;
+use common\widgets\Navigation;
 use kartik\sidenav\SideNav;
 use yii\helpers\Html;
 use common\widgets\Alert;
@@ -28,7 +29,7 @@ AppAsset::register($this);
 
 <div id="wrapper">
     <?= $this->render('_top-bar') ?>
-    <?= \common\widgets\Navigation::widget([
+    <?= Navigation::widget([
         'items' => Yii::$app->params['menuItems']
     ]) ?>
     <div id="page-wrapper">

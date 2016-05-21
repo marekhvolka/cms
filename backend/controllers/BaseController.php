@@ -36,7 +36,7 @@ abstract class BaseController extends Controller
         $this->view->params['globalSearchModel'] = new GlobalSearchWidget();
     }
 
-    public function actionChangeCurrent($id)
+    public function actionChangeCurrentPortal($id)
     {
         $session = Yii::$app->session;
         $session->set('portal_id', $id);

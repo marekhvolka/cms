@@ -25,18 +25,23 @@ NavBar::begin([
 $items = [];
 $portals = Portal::find()->all();
 foreach ($portals as $portal) {
-    $url = Url::to(['/portal/change-current/', 'id' => $portal->id]);
-    $item = ['label' => $portal->name, 'url' => $url];
+    $item = [
+        'label' => $portal->name,
+        'url' => Url::to(['/portal/change-current-portal/', 'id' => $portal->id]),
+    ];
     $items[] = $item;
 }
 
 echo Nav::widget([
     'options' => [
         'class' => 'navbar-nav',
-        'id' => 'portal-nav'
+        'id' => 'portal-nav',
     ],
     'items'   => [
-        ['label' => $portalName, 'items' => $items]
+        [
+            'label' => $portalName,
+            'items' => $items
+        ]
     ],
 ]);
 
