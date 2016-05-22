@@ -103,12 +103,15 @@ class SnippetVarValue extends \yii\db\ActiveRecord
                 break;
 
             case 'page' :
-                $value = '$' . $this->valuePage->identifier;
+
+                if (isset($this->valuePage))
+                    $value = '$' . $this->valuePage->identifier;
 
                 break;
 
             case 'product' :
-                $value = '$' . $this->valueProduct->identifier;
+                if (isset($this->valueProduct))
+                    $value = '$' . $this->valueProduct->identifier;
 
                 break;
 
