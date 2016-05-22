@@ -14,12 +14,14 @@ $modelClassName = \yii\helpers\StringHelper::basename($variableValueClassName);
 ?>
 
 <div id="dynamic-fields" class="row">
-    <?php foreach ($assignedVariableValues as $variableValue): ?>
-        <?= $this->render('_variableValue', [
+    <?php
+    foreach ($assignedVariableValues as $variableValue) {
+        echo $this->render('_variableValue', [
             'varValue' => $variableValue, 
             'type' => $modelClassName
-                ]); ?>
-    <?php endforeach; ?>
+        ]);
+    }
+    ?>
 </div>
 
 <label class="control-label">Variables</label>
@@ -38,14 +40,14 @@ Select2::widget([
 <?php
 $assignedVariableIds = '[';
 
-foreach ($assignedVariableValues as $assignedVariableValue) {
-    $assignedVariableIds .= $assignedVariableValue->var->id . ', ';
+if (!empty($assignedVariableValue)) {
+    for ($index = 0; $index < sizeof($assignedVariableValue - 1); $index++) {
+        $assignedVariableIds .= $assignedVariableValue->var->id . ', ';
+    }
 }
 
-$assignedVariableIds = substr($assignedVariableIds, 0, sizeof($assignedVariableIds) - 2);
 $assignedVariableIds .= ']';
 
-// Problems with backslashes in echoing to javascript and in url fixed by changing bacslashes to '-'
 $secondGetParameter = $str = str_replace('\\', '-', $variableValueClassName);
 
 $js = <<<JS

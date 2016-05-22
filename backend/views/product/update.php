@@ -11,12 +11,9 @@ $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="product-update">
-
-    
     <?= $this->render('_form', [
         'model' => $model,
         'productVarValues' => $productVarValues,
-        'allVariables' => $allVariables
+        'allVariables' => $allVariables,
     ]) ?>
-
 </div>

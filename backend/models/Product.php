@@ -77,6 +77,16 @@ class Product extends \yii\db\ActiveRecord
             'last_edit_user' => 'Naposledy editoval',
         ];
     }
+    
+    public function beforeSave($insert)
+    {
+        if (!Yii::$app->user->isGuest) {
+            $userId = Yii::$app->user->identity->id;
+            $this->last_edit_user = $userId;
+        }
+        
+        return parent::beforeSave($insert);
+    }
 
     /**
      * @return \yii\db\ActiveQuery

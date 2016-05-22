@@ -54,7 +54,7 @@ class ProductController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate2()
     {
         $model = new Product();
         $productVarValues = [new ProductVarValue()];
@@ -109,7 +109,71 @@ class ProductController extends BaseController
         } else {
             return $this->render('create', [
                         'model' => $model,
-                        'modelsProductVarValue' => (empty($modelsProductVarValue)) ? [new ProductVarValue()] : $modelsProductVarValue,
+                        'modelsProductVarValue' => (empty($modelsProductVarValue)) ?
+                                [new ProductVarValue()] : $modelsProductVarValue,
+            ]);
+        }
+    }
+
+    /**
+     * Creates a new Product model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Product();
+        $productVarValues = [];
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+
+            try {
+                $productVarValuesData = Yii::$app->request->post('ProductVarValue');
+
+                foreach ($productVarValuesData as $id => $productValueData) {
+                    $productVarValue = new ProductVarValue();
+
+                    $productVarValue->attributes = $productValueData;
+                    $productVarValue->product_id = $model->id;
+
+                    $validated = $productVarValue->validate();
+                    if (!$validated) {
+                        $transaction->rollBack();
+                        return;     // TODO - do validation here
+                    }
+
+                    /*
+                      // ajax validation
+                      if (Yii::$app->request->isAjax) {
+                      Yii::$app->response->format = Response::FORMAT_JSON;
+                      return ArrayHelper::merge(
+                      ActiveForm::validateMultiple($modelsProductVarValue), ActiveForm::validate($model)
+                      );
+                      }
+                     * 
+                     */
+
+                    $saved = $productVarValue->save();
+
+                    if (!$saved) {
+                        $transaction->rollBack();
+                        return;     // TODO - do validation here
+                    }
+                }
+
+                $transaction->commit();
+                //$this->cacheEngine->cacheProduct($model); // TODO - CacheEngine call was here
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+            }
+        } else {
+            return $this->render('update', [
+                        'model' => $model,
+                        'productVarValues' => (empty($productVarValues)) ?
+                                [] : $productVarValues,
+                        'allVariables' => ProductVar::find()->all(),
             ]);
         }
     }
@@ -125,15 +189,13 @@ class ProductController extends BaseController
         $model = $this->findModel($id);
         $productVarValues = $model->productVarValues;
 
-        $allVariables = ProductVar::find()->all();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $transaction = \Yii::$app->db->beginTransaction();
 
             try {
-                $editedProductVarValuesData = Yii::$app->request->post('ProductVarValue');
+                $productVarValuesData = Yii::$app->request->post('ProductVarValue');
 
-                foreach ($editedProductVarValuesData as $id => $productValueData) {
+                foreach ($productVarValuesData as $id => $productValueData) {
                     if ($productValueData['existing'] == 'true') {
                         $productVarValue = ProductVarValue::find()->where(['id' => $id])->one();
                     } else {
@@ -149,6 +211,17 @@ class ProductController extends BaseController
                         return;     // TODO - do validation here
                     }
 
+                    /*
+                      // ajax validation
+                      if (Yii::$app->request->isAjax) {
+                      Yii::$app->response->format = Response::FORMAT_JSON;
+                      return ArrayHelper::merge(
+                      ActiveForm::validateMultiple($modelsProductVarValue), ActiveForm::validate($model)
+                      );
+                      }
+                     * 
+                     */
+
                     $saved = $productVarValue->save();
 
                     if (!$saved) {
@@ -158,7 +231,7 @@ class ProductController extends BaseController
                 }
 
                 $oldIDs = ArrayHelper::map($productVarValues, 'id', 'id');
-                $newIDs = ArrayHelper::map($editedProductVarValuesData, 'id', 'id');
+                $newIDs = ArrayHelper::map($productVarValuesData, 'id', 'id');
 
                 $deletedIDs = array_diff($oldIDs, $newIDs);
                 $productVarValuesToDelete = ProductVarValue::find()->where(['id' => $deletedIDs])->all();
@@ -169,32 +242,18 @@ class ProductController extends BaseController
                         $transaction->rollBack();
                     }
                 }
-                
+
                 $transaction->commit();
                 //$this->cacheEngine->cacheProduct($model); // TODO - CacheEngine call was here
                 return $this->redirect(['index']);
-                
             } catch (Exception $e) {
                 $transaction->rollBack();
             }
-
-
-            /*
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($modelsProductVarValue), ActiveForm::validate($model)
-                );
-            }
-             * 
-             */
-            
         } else {
             return $this->render('update', [
                         'model' => $model,
-                        'productVarValues' => (empty($productVarValues)) ? [new ProductVarValue()] : $productVarValues,
-                        'allVariables' => $allVariables
+                        'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
+                        'allVariables' => ProductVar::find()->all(),
             ]);
         }
     }

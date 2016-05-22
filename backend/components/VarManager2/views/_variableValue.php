@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 <?php
 $varValueModelName = \yii\helpers\StringHelper::basename($varValue->className());
-$varId = $varValue->id ? : Yii::$app->security->generateRandomString();
+$varId = !$varValue->isNewRecord ? $varValue->id : Yii::$app->security->generateRandomString();
 ?>
 
 <div class="form-group variable-value active-field">
