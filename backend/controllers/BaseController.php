@@ -21,7 +21,7 @@ abstract class BaseController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['@', '?']
                     ]
                 ],
             ]
