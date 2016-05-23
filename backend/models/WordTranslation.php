@@ -31,7 +31,7 @@ class WordTranslation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['word_id', 'translation', 'language_id'], 'required'],
+            [['translation', 'language_id'], 'required'],
             [['word_id', 'language_id'], 'integer'],
             [['translation'], 'string', 'max' => 255],
             [['word_id', 'language_id'], 'unique', 'targetAttribute' => ['word_id', 'language_id'], 'message' => 'The combination of Word ID and Language ID has already been taken.'],

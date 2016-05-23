@@ -42,14 +42,6 @@ class PortalVarController extends BaseController
         ]);
     }
 
-    public function actionSlug()
-    {
-        if (Yii::$app->request->isPost) {
-            $name = Yii::$app->request->post('name');
-            echo IdentifierComponent::generateIdentifier($name, '');
-        }
-    }
-
     /**
      * Creates a new PortalVar model.
      * If creation is successful, the browser will be redirected to the 'view' page.

@@ -7,7 +7,10 @@ use backend\models\Word;
 use backend\models\WordTranslation;
 use backend\models\search\WordSearch;
 use Yii;
+use yii\base\Model;
 use yii\filters\VerbFilter;
+use yii\helpers\BaseVarDumper;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -50,19 +53,50 @@ class WordController extends BaseController
     public function actionCreate()
     {
         $model = new Word();
+        $translations = [];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $translations = Yii::$app->request->post()['translation'];
-            /** @var WordTranslation[] $original_translations */
-            $original_translations = $model->getTranslations()->indexBy('language_id')->all();
-            $this->saveTranslations($original_translations, $translations, $model);
+        foreach(Language::find()->all() as $language)
+        {
+            $translation = new WordTranslation();
+            $translation->language_id = $language->id;
 
-            return $this->redirect(['update', 'id' => $model->id]);
-        } else {
+            $translations[] = $translation;
+        }
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            Model::loadMultiple($translations, Yii::$app->request->post());
+
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($translations) && $valid;
+
+            if ($valid)
+            {
+                $model->save();
+
+                foreach($translations as $translation)
+                {
+                    $translation->word_id = $model->id;
+
+                    if ($translation->validate())
+                    {
+                        $translation->save();
+                    }
+                    else
+                    {
+                        BaseVarDumper::dump($translation->errors);
+                    }
+                }
+                return $this->redirect(['update', 'id' => $model->id]);
+            }
+            else
+                BaseVarDumper::dump($model->errors);
+        }
+        else
+        {
             return $this->render('create', [
                 'model' => $model,
-                'languages' => Language::find()->all(),
-                'defaultLanguage' => Language::findOne(['identifier' => 'sk'])
+                'translations' => $translations
             ]);
         }
     }
@@ -77,44 +111,34 @@ class WordController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $translations = $model->translations;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $translations = Yii::$app->request->post()['translation'];
+        if ($model->load(Yii::$app->request->post()))
+        {
+            Model::loadMultiple($translations, Yii::$app->request->post());
 
-            /** @var WordTranslation[] $original_translations */
-            $original_translations = $model->getTranslations()->indexBy('language_id')->all();
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($translations) && $valid;
 
-            $this->saveTranslations($original_translations, $translations, $model);
+            if ($valid)
+            {
+                $model->save();
 
-            return $this->redirect(['update', 'id' => $id]);
-        } else {
-            $lang = Language::findOne(['identifier' => 'sk']);
-
-            return $this->render('update', [
-                'model' => $model,
-                'languages' => Language::find()->all(),
-                'defaultLanguage' => Language::findOne(['identifier' => 'sk'])
-            ]);
-        }
-    }
-
-    private function saveTranslations($original_translations, $new_translations, $of_word)
-    {
-        foreach ($new_translations as $lang_id => $new_translation) {
-            if (!empty($new_translation)) {
-                if (!isset($original_translations[$lang_id])) {
-                    $new_translation_object = new WordTranslation();
-                    $new_translation_object->language_id = $lang_id;
-                    $new_translation_object->word_id = $of_word->id;
-                    $new_translation_object->translation = $new_translation;
-                    $new_translation_object->save();
-                } else {
-                    if ($original_translations[$lang_id]->translation != $new_translation) {
-                        $original_translations[$lang_id]->translation = $new_translation;
-                        $original_translations[$lang_id]->save();
-                    }
+                foreach($translations as $translation)
+                {
+                    $translation->word_id = $model->id;
+                    $translation->save();
                 }
             }
+
+            return $this->redirect(['update', 'id' => $id]);
+        }
+        else
+        {
+            return $this->render('update', [
+                'model' => $model,
+                'translations' => $model->translations,
+            ]);
         }
     }
 

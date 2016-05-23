@@ -175,7 +175,7 @@ class Product extends \yii\db\ActiveRecord
     {
         $path = $this->language->getProductsCacheDirectory() . $this->identifier . '.php';
 
-        /*if (!file_exists($path))
+        if (!file_exists($path))
         {
             $buffer = '<?php ' . PHP_EOL;
 
@@ -198,7 +198,7 @@ class Product extends \yii\db\ActiveRecord
             }
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
-        }*/
+        }
 
         return $path;
     }

@@ -490,4 +490,19 @@ class Page extends \yii\db\ActiveRecord
 
         return $prefix;
     }
+
+    /**
+     * Vrati objekt podstranky spolu so zoznamom zakladnych premennych
+     */
+    public function getHead()
+    {
+        $buffer = '$page' . $this->id . ' = (object) array(' . PHP_EOL;
+
+        $buffer .= '\'url\' => \'' . $this->getUrl() . '\', ' . PHP_EOL;
+        $buffer .= '\'name\' => \'' . addslashes($this->name) . '\', ' . PHP_EOL;
+
+        $buffer .= ');' . PHP_EOL;
+
+        return $buffer;
+    }
 }

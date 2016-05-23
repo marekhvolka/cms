@@ -185,6 +185,22 @@ class Portal extends \yii\db\ActiveRecord
         return $this->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
     }
 
+    /** Vrati cestu k suboru, v ktorom je ulozeny layout casti portalu
+     * @param string $type - cast - header, footer
+     * @return string
+     */
+    public function getLayoutCacheFile($type)
+    {
+        $path = $this->getCacheDirectory() . 'portal_' . $type . '.php';
+
+        if (!file_exists($path))
+        {
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->getLayoutString($type));
+        }
+
+        return $path;
+    }
+
     public function getLayoutString($type)
     {
         $result = '';
@@ -221,22 +237,6 @@ class Portal extends \yii\db\ActiveRecord
         return $result;
     }
 
-    /** Vrati cestu k suboru, v ktorom je ulozeny layout casti portalu
-     * @param string $type - cast - header, footer
-     * @return string
-     */
-    public function getLayoutCacheFile($type)
-    {
-        $path = $this->getCacheDirectory() . 'portal_' . $type . '.php';
-
-        if (!file_exists($path))
-        {
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->getLayoutString($type));
-        }
-
-        return $path;
-    }
-
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany portal
      * @return string
      */
@@ -271,15 +271,17 @@ class Portal extends \yii\db\ActiveRecord
             $buffer .= '$currency = \'' . $cacheEngine->normalizeString($this->language->currency) . '\';' . PHP_EOL;
             $buffer .= '$color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
 
-            //TODO: doplnit dalsie premenne pre podstranku
-
             $buffer .= '$include_head = \'' . $this->getTrackingCodesString('head') . '\';' . PHP_EOL;
             $buffer .= '$include_head_end = \'' . $this->getTrackingCodesString('head_end') . '\';' . PHP_EOL;
             $buffer .= '$include_body = \'' . $this->getTrackingCodesString('body') . '\';' . PHP_EOL;
             $buffer .= '$include_body_end = \'' . $this->getTrackingCodesString('body_end') . '\';' . PHP_EOL;
 
-            $buffer .= '$portal_header = \'' . $this->getLayoutString('header') . '\';' . PHP_EOL;
-            $buffer .= '$portal_footer = \'' . $this->getLayoutString('footer') . '\';' . PHP_EOL;
+            $buffer .= '/* Portal pages */' . PHP_EOL;
+
+            foreach($this->pages as $page)
+            {
+                $buffer .= $page->getHead();
+            }
 
             $buffer .= '?>';
 

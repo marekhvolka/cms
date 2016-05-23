@@ -13,6 +13,8 @@ use kartik\select2\Select2;
 $modelClassName = \yii\helpers\StringHelper::basename($variableValueClassName);
 ?>
 
+<label class="control-label">Premenné</label>
+
 <div id="dynamic-fields" class="row">
     <?php
     foreach ($assignedVariableValues as $variableValue) {
@@ -24,18 +26,21 @@ $modelClassName = \yii\helpers\StringHelper::basename($variableValueClassName);
     ?>
 </div>
 
-<label class="control-label">Variables</label>
-
-<?=
-Select2::widget([
-    'name' => 'vars',
-    'data' => ArrayHelper::map($allVariables, 'id', 'name'),
-    'options' => [
-        'placeholder' => 'Vyber premennú ...',
-        'id' => 'types-dropdown',
-    ],
-]);
-?>
+<div class="form-group">
+    <label class="col-sm-2 label-var">Výber premennej</label>
+    <div class="col-sm-10">
+        <?=
+        Select2::widget([
+            'name' => 'vars',
+            'data' => ArrayHelper::map($allVariables, 'id', 'name'),
+            'options' => [
+                'placeholder' => 'Vyber premennú ...',
+                'id' => 'types-dropdown',
+            ],
+        ]);
+        ?>
+    </div>
+</div>
 
 <?php
 $assignedVariableIds = '[';

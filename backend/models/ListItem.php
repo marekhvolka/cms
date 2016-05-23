@@ -66,12 +66,14 @@ class ListItem extends \yii\db\ActiveRecord
 
     public function getValue()
     {
-        $buffer = '(object) array(';
+        $buffer = '(object) array(' . PHP_EOL;
 
         foreach($this->values as $snippetVarValue)
         {
             $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->value . ', ';
         }
+
+        $buffer = substr($buffer, 0, sizeof($buffer)-2);
 
         $buffer .= ')';
 

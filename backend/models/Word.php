@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\User;
 use Yii;
 
 /**
@@ -13,8 +14,7 @@ use Yii;
  * @property integer $last_edit_user
  *
  * @property User $lastEditUser
- * @property WordTranslation[] $dictionaryTranslations
- * @property Language[] $languages
+ * @property WordTranslation[] $translations
  */
 class Word extends \yii\db\ActiveRecord
 {
@@ -59,17 +59,5 @@ class Word extends \yii\db\ActiveRecord
     public function getTranslations()
     {
         return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
-    }
-
-    public function getTranslation($lang_id){
-        return WordTranslation::findOne(['language_id' => $lang_id, 'word_id' => $this->id]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLanguages()
-    {
-        return $this->hasMany(Language::className(), ['id' => 'language_id'])->viaTable('dictionary_translation', ['word_id' => 'id']);
     }
 }

@@ -3,32 +3,27 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\models\WordTranslation;
 use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Word */
-/* @var $languages backend\models\Language[] */
-/* @var $defaultLanguage backend\models\Language */
+/* @var $translations backend\models\WordTranslation[] */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <?php
 
-function generate_form_for_language($language, $form, $word)
+function generate_form_for_language($index, $translation, $form)
 {
-    $translation = $word->getTranslation($language->id);
-
-    if (!$translation) {
-        $translation = new WordTranslation();
-    }
     ?>
     <div class="form-group translation">
         <div class="input-group">
             <span class="input-group-addon">
-                <?= $language->name ?>
+                <?php echo $translation->language->name; ?>
             </span>
-            <?= $form->field($translation, 'translation')->textInput(['class' => 'form-control 
-                    dictionary-translation-control', 'name' => 'translation[' . $language->id . ']'])
+            <?= $form->field($translation, "[$index]translation")->textInput(['class' => 'form-control
+                    dictionary-translation-control'])
                 ->label(false)->error(['style' => "visiblity: none;"]) ?>
         </div>
     </div>
@@ -42,13 +37,21 @@ function generate_form_for_language($language, $form, $word)
     <?php $form = ActiveForm::begin(); ?>
     <h3>Preklad</h3>
 
-    <?php generate_form_for_language($defaultLanguage, $form, $model) ?>
+<?php
+
+    foreach ($translations as $index => $translation) {
+        if ($translation->language->identifier == 'sk') {
+            generate_form_for_language($index, $translation, $form);
+        }
+    };
+?>
 
     <h3>Identifikátor</h3>
-    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true])->label(false) ?>
+    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true, 'readonly' => !$model->isNewRecord])
+        ->label(false) ?>
 
     <?= IdentifierGenerator::widget([
-        'idTextFrom' => 'wordtranslation-translation',
+        'idTextFrom' => 'wordtranslation-0-translation',
         'idTextTo'   => 'word-identifier',
         'delimiter'  => '_',
     ]) ?>
@@ -56,9 +59,9 @@ function generate_form_for_language($language, $form, $word)
     <h3>Ostatné preklady</h3>
 
     <?php
-    foreach ($languages as $language) {
-        if ($language != $defaultLanguage) {
-            generate_form_for_language($language, $form, $model);
+    foreach ($translations as $index => $translation) {
+        if ($translation->language->identifier != 'sk') {
+            generate_form_for_language($index, $translation, $form);
         }
     }
     ?>

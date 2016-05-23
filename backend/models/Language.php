@@ -98,14 +98,14 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getDictionaryCacheFile()
     {
-        $path = $this->getCacheDirectory() . 'word.php';
+        $path = $this->getCacheDirectory() . 'dictionary.php';
 
-        /*if (!file_exists($path))
+        if (!file_exists($path))
         {
             $buffer = '<?php ' . PHP_EOL . '$slovnik = ';
 
             $query = 'SELECT identifier, translation FROM word
-          JOIN dictionary_translation ON (word.id = word_id)
+          JOIN word_translation ON (word.id = word_id)
           WHERE language_id = :language_id';
 
             $words = (object)ArrayHelper::map(Yii::$app->db->createCommand($query,
@@ -117,7 +117,7 @@ class Language extends \yii\db\ActiveRecord
             $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
-        }*/
+        }
 
         return $path;
     }
@@ -129,10 +129,10 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = $this->getCacheDirectory() . 'products/';
 
-        /*if (!file_exists($path))
+        if (!file_exists($path))
         {
             mkdir($path, 0777, true); //vytvori priecinok pre produkty
-        }*/
+        }
 
         return $path;
     }
@@ -148,12 +148,12 @@ class Language extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            /*foreach ($this->products as $product)
+            foreach ($this->products as $product)
             {
                 $path = $product->getMainFile();
 
                 $buffer .= 'include "' . $path . '";' . PHP_EOL;
-            }*/
+            }
 
             $buffer .= ' ?>';
 

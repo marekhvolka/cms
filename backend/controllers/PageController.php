@@ -168,15 +168,20 @@ class PageController extends BaseController
         }
     }
 
-    public function actionGenerate()
+    public function actionGenerate($id)
     {
         $cacheEngine = new CacheEngine();
 
         $cacheEngine->init();
 
+        $string = Page::findOne(['id' => $id])->getMainCacheFile();
+
+        echo file_get_contents($string);
+
+        /*
         $languages = Language::find()->all();
 
-        /*foreach ($languages as $language)
+        foreach ($languages as $language)
         {
             $cacheEngine->createLanguageCacheDirectory($language);
             $cacheEngine->cacheDictionary($language);
@@ -220,11 +225,6 @@ class PageController extends BaseController
         //$cacheEngine->compileBlock(Block::findOne(['id' => 2050]));
 
         //$cacheEngine->cachePageVars(Page::findOne(['id' => '356']));
-
-        $string = Page::findOne(['id' => '356'])->getMainCacheFile();
-
-        //echo file_get_contents($string);
-
     }
 
     public function actionParse()
