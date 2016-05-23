@@ -1,7 +1,6 @@
 <?php
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
-use backend\models\ProductVar;
 use backend\models\ProductVarValue;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -13,7 +12,6 @@ use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
 use backend\components\VarManager2\VarManagerWidget;
 use yii\helpers\Url;
-use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
