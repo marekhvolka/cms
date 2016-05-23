@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 <?php
 $varValueModelName = \yii\helpers\StringHelper::basename($varValue->className());
-$varId = !$varValue->isNewRecord ? $varValue->id : Yii::$app->security->generateRandomString();
+$postIndex = rand(0, 10000000);
 ?>
 
 <div class="form-group variable-value active-field">
@@ -15,16 +15,16 @@ $varId = !$varValue->isNewRecord ? $varValue->id : Yii::$app->security->generate
     <div class="col-sm-10 var-value">
         <div class="input-group">
             <?= Html::activeHiddenInput($varValue, 'id', [
-                'name' => $varValueModelName . '[' . $varId . '][id]'
+                'name' => $varValueModelName . '[' . $postIndex . '][id]'
                 ]);?>
             <?= Html::activeHiddenInput($varValue, 'var_id', [
-                'name' => $varValueModelName . '[' . $varId . '][var_id]'
+                'name' => $varValueModelName . '[' . $postIndex . '][var_id]'
                 ]);?>
             <?= Html::activeHiddenInput($varValue, 'product_id', [
-                'name' => $varValueModelName . '[' . $varId . '][product_id]'
+                'name' => $varValueModelName . '[' . $postIndex . '][product_id]'
                 ]);?>
             
-            <?= Html::hiddenInput($varValueModelName . '[' . $varId . '][existing]',
+            <?= Html::hiddenInput($varValueModelName . '[' . $postIndex . '][existing]',
                 $varValue->id ? 'true' : 'false'); ?>
             
             <?php if($varValue->var->description): ?>
@@ -43,13 +43,13 @@ $varId = !$varValue->isNewRecord ? $varValue->id : Yii::$app->security->generate
                             'class' => 'form-control',
                             'rows' => 5,
                             'placeholder' => $varValue->var->name,
-                            'name' => $varValueModelName . '[' . $varId . '][value]',
+                            'name' => $varValueModelName . '[' . $postIndex . '][value]',
                         ]);
                         break;
                     default:
                         echo Html::activeTextInput($varValue, 'value', [
                             'class' => 'form-control',
-                            'name' => $varValueModelName . '[' . $varId . '][value]',
+                            'name' => $varValueModelName . '[' . $postIndex . '][value]',
                         ]);
                         break;
                 }

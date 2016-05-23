@@ -59,14 +59,47 @@ class ProductController extends BaseController
         $model = new Product();
         $productVarValues = [];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
+
+            $modelSaved = false;
+            if ($model->validate() && $model->save()) {
+                $modelSaved = true;
+            }
+
             try {
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
+                $productVarValues = [];
 
                 foreach ($productVarValuesData as $id => $productValueData) {
                     $productVarValue = new ProductVarValue();
-                    $this->setProductValueAttributesAndSave($model, $productVarValue, $productValueData);
+                    $productVarValues[$id] = $productVarValue;
+                }
+
+                $loaded = Model::loadMultiple($productVarValues, Yii::$app->request->post());
+                $valid = Model::validateMultiple($productVarValues);
+
+                if (!$loaded || !$valid || !$modelSaved) {
+                    $transaction->rollBack();
+                    return $this->render('create', [
+                                'model' => $model,
+                                'productVarValues' => (empty($productVarValues)) ?
+                                        [] : $productVarValues,
+                                'allVariables' => ProductVar::find()->all(),
+                    ]);
+                }
+
+                foreach ($productVarValues as $productVarValue) {
+                    $productVarValue->product_id = $model->id;
+                    if (!$productVarValue->save()) {
+                        $transaction->rollBack();
+                        return $this->render('create', [
+                                    'model' => $model,
+                                    'productVarValues' => (empty($productVarValues)) ?
+                                            [] : $productVarValues,
+                                    'allVariables' => ProductVar::find()->all(),
+                        ]);
+                    }
                 }
 
                 $transaction->commit();
@@ -77,32 +110,22 @@ class ProductController extends BaseController
         } else {
             // If model is not successfully saved, page is reloaded with error messages.
             // There must be appended all variables set by user previously.
-            if (Yii::$app->request->isPost) {
-                $productVarValuesData = Yii::$app->request->post('ProductVarValue'); 
-                foreach ($productVarValuesData as $id => $productValueData) {
-                    $productVarValue = new ProductVarValue();
-                    $productVarValue->attributes = $productValueData;
-                    $productVarValue->product_id = $model->id;
-                    $productVarValues[] = $productVarValue;
-                }
-            }
-            
-            return $this->render('update', [
+//            if (Yii::$app->request->isPost) {
+//                $productVarValuesData = Yii::$app->request->post('ProductVarValue'); 
+//                foreach ($productVarValuesData as $id => $productValueData) {
+//                    $productVarValue = new ProductVarValue();
+//                    $productVarValue->attributes = $productValueData;
+//                    $productVarValue->product_id = $model->id;
+//                    $productVarValues[] = $productVarValue;
+//                }
+//            }
+
+            return $this->render('create', [
                         'model' => $model,
                         'productVarValues' => (empty($productVarValues)) ?
                                 [] : $productVarValues,
                         'allVariables' => ProductVar::find()->all(),
             ]);
-        }
-    }
-
-    private function setProductValueAttributesAndSave($product, $productVarValue, $productValueData)
-    {
-        $productVarValue->attributes = $productValueData;
-        $productVarValue->product_id = $product->id;
-
-        if (!$productVarValue->validate() || !$productVarValue->save()) {
-            throw new Exception();
         }
     }
 
@@ -132,7 +155,7 @@ class ProductController extends BaseController
 
                     $this->setProductValueAttributesAndSave($model, $productVarValue, $productValueData);
                 }
-                
+
                 $this->deleteVarValues($productVarValues, $productVarValuesData);
 
                 $transaction->commit();
