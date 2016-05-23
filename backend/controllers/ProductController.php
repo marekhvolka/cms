@@ -4,7 +4,8 @@ namespace backend\controllers;
 
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
-use MongoDB\Driver\Exception\Exception;
+//use MongoDB\Driver\Exception\Exception;
+use yii\base\Exception;
 use Yii;
 use backend\models\Product;
 use backend\models\search\ProductSearch;
@@ -62,12 +63,9 @@ class ProductController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
 
-            $modelSaved = false;
-            if ($model->validate() && $model->save()) {
-                $modelSaved = true;
-            }
-
             try {
+                $modelValidatedAndSaved = $model->validate() && !$model->save();
+
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
                 $productVarValues = [];
 
@@ -79,26 +77,14 @@ class ProductController extends BaseController
                 $loaded = Model::loadMultiple($productVarValues, Yii::$app->request->post());
                 $valid = Model::validateMultiple($productVarValues);
 
-                if (!$loaded || !$valid || !$modelSaved) {
-                    $transaction->rollBack();
-                    return $this->render('create', [
-                                'model' => $model,
-                                'productVarValues' => (empty($productVarValues)) ?
-                                        [] : $productVarValues,
-                                'allVariables' => ProductVar::find()->all(),
-                    ]);
+                if (!$loaded || !$valid || $modelValidatedAndSaved) {
+                    throw new Exception;
                 }
 
                 foreach ($productVarValues as $productVarValue) {
                     $productVarValue->product_id = $model->id;
                     if (!$productVarValue->save()) {
-                        $transaction->rollBack();
-                        return $this->render('create', [
-                                    'model' => $model,
-                                    'productVarValues' => (empty($productVarValues)) ?
-                                            [] : $productVarValues,
-                                    'allVariables' => ProductVar::find()->all(),
-                        ]);
+                        throw new Exception;
                     }
                 }
 
@@ -106,24 +92,17 @@ class ProductController extends BaseController
                 return $this->redirect(['index']);
             } catch (Exception $e) {
                 $transaction->rollBack();
+                return $this->render('create', [
+                            'model' => $model,
+                            'productVarValues' => (empty($productVarValues)) ?
+                                    [] : $productVarValues,
+                            'allVariables' => ProductVar::find()->all(),
+                ]);
             }
         } else {
-            // If model is not successfully saved, page is reloaded with error messages.
-            // There must be appended all variables set by user previously.
-//            if (Yii::$app->request->isPost) {
-//                $productVarValuesData = Yii::$app->request->post('ProductVarValue'); 
-//                foreach ($productVarValuesData as $id => $productValueData) {
-//                    $productVarValue = new ProductVarValue();
-//                    $productVarValue->attributes = $productValueData;
-//                    $productVarValue->product_id = $model->id;
-//                    $productVarValues[] = $productVarValue;
-//                }
-//            }
-
             return $this->render('create', [
                         'model' => $model,
-                        'productVarValues' => (empty($productVarValues)) ?
-                                [] : $productVarValues,
+                        'productVarValues' => $productVarValues,
                         'allVariables' => ProductVar::find()->all(),
             ]);
         }
@@ -140,11 +119,14 @@ class ProductController extends BaseController
         $model = $this->findModel($id);
         $productVarValues = $model->productVarValues;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
 
             try {
+                $modelValidatedAndSaved = $model->validate() && !$model->save();
+                
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
+                $productVarValues = [];
 
                 foreach ($productVarValuesData as $id => $productValueData) {
                     if ($productValueData['existing'] == 'true') {
@@ -153,13 +135,26 @@ class ProductController extends BaseController
                         $productVarValue = new ProductVarValue();
                     }
 
-                    $this->setProductValueAttributesAndSave($model, $productVarValue, $productValueData);
+                    $productVarValues[$id] = $productVarValue;
+                }
+                
+                $loaded = Model::loadMultiple($productVarValues, Yii::$app->request->post());
+                $valid = Model::validateMultiple($productVarValues);
+
+                if (!$loaded || !$valid || $modelValidatedAndSaved) {
+                    throw new Exception;
+                }
+                
+                foreach ($productVarValues as $productVarValue) {
+                    $productVarValue->product_id = $model->id;
+                    if (!$productVarValue->save()) {
+                        throw new Exception;
+                    }
                 }
 
                 $this->deleteVarValues($productVarValues, $productVarValuesData);
 
                 $transaction->commit();
-                //$this->cacheEngine->cacheProduct($model); // TODO - CacheEngine call was here
                 return $this->redirect(['index']);
             } catch (Exception $e) {
                 $transaction->rollBack();
@@ -175,7 +170,6 @@ class ProductController extends BaseController
 
     private function deleteVarValues($productVarValues, $productVarValuesData)
     {
-
         $oldIDs = ArrayHelper::map($productVarValues, 'id', 'id');
         $newIDs = ArrayHelper::map($productVarValuesData, 'id', 'id');
 
