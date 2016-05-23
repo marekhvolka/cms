@@ -51,7 +51,7 @@ class VarManagerWidget extends Widget
         ]);
     }
 
-    /** Metoda na vyrendrovanie sablony pre jednu vyplnenu premennu
+    /** Metoda na vyrendrovanie view pre jednu vyplnenu premennu
      * @return string
      */
     public function appendVariableValue($varValue)
