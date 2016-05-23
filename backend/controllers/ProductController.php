@@ -58,9 +58,8 @@ class ProductController extends BaseController
     {
         $model = new Product();
         $productVarValues = [];
-      //  $productLoadedAndSaved = true;
 
-        if ($productLoadedAndSaved = $model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
@@ -132,16 +131,6 @@ class ProductController extends BaseController
                     }
 
                     $this->setProductValueAttributesAndSave($model, $productVarValue, $productValueData);
-                    
-                    /*
-                     $productVarValue->attributes = $productValueData;
-                    $productVarValue->product_id = $model->id;
-
-                    if (!$productVarValue->validate() || !$productVarValue->save()) {
-                        $transaction->rollBack();
-                        return;     // TODO - do validation here
-                    }
-                     */
                 }
                 
                 $this->deleteVarValues($productVarValues, $productVarValuesData);
