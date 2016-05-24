@@ -17,6 +17,7 @@ use Yii;
  * @property int $page_block_id
  * @property int $value_list_id
  *
+ * @property ListVar $valueListVar
  * @property Product $valueProduct
  * @property Page $valuePage
  * @property Block $pageBlock
@@ -90,6 +91,14 @@ class SnippetVarValue extends \yii\db\ActiveRecord
         return $this->hasOne(Product::className(), ['id' => 'value_product_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValueListVar()
+    {
+        return $this->hasOne(ListVar::className(), ['id' => 'value_list_id']);
+    }
+
     public function getValue()
     {
         $value = '';
@@ -98,7 +107,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
         {
             case 'list' :
 
-                $value = ListVar::findOne(['id' => $this->value_list_id])->value;
+                $value = $this->valueListVar->value;
 
                 break;
 
@@ -120,7 +129,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
                 break;
 
             default:
-                $value = '\'' . $this->value_text . '\'';
+                $value = addslashes('\'' . $this->value_text . '\'');
         }
 
         return $value;

@@ -193,6 +193,7 @@ class Block extends \yii\db\ActiveRecord
             }
             else if (isset($this->column->row->section->portal)) //block portalu
             {
+                $buffer = $this->column->row->section->portal->getIncludePrefix();
                 $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
             }
 

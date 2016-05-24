@@ -85,8 +85,46 @@ class Section extends \yii\db\ActiveRecord
 
     public function getPrefix()
     {
-        return '<div class="wrapper">' . PHP_EOL .
-                '<div class="container">' . PHP_EOL;
+        $settings = $this->getChildCssSettings();
+
+        $cssClasses = trim("wrapper $this->css_class " . $settings['classes']);
+        $cssIds = trim("$this->css_id " . $settings['ids']);
+        $cssStyles = trim("$this->css_style " . $settings['styles']);
+
+        $result = "<div class='$cssClasses' id='$cssIds' style='$cssStyles'>" . PHP_EOL;
+        $result .= '<div class="container">' . PHP_EOL;
+
+        return $result;
+    }
+
+    /** Vrati pole, v ktorom su css nastavenia, zdedene z jednotlivych snippetov
+     * @return array
+     */
+    private function getChildCssSettings()
+    {
+        $settings = array();
+
+        $settings['classes'] = '';
+        $settings['ids'] = '';
+        $settings['styles'] = '';
+
+        foreach($this->rows as $row)
+        {
+            foreach($row->columns as $column)
+            {
+                foreach($column->blocks as $block)
+                {
+                    if (isset($block->snippetCode))
+                    {
+                        $settings['classes'] .= $block->snippetCode->snippet->section_class . ' ';
+                        $settings['ids'] .= $block->snippetCode->snippet->section_id . ' ';
+                        $settings['styles'] .= $block->snippetCode->snippet->section_style . ' ';
+                    }
+                }
+            }
+        }
+
+        return $settings;
     }
 
     public function getPostfix()

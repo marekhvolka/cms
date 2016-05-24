@@ -174,9 +174,9 @@ class PageController extends BaseController
 
         $cacheEngine->init();
 
-        $string = Page::findOne(['id' => $id])->getMainCacheFile();
+        $path = Page::findOne(['id' => $id])->getMainCacheFile();
 
-        echo file_get_contents($string);
+        echo file_get_contents($path);
 
         /*
         $languages = Language::find()->all();

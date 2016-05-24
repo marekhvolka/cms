@@ -75,12 +75,48 @@ class Column extends \yii\db\ActiveRecord
 
     public function getPrefix()
     {
-        return '<div class="col-md-' . $this->width . '">' . PHP_EOL;
+        $settings = $this->getChildCssSettings();
+
+        $cssClasses = trim("col-md-$this->width $this->css_class " . $settings['classes']);
+        $cssIds = trim("$this->css_id " . $settings['ids']);
+        $cssStyles = trim("$this->css_style " . $settings['styles']);
+
+        $result = "<div class='$cssClasses' id='$cssIds' style='$cssStyles'>" . PHP_EOL;
+        $result .= '<div class="box">' . PHP_EOL;
+
+        return $result;
+    }
+
+    /** Vrati pole, v ktorom su css nastavenia, zdedene z jednotlivych snippetov
+     * @return array
+     */
+    private function getChildCssSettings()
+    {
+        $settings = array();
+
+        $settings['classes'] = '';
+        $settings['ids'] = '';
+        $settings['styles'] = '';
+
+        foreach($this->blocks as $block)
+        {
+            if (isset($block->snippetCode))
+            {
+                $settings['classes'] .= $block->snippetCode->snippet->column_class . ' ';
+                $settings['ids'] .= $block->snippetCode->snippet->column_id . ' ';
+                $settings['styles'] .= $block->snippetCode->snippet->column_style . ' ';
+            }
+        }
+
+        return $settings;
     }
 
     public function getPostfix()
     {
-        return '</div> <!-- col end -->' . PHP_EOL;
+        $result = '</div> <!-- box end -->' . PHP_EOL;
+        $result .= '</div> <!-- col end -->' . PHP_EOL;
+
+        return $result;
     }
 
     public function getContent()

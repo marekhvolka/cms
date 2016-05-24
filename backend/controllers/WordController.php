@@ -113,6 +113,8 @@ class WordController extends BaseController
         $model = $this->findModel($id);
         $translations = $model->translations;
 
+        //TODO: dokoncit funkcionalitu pri pridani noveho jazyka
+
         if ($model->load(Yii::$app->request->post()))
         {
             Model::loadMultiple($translations, Yii::$app->request->post());
@@ -126,7 +128,6 @@ class WordController extends BaseController
 
                 foreach($translations as $translation)
                 {
-                    $translation->word_id = $model->id;
                     $translation->save();
                 }
             }

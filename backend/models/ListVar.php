@@ -60,7 +60,7 @@ class ListVar extends \yii\db\ActiveRecord
 
     public function getValue()
     {
-        $buffer = 'array(' . PHP_EOL;
+        $buffer = '(object) array(' . PHP_EOL;
 
         foreach($this->listItems as $listItem)
         {

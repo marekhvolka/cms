@@ -179,8 +179,8 @@ class Product extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            $query = 'SELECT identifier, value FROM product_var
-          JOIN product_var_value ON (product_var.id = var_id)
+            $query = 'SELECT identifier, IF(value IS NULL, \'\', value ) value FROM product_var
+          LEFT JOIN product_var_value ON (product_var.id = var_id)
           WHERE product_id = :product_id';
 
             $productVars = ArrayHelper::map(Yii::$app->db->createCommand($query,
@@ -189,13 +189,15 @@ class Product extends \yii\db\ActiveRecord
 
             if (isset($this->parent)) // ak ma produkt rodica
             {
-                $buffer .= '$' . $this->identifier . ' = array_merge($' . $this->parent->identifier . '
-                , ' . var_export($productVars, true) . '); ?>';
+                $buffer .= '$tempObject = (object) array_merge((array) $' . $this->parent->identifier . '
+                , ' . var_export($productVars, true) . '); ' . PHP_EOL;
             }
             else
             {
-                $buffer .= '$' . $this->identifier . ' = ' . var_export($productVars, true) . '; ?>';
+                $buffer .= '$tempObject  = (object) ' . var_export($productVars, true) . ';' . PHP_EOL;
             }
+
+            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject); ?>' . PHP_EOL;
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }

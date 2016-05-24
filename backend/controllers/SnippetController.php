@@ -116,7 +116,8 @@ class SnippetController extends BaseController
         $model = $this->findModel($id);
         $modelSnippetCodes = $model->snippetCodes;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()))
+        {
             //Creating multiple SnippetVars and SnippetCodes from posted data.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
             $modelSnippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
