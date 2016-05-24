@@ -68,7 +68,7 @@ class ProductController extends BaseController
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
                 $productVarValues = []; // Array of ProductVarValue models used later for multiple validation.
 
-                // $productVarValues array appended with retrieved newly created ProductVarValue models.s
+                // $productVarValues array appended with retrieved newly created ProductVarValue models.
                 foreach ($productVarValuesData as $i => $productValueData) {
                     $productVarValue = new ProductVarValue();
                     $productVarValues[$i] = $productVarValue;
