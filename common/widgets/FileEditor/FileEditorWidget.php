@@ -32,7 +32,7 @@ class FileEditorWidget extends \yii\bootstrap\Widget
         $model = new EditFileForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $realpath = realpath($model->fileName);
+            $realpath = realpath($this->directory . $model->fileName);
             if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
                 file_put_contents($realpath, $model->text);
             }
