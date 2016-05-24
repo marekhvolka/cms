@@ -17,6 +17,8 @@ use Yii;
  */
 class ProductVarValue extends \yii\db\ActiveRecord
 {
+    public $existing;
+    
     /**
      * @inheritdoc
      */
@@ -52,6 +54,17 @@ class ProductVarValue extends \yii\db\ActiveRecord
         ];
     }
 
+    
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+     
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
+    
     /**
      * @return \yii\db\ActiveQuery
      */

@@ -80,12 +80,16 @@ class Product extends \yii\db\ActiveRecord
     
     public function beforeSave($insert)
     {
-        if (!Yii::$app->user->isGuest) {
-            $userId = Yii::$app->user->identity->id;
-            $this->last_edit_user = $userId;
-        }
+        $userId = Yii::$app->user->identity->id;
+        $this->last_edit_user = $userId;
         
         return parent::beforeSave($insert);
+    }
+    
+    public function beforeDelete()
+    {
+        $this->unlinkAll('productVarValues', true);
+        return parent::beforeDelete();
     }
 
     /**
