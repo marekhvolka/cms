@@ -6,11 +6,6 @@ use yii\base\Widget;
 
 class VarManagerWidget extends Widget
 {
-    /** Objekt, ktoremu premenne priradujeme (portal, produkt
-     * @var
-     */
-    public $model;
-
     /** Zoznam priradenych premenných
      * @var
      */
@@ -20,11 +15,6 @@ class VarManagerWidget extends Widget
      * @var
      */
     public $allVariables;
-
-    /** Nazov triedy (modelu), ktory reprezentuje vyplnenu premennu
-     * @var string
-     */
-    public $variableValueClassName;
     
     /**
      * Url of controller, which is using whis widget for dynamic
@@ -43,11 +33,9 @@ class VarManagerWidget extends Widget
         AssetBundle::register($this->getView());
 
         return $this->render('variableWidget', [
-            'model' => $this->model,
             'assignedVariableValues' => $this->assignedVariableValues,
             'allVariables' => $this->allVariables,
             'appendVarValueUrl' => $this->appendVarValueUrl,
-            'variableValueClassName' => $this->variableValueClassName,
         ]);
     }
 

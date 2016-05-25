@@ -67,24 +67,21 @@ class SnippetController extends BaseController
                 $snippetCodes[$i] = $snippetCode;
             }
 
-            // Product model validated and saved.
+            // Snippet model validated and saved.
             $modelValidatedAndSaved = $model->validate() && $model->save();
-            // ProductVarValue models multiple loading and validation.
+            // SnippetCode models multiple loading and validation.
             $loaded = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
             $valid = Model::validateMultiple($snippetCodes);
 
             if (!$loaded || !$valid || !$modelValidatedAndSaved) {
                 throw new Exception;
             }
-
-
             
             // Each ProductVarValue model saved individually.
             foreach ($snippetCodes as $snippetCode) {
-                $test = $snippetCode;
-//                if (!$snippetCode->save()) {
-//                    throw new Exception;
-//                }
+                if (!$snippetCode->save()) {
+                    throw new Exception;
+                }
             }
 
             return;

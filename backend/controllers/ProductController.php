@@ -208,12 +208,10 @@ class ProductController extends BaseController
     /**
      * Action neccessary for VarManagerWidget - appending one variable value at the end of the list.
      * @param Model $id - id of Var
-     * @param string $type - type of VarValue
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
-    public function actionAppendVarValue($id, $type)
+    public function actionAppendVarValue($id)
     {
-        $type = str_replace('-', '\\', $type);  // '-' from url get parameter changed to backslashes.
         $varValue = new ProductVarValue();
         $varValue->var_id = $id;
 

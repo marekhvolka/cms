@@ -1,13 +1,15 @@
 <?php
 use yii\helpers\Html;
 
+/* @var $this yii\web\View */
 /* @var $varValue */
-/* @var $type */
 ?>
 
 <?php
+// Name of model class without path for creating name attributes for inputs 
+// used in post request parameters in form and eventually in controller.
 $varValueModelName = \yii\helpers\StringHelper::basename($varValue->className());
-$postIndex = rand(0, 10000000);
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <div class="form-group variable-value active-field">
@@ -63,15 +65,3 @@ $postIndex = rand(0, 10000000);
         </div>
     </div>
 </div>
-
-<?php
-$js = <<<JS
-
-$('.remove-btn').click(function () {
-    $(this).parents('.variable-value').first().remove();
-    // TODO put back deleted variable to dropdown
-});
-
-JS;
-$this->registerJs($js); //, \yii\web\View::POS_BEGIN);
-?>
