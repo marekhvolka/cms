@@ -36,12 +36,19 @@ class CacheEngine extends Component
     {
         $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
 
-
         $this->latteRenderer = new Engine();
 
         $this->latteRenderer->setLoader(new FileLoader());
 
         $this->latteRenderer->setTempDirectory(__DIR__.'/tmp');
+    }
+
+    /** Vrati cestu k triede ObjectBridge.php
+     * @return string
+     */
+    public function getObjectBridgeClassPath()
+    {
+        return __DIR__ . '/ObjectBridge.php';
     }
 
 

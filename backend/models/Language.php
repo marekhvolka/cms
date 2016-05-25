@@ -148,11 +148,15 @@ class Language extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
+            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
+
+            var_dump(file_exists(Yii::$app->cacheEngine->getObjectBridgeClassPath()));
+
             foreach ($this->products as $product)
             {
-                $path = $product->getMainFile();
+                $productPath = $product->getMainFile();
 
-                $buffer .= 'include "' . $path . '";' . PHP_EOL;
+                $buffer .= 'include "' . $productPath . '";' . PHP_EOL;
             }
 
             $buffer .= ' ?>';

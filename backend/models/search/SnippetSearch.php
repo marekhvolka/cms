@@ -21,7 +21,7 @@ class SnippetSearch extends Snippet
     {
         return [
             [['id', 'default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'description', 'sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'description', 'section_id', 'section_class', 'section_style', 'column_id', 'column_class', 'column_style', 'last_edit'], 'safe'],
         ];
     }
 

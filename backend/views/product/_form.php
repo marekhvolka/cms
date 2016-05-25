@@ -15,6 +15,8 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
+/* @var $productVarValues backend\models\ProductVarValue */
+/* @var $allVariablesl backend\models\ProductVar */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -56,16 +58,10 @@ use yii\helpers\Url;
     ]) ?>
     
     <?=VarManagerWidget::widget([
-        'model' => $model,
         'allVariables' => $allVariables,
         'assignedVariableValues' => $productVarValues,
-        'variableValueClassName' => ProductVarValue::className(),
         'appendVarValueUrl' => Url::to(['product/append-var-value']),
     ])?>
-
-    <?php
-        //TODO: Variable Widget nema mat save button
-    ?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">

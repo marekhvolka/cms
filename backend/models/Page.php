@@ -268,7 +268,7 @@ class Page extends \yii\db\ActiveRecord
     {
         $result = '<div id="sidebar" class="col-md-4">';
 
-        if ($this->sidebar_active)
+        if ($this->sidebar_active && isset($this->sidebarSection))
         {
             $result .= $this->sidebarSection->getContent();
         }
@@ -401,31 +401,36 @@ class Page extends \yii\db\ActiveRecord
 
             $prefix .= '<?' . PHP_EOL;
 
-            $prefix .= 'include "' . $this->getLayoutCacheFile('header') . '";' . PHP_EOL;
-            $prefix .= 'include "' . $this->getLayoutCacheFile('footer') . '";' . PHP_EOL;
-            $prefix .= 'include "' . $this->getLayoutCacheFile('sidebar') . '";' . PHP_EOL;
-            $prefix .= 'include "' . $this->getLayoutCacheFile('content') . '";' . PHP_EOL;
+            $prefix .= '$page_header = "' . addslashes(file_get_contents($this->getLayoutCacheFile('header'))) . '";' . PHP_EOL;
+            $prefix .= '$page_footer = "' . addslashes(file_get_contents($this->getLayoutCacheFile('footer'))) . '";' . PHP_EOL;
+            $prefix .= '$page_sidebar = "' . addslashes(file_get_contents($this->getLayoutCacheFile('sidebar'))) . '";' . PHP_EOL;
+            $prefix .= '$page_content = "' . addslashes(file_get_contents($this->getLayoutCacheFile('content'))) . '";' . PHP_EOL;
 
             $prefix .= '$bootstrap_css = \'http://www.hyperfinance.cz/css/bootstrap.min.css\';' . PHP_EOL;
             $prefix .= '$bootstrap_js = \'http://www.hyperfinance.cz/js/bootstrap.min.js\';' . PHP_EOL;
+            $prefix .= '$jquery = \'//code.jquery.com/jquery-1.10.2.min.js\';' . PHP_EOL;
+            $prefix .= '$font_awesome = \'http://www.hyperfinance.cz/fonts/font-awesome-4.3.0/css/font-awesome.min.css\';' . PHP_EOL;
 
             $prefix .= '?>' . PHP_EOL;
 
             $pageContent = $prefix . '<!DOCTYPE html>
             <html class="no-js">
             <head>
-              <meta charset="utf-8" />
+                <meta charset="utf-8" />
               {$include_head}
               <title>{$title}</title>
-              {$bootstrap_css}
+              <link href=\'{$bootstrap_css}\' rel=\'stylesheet\' type=\'text/css\' />
+              <link href=\'http://www.hyperfinance.cz/css/public/global.css\' rel=\'stylesheet\' type=\'text/css\' />
 
               <meta name="description" content="{$description}" />
-              {$color_scheme}
+              <link href=\'{$color_scheme}\' rel=\'stylesheet\' type=\'text/css\' />
+              <link href=\'{$font_awesome}\' rel=\'stylesheet\' type=\'text/css\' />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <meta http-equiv="X-UA-Compatible" content="IE=edge" />
               <link href=\'http://fonts.googleapis.com/css?family=Open+Sans:700&amp;subset=latin,latin-ext\' rel=\'stylesheet\' type=\'text/css\' />
 
-              {$bootstrap_js}
+              <script src=\'{$jquery}\'></script>
+              <script src=\'{$bootstrap_js}\'></script>
 
               {$include_head_end}
             </head>
@@ -466,7 +471,7 @@ class Page extends \yii\db\ActiveRecord
 
         if (!file_exists($path))
         {
-            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+            $result = html_entity_decode(stripcslashes(Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array())));
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $result);
         }
@@ -479,11 +484,10 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getIncludePrefix()
     {
-        $prefix = '<?php ' . PHP_EOL;
+        $prefix = $this->portal->getIncludePrefix();
 
-        $prefix .= 'include "' . $this->portal->language->getDictionaryCacheFile() . '";' . PHP_EOL;
-        $prefix .= 'include "' . $this->portal->language->getProductsMainCacheFile() . '";' . PHP_EOL;
-        $prefix .= 'include "' . $this->portal->getCacheFile() . '";' . PHP_EOL;
+        $prefix .= '<?php ' . PHP_EOL;
+
         $prefix .= 'include "' . $this->getVarCacheFile() . '";' . PHP_EOL;
 
         $prefix .= '?>';
