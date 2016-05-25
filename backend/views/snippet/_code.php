@@ -13,7 +13,7 @@ use backend\models\Portal;
 $postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
-<div class="item panel panel-default panel-codes"><!-- widgetBody -->
+<div class="item panel panel-default snippet-code"><!-- widgetBody -->
     <div class="panel-heading"> 
         <div class="input-group">
             <?= BaseHtml::activeTextInput($snippetCode, "name", [
@@ -77,16 +77,3 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id); ?>
     </div>
 </div>
-
-<?php
-$js = <<<JS
-
-// Remove button clicked - code must be removed.
-$('.remove-item-code').bind('click', function() {
-    $(this).parent().remove();
-});     
-        
-JS;
-$this->registerJs($js);
-?>
-

@@ -65,9 +65,9 @@ use yii\web\View;
                 <div><!-- widgetContainer -->
                     <ul style="list-style: none;" class="container-items-vars">
                         <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <?php if(!$snippetVar->parent && $snippetVar->id): ?>
+                        <li>
                         <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
-                        <?php endif;?>
+                        </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

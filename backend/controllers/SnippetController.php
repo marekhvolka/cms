@@ -56,7 +56,7 @@ class SnippetController extends BaseController
     public function actionCreate()
     {
         $model = new Snippet();
-        $snippetCodes = [new SnippetCode()];
+        $snippetCodes = [];
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -88,9 +88,7 @@ class SnippetController extends BaseController
                     }
                 }
 
-                return $this->redirect(['index']);
-
-
+                
                 $snippetVarData = Yii::$app->request->post('SnippetVar');
                 $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
@@ -133,7 +131,7 @@ class SnippetController extends BaseController
         } else {
             return $this->render('create', [
                         'model' => $model,
-                        'snippetCodes' => $snippetCodes,
+                        'snippetCodes' => [new SnippetCode()],
             ]);
         }
     }
