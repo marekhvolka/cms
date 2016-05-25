@@ -328,4 +328,20 @@ class Portal extends \yii\db\ActiveRecord
 
         return $path;
     }
+
+    public function getIncludePrefix()
+    {
+        $prefix = '<?php' . PHP_EOL;
+
+        $prefix .= 'include "' . $this->language->getDictionaryCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->language->getProductsMainCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->getCacheFile() . '";' . PHP_EOL;
+
+        $prefix .= '$global_header = "' . addslashes(file_get_contents($this->getLayoutCacheFile('header'))) . '";' . PHP_EOL;
+        $prefix .= '$global_footer = "' . addslashes(file_get_contents($this->getLayoutCacheFile('footer'))) . '";' . PHP_EOL;
+
+        $prefix .= '?>' . PHP_EOL;
+
+        return $prefix;
+    }
 }

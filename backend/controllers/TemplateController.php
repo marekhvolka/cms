@@ -89,6 +89,15 @@ class TemplateController extends BaseController
         }
     }
 
+    public function actionEditFiles($id)
+    {
+        $template = $this->findModel($id);
+
+        return $this->render('edit-files', [
+            'template' => $template
+        ]);
+    }
+
     /**
      * Deletes an existing Template model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

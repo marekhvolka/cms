@@ -14,12 +14,12 @@ use yii\helpers\VarDumper;
  * @property string $description
  * @property integer $default_code_id
  * @property integer $snippet_type
- * @property string $sekcia_id
- * @property string $sekcia_class
- * @property string $sekcia_style
- * @property string $block_id
- * @property string $block_class
- * @property string $block_style
+ * @property string $section_id
+ * @property string $section_class
+ * @property string $section_style
+ * @property string $column_id
+ * @property string $column_class
+ * @property string $column_style
  * @property string $last_edit
  * @property integer $last_edit_user
  *
@@ -49,7 +49,7 @@ class Snippet extends \yii\db\ActiveRecord
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['description'], 'string'],
-            [['sekcia_id', 'sekcia_class', 'sekcia_style', 'block_id', 'block_class', 'block_style'], 'string', 'max' => 30],
+            [['section_id', 'section_class', 'section_style', 'column_id', 'column_class', 'column_style'], 'string', 'max' => 30],
             [['name'], 'unique']
         ];
     }
@@ -65,12 +65,12 @@ class Snippet extends \yii\db\ActiveRecord
             'description' => 'Popis snippetu',
             'default_code_id' => 'Default Code ID',
             'snippet_type' => 'Typ',
-            'sekcia_id' => 'Sekcia ID',
-            'sekcia_class' => 'Sekcia Class',
-            'sekcia_style' => 'Sekcia Style',
-            'block_id' => 'Block ID',
-            'block_class' => 'Block Class',
-            'block_style' => 'Block Style',
+            'section_id' => 'Sekcia ID',
+            'section_class' => 'Sekcia Class',
+            'section_style' => 'Sekcia Style',
+            'column_id' => 'Column ID',
+            'column_class' => 'Column Class',
+            'column_style' => 'Column Style',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
         ];
