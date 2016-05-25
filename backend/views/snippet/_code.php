@@ -10,7 +10,7 @@ use backend\models\Portal;
 
 ?>
 <?php
-$arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <li class="item panel panel-default panel-codes" id="code<?php echo $snippetCode->id; ?>"><!-- widgetBody -->
@@ -19,7 +19,7 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
             <?= BaseHtml::activeTextInput($snippetCode, "name", [
                     'class' => 'form-control code-name attribute',
                     'data-attribute-name' => 'name',
-                    'name' => "SnippetCode[$arrayFirstDimensionValue][name]",
+                    'name' => "SnippetCode[$postIndex][name]",
                     'style'=>'width:400px'
                 ]); ?>
         </div>
@@ -39,7 +39,7 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
                 </label>
                 <?php
                 echo CodemirrorWidget::widget([
-                        'name' => "SnippetCode[$arrayFirstDimensionValue][code]",
+                        'name' => "SnippetCode[$postIndex][code]",
                         'value' => $snippetCode->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
@@ -58,7 +58,7 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
                             'autofocus' => 'false',
-                            'name' => "SnippetCode[$arrayFirstDimensionValue][code]",
+                            'name' => "SnippetCode[$postIndex][code]",
                         ]
                     ]
                 );
@@ -74,7 +74,7 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
                 echo BaseHtml::activeTextarea($snippetCode, "description", [
                     'class' => 'form-control code-popis attribute',
                     'data-attribute-name' => 'popis',
-                    'name' => "SnippetCode[$arrayFirstDimensionValue][description]",
+                    'name' => "SnippetCode[$postIndex][description]",
                 ]);
                 ?>
             </div>
@@ -86,45 +86,17 @@ $arrayFirstDimensionValue = $snippetCode->id ? : 'placeholder';
                 </label>
                 
                 <?php
-                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
-                
-//                 Select2::widget([
-//                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
-//                    'value' => [], // initial value
-//                    'data' => $data,
-//                    'options' => [
-//                        'placeholder' => 'Select portals ...',
-//                        'multiple' => true,
-//                        'class' => 'form-control code-portal attribute',
-//                        'data-attribute-name' => 'portal',
-//                    ],
-//                    'pluginOptions' => [
-//                        'tags' => true,
-//                    ],
-//                ]);
-                ?>
-                
-                <?php
-//                 BaseHtml::activeTextInput($snippetCode, "portal", [
-//                    'maxlength' => true, 
-//                    'class' => 'form-control code-portal attribute',
-//                    'data-attribute-name' => 'portal',
-//                    'name' => "SnippetCode[$arrayFirstDymensionValue][portal]",
-//                ]);
-                ?>
-                
-                <?php
                 echo BaseHtml::activeDropDownList($snippetCode, "portal", $data, [
                     'maxlength' => true, 
                     'class' => 'form-control code-portal attribute',
                     'data-attribute-name' => 'portal',
-                    'name' => "SnippetCode[$arrayFirstDimensionValue][portal]",
+                    'name' => "SnippetCode[$postIndex][portal]",
                 ]);
                 ?>
             </div>
         </div>
         
-        <?= BaseHtml::hiddenInput("SnippetCode[$arrayFirstDimensionValue][id]", $snippetCode->id, [
+        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id, [
             'class' => 'code-id attribute',
             'data-attribute-name' => 'id',
             ]); ?>
