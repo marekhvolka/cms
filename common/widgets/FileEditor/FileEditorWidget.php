@@ -3,6 +3,9 @@ namespace common\widgets\FileEditor;
 
 use common\widgets\FileEditor\models\EditFileForm;
 use DirectoryIterator;
+use LogicException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use yii;
 
 class FileEditorWidget extends \yii\bootstrap\Widget
@@ -25,6 +28,53 @@ class FileEditorWidget extends \yii\bootstrap\Widget
             Yii::$app->response->send();
             die;
         }
+
+        if (!empty(Yii::$app->request->get('file')) && !empty(Yii::$app->request->get('fileAction'))) {
+            if (Yii::$app->request->get('fileAction') == 'delete') {
+                $realpath = realpath($this->directory . Yii::$app->request->get('file'));
+                if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
+                    if (is_dir($realpath)) {
+                        $it = new RecursiveDirectoryIterator($realpath, RecursiveDirectoryIterator::SKIP_DOTS);
+                        $files = new RecursiveIteratorIterator($it,
+                            RecursiveIteratorIterator::CHILD_FIRST);
+                        foreach ($files as $file) {
+                            if ($file->isDir()) {
+                                rmdir($file->getRealPath());
+                            } else {
+                                unlink($file->getRealPath());
+                            }
+                        }
+                        rmdir($realpath);
+                    } else {
+                        unlink($realpath);
+                    }
+                }
+
+                Yii::$app->response->redirect(yii\helpers\Url::to(['']));
+            }
+        }
+    }
+
+    private function normalizePath($path, $separator = '\\/')
+    {
+        // Remove any kind of funky unicode whitespace
+        $normalized = preg_replace('#\p{C}+|^\./#u', '', $path);
+
+        // Path remove self referring paths ("/./").
+        $normalized = preg_replace('#/\.(?=/)|^\./|\./$#', '', $normalized);
+
+        // Regex for resolving relative paths
+        $regex = '#\/*[^/\.]+/\.\.#Uu';
+
+        while (preg_match($regex, $normalized)) {
+            $normalized = preg_replace($regex, '', $normalized);
+        }
+
+        if (preg_match('#/\.{2}|\.{2}/#', $normalized)) {
+            throw new LogicException('Path is outside of the defined root, path: [' . $path . '], resolved: [' . $normalized . ']');
+        }
+
+        return trim($normalized, $separator);
     }
 
     public function run()
@@ -32,7 +82,8 @@ class FileEditorWidget extends \yii\bootstrap\Widget
         $model = new EditFileForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $realpath = realpath($this->directory . $model->fileName);
+            $realpath = '/' . $this->normalizePath(realpath($this->directory) . $model->fileName); //realpath cannot
+            // be used, since the file may not exist
             if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
                 file_put_contents($realpath, $model->text);
             }

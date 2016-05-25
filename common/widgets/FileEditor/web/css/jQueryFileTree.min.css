@@ -224,3 +224,24 @@ UL.jqueryFileTree A {
 UL.jqueryFileTree A:hover {
     background: #BBDDFF
 }
+
+UI.jqueryFileTree a.delete {
+}
+
+.jqueryFileTree a.delete:hover {
+    background: transparent;
+    color: red;
+}
+
+.jqueryFileTree .add-file {
+    color: green;
+}
+
+.jqueryFileTree .add-file:hover {
+    background: none;
+    text-decoration: underline;
+}
+
+.file-editor .new-file {
+    display: none;
+}
