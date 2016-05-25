@@ -16,10 +16,14 @@ $(function(){
   var file_editor = $('.file-editor'),
     code_mirror = $('.CodeMirror')[0].CodeMirror,
     file_name_input = file_editor.find('#editfileform-filename'),
-    opened_file = null;
+    opened_file = null,
+    new_file = false;
   
   function openFile(filePath, url) {
+    new_file = false;
+    file_editor.find('.new-file').hide();
     opened_file = filePath;
+    file_editor.find('.select-a-file').hide();
     
     code_mirror.setOption('readOnly', true);
     file_name_input.val(filePath);
@@ -53,10 +57,14 @@ function build_one_level($data, $from_dir = '')
     <ul class="jqueryFileTree">
         <?php foreach ($data as $index => $item) {
             if (is_array($item)) {
+                $path = $from_dir . '/' . $index;
                 // directory
                 ?>
                 <li class="directory expanded">
-                    <?= $index ?>
+                    <?= $index ?> <a href="<?= \yii\helpers\Url::current(['file' => $path, 'fileAction'
+                                                                                 =>
+                        'delete'])
+                    ?>" class="delete">x</a> <a href="#" data-name='<?= $path ?>' class="add-file">+</a>
                     <?php build_one_level($item, $from_dir . '/' . $index) ?>
                 </li>
                 <?php
@@ -68,7 +76,8 @@ function build_one_level($data, $from_dir = '')
                 <li class="file ext_<?= $extension ?>">
                     <a data-name='<?= $path ?>' href="<?= \yii\helpers\Url::current(['file' => $path]) ?>"
                        class="file-link"><?=
-                        $item ?></a>
+                        $item ?></a> <a href="<?= \yii\helpers\Url::current(['file' => $path, 'fileAction' => 'delete'])
+                    ?>" class="delete">x</a>
                 </li>
                 <?php
             }
@@ -87,6 +96,9 @@ function build_one_level($data, $from_dir = '')
     </div>
     <div class="col-xs-12 col-sm-10">
         <div class="row">
+            <h3 class="new-file">Nový súbor</h3>
+            <?php if ($model->fileName == null) { ?><h3 class="select-a-file">Vyberte súbor alebo pridajte
+                nový</h3><?php } ?>
             <?php $form = \yii\bootstrap\ActiveForm::begin() ?>
             <?= CodemirrorWidget::widget([
                     'name'     => 'EditFileForm[text]',
@@ -103,6 +115,7 @@ function build_one_level($data, $from_dir = '')
                     'settings' => [
                         'lineNumbers' => true,
                         'mode'        => 'application/x-httpd-php',
+                        'readOnly'    => true
                     ],
                 ]
             ) ?>
