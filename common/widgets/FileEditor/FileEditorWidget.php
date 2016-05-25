@@ -50,7 +50,7 @@ class FileEditorWidget extends \yii\bootstrap\Widget
                     }
                 }
 
-                Yii::$app->response->redirect(yii\helpers\Url::to(['']));
+                Yii::$app->response->redirect(yii\helpers\Url::current(['fileAction' => null, 'file' => null]));
             }
         }
     }
