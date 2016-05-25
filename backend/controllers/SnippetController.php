@@ -56,77 +56,59 @@ class SnippetController extends BaseController
     public function actionCreate()
     {
         $model = new Snippet();
+        $snippetCodes = [new SnippetCode()];
 
         if ($model->load(Yii::$app->request->post())) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $snippetCodesData = Yii::$app->request->post('SnippetCode');
+                 // Array of SnippetCode models used later for multiple validation.
+                // $snippetCodesData array appended with retrieved newly created SnippetCode models.
+                foreach ($snippetCodesData as $i => $codeData) {
+                    $snippetCode = new SnippetCode();
+                    $snippetCodes[$i] = $snippetCode;
+                }
 
-            $snippetCodesData = Yii::$app->request->post('SnippetCode');
-            $snippetCodes = []; // Array of SnippetCode models used later for multiple validation.
-            // $snippetCodesData array appended with retrieved newly created SnippetCode models.
-            foreach ($snippetCodesData as $i => $codeData) {
-                $snippetCode = new SnippetCode();
-                $snippetCodes[$i] = $snippetCode;
-            }
+                // Snippet model validated and saved.
 
-            // Snippet model validated and saved.
-            $modelValidatedAndSaved = $model->validate() && $model->save();
-            // SnippetCode models multiple loading and validation.
-            $loaded = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
-            $valid = Model::validateMultiple($snippetCodes);
+                $modelValidatedAndSaved = $model->validate() && $model->save();
+                // SnippetCode models multiple loading and validation.
+                $loaded = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
+                $valid = Model::validateMultiple($snippetCodes);
 
-            if (!$loaded || !$valid || !$modelValidatedAndSaved) {
-                throw new Exception;
-            }
-            
-            // Each ProductVarValue model saved individually.
-            foreach ($snippetCodes as $snippetCode) {
-                if (!$snippetCode->save()) {
+                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
                     throw new Exception;
                 }
-            }
 
-            return;
-
-
-
-
-            if (!$snippetCodeData) {
-                return $snippetCodes;
-            }
-
-            foreach ($snippetCodeData as $codeData) {
-                if (isset($codeData['name'])) {
-                    $snippetCode = new SnippetCode();
-
-                    $snippetCode->name = $codeData['name'];
-                    $snippetCode->code = $codeData['code'];
-                    $snippetCode->description = $codeData['description'];
-                    $snippetCode->portal = $codeData['portal'];
-
-                    $snippetCodes[] = $snippetCode;
+                // Each ProductVarValue model saved individually.
+                foreach ($snippetCodes as $snippetCode) {
+                    $snippetCode->snippet_id = $model->id;
+                    if (!$snippetCode->save()) {
+                        throw new Exception;
+                    }
                 }
-            }
 
-            return $snippetCodes;
+                return $this->redirect(['index']);
 
-            $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($snippetCodes), ActiveForm::validateMultiple($modelSnippetVars), ActiveForm::validate($model)
-                );
-            }
+                $snippetVarData = Yii::$app->request->post('SnippetVar');
+                $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
-            // validate all models
-            $valid = $model->validate() &&
-                    Model::validateMultiple($snippetCodes) &&
-                    Model::validateMultiple($modelSnippetVars);
+                // ajax validation
+                if (Yii::$app->request->isAjax) {
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ArrayHelper::merge(
+                                    ActiveForm::validateMultiple($snippetCodes), ActiveForm::validateMultiple($modelSnippetVars), ActiveForm::validate($model)
+                    );
+                }
 
-            if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
+                // validate all models
+                $valid = $model->validate() &&
+                        Model::validateMultiple($snippetCodes) &&
+                        Model::validateMultiple($modelSnippetVars);
+
+                if ($valid) {
+
                     if ($flag = $model->save(false)) {
 
                         $flagCodes = SnippetCode::saveMultiple($snippetCodes, $model);
@@ -140,14 +122,18 @@ class SnippetController extends BaseController
                         $transaction->commit();
                         return $this->redirect(['index']);
                     }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
                 }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->render('create', [
+                            'model' => $model,
+                            'snippetCodes' => $snippetCodes,
+                ]);
             }
         } else {
             return $this->render('create', [
                         'model' => $model,
-                        'snippetCodes' => [new SnippetCode()],
+                        'snippetCodes' => $snippetCodes,
             ]);
         }
     }
@@ -163,8 +149,7 @@ class SnippetController extends BaseController
         $model = $this->findModel($id);
         $snippetCodes = $model->snippetCodes;
 
-        if ($model->load(Yii::$app->request->post()))
-        {
+        if ($model->load(Yii::$app->request->post())) {
             //Creating multiple SnippetVars and SnippetCodes from posted data.
             $snippetCodeData = Yii::$app->request->post('SnippetCode');
             $snippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
