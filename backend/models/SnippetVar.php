@@ -239,4 +239,35 @@ class SnippetVar extends \yii\db\ActiveRecord
             }
         }
     }
+
+
+    public function getDefaultValue()
+    {
+        $cacheEngine = Yii::$app->cacheEngine;
+
+        $value = '';
+
+        switch ($this->type->identifier)
+        {
+            case 'list' :
+
+                $value = '(object) array()';
+
+                break;
+
+            case 'page' :
+                    $value = 'NULL';
+
+                break;
+
+            case 'product' :
+                    $value = 'NULL';
+                break;
+
+            default:
+                $value = '\''. $cacheEngine->normalizeString($this->default_value) . '\'';
+        }
+
+        return $value;
+    }
 }

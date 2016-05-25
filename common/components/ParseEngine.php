@@ -631,65 +631,76 @@ class ParseEngine
 
     }
 
-    /** Parsovanie dat vyplnenych snippetov z JSONU do tabulky snippet_var_value
-     * @param $pageBlocks - zoznam blokov, z ktorych budeme parsovat data
+    /** Parsovanie dat vyplneneho snippetu z JSONU do tabulky snippet_var_value
+     * @param $pageBlock - blok, z ktorych budeme parsovat data
      */
-    public function parseSnippetVarValues($pageBlocks)
+    public function parseSnippetVarValues($pageBlock)
     {
-        foreach($pageBlocks as $pageBlock)
+        $data = $pageBlock->data;
+
+        if ($data == '[]')
+            return;
+
+        $json = (object)(json_decode($data));
+
+        foreach($json as $key => $value)
         {
-            $data = $pageBlock->data;
+            $key2 = str_replace('-', '_', $key);
 
-            if ($data == '[]')
-                continue;
+            /* @var $snippetVar SnippetVar */
+            $snippetVar = SnippetVar::find()
+                ->andWhere(['snippet_id' => $pageBlock->snippetCode->snippet_id])
+                ->andFilterWhere([
+                    'or',
+                    ['like', 'identifier', $key],
+                    ['like', 'identifier', $key2]
+                ])
+                ->one();
 
-            $json = (object)(json_decode($data));
+            $snippetVarValue = new SnippetVarValue();
 
-            foreach($json as $key => $value)
+            if ($snippetVar == null)
             {
-                /* @var $snippetVar SnippetVar */
-                $snippetVar = SnippetVar::findOne([
-                    'identifier' => $key,
-                    'snippet_id' => $pageBlock->snippetCode->snippet_id]);
-
-                $snippetVarValue = new SnippetVarValue();
-
-                $snippetVarValue->page_block_id = $pageBlock->id;
-                $snippetVarValue->var_id = $snippetVar->id;
-
-                switch($snippetVar->type->identifier)
-                {
-                    case 'list':
-                        $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock);
-
-                        break;
-                    case 'page':
-
-                        $page = Page::findOne(['id' => substr($value, 8)]);
-
-                        if (isset($page))
-                            $snippetVarValue->value_page_id = $page->id;
-
-                        break;
-
-                    case 'product':
-
-                        $product = Product::findOne(['identifier' => $value]);
-
-                        if (isset($product))
-                            $snippetVarValue->value_product_id = $product->id;
-
-                        break;
-                    case 'tag':
-
-                        break;
-                    default:
-                        $snippetVarValue->value_text = $value;
-                }
-
-                $snippetVarValue->save();
+                VarDumper::dump($key);
+                continue;
             }
+
+            $snippetVarValue->page_block_id = $pageBlock->id;
+            $snippetVarValue->var_id = $snippetVar->id;
+
+            switch($snippetVar->type->identifier)
+            {
+                case 'list':
+                    $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock);
+
+                    break;
+                case 'page':
+
+                    $page = Page::findOne(['id' => substr($value, 8)]);
+
+                    if (isset($page))
+                        $snippetVarValue->value_page_id = $page->id;
+
+                    break;
+
+                case 'product':
+
+                    $product = Product::findOne(['identifier' => $value]);
+
+                    if (isset($product))
+                        $snippetVarValue->value_product_id = $product->id;
+
+                    break;
+                case 'tag':
+
+                    break;
+                default:
+                    $snippetVarValue->value_text = $value;
+            }
+
+            $snippetVarValue->save();
         }
+
     }
 
     /** Pomocna metoda pre parsovanie zoznamov - rekurzivne sa vola pre zoznamy nizsich urovni
@@ -702,71 +713,101 @@ class ParseEngine
         $list = new ListVar();
         $list->save();
 
+        $order = 0;
         foreach($value as $item)
         {
             $listItem = new ListItem();
             $listItem->active = $item->active;
             $listItem->list_id = $list->id;
+            $listItem->order = $order++;
 
             $listItem->save();
 
             foreach($item as $itemVarIdentifier => $itemVarValue)
             {
+                $itemVarIdentifier2 = str_replace('-', '_', $itemVarIdentifier);
+
                 /* @var $snippetListVar SnippetVar */
-                $snippetListVar = SnippetVar::findOne([
-                    'identifier' => $itemVarIdentifier,
-                    'snippet_id' => $pageBlock->snippetCode->snippet_id]);
+                $snippetListVar = SnippetVar::find()
+                    ->andWhere(['snippet_id' => $pageBlock->snippetCode->snippet_id])
+                    ->andFilterWhere([
+                        'or',
+                        ['like', 'identifier', $itemVarIdentifier],
+                        ['like', 'identifier', $itemVarIdentifier2]
+                    ])
+                    ->one();
 
-                if ($snippetListVar != null)
+                if ($snippetListVar == null)
                 {
-                    /* @var $snippetListVarValue SnippetVarValue */
-                    $snippetListVarValue = new SnippetVarValue();
-
-                    $snippetListVarValue->var_id = $snippetListVar->id;
-                    $snippetListVarValue->list_item_id = $listItem->id;
-
-                    switch($snippetListVar->type->identifier)
-                    {
-                        case 'list':
-                            $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock);
-
-                            break;
-                        case 'page':
-
-                            $page = Page::findOne(['id' => substr($itemVarValue, 8)]);
-
-                            if (isset($page))
-                                $snippetListVarValue->value_page_id = $page->id;
-
-                            break;
-
-                        case 'product':
-
-                            $product = Product::findOne(['identifier' => $itemVarValue]);
-
-                            if (isset($product))
-                                $snippetListVarValue->value_product_id = $product->id;
-
-                            break;
-                        case 'tag':
-
-                            break;
-                        default:
-                            $snippetListVarValue->value_text = $itemVarValue;
-                    }
-
-                    //BaseVarDumper::dump($snippetListVarValue, 10, true);
-
-                    $snippetListVarValue->validate(null, false);
-
-                    BaseVarDumper::dump($snippetListVarValue->getErrors());
-
-                    $snippetListVarValue->save();
+                    if ($itemVarIdentifier != 'init' && $itemVarIdentifier != 'active')
+                        VarDumper::dump($itemVarIdentifier);
+                    continue;
                 }
+
+                /* @var $snippetListVarValue SnippetVarValue */
+                $snippetListVarValue = new SnippetVarValue();
+
+                $snippetListVarValue->var_id = $snippetListVar->id;
+                $snippetListVarValue->list_item_id = $listItem->id;
+
+                switch($snippetListVar->type->identifier)
+                {
+                    case 'list':
+                        $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock);
+
+                        break;
+                    case 'page':
+
+                        $page = Page::findOne(['id' => substr($itemVarValue, 8)]);
+
+                        if (isset($page))
+                            $snippetListVarValue->value_page_id = $page->id;
+
+                        break;
+
+                    case 'product':
+
+                        $product = Product::findOne(['identifier' => $itemVarValue]);
+
+                        if (isset($product))
+                            $snippetListVarValue->value_product_id = $product->id;
+
+                        break;
+                    case 'tag':
+
+                        break;
+                    default:
+                        $snippetListVarValue->value_text = $itemVarValue;
+                }
+
+                //BaseVarDumper::dump($snippetListVarValue, 10, true);
+
+                $snippetListVarValue->validate(null, false);
+
+                BaseVarDumper::dump($snippetListVarValue->getErrors());
+
+                $snippetListVarValue->save();
+
             }
         }
 
         return $list->id;
+    }
+
+    /** Funkcia prekonvertuje zapisane premenne pre dany blok na Latte style
+     * @param Block $block
+     */
+    public function convertMacrosToLatteStyle(Block $block)
+    {
+        $block->data = str_replace('{dolna_hranica_pozicky}', '{$dolna_hranica_pozicky}', $block->data);
+        $block->data = str_replace('{horna_hranica_pozicky}', '{$horna_hranica_pozicky}', $block->data);
+        $block->data = str_replace('{dolna_hranica_splatnosti}', '{$dolna_hranica_splatnosti}', $block->data);
+        $block->data = str_replace('{horna_hranica_splatnosti}', '{$horna_hranica_splatnosti}', $block->data);
+        $block->data = str_replace('{horna_hranica_pozicky_novy}', '{$horna_hranica_pozicky_novy}', $block->data);
+        $block->data = str_replace('{horna_hranica_splatnosti_novy}', '{$horna_hranica_splatnosti_novy}', $block->data);
+        $block->data = str_replace('{nazov_produktu}', '{$nazov_produktu}', $block->data);
+
+        $block->save();
     }
 
 }

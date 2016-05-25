@@ -36,6 +36,11 @@ class CacheEngine extends Component
     {
         $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
 
+        if (!file_exists($this->cacheDirectory))
+        {
+            mkdir($this->cacheDirectory, 0777, true);
+        }
+
         $this->latteRenderer = new Engine();
 
         $this->latteRenderer->setLoader(new FileLoader());
@@ -49,6 +54,14 @@ class CacheEngine extends Component
     public function getObjectBridgeClassPath()
     {
         return __DIR__ . '/ObjectBridge.php';
+    }
+
+    /** Vrati cestu k triede ExceptionHandler.php
+     * @return string
+     */
+    public function getExceptionHandlerClassPath()
+    {
+        return __DIR__ . '/ExceptionHandler.php';
     }
 
 

@@ -1,11 +1,12 @@
 <?php
+use backend\models\SystemException;
+
 /**
  * Created by PhpStorm.
  * User: MarekHvolka
  * Date: 24.05.16
  * Time: 16:54
  */
-
 
 class ObjectBridge extends ArrayObject
 {
@@ -15,16 +16,24 @@ class ObjectBridge extends ArrayObject
         $this->obj = $obj;
     }
 
-    public function __get($a)
+    public function &__get($a)
     {
         if(isset($this->obj->$a))
         {
-            return $this->obj->$a;
+            $var = $this->obj->$a;
+
+            return $var;
         }
         else
         {
             // return an empty object in order to prevent errors with chain call
             $tmp = new stdClass();
+
+            $exception = new SystemException();
+            $exception->message = 'Chyba - nedefinovaná hodnota premennej ' . get_class($this->obj) . ' - ' . $a;
+
+            $exception->save();
+
             return new ObjectBridge($tmp);
         }
     }

@@ -129,7 +129,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
                 break;
 
             default:
-                $value = addslashes('\'' . $this->value_text . '\'');
+                $value = '\''. addslashes($this->value_text) . '\'';
         }
 
         return $value;

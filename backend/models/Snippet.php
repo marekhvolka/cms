@@ -139,8 +139,7 @@ class Snippet extends \yii\db\ActiveRecord
 
             foreach($this->snippetVariables as $snippetVar)
             {
-                if (isset($snippetVar->default_value))
-                    $buffer .= '$' . $snippetVar->identifier . ' = \'' . $cacheEngine->normalizeString($snippetVar->default_value) . '\';' . PHP_EOL;
+                $buffer .= '$' . $snippetVar->identifier . ' = ' . $snippetVar->getDefaultValue() . ';' . PHP_EOL;
             }
 
             $buffer .= '?>' . PHP_EOL;
