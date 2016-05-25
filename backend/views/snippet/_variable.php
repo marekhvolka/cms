@@ -8,20 +8,22 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
 ?>
+<?php
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
+?>
 
-<li class="item variable panel panel-default var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
+<div class="item panel panel-default snippet-var var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
 
     <div class="panel-heading form-inline">
         <label class="control-label" for="snippetvar-identifier">
             <?= $snippetVar->getAttributeLabel('identifier'); ?>
         </label>
         <?php
-        $arrayFirstDimensionValue = $snippetVar->id ? : 'placeholder';
+        $postIndex = $snippetVar->id ? : 'placeholder';
         echo BaseHtml::activeTextInput($snippetVar, "identifier", [
             'maxlength' => true,
-            'class' => 'form-control var-identifier attribute',
-            'data-attribute-name' => 'identifier',
-            'name' => "SnippetVar[$arrayFirstDimensionValue][identifier]",
+            'class' => 'form-control',
+            'name' => "SnippetVar[$postIndex][identifier]",
         ]);
         ?>
 
@@ -48,10 +50,9 @@ use yii\helpers\BaseHtml;
                 $data = ArrayHelper::map($allVars, 'id', 'name');
                 
                 echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
-                    'class' => 'form-control select-var-type attribute',
+                    'class' => 'form-control select-var-type',
                     'prompt'=>'Vyber typ premennej',
-                    'data-attribute-name' => 'type_id',
-                    'name' => "SnippetVar[$arrayFirstDimensionValue][type_id]",
+                    'name' => "SnippetVar[$postIndex][type_id]",
                 ]);
                 ?>
             </div>
@@ -63,29 +64,18 @@ use yii\helpers\BaseHtml;
                     <?= $snippetVar->getAttributeLabel('default_value'); ?>
                 </label>
                 <?= BaseHtml::activeTextInput($snippetVar, "default_value", [
-                    'class' => 'form-control var-default-value attribute',
-                    'data-attribute-name' => 'default_value',
-                    'name' => "SnippetVar[$arrayFirstDimensionValue][default_value]",
+                    'class' => 'form-control',
+                    'name' => "SnippetVar[$postIndex][default_value]",
                     ]);?>
             </div>
         </div>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][parent_id]", 
-                $snippetVar->parent_id ? : '', [
-            'class' => 'parent-id attribute',
-            'data-attribute-name' => 'parent_id',
-            ]); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][parent_id]", 
+                $snippetVar->parent_id ? : ''); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][id]", $snippetVar->id, [
-            'class' => 'item-id attribute',
-            'data-attribute-name' => 'id',
-            ]); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][id]", $snippetVar->id); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$arrayFirstDimensionValue][existing]",
-                $snippetVar->id ? 'true' : 'false', [
-            'class' => 'existing attribute',
-            'data-attribute-name' => 'existing',
-            ]); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][existing]", $snippetVar->id ? 'true' : 'false'); ?>
         
         <div class="row">
             <div class="col-sm-12">
@@ -94,12 +84,13 @@ use yii\helpers\BaseHtml;
                 </label>
                 <?= BaseHtml::activeTextarea($snippetVar, "description", [
                     'rows' => '4', 
-                    'class' => 'form-control var-description attribute',
-                    'data-attribute-name' => 'description',
-                    'name' => "SnippetVar[$arrayFirstDimensionValue][description]",
+                    'class' => 'form-control',
+                    'name' => "SnippetVar[$postIndex][description]",
                     ]);?>
             </div>
         </div>
+        
+        
         
         <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
             <div class="col-sm-12">
@@ -128,7 +119,7 @@ use yii\helpers\BaseHtml;
         </div>
         
     </div>
-</li>
+</div>
 
 <?php
 

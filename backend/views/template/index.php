@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name,Url::to(['/template/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name,Url::to(['/template/edit-files/', 'id' => $dataProvider->id]));
                 },
             ],
             'active:boolean',

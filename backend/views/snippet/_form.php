@@ -35,8 +35,10 @@ use yii\web\View;
             <div class="panel-heading"><h4>Alternatívy</h4></div>
             <div class="panel-body">
                 <ul class="container-items-codes">
-                <?php foreach ($snippetCodes as $i => $snippetCode): ?>
-                <?= $this->render('_code', ['snippetCode' => $snippetCode, 'i' => $i, 'form' => $form]) ;?>
+                <?php foreach ($snippetCodes as $snippetCode): ?>
+                <li>
+                    <?= $this->render('_code', ['snippetCode' => $snippetCode]) ;?>
+                </li>
                 <?php endforeach;?>
                 </ul>
             </div>
@@ -63,9 +65,9 @@ use yii\web\View;
                 <div><!-- widgetContainer -->
                     <ul style="list-style: none;" class="container-items-vars">
                         <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <?php if(!$snippetVar->parent && $snippetVar->id): ?>
+                        <li>
                         <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
-                        <?php endif;?>
+                        </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

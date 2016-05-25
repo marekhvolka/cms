@@ -13,12 +13,11 @@ use backend\models\Portal;
 $postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
-<li class="item panel panel-default panel-codes" id="code<?php echo $snippetCode->id; ?>"><!-- widgetBody -->
+<div class="item panel panel-default snippet-code"><!-- widgetBody -->
     <div class="panel-heading"> 
         <div class="input-group">
             <?= BaseHtml::activeTextInput($snippetCode, "name", [
-                    'class' => 'form-control code-name attribute',
-                    'data-attribute-name' => 'name',
+                    'class' => 'form-control',
                     'name' => "SnippetCode[$postIndex][name]",
                     'style'=>'width:400px'
                 ]); ?>
@@ -38,30 +37,10 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     <?= $snippetCode->getAttributeLabel('code'); ?>
                 </label>
                 <?php
-                echo CodemirrorWidget::widget([
-                        'name' => "SnippetCode[$postIndex][code]",
-                        'value' => $snippetCode->code,
-                        'assets' => [
-                            CodemirrorAsset::MODE_CLIKE,
-                            CodemirrorAsset::KEYMAP_EMACS,
-                            CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
-                            CodemirrorAsset::ADDON_COMMENT,
-                            CodemirrorAsset::ADDON_DIALOG,
-                            CodemirrorAsset::ADDON_SEARCHCURSOR,
-                            CodemirrorAsset::ADDON_SEARCH,
-                        ],
-                        'settings' => [
-                            'lineNumbers' => true,
-                            'mode' => 'text/x-csrc',
-                        ],
-                        'options' => [
-                            'class' => 'html-editor form-control code-code attribute',
-                            'data-attribute-name' => 'code',
-                            'autofocus' => 'false',
-                            'name' => "SnippetCode[$postIndex][code]",
-                        ]
-                    ]
-                );
+                echo BaseHtml::activeTextarea($snippetCode, "code", [
+                    'class' => 'form-control',
+                    'name' => "SnippetCode[$postIndex][code]",
+                ]);
                 ?>
             </div>
         </div><!-- .row -->
@@ -72,8 +51,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                 </label>
                 <?php
                 echo BaseHtml::activeTextarea($snippetCode, "description", [
-                    'class' => 'form-control code-popis attribute',
-                    'data-attribute-name' => 'popis',
+                    'class' => 'form-control',
                     'name' => "SnippetCode[$postIndex][description]",
                 ]);
                 ?>
@@ -86,34 +64,16 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                 </label>
                 
                 <?php
+                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
                 echo BaseHtml::activeDropDownList($snippetCode, "portal", $data, [
                     'maxlength' => true, 
-                    'class' => 'form-control code-portal attribute',
-                    'data-attribute-name' => 'portal',
+                    'class' => 'form-control',
                     'name' => "SnippetCode[$postIndex][portal]",
                 ]);
                 ?>
             </div>
         </div>
         
-        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id, [
-            'class' => 'code-id attribute',
-            'data-attribute-name' => 'id',
-            ]); ?>
+        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id); ?>
     </div>
-</li>
-
-<?php
-
-$js = <<<JS
-
-// Remove button clicked - code must be removed.
-$('.remove-item-code').bind('click', function() {
-    $(this).parent().remove();
-});     
-        
-JS;
-$this->registerJs($js);
-?>
-
-
+</div>

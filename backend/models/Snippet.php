@@ -75,6 +75,21 @@ class Snippet extends \yii\db\ActiveRecord
             'last_edit_user' => 'Last Edit User',
         ];
     }
+    
+    public function beforeSave($insert)
+    {
+        $userId = Yii::$app->user->identity->id;
+        $this->last_edit_user = $userId;
+        
+        return parent::beforeSave($insert);
+    }
+    
+    public function beforeDelete()
+    {
+        $this->unlinkAll('snippetVariables', true);
+        $this->unlinkAll('snippetCodes', true);
+        return parent::beforeDelete();
+    }
 
     /**
      * @return \yii\db\ActiveQuery

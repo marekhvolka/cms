@@ -134,7 +134,7 @@ ul.container-items-vars {
     top: 10px;
 }
 
-.panel-codes, .variable {
+.snippet-code, .snippet-var {
     position: relative;
 }
 
