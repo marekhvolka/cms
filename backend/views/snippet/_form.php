@@ -34,7 +34,7 @@ use yii\web\View;
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Alternatívy</h4></div>
             <div class="panel-body">
-                <ul class="container-items-codes">
+                <ul class="snippet-codes">
                 <?php foreach ($snippetCodes as $snippetCode): ?>
                 <li>
                     <?= $this->render('_code', ['snippetCode' => $snippetCode]) ;?>
@@ -62,18 +62,15 @@ use yii\web\View;
                 $snippetVars = $model->snippetVariables;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 ?>
-                <div><!-- widgetContainer -->
-                    <ul style="list-style: none;" class="container-items-vars">
-                        <?php foreach ($snippetVars as $y => $snippetVar): ?>
-                        <li>
-                        <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-
+                <ul class="snippet-vars">
+                    <?php foreach ($snippetVars as $y => $snippetVar): ?>
+                    <li>
+                    <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
                 <div class="col-sm-offset-2">
-                    <button type="button" class="add-item-var btn btn-success">
+                    <button type="button" class="btn-add-snippet-var btn btn-success">
                         Pridať premennú
                     </button>
                 </div>
@@ -99,6 +96,7 @@ use yii\web\View;
 <?php
 $urlForAppendVar = Url::to(['/snippet/append-var']);
 $urlForAppendCode = Url::to(['/snippet/append-code']);
+$urlForAppendChildVarBox = Url::to(['/snippet/append-child-var-box']);
 $listIdJs = VarType::find()->where(['identifier' => 'list'])->one()->id;
 
 $js = <<<JS
@@ -109,6 +107,7 @@ var snippetVarParams = {
     listId: $listIdJs,
     appendVarUrl: '$urlForAppendVar',
     appendCodeUrl: '$urlForAppendCode',
+    appendChildVarBox: '$urlForAppendChildVarBox',
 }
         
 JS;

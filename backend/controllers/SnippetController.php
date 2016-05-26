@@ -206,9 +206,20 @@ class SnippetController extends BaseController
         return $this->renderAjax('_code', ['snippetCode' => new SnippetCode()]);
     }
 
-    public function actionAppendVar()
+    /**
+     * 
+     * @param int $id parents id (list type parent), default null - variable is without parent.
+     * @return type
+     */
+    public function actionAppendVar($id = null)
     {
-        return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar()]);
+        return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar(), 'parentId' => $id]);
+    }
+    
+    public function actionAppendChildVarBox($id = null)
+    {
+        $snippetVar = $id == null ? new SnippetVar() : SnippetVar::find()->where(['id' => $id])->one();
+        return $this->renderAjax('_child-var-box', ['snippetVar' => $snippetVar]);
     }
 
     /**

@@ -12,27 +12,25 @@ use yii\helpers\BaseHtml;
 $postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
-<div class="item panel panel-default snippet-var var-id-<?= $snippetVar->id; ?>"><!-- widgetBody -->
+<div class="item panel panel-default snippet-var"><!-- widgetBody -->
 
     <div class="panel-heading form-inline">
         <label class="control-label" for="snippetvar-identifier">
             <?= $snippetVar->getAttributeLabel('identifier'); ?>
         </label>
-        <?php
-        $postIndex = $snippetVar->id ? : 'placeholder';
-        echo BaseHtml::activeTextInput($snippetVar, "identifier", [
+        <?= BaseHtml::activeTextInput($snippetVar, "identifier", [
             'maxlength' => true,
             'class' => 'form-control',
             'name' => "SnippetVar[$postIndex][identifier]",
         ]);
         ?>
 
-        <button type="button" class="remove-item-vars btn btn-danger btn-xs pull-right" 
+        <button type="button" class="btn-remove-snippet-var btn btn-danger btn-xs pull-right" 
                 data-var-id="<?= $snippetVar->id; ?>">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
-    <div class="panel-body">
+    <div class="panel-body var-body">
 
         <div class="row">
             <div class="col-sm-12">
@@ -69,11 +67,17 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     ]);?>
             </div>
         </div>
+        
+        <?php
+        if ($snippetVar->parent_id) {
+            $parentId = $snippetVar->parent_id;
+        }
+        ?>
 
         <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][parent_id]", 
-                $snippetVar->parent_id ? : ''); ?>
+                isset($parentId) ? $parentId : ''); ?>
         
-        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][id]", $snippetVar->id); ?>
+        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][id]", $snippetVar->id ? $snippetVar->id : $postIndex, ['class' => 'variable-id']); ?>
         
         <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][existing]", $snippetVar->id ? 'true' : 'false'); ?>
         
@@ -90,46 +94,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             </div>
         </div>
         
-        
-        
-        <div class="row child-var" <?= (isset($snippetVar->type) && $snippetVar->type->identifier == 'list') ? '' : 'hidden="hidden"' ?>>
-            <div class="col-sm-12">
-                <div class="panel panel-default" id="list_19604" style="display: block; position: relative;">
-                    <div class="panel-heading">
-                        Premenné pre položku zoznamu
-
-                        <button type="button" class="btn btn-success btn-xs btn-add-var pull-right"
-                                data-toggle="dropdown" aria-expanded="false" title="Pridať premennú"
-                                onclick="">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                    <div class="panel-body">
-                        <input type="hidden" value="0" id="">
-                        <ul style="list-style: none;" class="container-items-vars">
-                            <?php foreach ($snippetVar->children as $child) : ?>
-                            <li>
-                                <?= $this->render('_variable', ['snippetVar' => $child]); ?>
-                            </li>
-                            <?php endforeach;?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php if (isset($snippetVar->type) && $snippetVar->type->identifier == 'list'): ?>
+        <?= $this->render('_child-var-box', ['snippetVar' => $snippetVar]); ?>
+        <?php endif;?>
         
     </div>
 </div>
-
-<?php
-
-$js = <<<JS
-
-// Last remove button was clicked - last form must be cleared.
-$('.remove-item-vars').bind('click', function() {
-    $(this).parents('li').first().remove();
-});     
-        
-JS;
-$this->registerJs($js);
-?>

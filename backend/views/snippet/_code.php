@@ -22,11 +22,11 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     'style'=>'width:400px'
                 ]); ?>
         </div>
-        <button type="button" class="add-item-code btn btn-success btn-xs pull-right">
+        <button type="button" class="btn-add-snippet-code btn btn-success btn-xs pull-right">
             <i class="glyphicon glyphicon-plus"></i>
         </button>
 
-        <button type="button" class="remove-item-code btn btn-danger btn-xs pull-right">
+        <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
