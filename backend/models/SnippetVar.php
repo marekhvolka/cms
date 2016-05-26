@@ -31,6 +31,9 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    
+    private $existing;
+    
     public static function tableName()
     {
         return 'snippet_var';
@@ -46,7 +49,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             [['type_id', 'description'], 'string'],
             [['identifier'], 'string', 'max' => 50],
             [['default_value'], 'string'],
-            [['snippet_id', 'parent_id'], 'integer'],
+            [['snippet_id', 'parent_id', 'id'], 'integer'],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
@@ -82,6 +85,16 @@ class SnippetVar extends \yii\db\ActiveRecord
     {
         $this->unlinkAll('children', true);
         return parent::beforeDelete();
+    }
+    
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+    
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
     }
 
     /**
@@ -168,15 +181,15 @@ class SnippetVar extends \yii\db\ActiveRecord
                     $snippetVar = new SnippetVar();
                     $snippetVar->id = $varData['id'];
                 }
-
-                // Set all neccessary attributes.
-                $snippetVar->identifier = $varData['identifier'];
-                $snippetVar->type_id = $varData['type_id'];
-                $snippetVar->default_value = $varData['default_value'];
-                $snippetVar->description = $varData['description'];
-
-                // Set parent if SnippetVar is item of list type parent SnippetVar.
-                $snippetVar->parent_id = $varData['parent_id'];
+//
+//                // Set all neccessary attributes.
+//                $snippetVar->identifier = $varData['identifier'];
+//                $snippetVar->type_id = $varData['type_id'];
+//                $snippetVar->default_value = $varData['default_value'];
+//                $snippetVar->description = $varData['description'];
+//
+//                // Set parent if SnippetVar is item of list type parent SnippetVar.
+//                $snippetVar->parent_id = $varData['parent_id'];
 
                 $modelSnippetVars[] = $snippetVar;
             }
