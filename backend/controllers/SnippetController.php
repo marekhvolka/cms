@@ -90,7 +90,8 @@ class SnippetController extends BaseController
                 $validVars = Model::validateMultiple($snippetVars);
                 $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
 
-                $valid = $loadedCodes && $validCodes && $savedCodes && $loadedVars && $validVars && $savedVars && $modelValidatedAndSaved;
+                $valid = $loadedCodes && $validCodes && $savedCodes && $loadedVars && 
+                        $validVars && $savedVars && $modelValidatedAndSaved;
 
                 if (!$valid) {
                     throw new Exception;
@@ -107,7 +108,6 @@ class SnippetController extends BaseController
 //                                    ActiveForm::validateMultiple($snippetCodes), ActiveForm::validateMultiple($modelSnippetVars), ActiveForm::validate($model)
 //                    );
 //                }
-               
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->render('create', [
@@ -189,21 +189,34 @@ class SnippetController extends BaseController
         }
     }
 
+    /**
+     * Ajax action for appending one code (HTML in partial view) at the end
+     * of codes list. 
+     * @return string rendered view for one code.
+     */
     public function actionAppendCode()
     {
         return $this->renderAjax('_code', ['snippetCode' => new SnippetCode()]);
     }
 
     /**
-     * 
+     * Ajax action for appending one variable (HTML in partial view) at the end
+     * of variable list. 
      * @param int $id parents id (list type parent), default null - variable is without parent.
-     * @return type
+     * @return string rendered view for one variable.
      */
     public function actionAppendVar($id = null)
     {
         return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar(), 'parentId' => $id]);
     }
 
+    /**
+     * Ajax action for appending one wrapper of list item types children 
+     * variables of list type variable (HTML in partial view).
+     * @param int $id parents id (list type parent), default null - variable 
+     * is without parent and new SnippetVar is created.
+     * @return string rendered view for one wrapper box.
+     */
     public function actionAppendChildVarBox($id = null)
     {
         $snippetVar = $id == null ? new SnippetVar() : SnippetVar::find()->where(['id' => $id])->one();

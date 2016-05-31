@@ -28,12 +28,13 @@ use yii\helpers\ArrayHelper;
  */
 class SnippetVar extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
-    
     private $existing;
-    
+    private $saved;
+
     public static function tableName()
     {
         return 'snippet_var';
@@ -53,7 +54,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
-            //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
+                //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 
@@ -81,17 +82,28 @@ class SnippetVar extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    /**
+     * Event fired before deleting model. All models relations are unlinked.
+     */
     public function beforeDelete()
     {
         $this->unlinkAll('children', true);
         return parent::beforeDelete();
     }
-    
+
+    /**
+     * Getter for $existing property - indicates whether model allready exists.
+     * @return string of property value.
+     */
     public function getExisting()
     {
         return $this->existing;
     }
-    
+
+    /**
+     * Setter for $existing property.
+     * @param type $newExisting new property value.
+     */
     public function setExisting($newExisting)
     {
         $this->existing = $newExisting;
@@ -198,27 +210,31 @@ class SnippetVar extends \yii\db\ActiveRecord
         return $modelSnippetVars;
     }
 
-
     // TODO - this may be extracted to behavior or helper.
     private function handleChild($snippetVars, Snippet $snippet)
     {
-        $previousId = $this->id;
+        if ($this->saved != true) {
+            $previousId = $this->id;
 
-        $this->snippet_id = $snippet->id;
-        if (!$this->save(false)) {
-            return false;
-        }
+            $this->snippet_id = $snippet->id;
 
-        foreach ($snippetVars as $potentialChild) {
-            if ($potentialChild->parent_id == $previousId) {
-                $potentialChild->parent_id = $this->id;
-                $saved = $potentialChild->handleChild($snippetVars, $snippet);
-                if (!$saved) {
-                    return false;
+            $this->id = null;
+            if (!$this->save()) {
+                return false;
+            }
+
+            $this->saved = true;
+
+            foreach ($snippetVars as $potentialChild) {
+                if ($potentialChild->parent_id == $previousId) {
+                    $potentialChild->parent_id = $this->id;
+                    $saved = $potentialChild->handleChild($snippetVars, $snippet);
+                    if (!$saved) {
+                        return false;
+                    }
                 }
             }
         }
-
         return true;
     }
 
@@ -235,7 +251,6 @@ class SnippetVar extends \yii\db\ActiveRecord
                 return false;
             }
         }
-
         return true;
     }
 
@@ -253,15 +268,13 @@ class SnippetVar extends \yii\db\ActiveRecord
         }
     }
 
-
     public function getDefaultValue()
     {
         $cacheEngine = Yii::$app->cacheEngine;
 
         $value = '';
 
-        switch ($this->type->identifier)
-        {
+        switch ($this->type->identifier) {
             case 'list' :
 
                 $value = '(object) array()';
@@ -269,18 +282,19 @@ class SnippetVar extends \yii\db\ActiveRecord
                 break;
 
             case 'page' :
-                    $value = 'NULL';
+                $value = 'NULL';
 
                 break;
 
             case 'product' :
-                    $value = 'NULL';
+                $value = 'NULL';
                 break;
 
             default:
-                $value = '\''. $cacheEngine->normalizeString($this->default_value) . '\'';
+                $value = '\'' . $cacheEngine->normalizeString($this->default_value) . '\'';
         }
 
         return $value;
     }
+
 }

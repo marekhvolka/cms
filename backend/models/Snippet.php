@@ -76,6 +76,10 @@ class Snippet extends \yii\db\ActiveRecord
         ];
     }
     
+    /**
+     * Event fired before save model. User id is set as last user who edits model.
+     * @param type $insert true if save is insert type, false if update.
+     */
     public function beforeSave($insert)
     {
         $userId = Yii::$app->user->identity->id;
@@ -84,6 +88,9 @@ class Snippet extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
     
+    /**
+     * Event fired before deleting model. All models relations are unlinked.
+     */
     public function beforeDelete()
     {
         $this->unlinkAll('snippetVariables', true);
@@ -121,6 +128,15 @@ class Snippet extends \yii\db\ActiveRecord
     public function getSnippetVariables()
     {
         return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
+    }
+    
+    /**
+     * SnippetVars with no parents (first level - not nested).
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSnippetFirstLevelVars()
+    {
+        return $this->getSnippetVariables()->where(['parent_id' => null]);
     }
 
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu

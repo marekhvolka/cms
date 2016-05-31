@@ -59,7 +59,7 @@ use yii\web\View;
                 ]);
                 ?>
                 <?php
-                $snippetVars = $model->snippetVariables;
+                $snippetVars = $model->snippetFirstLevelVars;
                 $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 ?>
                 <ul class="snippet-vars">
