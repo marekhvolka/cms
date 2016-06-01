@@ -13,7 +13,7 @@ use Yii;
  * @property string $value
  * @property int $value_page_id
  *
- * @property Page $page
+ * @property Page $valuePage
  * @property Portal $portal
  */
 class PortalVarValue extends \yii\db\ActiveRecord
@@ -71,8 +71,44 @@ class PortalVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPage()
+    public function getValuePage()
     {
         return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
+    }
+
+    public function getValue()
+    {
+        $value = '';
+
+        switch ($this->var->type->identifier)
+        {
+            case 'list' :
+
+                $value = $this->valueListVar->value;
+
+                break;
+
+            case 'page' :
+
+                if (isset($this->valuePage))
+                    $value = '$page' . $this->valuePage->id;
+                else
+                    $value = 'NULL';
+
+                break;
+
+            case 'product' :
+                if (isset($this->valueProduct))
+                    $value = '$' . $this->valueProduct->identifier;
+                else
+                    $value = 'NULL';
+
+                break;
+
+            default:
+                $value = '\''. addslashes($this->value) . '\'';
+        }
+
+        return $value;
     }
 }

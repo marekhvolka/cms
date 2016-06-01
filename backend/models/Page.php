@@ -321,11 +321,7 @@ class Page extends \yii\db\ActiveRecord
 
             if (isset($this->product))
             {
-                foreach ($this->product->productVarValues as $productVarValue)
-                {
-                    $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
-                        '$' . $this->product->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
-                }
+                $buffer .= $this->product->printVariables();
             }
             $buffer .= '?>';
 

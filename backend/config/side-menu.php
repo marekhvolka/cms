@@ -37,5 +37,6 @@ return [
             ['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
             ['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],
         ],
-    ]
+    ],
+    ['icon' => 'exclamation-triangle', 'title' => 'Hlásenia', 'controller' => 'system-exception', 'action' => 'index']
 ];

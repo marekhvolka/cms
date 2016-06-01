@@ -149,8 +149,8 @@ class Language extends \yii\db\ActiveRecord
             $buffer = '<?php ' . PHP_EOL;
 
             $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
-
-            var_dump(file_exists(Yii::$app->cacheEngine->getObjectBridgeClassPath()));
+            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
+            //$buffer .= 'set_exception_handler(array(\'ExceptionHandler\', \'handleException\'));' . PHP_EOL;
 
             foreach ($this->products as $product)
             {

@@ -235,12 +235,16 @@ class PageController extends BaseController
 
         $pageBlocks = Block::find()
             ->andWhere(['type' => 'snippet'])
-            ->andWhere('id >= 6100 AND id < 6300')
+            ->andWhere('id >= 13000 AND id < 1300000')
             ->all();
 
-        $parseEngine->parseSnippetVarValues($pageBlocks);
+        foreach($pageBlocks as $block)
+        {
+            //$parseEngine->convertMacrosToLatteStyle($block);
+            $parseEngine->parseSnippetVarValues($block);
+        }
 
-        //die();
+
 
         /*$rows = $command = (new Query())
             ->select('*')

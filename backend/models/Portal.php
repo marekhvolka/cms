@@ -276,6 +276,14 @@ class Portal extends \yii\db\ActiveRecord
             $buffer .= '$include_body = \'' . $this->getTrackingCodesString('body') . '\';' . PHP_EOL;
             $buffer .= '$include_body_end = \'' . $this->getTrackingCodesString('body_end') . '\';' . PHP_EOL;
 
+            $buffer .= '/* Portal vars */' . PHP_EOL;
+
+            foreach ($this->portalVarValues as $portalVarValue)
+            {
+                $buffer .= '$' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
+            }
+
+
             $buffer .= '/* Portal pages */' . PHP_EOL;
 
             foreach($this->pages as $page)
@@ -337,8 +345,8 @@ class Portal extends \yii\db\ActiveRecord
         $prefix .= 'include "' . $this->language->getProductsMainCacheFile() . '";' . PHP_EOL;
         $prefix .= 'include "' . $this->getCacheFile() . '";' . PHP_EOL;
 
-        $prefix .= '$global_header = "' . addslashes(file_get_contents($this->getLayoutCacheFile('header'))) . '";' . PHP_EOL;
-        $prefix .= '$global_footer = "' . addslashes(file_get_contents($this->getLayoutCacheFile('footer'))) . '";' . PHP_EOL;
+        $prefix .= '$global_header = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\'));' . PHP_EOL;
+        $prefix .= '$global_footer = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\'));' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 

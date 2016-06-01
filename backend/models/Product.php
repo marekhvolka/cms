@@ -220,4 +220,22 @@ class Product extends \yii\db\ActiveRecord
 
         return $path;
     }
+
+    public function printVariables()
+    {
+        $buffer = '';
+
+        foreach ($this->productVarValues as $productVarValue)
+        {
+            $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
+                '&$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
+        }
+
+        if (isset($this->parent)) // ak ma produkt rodica
+        {
+            $buffer .= $this->parent->printVariables();
+        }
+
+        return $buffer;
+    }
 }

@@ -46,12 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Posledná zmena',
                 'value' => function ($dataProvider) {
-                    if ($dataProvider->last_edit_user == null) {
-                        return '';
-                    }
-                    
                     return $dataProvider->last_edit . ' (' .
-                    $dataProvider->lastEditUser->username . ')';
+                    $dataProvider->lastEditUser->username  . ')';
                 }
             ],
             ['class' => 'yii\grid\ActionColumn',

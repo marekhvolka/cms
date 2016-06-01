@@ -113,28 +113,32 @@ ul {
     list-style-type: none;
 }
 
-ul.container-items-codes {
+.snippet-vars {
+    list-style: none;
+}
+
+.snippet-codes, .snippet-vars {
     padding-left: 0px;
 }
 
-ul.container-items-vars {
-    padding-left: 0px
-}
-
-.remove-item-code, .remove-item-vars {
+.btn-remove-snippet-code, .btn-remove-snippet-var {
     position: absolute;
     right: 15px;
     top: 10px;
     z-index: 1;
 }
 
-.add-item-code {
+.btn-add-snippet-code {
     position: absolute;
     right: 45px;
     top: 10px;
 }
 
-.panel-codes, .variable {
+.snippetcode-name {
+    width:400px;
+}
+
+.snippet-code, .snippet-var {
     position: relative;
 }
 

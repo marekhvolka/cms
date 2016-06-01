@@ -75,6 +75,28 @@ class Snippet extends \yii\db\ActiveRecord
             'last_edit_user' => 'Last Edit User',
         ];
     }
+    
+    /**
+     * Event fired before save model. User id is set as last user who edits model.
+     * @param type $insert true if save is insert type, false if update.
+     */
+    public function beforeSave($insert)
+    {
+        $userId = Yii::$app->user->identity->id;
+        $this->last_edit_user = $userId;
+        
+        return parent::beforeSave($insert);
+    }
+    
+    /**
+     * Event fired before deleting model. All models relations are unlinked.
+     */
+    public function beforeDelete()
+    {
+        $this->unlinkAll('snippetVariables', true);
+        $this->unlinkAll('snippetCodes', true);
+        return parent::beforeDelete();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -106,6 +128,15 @@ class Snippet extends \yii\db\ActiveRecord
     public function getSnippetVariables()
     {
         return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
+    }
+    
+    /**
+     * SnippetVars with no parents (first level - not nested).
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSnippetFirstLevelVars()
+    {
+        return $this->getSnippetVariables()->where(['parent_id' => null]);
     }
 
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
@@ -139,8 +170,7 @@ class Snippet extends \yii\db\ActiveRecord
 
             foreach($this->snippetVariables as $snippetVar)
             {
-                if (isset($snippetVar->default_value))
-                    $buffer .= '$' . $snippetVar->identifier . ' = \'' . $cacheEngine->normalizeString($snippetVar->default_value) . '\';' . PHP_EOL;
+                $buffer .= '$' . $snippetVar->identifier . ' = ' . $snippetVar->getDefaultValue() . ';' . PHP_EOL;
             }
 
             $buffer .= '?>' . PHP_EOL;

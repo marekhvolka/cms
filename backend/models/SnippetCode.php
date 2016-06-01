@@ -24,6 +24,8 @@ use yii\helpers\Url;
 class SnippetCode extends \yii\db\ActiveRecord
 {
 
+    private $existing;
+
     /**
      * @inheritdoc
      */
@@ -69,6 +71,24 @@ class SnippetCode extends \yii\db\ActiveRecord
     }
 
     /**
+     * Getter for $existing property - indicates whether model allready exists.
+     * @return string of property value.
+     */
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property.
+     * @param type $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getSnippets()
@@ -90,73 +110,68 @@ class SnippetCode extends \yii\db\ActiveRecord
     public function getUrl()
     {
         return Url::to(
-            [
-                '/snippet/update/',
-                'id' => $this->snippet_id,
-                '#' => 'code' . $this->id
-            ]);
+                        [
+                            '/snippet/update/',
+                            'id' => $this->snippet_id,
+                            '#' => 'code' . $this->id
+        ]);
     }
 
     /** Returns array of newly created SnippetCodes from given data.
      * @param $snippetCodeData
      * @return array
      */
-    public static function createMultipleFromData($snippetCodeData)
+    public static function createMultipleFromData($data)
     {
-        $modelSnippetCodes = [];
-        if (!$snippetCodeData) {
-            return $modelSnippetCodes;
-        }
-        
-        foreach ($snippetCodeData as $codeData) {
-            if (isset($codeData['name'])) {
-                $snippetCode = new SnippetCode();
-
-                $snippetCode->name = $codeData['name'];
-                $snippetCode->code = $codeData['code'];
-                $snippetCode->description = $codeData['description'];
-                $snippetCode->portal = $codeData['portal'];
-
-                $modelSnippetCodes[] = $snippetCode;
+        $snippetCodes = [];
+        foreach ($data as $i => $dataItem) {
+            $snippetCode = new SnippetCode();
+            if ($dataItem['existing'] == 'true') {
+                $snippetCode = SnippetCode::find()->where(['id' => $dataItem['id']])->one();
             }
+            $snippetCode->existing = $dataItem['existing'];
+            $snippetCodes[$i] = $snippetCode;
         }
-        
-        return $modelSnippetCodes;
+        return $snippetCodes;
     }
-    
+
     /**
      * Saves multiple models to database.
-     * @param backend\models\SnippetCode [] $modelSnippetCodes snippetCodes to be saved.
+     * @param backend\models\SnippetCode [] $snippetCodes snippetCodes to be saved.
      * @return boolean whether saving of models was unsuccessful
      */
-    public static function saveMultiple($modelSnippetCodes, $snippet)
+    public static function saveMultiple($snippetCodes, $snippet)
     {
-        foreach ($modelSnippetCodes as $modelSnippetCode) {
-            $modelSnippetCode->link('snippet', $snippet);
-
-            //TODO here will be code for change portals.
-            // Update snippet portals (alternatives of snippet).
-//                            $portals_array = Yii::$app->request->post('snippet_code_portals');
-//                            $portals_ids = !$portals_array ? : implode($portals_array, ',');
-//                            $modelSnippetCode->portal = $portals_ids;
-
-            if (!($flag = $modelSnippetCode->save(false))) {
+        foreach ($snippetCodes as $snippetCode) {
+            $snippetCode->snippet_id = $snippet->id;
+            if (!$snippetCode->save()) {
                 return false;
             }
         }
-        
         return true;
     }
-    
+
+    /**
+     * Multiple delete of SnippetCode models by given Snippet model (SnippetCode deleted by user).
+     * @param \backend\models\SnippetCode $snippetCodes
+     * @param \backend\models\Snippet $snippet
+     * @return boolean if deleting was successfull.
+     */
     public static function deleteMultiple($modelSnippetCodes, $snippet)
     {
-        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');
-        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
-        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
+        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');// Former IDs.
+        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id'); // Newly updated IDs.
+        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);  // SnippetVar models to be deleted.
 
         foreach ($codesIDsToDelete as $codeID) {
-            SnippetCode::findOne($codeID)->delete();
+            if ($code = SnippetCode::findOne($codeID)) {   // Delete existing SnippetVar with given ID.
+                if (!$code->delete()) {
+                    return false;
+                }
+            }
         }
+
+        return true;
     }
 
     /** Vrati cestu k nacachovanemu suboru, kde su ulozene informacie o kode snippetu a jeho premennych
@@ -166,11 +181,11 @@ class SnippetCode extends \yii\db\ActiveRecord
     {
         $path = $this->snippet->getDirectory() . 'code' . $this->id . '.php';
 
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->code);
         }
 
         return $path;
     }
+
 }
