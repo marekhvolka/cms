@@ -16,7 +16,10 @@ use yii\web\View;
 
 <div class="snippet-form">
 
-    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'dynamic-form', 
+        'enableAjaxValidation' => true,
+        ]); ?>
     
     <h3 class="page-header">Všeobecné <small>nastavenia</small></h3>
 

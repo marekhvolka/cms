@@ -17,10 +17,11 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <div class="panel-heading"> 
         <div class="input-group">
             <?= BaseHtml::activeTextInput($snippetCode, "name", [
-                    'class' => 'form-control',
+                    'class' => 'form-control snippetcode-name',
                     'name' => "SnippetCode[$postIndex][name]",
-                    'style'=>'width:400px'
+                    'id' => "snippetcode-$postIndex-name",
                 ]); ?>
+            <div class="help-block"></div>
         </div>
         <button type="button" class="btn-add-snippet-code btn btn-success btn-xs pull-right">
             <i class="glyphicon glyphicon-plus"></i>

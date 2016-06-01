@@ -134,6 +134,10 @@ ul {
     top: 10px;
 }
 
+.snippetcode-name {
+    width:400px;
+}
+
 .snippet-code, .snippet-var {
     position: relative;
 }
