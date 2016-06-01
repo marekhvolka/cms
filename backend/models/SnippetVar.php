@@ -177,48 +177,33 @@ class SnippetVar extends \yii\db\ActiveRecord
      * Returns array of newly created Variables from given data.
      * @return Variable []
      */
-    public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
+    public static function createMultipleFromData($data)
     {
-        if (!$snippetVarData) {
-            return $modelSnippetVars;
-        }
+        $snippetVars = [];
 
-        $modelSnippetVars = [];      // Array of created SnippetVars.
-
-        foreach ($snippetVarData as $varData) {
-            if (isset($varData['identifier']) && $varData['identifier']) {
-                if ($varData['existing'] == 'true') {
-                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']])->one();
-                } else {
-                    $snippetVar = new SnippetVar();
-                    $snippetVar->id = $varData['id'];
-                }
-//
-//                // Set all neccessary attributes.
-//                $snippetVar->identifier = $varData['identifier'];
-//                $snippetVar->type_id = $varData['type_id'];
-//                $snippetVar->default_value = $varData['default_value'];
-//                $snippetVar->description = $varData['description'];
-//
-//                // Set parent if SnippetVar is item of list type parent SnippetVar.
-//                $snippetVar->parent_id = $varData['parent_id'];
-
-                $modelSnippetVars[] = $snippetVar;
+        foreach ($data as $i => $dataItem) {
+            $snippetVar = new SnippetVar();
+            if ($dataItem['existing'] == 'true') {
+                $snippetVar = SnippetVar::find()->where(['id' => $dataItem['id']])->one();
             }
+            $snippetVar->existing = $dataItem['existing'];
+            $snippetVars[$i] = $snippetVar;
         }
 
-        return $modelSnippetVars;
+        return $snippetVars;
     }
 
-    // TODO - this may be extracted to behavior or helper.
+    // TODO - this may be refactored - saved property maybe ommited.
     private function handleChild($snippetVars, Snippet $snippet)
     {
         if ($this->saved != true) {
             $previousId = $this->id;
-
             $this->snippet_id = $snippet->id;
 
-            $this->id = null;
+            if ($this->existing != 'true') {
+                $this->id = null;
+            }
+
             if (!$this->save()) {
                 return false;
             }
@@ -254,18 +239,21 @@ class SnippetVar extends \yii\db\ActiveRecord
         return true;
     }
 
-    public static function deleteMultiple($modelSnippetVars, Snippet $snippet)
+    public static function deleteMultiple($snippetVars, Snippet $snippet)
     {
-        $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
-        $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
+        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id');
+        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');
         $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
 
         foreach ($varsIDsToDelete as $varID) {
-            $snippetVarToDelete = Variable::findOne($varID);
-            if ($snippetVarToDelete) {
-                $snippetVarToDelete->delete();
+            if ($var = SnippetVar::findOne($varID)) {
+                if (!$var->delete()) {
+                    return false;
+                }
             }
         }
+
+        return true;
     }
 
     public function getDefaultValue()

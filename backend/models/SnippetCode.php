@@ -24,6 +24,8 @@ use yii\helpers\Url;
 class SnippetCode extends \yii\db\ActiveRecord
 {
 
+    private $existing;
+
     /**
      * @inheritdoc
      */
@@ -69,6 +71,24 @@ class SnippetCode extends \yii\db\ActiveRecord
     }
 
     /**
+     * Getter for $existing property - indicates whether model allready exists.
+     * @return string of property value.
+     */
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property.
+     * @param type $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getSnippets()
@@ -101,27 +121,18 @@ class SnippetCode extends \yii\db\ActiveRecord
      * @param $snippetCodeData
      * @return array
      */
-    public static function createMultipleFromData($snippetCodeData)
+    public static function createMultipleFromData($data)
     {
-        $modelSnippetCodes = [];
-        if (!$snippetCodeData) {
-            return $modelSnippetCodes;
-        }
-
-        foreach ($snippetCodeData as $codeData) {
-            if (isset($codeData['name'])) {
-                $snippetCode = new SnippetCode();
-
-                $snippetCode->name = $codeData['name'];
-                $snippetCode->code = $codeData['code'];
-                $snippetCode->description = $codeData['description'];
-                $snippetCode->portal = $codeData['portal'];
-
-                $modelSnippetCodes[] = $snippetCode;
+        $snippetCodes = [];
+        foreach ($data as $i => $dataItem) {
+            $snippetCode = new SnippetCode();
+            if ($dataItem['existing'] == 'true') {
+                $snippetCode = SnippetCode::find()->where(['id' => $dataItem['id']])->one();
             }
+            $snippetCode->existing = $dataItem['existing'];
+            $snippetCodes[$i] = $snippetCode;
         }
-
-        return $modelSnippetCodes;
+        return $snippetCodes;
     }
 
     /**
@@ -147,8 +158,14 @@ class SnippetCode extends \yii\db\ActiveRecord
         $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
 
         foreach ($codesIDsToDelete as $codeID) {
-            SnippetCode::findOne($codeID)->delete();
+            if ($code = SnippetCode::findOne($codeID)) {
+                if (!$code->delete()) {
+                    return false;
+                }
+            }
         }
+
+        return true;
     }
 
     /** Vrati cestu k nacachovanemu suboru, kde su ulozene informacie o kode snippetu a jeho premennych

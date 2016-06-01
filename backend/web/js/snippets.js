@@ -63,6 +63,8 @@ function attachSelectToListChangeEvent(variable) {
                 var appended = $(data).appendTo(varBodyWrapper);
                 attachAddVarEvent(appended.find('.btn-add-list-item-var'), varBodyWrapper.find('.snippet-vars'), variable);
             });
+        } else {
+            variable.find('.child-var-box').first().remove();
         }
     });
 }

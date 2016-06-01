@@ -56,21 +56,16 @@ class SnippetController extends BaseController
     public function actionCreate()
     {
         $model = new Snippet();
-        $snippetCodes = [];
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $snippetCodesData = Yii::$app->request->post('SnippetCode');
-                // Array of SnippetCode models used later for multiple validation.
-                // $snippetCodesData array appended with retrieved newly created SnippetCode models.
-                foreach ($snippetCodesData as $i => $codeData) {
-                    $snippetCode = new SnippetCode();
-                    $snippetCodes[$i] = $snippetCode;
-                }
-
                 // Snippet model validated and saved.
                 $modelValidatedAndSaved = $model->validate() && $model->save();
+                
+                $snippetCodesData = Yii::$app->request->post('SnippetCode');
+                // Array of SnippetCode models used later for multiple validation.
+                $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
 
                 // SnippetCode models multiple loading, validation and saving.
                 $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
@@ -78,19 +73,15 @@ class SnippetController extends BaseController
                 $savedCodes = SnippetCode::saveMultiple($snippetCodes, $model);
 
                 $snippetVarData = Yii::$app->request->post('SnippetVar');
-                $snippetVars = [];
+                // Array of SnippetVar models used later for multiple validation.
+                $snippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
-                foreach ($snippetVarData as $i => $varData) {
-                    $snippetVar = new SnippetVar();
-                    $snippetVars[$i] = $snippetVar;
-                }
-
-                // SnippetCode models multiple loading and validation.
+                // SnippetCode models multiple loading validation and saving.
                 $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
                 $validVars = Model::validateMultiple($snippetVars);
                 $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
 
-                $valid = $loadedCodes && $validCodes && $savedCodes && $loadedVars && 
+                $valid = $loadedCodes && $validCodes && $savedCodes && $loadedVars &&
                         $validVars && $savedVars && $modelValidatedAndSaved;
 
                 if (!$valid) {
@@ -99,15 +90,6 @@ class SnippetController extends BaseController
 
                 $transaction->commit();
                 return $this->redirect(['index']);
-
-
-//                // ajax validation
-//                if (Yii::$app->request->isAjax) {
-//                    Yii::$app->response->format = Response::FORMAT_JSON;
-//                    return ArrayHelper::merge(
-//                                    ActiveForm::validateMultiple($snippetCodes), ActiveForm::validateMultiple($modelSnippetVars), ActiveForm::validate($model)
-//                    );
-//                }
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->render('create', [
@@ -132,54 +114,54 @@ class SnippetController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this-> findModel($id);
         $snippetCodes = $model->snippetCodes;
 
         if ($model->load(Yii::$app->request->post())) {
-            //Creating multiple SnippetVars and SnippetCodes from posted data.
-            $snippetCodeData = Yii::$app->request->post('SnippetCode');
-            $snippetCodes = SnippetCode::createMultipleFromData($snippetCodeData);
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                // Snippet model validated and saved.
+                $modelValidatedAndSaved = $model->validate() && $model->save();
+                
+                $snippetCodesData = Yii::$app->request->post('SnippetCode');     
+                // Array of SnippetCode models used later for multiple validation.
+                $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
 
-            $snippetVarData = Yii::$app->request->post('SnippetVar');
-            $modelSnippetVars = SnippetVar::createMultipleFromData($snippetVarData);
+                // SnippetCode models multiple loading, validation and saving.
+                $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
+                $validCodes = Model::validateMultiple($snippetCodes);
+                $savedCodes = SnippetCode::saveMultiple($snippetCodes, $model);
 
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($snippetCodes), ActiveForm::validate($model)
-                );
-            }
+                $snippetVarData = Yii::$app->request->post('SnippetVar');
+                // Array of SnippetVar models used later for multiple validation.
+                $snippetVars = SnippetVar::createMultipleFromData($snippetVarData);
 
-            // validate all models
-            $valid = $model->validate() &&
-                    Model::validateMultiple($snippetCodes) &&
-                    Model::validateMultiple($modelSnippetVars);
+                // SnippetCode models multiple loading, validation and saving.
+                $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
+                $validVars = Model::validateMultiple($snippetVars);
+                $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
 
-            if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
+                // Deleting and saving multiple SnippetCodes and SnippetVars in database.
+                $codesDeletedSuccesfully = SnippetCode::deleteMultiple($snippetCodes, $model);
+                $varsDeletedSuccesfully = SnippetVar::deleteMultiple($snippetVars, $model);
+                
 
-                try {
-                    $flag = $model->save(false);
+                $valid = $loadedCodes && $validCodes && $savedCodes && $codesDeletedSuccesfully && $loadedVars &&
+                        $validVars && $savedVars && $varsDeletedSuccesfully && $modelValidatedAndSaved;
 
-                    // Deleting and saving multiple SnippetCodes and SnippetVars in database.
-                    SnippetCode::deleteMultiple($snippetCodes, $model);
-                    SnippetVar::deleteMultiple($modelSnippetVars, $model);
-
-                    $flagCodes = SnippetCode::saveMultiple($snippetCodes, $model);
-                    $flagVars = SnippetVar::saveMultiple($modelSnippetVars, $model);
-
-                    if ($flag && $flagCodes && $flagVars) {
-                        $transaction->commit();
-                        return $this->redirect(['index']);
-                    } else {    // TODO does not have to be else{}
-                        $transaction->rollBack();
-                        return;     // TODO - handle error
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    return;     // TODO - handle error
+                if (!$valid) {
+                    throw new Exception;
                 }
+
+                $transaction->commit();
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->render('create', [
+                            'model' => $model,
+                            'snippetCodes' => $snippetCodes,
+                            'snippetVars' => $snippetVars,
+                ]);
             }
         } else {
             return $this->render('update', [

@@ -74,6 +74,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             </div>
         </div>
         
+        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][existing]", $snippetCode->id ? 'true' : 'false'); ?>
+        
         <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id); ?>
     </div>
 </div>
