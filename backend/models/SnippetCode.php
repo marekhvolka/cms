@@ -151,14 +151,20 @@ class SnippetCode extends \yii\db\ActiveRecord
         return true;
     }
 
+    /**
+     * Multiple delete of SnippetCode models by given Snippet model (SnippetCode deleted by user).
+     * @param \backend\models\SnippetCode $snippetCodes
+     * @param \backend\models\Snippet $snippet
+     * @return boolean if deleting was successfull.
+     */
     public static function deleteMultiple($modelSnippetCodes, $snippet)
     {
-        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');
-        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id');
-        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);
+        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');// Former IDs.
+        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id'); // Newly updated IDs.
+        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);  // SnippetVar models to be deleted.
 
         foreach ($codesIDsToDelete as $codeID) {
-            if ($code = SnippetCode::findOne($codeID)) {
+            if ($code = SnippetCode::findOne($codeID)) {   // Delete existing SnippetVar with given ID.
                 if (!$code->delete()) {
                     return false;
                 }

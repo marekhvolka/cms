@@ -239,14 +239,20 @@ class SnippetVar extends \yii\db\ActiveRecord
         return true;
     }
 
+    /**
+     * Multiple delete of SnippetVar models by given Snippet model (SnippetVar deleted by user).
+     * @param \backend\models\SnippetVar $snippetVars
+     * @param \backend\models\Snippet $snippet
+     * @return boolean if deleting was successfull.
+     */
     public static function deleteMultiple($snippetVars, Snippet $snippet)
     {
-        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id');
-        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');
-        $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
+        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id'); // Former IDs.
+        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');   // Newly updated IDs.
+        $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);    // SnippetVar models to be deleted.
 
         foreach ($varsIDsToDelete as $varID) {
-            if ($var = SnippetVar::findOne($varID)) {
+            if ($var = SnippetVar::findOne($varID)) {   // Delete existing SnippetVar with given ID.
                 if (!$var->delete()) {
                     return false;
                 }
