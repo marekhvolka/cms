@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: juraj
- * Date: 24/05/16
- * Time: 19:17
- */
 
 namespace common\widgets\FileEditor\models;
 

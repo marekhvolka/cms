@@ -5,51 +5,14 @@ use conquer\codemirror\CodemirrorWidget;
 use yii\bootstrap\Html;
 
 /* @var $this \yii\web\View */
-/* @var $model EditFileForm */
+/* @var $editFileForm EditFileForm */
+/* @var $uploadFileForm EditFileForm */
 /* @var $directory string */
 /* @var $fileTree array */
 
 \common\widgets\FileEditor\FileEditorAsset::register($this);
 
-$this->registerJs(<<<JS
-$(function(){
-  var file_editor = $('.file-editor'),
-    code_mirror = $('.CodeMirror')[0].CodeMirror,
-    file_name_input = file_editor.find('#editfileform-filename'),
-    opened_file = null,
-    new_file = false;
-  
-  function openFile(filePath, url) {
-    new_file = false;
-    file_editor.find('.new-file').hide();
-    opened_file = filePath;
-    file_editor.find('.select-a-file').hide();
-    
-    code_mirror.setOption('readOnly', true);
-    file_name_input.val(filePath);
-        
-    $.get(url, function(data) {
-        code_mirror.getDoc().setValue(data);
-        code_mirror.setOption("mode", 'application/x-httpd-php');
-        code_mirror.setOption('readOnly', false);
-    });
-  }
-  
-  
-  file_editor.find('.file-link').click(function(e) {
-    e.preventDefault();
-    var _this = $(this);
-    openFile(_this.attr('data-name'), _this.attr('href'));
-  });
-});
-
-
-JS
-);
-
-?>
-
-<?php
+$this->registerJsFile('web/js/file-editor.js');
 
 function build_one_level($data, $from_dir = '')
 {
@@ -64,7 +27,11 @@ function build_one_level($data, $from_dir = '')
                     <?= $index ?> <a href="<?= \yii\helpers\Url::current(['file' => $path, 'fileAction'
                                                                                  =>
                         'delete'])
-                    ?>" class="delete">x</a> <a href="#" data-name='<?= $path ?>' class="add-file">+</a>
+                    ?>" class="delete">x</a> <a href="#"
+                                                class="add-file"
+                                                data-name='<?= $path ?>'
+                                                data-toggle="modal"
+                                                data-target="#uploadFileModal">+</a>
                     <?php build_one_level($item, $from_dir . '/' . $index) ?>
                 </li>
                 <?php
@@ -88,6 +55,14 @@ function build_one_level($data, $from_dir = '')
 }
 
 ?>
+
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Nahrať súbor', ['create'], ['class'       => 'btn btn-success pull-right add-file',
+                                         'data-name'   => '/',
+                                         'data-toggle' => 'modal',
+                                         'data-target' => '#uploadFileModal']) ?>
+<?php $this->endBlock(); ?>
+
 <div class="file-editor">
     <div class="col-xs-12 col-sm-2">
         <div class="row">
@@ -97,12 +72,12 @@ function build_one_level($data, $from_dir = '')
     <div class="col-xs-12 col-sm-10">
         <div class="row">
             <h3 class="new-file">Nový súbor</h3>
-            <?php if ($model->fileName == null) { ?><h3 class="select-a-file">Vyberte súbor alebo pridajte
+            <?php if ($editFileForm->fileName == null) { ?><h3 class="select-a-file">Vyberte súbor alebo pridajte
                 nový</h3><?php } ?>
             <?php $form = \yii\bootstrap\ActiveForm::begin() ?>
             <?= CodemirrorWidget::widget([
                     'name'     => 'EditFileForm[text]',
-                    'value'    => $model->text,
+                    'value'    => $editFileForm->text,
                     'assets'   => [
                         CodemirrorAsset::MODE_CLIKE,
                         CodemirrorAsset::KEYMAP_EMACS,
@@ -119,11 +94,37 @@ function build_one_level($data, $from_dir = '')
                     ],
                 ]
             ) ?>
-            <?= $form->field($model, 'fileName')->hiddenInput()->label(false) ?>
+            <?= $form->field($editFileForm, 'fileName')->hiddenInput()->label(false) ?>
             <?= Html::submitButton('Uložiť', [
                 'class' => 'btn btn-success',
                 'id'    => 'submit-btn'
             ]) ?>
+            <?php $form->end() ?>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?php $form = \yii\widgets\ActiveForm::begin() ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Zavrieť">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="uploadFileModalLabel">Nahrať súbor</h4>
+            </div>
+            <div class="modal-body">
+                <?= $form->field($uploadFileForm, 'file')->fileInput() ?>
+                <?= $form->field($uploadFileForm, 'directory')->textInput(['id' => 'uploadFileDirectory']) ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
+                <?= Html::submitButton('Nahrať', [
+                    'class' => 'btn btn-primary',
+                    'id'    => 'submit-btn'
+                ]) ?>
+            </div>
             <?php $form->end() ?>
         </div>
     </div>
