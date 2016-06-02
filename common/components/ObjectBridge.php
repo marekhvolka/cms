@@ -8,6 +8,9 @@ use backend\models\SystemException;
  * Time: 16:54
  */
 
+/** Pomocná trieda, ktorá obaľuje všetky premenné. Vďaka nej dokážeme logovať všetky chybné prístupy k hodnotám premenných
+ * Class ObjectBridge
+ */
 class ObjectBridge extends ArrayObject
 {
     public $obj;
@@ -16,7 +19,7 @@ class ObjectBridge extends ArrayObject
         $this->obj = $obj;
     }
 
-    public function &__get($a)
+    public function __get($a)
     {
         if(isset($this->obj->$a))
         {

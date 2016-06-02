@@ -66,7 +66,7 @@ class ListVar extends \yii\db\ActiveRecord
         {
             if ($listItem->active)
             {
-                $buffer .= '\'' . $listItem->id . '\' => ' . $listItem->value . ', ';
+                $buffer .= '\'' . $listItem->id . '\' => ' . $listItem->value . ', ' . PHP_EOL;
             }
         }
 

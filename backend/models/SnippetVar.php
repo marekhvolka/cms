@@ -21,19 +21,18 @@ use yii\helpers\ArrayHelper;
  * @property string $snippet_id
  * @property string $parent_id
  * @property SnippetDropdown[] $snippetDropdowns
- * @property SnippetProductValue[] $snippetProductValues
+ * @property SnippetVarDefaultValue[] $defaultValues
  * @property SnippetVar $parent
  * @property SnippetVar[] $children
  * @property Snippet $snippet
  */
 class SnippetVar extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
+
     private $existing;
-    private $saved;
 
     public static function tableName()
     {
@@ -54,7 +53,7 @@ class SnippetVar extends \yii\db\ActiveRecord
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
-                //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
+            //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 
@@ -82,28 +81,17 @@ class SnippetVar extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    /**
-     * Event fired before deleting model. All models relations are unlinked.
-     */
     public function beforeDelete()
     {
         $this->unlinkAll('children', true);
         return parent::beforeDelete();
     }
 
-    /**
-     * Getter for $existing property - indicates whether model allready exists.
-     * @return string of property value.
-     */
     public function getExisting()
     {
         return $this->existing;
     }
 
-    /**
-     * Setter for $existing property.
-     * @param type $newExisting new property value.
-     */
     public function setExisting($newExisting)
     {
         $this->existing = $newExisting;
@@ -120,9 +108,9 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetProductValues()
+    public function getDefaultValues()
     {
-        return $this->hasMany(SnippetProductValue::className(), ['variable_id' => 'id']);
+        return $this->hasMany(SnippetVarDefaultValue::className(), ['variable_id' => 'id']);
     }
 
     /**
@@ -177,49 +165,60 @@ class SnippetVar extends \yii\db\ActiveRecord
      * Returns array of newly created Variables from given data.
      * @return Variable []
      */
-    public static function createMultipleFromData($data)
+    public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
     {
-        $snippetVars = [];
-
-        foreach ($data as $i => $dataItem) {
-            $snippetVar = new SnippetVar();
-            if ($dataItem['existing'] == 'true') {
-                $snippetVar = SnippetVar::find()->where(['id' => $dataItem['id']])->one();
-            }
-            $snippetVar->existing = $dataItem['existing'];
-            $snippetVars[$i] = $snippetVar;
+        if (!$snippetVarData) {
+            return $modelSnippetVars;
         }
 
-        return $snippetVars;
+        $modelSnippetVars = [];      // Array of created SnippetVars.
+
+        foreach ($snippetVarData as $varData) {
+            if (isset($varData['identifier']) && $varData['identifier']) {
+                if ($varData['existing'] == 'true') {
+                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']])->one();
+                } else {
+                    $snippetVar = new SnippetVar();
+                    $snippetVar->id = $varData['id'];
+                }
+//
+//                // Set all neccessary attributes.
+//                $snippetVar->identifier = $varData['identifier'];
+//                $snippetVar->type_id = $varData['type_id'];
+//                $snippetVar->default_value = $varData['default_value'];
+//                $snippetVar->description = $varData['description'];
+//
+//                // Set parent if SnippetVar is item of list type parent SnippetVar.
+//                $snippetVar->parent_id = $varData['parent_id'];
+
+                $modelSnippetVars[] = $snippetVar;
+            }
+        }
+
+        return $modelSnippetVars;
     }
 
-    // TODO - this may be refactored - saved property maybe ommited.
+
+    // TODO - this may be extracted to behavior or helper.
     private function handleChild($snippetVars, Snippet $snippet)
     {
-        if ($this->saved != true) {
-            $previousId = $this->id;
-            $this->snippet_id = $snippet->id;
+        $previousId = $this->id;
 
-            if ($this->existing != 'true') {
-                $this->id = null;
-            }
+        $this->snippet_id = $snippet->id;
+        if (!$this->save(false)) {
+            return false;
+        }
 
-            if (!$this->save()) {
-                return false;
-            }
-
-            $this->saved = true;
-
-            foreach ($snippetVars as $potentialChild) {
-                if ($potentialChild->parent_id == $previousId) {
-                    $potentialChild->parent_id = $this->id;
-                    $saved = $potentialChild->handleChild($snippetVars, $snippet);
-                    if (!$saved) {
-                        return false;
-                    }
+        foreach ($snippetVars as $potentialChild) {
+            if ($potentialChild->parent_id == $previousId) {
+                $potentialChild->parent_id = $this->id;
+                $saved = $potentialChild->handleChild($snippetVars, $snippet);
+                if (!$saved) {
+                    return false;
                 }
             }
         }
+
         return true;
     }
 
@@ -236,31 +235,24 @@ class SnippetVar extends \yii\db\ActiveRecord
                 return false;
             }
         }
+
         return true;
     }
 
-    /**
-     * Multiple delete of SnippetVar models by given Snippet model (SnippetVar deleted by user).
-     * @param \backend\models\SnippetVar $snippetVars
-     * @param \backend\models\Snippet $snippet
-     * @return boolean if deleting was successfull.
-     */
-    public static function deleteMultiple($snippetVars, Snippet $snippet)
+    public static function deleteMultiple($modelSnippetVars, Snippet $snippet)
     {
-        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id'); // Former IDs.
-        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');   // Newly updated IDs.
-        $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);    // SnippetVar models to be deleted.
+        $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
+        $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
+        $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
 
         foreach ($varsIDsToDelete as $varID) {
-            if ($var = SnippetVar::findOne($varID)) {   // Delete existing SnippetVar with given ID.
-                if (!$var->delete()) {
-                    return false;
-                }
+            $snippetVarToDelete = Variable::findOne($varID);
+            if ($snippetVarToDelete) {
+                $snippetVarToDelete->delete();
             }
         }
-
-        return true;
     }
+
 
     public function getDefaultValue()
     {
@@ -268,7 +260,8 @@ class SnippetVar extends \yii\db\ActiveRecord
 
         $value = '';
 
-        switch ($this->type->identifier) {
+        switch ($this->type->identifier)
+        {
             case 'list' :
 
                 $value = '(object) array()';
@@ -285,10 +278,18 @@ class SnippetVar extends \yii\db\ActiveRecord
                 break;
 
             default:
-                $value = '\'' . $cacheEngine->normalizeString($this->default_value) . '\'';
+
+                $productTypeDefaultValue = SnippetVarDefaultValue::find()
+                    ->andWhere([
+                        'snippet_var_id' => $this->id,
+                        'product_type_id' => NULL
+                    ])
+                    ->one();
+
+                if (isset($productTypeDefaultValue))
+                    $value = '\''. $cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
         }
 
         return $value;
     }
-
 }

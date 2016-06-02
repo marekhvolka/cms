@@ -168,6 +168,11 @@ class PageController extends BaseController
         }
     }
 
+    public static function e($variable)
+    {
+
+    }
+
     public function actionGenerate($id)
     {
         $cacheEngine = new CacheEngine();
@@ -235,12 +240,12 @@ class PageController extends BaseController
 
         $pageBlocks = Block::find()
             ->andWhere(['type' => 'snippet'])
-            ->andWhere('id >= 13000 AND id < 1300000')
+            ->andWhere('id >= 18000 AND id < 18000')
             ->all();
 
         foreach($pageBlocks as $block)
         {
-            //$parseEngine->convertMacrosToLatteStyle($block);
+            //$parseEngine->convertMacrosToLatteStyle2($block);
             $parseEngine->parseSnippetVarValues($block);
         }
 
@@ -261,14 +266,14 @@ class PageController extends BaseController
 
         /*$rows = $command = (new Query())
             ->select('*')
-            ->from('page_header')
-            ->where('page_id >= 800')
+            ->from('page_sidebar')
+            ->where('page_id >= 0 AND page_id < 1000')
             ->createCommand()
             ->queryAll();
 
         foreach($rows as $row)
         {
-            $parseEngine->parsePageGlobalSection('page', $row);
+            $parseEngine->parseSidebar($row);
         }*/
 
 
