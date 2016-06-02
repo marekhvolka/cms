@@ -81,7 +81,14 @@ class Column extends \yii\db\ActiveRecord
         $cssIds = trim("$this->css_id " . $settings['ids']);
         $cssStyles = trim("$this->css_style " . $settings['styles']);
 
-        $result = "<div class='$cssClasses' id='$cssIds' style='$cssStyles'>" . PHP_EOL;
+        $result = "<div";
+
+        $result .= $cssClasses != '' ? " class='$cssClasses'" : "";
+        $result .= $cssIds != '' ? " id='$cssIds'" : "";
+        $result .= $cssClasses != '' ? " style='$cssStyles'" : "";
+
+        $result .= ">" . PHP_EOL;
+
         $result .= '<div class="box">' . PHP_EOL;
 
         return $result;

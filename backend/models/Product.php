@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
+ * @property ProductType $productType
  * @property Page[] $pages
  * @property User $lastEditUser
  * @property Language $language
@@ -228,7 +229,7 @@ class Product extends \yii\db\ActiveRecord
         foreach ($this->productVarValues as $productVarValue)
         {
             $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
-                '&$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
+                '$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
         }
 
         if (isset($this->parent)) // ak ma produkt rodica

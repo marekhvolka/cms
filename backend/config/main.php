@@ -44,6 +44,9 @@ return [
             'class' => 'yii\i18n\Formatter',
             'booleanFormat' => ['×', '√'],
         ],
+        'assetManager' => [
+            'linkAssets' => true,
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

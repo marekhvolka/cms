@@ -22,11 +22,9 @@ use yii\helpers\BaseVarDumper;
  *
  *
  * @property string $name
- * @property Product $product
  * @property Column $column
  * @property Block $parent
  * @property Block[] $pageBlocks
- * @property Portal $portal
  * @property SnippetCode $snippetCode
  * @property SnippetVarValue[] $snippetVarValues
  */
@@ -46,12 +44,11 @@ class Block extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['snippet_code_id', 'product_id', 'portal_id', 'column_id', 'parent_id', 'order'], 'integer'],
+            [['snippet_code_id', 'column_id', 'parent_id', 'order'], 'integer'],
             [['data', 'type', 'compiled_data'], 'string'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['type'], 'required'],
             [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Block::className(), 'targetAttribute' => ['parent_id' => 'id']],
-            [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
             [['snippet_code_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetCode::className(), 'targetAttribute' => ['snippet_code_id' => 'id']],
         ];
     }
@@ -64,8 +61,6 @@ class Block extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'snippet_id' => 'Snippet ID',
-            'product_id' => 'Product ID',
-            'portal_id' => 'Portal ID',
             'column_id' => 'Column ID',
             'parent_id' => 'Parent ID',
             'order' => 'Order',
@@ -73,14 +68,6 @@ class Block extends \yii\db\ActiveRecord
             'type' => 'Typ bloku',
             'active' => 'Aktívny'
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProduct()
-    {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 
     /**
@@ -110,14 +97,6 @@ class Block extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPortal()
-    {
-        return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getSnippetCode()
     {
         return $this->hasOne(SnippetCode::className(), ['id' => 'snippet_code_id']);
@@ -128,7 +107,7 @@ class Block extends \yii\db\ActiveRecord
      */
     public function getSnippetVarValues()
     {
-        return $this->hasMany(SnippetVarValue::className(), ['page_block_id' => 'id']);
+        return $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id']);
     }
 
     /**
@@ -176,59 +155,55 @@ class Block extends \yii\db\ActiveRecord
         $path = '';
         $buffer = '';
 
-        if (!isset($this->compiled_data))
+        if (isset($this->portal)) //portalovy snippet
         {
-            if (isset($this->portal)) //portalovy snippet
-            {
-                $path = $this->portal->getPortalSnippetCacheDirectory();
-            }
-            else if (isset($this->product)) //produktovy snippet
-            {
-                $path = $this->product->getProductSnippetCacheDirectory();
-            }
-            else if (isset($this->column->row->section->page)) //block podstranky
-            {
-                $buffer = $this->column->row->section->page->getIncludePrefix();
-                $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
-            }
-            else if (isset($this->column->row->section->portal)) //block portalu
-            {
-                $buffer = $this->column->row->section->portal->getIncludePrefix();
-                $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
-            }
-
-            switch ($this->type)
-            {
-                case 'snippet' :
-
-                    $blockData = $this->compileSnippet();
-
-                    $path .= 'snippet_cache' . $this->id . '.latte';
-
-                    break;
-
-                default:
-
-                    $path .= 'block_cache' . $this->id . '.latte';
-
-                    $blockData = $this->data;
-            }
-
-            $buffer .= $blockData;
-
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
-
-            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($path, array());
-
-            $this->compiled_data = $result;
-
-            $this->save();
+            $path = $this->portal->getPortalSnippetCacheDirectory();
+        }
+        else if (isset($this->product)) //produktovy snippet
+        {
+            $path = $this->product->getProductSnippetCacheDirectory();
+        }
+        else if (isset($this->column->row->section->page)) //block podstranky
+        {
+            $buffer = $this->column->row->section->page->getIncludePrefix();
+            $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
+        }
+        else if (isset($this->column->row->section->portal)) //block portalu
+        {
+            $buffer = $this->column->row->section->portal->getIncludePrefix();
+            $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
         }
 
-        return $this->compiled_data;
+        switch ($this->type)
+        {
+            case 'snippet' :
+
+                $blockData = $this->prepareSnippetData();
+
+                $path .= 'snippet_cache' . $this->id . '.latte';
+
+                break;
+
+            default:
+
+                $path .= 'block_cache' . $this->id . '.latte';
+
+                $blockData = $this->data;
+        }
+
+        $buffer .= $blockData;
+
+        if (!file_exists($path))
+        {
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+        }
+
+        $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path, array()));
+
+        return $result;
     }
 
-    private function compileSnippet()
+    private function prepareSnippetData()
     {
         $buffer = '<?php ' . PHP_EOL;
 
@@ -239,10 +214,26 @@ class Block extends \yii\db\ActiveRecord
 
         $snippetVarValues = $this->snippetVarValues;
 
+        $buffer .= '/* Snippet values */' . PHP_EOL;
+
         /* @var $snippetVarValue SnippetVarValue */
         foreach($snippetVarValues as $snippetVarValue)
         {
-            $buffer .= '$' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
+            $page = $this->column->row->section->page;
+
+            if (isset($page) && isset($page->product))
+            {
+                $defaultValue = $snippetVarValue->getDefaultValue($page->product->productType);
+
+                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
+            }
+
+            if (isset($snippetVarValue->value) && $snippetVarValue->value != '\'\'')
+            {
+                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
+            }
+
+            $buffer .= '$' . $snippetVarValue->var->identifier . ' = $snippet->' . $snippetVarValue->var->identifier . ';' . PHP_EOL;
         }
 
         $buffer .= '?>' . PHP_EOL;

@@ -84,11 +84,11 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = Yii::$app->cacheEngine->cacheDirectory . $this->identifier . '/';
 
-        /*if (!file_exists($path))
+        if (!file_exists($path))
         {
             mkdir($path, 0777, true);
             mkdir($path . 'portals', 0777, true); //vytvori priecinok pre portaly
-        }*/
+        }
 
         return $path;
     }

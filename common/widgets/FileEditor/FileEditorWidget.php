@@ -2,6 +2,7 @@
 namespace common\widgets\FileEditor;
 
 use common\widgets\FileEditor\models\EditFileForm;
+use common\widgets\FileEditor\models\UploadFileForm;
 use DirectoryIterator;
 use LogicException;
 use RecursiveDirectoryIterator;
@@ -79,22 +80,35 @@ class FileEditorWidget extends \yii\bootstrap\Widget
 
     public function run()
     {
-        $model = new EditFileForm();
+        $edit_file_form = new EditFileForm();
+        $upload_file_form = new UploadFileForm($this->directory);
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $realpath = '/' . $this->normalizePath(realpath($this->directory) . $model->fileName); //realpath cannot
+        if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) {
+            $realpath = '/' . $this->normalizePath(realpath($this->directory) . $edit_file_form->fileName); //realpath cannot
             // be used, since the file may not exist
             if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
-                file_put_contents($realpath, $model->text);
+                file_put_contents($realpath, $edit_file_form->text);
             }
+        }
+
+        if ($upload_file_form->load(Yii::$app->request->post())) {
+            $upload_file_form->file = yii\web\UploadedFile::getInstance($upload_file_form, 'file');
+            if ($upload_file_form->validate()) {
+                $path = $upload_file_form->upload(false);
+                $edit_file_form->fileName = $upload_file_form->directory . '/' . $upload_file_form->file->getBaseName
+                    () . '.' . $upload_file_form->file->getExtension();
+                $edit_file_form->text = file_get_contents($path);
+            }
+
         }
 
         $fileTree = $this->buildTreeForDirectory($this->directory);
 
         return $this->render('file-editor', [
-            'directory' => $this->directory,
-            'fileTree'  => $fileTree,
-            'model'     => $model
+            'directory'      => $this->directory,
+            'fileTree'       => $fileTree,
+            'editFileForm'   => $edit_file_form,
+            'uploadFileForm' => $upload_file_form
         ]);
     }
 
