@@ -1,12 +1,14 @@
 <?php
+use yii\helpers\BaseHtml;
 
 /* @var $section backend\models\Section */
 
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
-
 <!--SECTION TO ADD-->
-<li class="panel panel-default section" 
-    data-options="{}">
+<div class="panel panel-default section" data-options="{}">
+    <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $section->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $section->id ? : $postIndex, ['class' => 'id']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -46,4 +48,4 @@
             </ul>
         </div>
     </div>
-</li>
+</div>

@@ -1,44 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 15.05.16
- * Time: 0:31
- */
-use yii\helpers\Html;
+
+use yii\helpers\BaseHtml;
 
 /* @var $block \backend\models\Block */
 
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
-<?php 
-// Check for block existence. 
-// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
-$clonedClass = $block->id == null ? 'cloned' : ''; 
-?>
+<?= BaseHtml::hiddenInput("Block[$postIndex][existing]", $block->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+<?= BaseHtml::hiddenInput("Block[$postIndex][id]", $block->id, ['class' => 'id']); ?>
+<?= BaseHtml::hiddenInput("Block[$postIndex][section_id]", $block->column_id, ['class' => 'section_id']); ?>
 
-<div class="btn-group block_element <?=$block->id ?>"
+<div class="btn-group block_element <?= $block->id ?>"
      data-content="" role="group">
     <button type="button" class="btn btn-default btn-sm" title="Nastavenie publikovania">
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" id="" class="btn btn-default btn-sm text-content-btn">
+    <button type="button" class="btn btn-default btn-sm text-content-btn">
         <?php echo $block->name; ?>
     </button>
 
     <?php if (($block->type == 'snippet') && isset($block->snippetCode)) : ?>
-
-    <?= Html::a(
-            '<span class="glyphicon glyphicon-link"></span>',
-            $block->snippetCode->url,
-            [
-                'class' => 'btn btn-info btn-sm',
-                'title' => 'Upraviť snippet',
-                'target' => '_blank'
-            ]
-        ) ?>
-
+        <?=
+        BaseHtml::a(
+                '<span class="glyphicon glyphicon-link"></span>', $block->snippetCode->url, [
+            'class' => 'btn btn-info btn-sm',
+            'title' => 'Upraviť snippet',
+            'target' => '_blank'
+                ]
+        )
+        ?>
     <?php endif; ?>
 
     <button type="button" class="btn btn-danger btn-sm" title="Zmazať element">

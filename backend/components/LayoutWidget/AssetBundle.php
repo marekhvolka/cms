@@ -13,6 +13,11 @@ class AssetBundle extends \yii\web\AssetBundle
 {
     public $basePath = '@app/components/LayoutWidget/assets';
     
+    // Disables assets caching.
+    public $publishOptions = [
+        'forceCopy' => true,
+    ];
+    
     public $css = [
         'css/style.css'
     ];

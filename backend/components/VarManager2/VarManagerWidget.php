@@ -6,12 +6,12 @@ use yii\base\Widget;
 
 class VarManagerWidget extends Widget
 {
-    /** Zoznam priradenych premenných
+    /** All variables assigned before.
      * @var
      */
     public $assignedVariableValues;
 
-    /** Zoznam všetkých premenných
+    /** List of all variables.
      * @var
      */
     public $allVariables;
@@ -39,7 +39,7 @@ class VarManagerWidget extends Widget
         ]);
     }
 
-    /** Metoda na vyrendrovanie view pre jednu vyplnenu premennu
+    /** Renders view for one appended variable.
      * @return string
      */
     public function appendVariableValue($varValue)

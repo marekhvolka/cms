@@ -1,24 +1,8 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use yii\helpers\BaseHtml;
-use yii\bootstrap\Modal;
-use yii\bootstrap\Nav;
-use kartik\sortable\Sortable;
-
-use backend\models\Section;
-use backend\models\Row;
-use backend\models\Column;
-use backend\models\Block;
-
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections \backend\models\Section */
-?>
-
-<?php
-//Sortable::widget();
 ?>
 
 <div class="section-form">
@@ -53,11 +37,13 @@ use backend\models\Block;
     ?>
 
     <?php
-    $idHash = Yii::$app->security->generateRandomString();
+    $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>
-    <ul class="sections" id="sections-<?= $idHash?>">
+    <ul class="sections" id="<?= $idHash?>">
         <?php foreach ($sections as $section) : ?>
+        <li>
             <?= $this->render('_section', ['section' => $section]); ?>
+        </li>
         <?php endforeach; ?>
     </ul>
     <div class="col-sm-10 col-sm-offset-2">
@@ -66,3 +52,12 @@ use backend\models\Block;
         </button>
     </div>
 </div>
+
+<?php
+$js = <<<JS
+
+var controllerUrl = '$controllerUrl';
+JS;
+
+$this->registerJs($js, \yii\web\View::POS_BEGIN);
+?>
