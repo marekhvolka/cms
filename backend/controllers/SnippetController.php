@@ -11,9 +11,7 @@ use backend\models\Snippet;
 use backend\models\search\SnippetSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.

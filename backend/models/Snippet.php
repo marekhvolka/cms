@@ -4,7 +4,6 @@ namespace backend\models;
 
 use Yii;
 use common\models\User;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "snippet".

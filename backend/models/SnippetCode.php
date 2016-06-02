@@ -118,7 +118,7 @@ class SnippetCode extends \yii\db\ActiveRecord
     }
 
     /** Returns array of newly created SnippetCodes from given data.
-     * @param $snippetCodeData
+     * @param $data
      * @return array
      */
     public static function createMultipleFromData($data)
@@ -157,10 +157,10 @@ class SnippetCode extends \yii\db\ActiveRecord
      * @param \backend\models\Snippet $snippet
      * @return boolean if deleting was successfull.
      */
-    public static function deleteMultiple($modelSnippetCodes, $snippet)
+    public static function deleteMultiple($snippetCodes, $snippet)
     {
         $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');// Former IDs.
-        $newCodesIDs = ArrayHelper::map($modelSnippetCodes, 'id', 'id'); // Newly updated IDs.
+        $newCodesIDs = ArrayHelper::map($snippetCodes, 'id', 'id'); // Newly updated IDs.
         $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);  // SnippetVar models to be deleted.
 
         foreach ($codesIDsToDelete as $codeID) {
