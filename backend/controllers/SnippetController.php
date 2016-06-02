@@ -58,8 +58,6 @@ class SnippetController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                
-                
                 // Snippet model validated and saved.
                 $modelValidatedAndSaved = $model->validate() && $model->save();
                 

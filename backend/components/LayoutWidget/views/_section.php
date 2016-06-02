@@ -1,23 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 15.05.16
- * Time: 0:30
- */
 
 /* @var $section backend\models\Section */
 
 ?>
 
-<?php 
-// Check for section existence. 
-// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
-$clonedClass = $section->id == null ? 'cloned' : ''; 
-?>
-
 <!--SECTION TO ADD-->
-<li class="panel panel-default section <?=$clonedClass?>" 
+<li class="panel panel-default section" 
     data-options="{}">
     <div class="btn-group section-buttons">
         <div class="section-button">

@@ -66,24 +66,3 @@ use backend\models\Block;
         </button>
     </div>
 </div>
-
-<div class="new-items" hidden="hidden">
-    <?= $this->render('_section', ['section' => new Section()]); ?>
-    <?= $this->render('_row', ['row' => new Row()]); ?>
-    <?= $this->render('_column', ['column' => new Column()]); ?>
-    <?= $this->render('_block', ['block' => new Block()]); ?>
-</div>
-
-<?php
-$js = <<<JS
-
-//$('#modal-1').modal({"show":false});
-        
-//$('.sections').sortable({});
-//$('.section-rows').sortable({});
-        
-JS;
-//$this->registerJs($js);
-
-//$this->registerJsFile('@web/js/layout.js');
-?>

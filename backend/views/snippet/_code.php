@@ -1,12 +1,11 @@
-<?php 
+<?php
 
-use yii\helpers\Html;
-use conquer\codemirror\CodemirrorAsset;
-use conquer\codemirror\CodemirrorWidget;
 use yii\helpers\BaseHtml;
-use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use backend\models\Portal;
+
+/* @var $this yii\web\View */
+/* @var $snippetCode backend\models\SnippetCode */
 
 ?>
 <?php
