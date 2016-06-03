@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use backend\models\Section;
 use backend\models\Row;
 use backend\models\Column;
+use backend\models\Block;
 
 /**
  * Widget for layout features - section, rows, columns functionality.
@@ -67,16 +68,11 @@ class LayoutWidget extends Widget
     /** Renders view for one appended section.
      * @return string
      */
-    public function appendColumn($column)
+    public function appendBlock($columnId)
     {
-        return $this->render('_column', ['column' => $column]);
-    }
-
-    /** Renders view for one appended section.
-     * @return string
-     */
-    public function appendBlock($block)
-    {
+        $block = new Block();
+        $block->column_id = $columnId;
+        $block->data = 'test'; // TODO test data.
         return $this->render('_block', ['block' => $block]);
     }
 

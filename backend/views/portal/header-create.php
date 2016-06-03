@@ -1,7 +1,7 @@
 <?php
 
 use backend\components\LayoutWidget\LayoutWidget;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
@@ -24,10 +24,10 @@ use yii\helpers\Url;
 <div class="navbar-fixed-bottom">
     <div class="col-sm-10 col-sm-offset-2">
         <div class="form-group">
-            <?= BaseHtml::buttonInput('Uložiť', [
-                'id' => 'save-btn',
-                'class' => 'btn btn-success btn-primary'
-            ])?>
+            <?= Html::submitButton('Uložiť', [
+                'class' => 'btn btn-primary',
+                'id' => 'submit-btn'
+            ]) ?>
         </div>
     </div>
 </div>

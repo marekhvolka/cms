@@ -41,4 +41,14 @@ class LayoutController extends BaseController
         
         return (new LayoutWidget())->appendRow($columnsWidth, $sectionId);
     }
+    
+    /**
+     * Action neccessary for LayoutWidget - appending one block at the end of the list.
+     * @param type $id id of column.
+     * @return string - call of LayoutWidget method for rendering view.
+     */
+    public function actionAppendBlocks($id)
+    {
+        return (new LayoutWidget())->appendBlock($id);
+    }
 }

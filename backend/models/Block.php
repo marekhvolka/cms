@@ -30,6 +30,8 @@ use yii\helpers\BaseVarDumper;
  */
 class Block extends \yii\db\ActiveRecord
 {
+    private $existing;  //Indicates if model allready exists.
+    
     /**
      * @inheritdoc
      */
@@ -68,6 +70,23 @@ class Block extends \yii\db\ActiveRecord
             'type' => 'Typ bloku',
             'active' => 'Aktívny'
         ];
+    }
+    
+    /*
+     * Getter for $existing property which indicates if model allready exists.
+     */
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property which indicates if model allready exists.
+     * @param string $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
     }
 
     /**
@@ -109,6 +128,28 @@ class Block extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id']);
     }
+    
+    /** Returns array of newly created models from given data.
+     * @param $data
+     * @return array
+     */
+    public static function createMultipleFromData($data)
+    {
+        $blocks = [];
+
+        foreach ($data as $i => $dataItem) {
+            if ($dataItem['existing'] == 'true') {
+                $block = Block::findOne($dataItem['id']);
+            } else {
+                $block = new Block();
+            }
+
+            $block->existing = $dataItem['existing'];
+            $blocks[$i] = $block;
+        }
+
+        return $blocks;
+    }
 
     /**
      * @return string
@@ -121,22 +162,17 @@ class Block extends \yii\db\ActiveRecord
         {
             case 'html':
                 $name = 'HTML';
-
                 break;
-
             case 'snippet':
                 //TODO: fix with valid database
-
-                if ($this->snippetCode)
+                if ($this->snippetCode) {
                     $name = $this->snippetCode->snippet->name;
-                else
+                } else {
                     $name = 'Zmazaný kód snippetu';
-
+                }
                 break;
-
             case 'text':
                 $name = 'TEXT';
-
                 break;
             default:
                 $name = 'undefined';
@@ -177,17 +213,11 @@ class Block extends \yii\db\ActiveRecord
         switch ($this->type)
         {
             case 'snippet' :
-
                 $blockData = $this->prepareSnippetData();
-
                 $path .= 'snippet_cache' . $this->id . '.latte';
-
                 break;
-
             default:
-
                 $path .= 'block_cache' . $this->id . '.latte';
-
                 $blockData = $this->data;
         }
 

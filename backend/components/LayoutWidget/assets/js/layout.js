@@ -2,6 +2,7 @@ var optionsElement;
 var appendUrl = {
     section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
+    block: controllerUrl + '/' + 'append-block',
 }
 
 $('.btn-add-section').click(function () {
@@ -11,6 +12,7 @@ $('.btn-add-section').click(function () {
         var appendedDiv = $(data);
         $(row).append(appendedDiv);
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
+        attachAddRowEvent(row.find('.add-row'));
     });
 });
 
@@ -30,88 +32,49 @@ function attachRemoveRowEvent(removeButton) {
 
 attachRemoveRowEvent($('.btn-remove-row'));
 
+function attachAddRowEvent(button) {
+    button.click(function () {
+        var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
+        var section = $(this).parents('.section').first();
+        var sectionId = section.find('.id').val();
 
+        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
+            var sectionRows = section.find('.section-rows');
+            var row = $('<li></li>');
+            var row = row.appendTo(sectionRows);
+            var appendedDiv = $(data);
+            $(row).append(appendedDiv);
+            attachRemoveSectionEvent(row.find('.btn-remove-row'));
+        });
+    });
+}
 
+attachAddRowEvent($('.add-row'));
 
-$('.add-row').click(function () {
-    var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
-    var section = $(this).parents('.section').first();
-    var sectionId = section.find('.id').val();
-    
-    $.post(appendUrl.row, {columns : columnsByWidth, sectionId: sectionId}, function (data) {
-        var sectionRows = section.find('.section-rows');
+$('.column-option').click(function (e) {
+    $.get(appendUrl.section, function (data) {
         var row = $('<li></li>');
-        var row = row.appendTo(sectionRows);
+        var row = row.appendTo($('.sections'));
         var appendedDiv = $(data);
         $(row).append(appendedDiv);
-        attachRemoveSectionEvent(row.find('.btn-remove-row'));
+        attachRemoveSectionEvent(row.find('.btn-remove-section'));
+        attachAddRowEvent(row.find('.add-row'));
     });
 });
 
 
-//$.get(snippetVarParams.appendVarUrl, function (data) {
-//    snippetVarParams.variableHtml = data;
-//});
-//
-//$('#save-btn').click(function () {
-//    var data = prepareData();
-//    $.post(pageParams.url, {data: data}, function (result) {
-//        console.log(result);
-//    });
-//});
-//
-//function prepareData() {
-//    // Loop trhough Sections.
-//    var sections = $('.section');
-//    sections.each(function() {
-//        
-//        //$(this)
-//    });
-//}
 
 
-$('.btn-add-section2').click(function (e) {
-    var sectionClone = $('.section.cloned').first().clone();
-    sectionClone.removeClass('cloned');
-    var sectionsId = $(this).data('sections-id');
-    $('#sections-' + sectionsId).append(sectionClone);
-    
-    // Attach remove button event.
-    sectionClone.find('.btn-remove-section').first().click(function () {
-        $(this).parents('.section').remove();
-    });
 
-    // Add row.
-    sectionClone.find('.add-row').click(function (e) {
-        var row = $('<li></li>');
-        var sectionRows = sectionClone.find('.section-rows');
-        row = row.appendTo(sectionRows);
-        var rowClone = $('.layout-row.cloned').first().clone();
-        rowClone.removeClass('cloned');
-        row = rowClone.appendTo(row);
 
-        var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
 
-        // Add column.
-        for (var i = 0; i < columnsByWidth.length; i++) {
-            var columnClone = $('.column.cloned').first().clone();
-            columnClone.addClass('col-md-' + columnsByWidth[i]);
 
-            columnClone.removeClass('cloned');
-            row.append(columnClone);
 
-            // Remove row event attached.
-            columnClone.find('.btn-remove-row').click(function () {
-                $(this).parents('.row').first().remove();
-            });
 
-            //attachOptionsButtonEvent(columnClone.find('.options-btn'));
-        }
 
-    });
 
-    attachOptionsButtonEvent(sectionClone.find('.options-btn'));
-});
+
+
 
 
 function attachOptionsButtonEvent(button) {

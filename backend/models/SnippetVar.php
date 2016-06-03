@@ -28,12 +28,11 @@ use yii\helpers\ArrayHelper;
  */
 class SnippetVar extends \yii\db\ActiveRecord
 {
+    private $existing;  //Indicates if model allready exists.
+    
     /**
      * @inheritdoc
      */
-
-    private $existing;
-
     public static function tableName()
     {
         return 'snippet_var';
@@ -87,11 +86,18 @@ class SnippetVar extends \yii\db\ActiveRecord
         return parent::beforeDelete();
     }
 
+    /*
+     * Getter for $existing property which indicates if model allready exists.
+     */
     public function getExisting()
     {
         return $this->existing;
     }
 
+    /**
+     * Setter for $existing property which indicates if model allready exists.
+     * @param string $newExisting new property value.
+     */
     public function setExisting($newExisting)
     {
         $this->existing = $newExisting;

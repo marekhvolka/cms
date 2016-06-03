@@ -12,7 +12,7 @@ use yii\helpers\Url;
  * @property integer $id
  * @property string $name
  * @property string $code
- * @property string $popis
+ * @property string $description
  * @property string $portal
  * @property integer $snippet_id
  *

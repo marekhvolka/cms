@@ -65,19 +65,6 @@ class SnippetController extends BaseController
                 // Array of SnippetCode models used later for multiple validation.
                 $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
                 
-                
-                // TODO ajax validation attempts
-                /*
-                if (Yii::$app->request->isAjax) {
-                    Yii::$app->response->format = 'json';
-                    $result = array_merge(\yii\bootstrap\ActiveForm::validate($model), 
-                            \yii\bootstrap\ActiveForm::validateMultiple($snippetCodes));
-                    //return \yii\bootstrap\ActiveForm::validate($model);
-                    return $result;
-                }
-                 * 
-                 */
-
                 // SnippetCode models multiple loading, validation and saving.
                 $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
                 $validCodes = Model::validateMultiple($snippetCodes);
