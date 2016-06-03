@@ -73,6 +73,7 @@ class LayoutWidget extends Widget
         $block = new Block();
         $block->column_id = $columnId;
         $block->data = 'test'; // TODO test data.
+        $block->type = 'text'; // TODO test data.
         return $this->render('_block', ['block' => $block]);
     }
 

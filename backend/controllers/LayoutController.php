@@ -47,7 +47,7 @@ class LayoutController extends BaseController
      * @param type $id id of column.
      * @return string - call of LayoutWidget method for rendering view.
      */
-    public function actionAppendBlocks($id)
+    public function actionAppendBlock($id)
     {
         return (new LayoutWidget())->appendBlock($id);
     }

@@ -250,7 +250,7 @@ class PortalController extends BaseController
 
             foreach ($sections as $section) {
                 $formerId = $section->id;
-                if (!$snippetCode->save()) {
+                if (!$section->save()) {
                     return false;
                 }
 
@@ -262,6 +262,45 @@ class PortalController extends BaseController
                     }
                 }
             }
+
+            foreach ($rows as $row) {
+                $formerId = $row->id;
+                if (!$row->save()) {
+                    return false;
+                }
+
+                if ($row->existing == 'false') {   // TODO or if ($formerId != $section->id)
+                    foreach ($columns as $column) {
+                        if ($column->row_id == $formerId) {
+                            $column->row_id = $row->id;
+                        }
+                    }
+                }
+            }
+
+            foreach ($columns as $column) {
+                $formerId = $column->id;
+                if (!$column->save()) {
+                    return false;
+                }
+
+                if ($column->existing == 'false') {   // TODO or if ($formerId != $section->id)
+                    foreach ($blocks as $block) {
+                        if ($block->column_id == $formerId) {
+                            $block->column_id = $column->id;
+                        }
+                    }
+                }
+            }
+            
+            foreach ($blocks as $block) {
+                if (!$block->save()) {
+                    return false;
+                }
+            }
+            
+            // TODO - add ordering functionality
+            // TODO here comes deleting 
             
             
             

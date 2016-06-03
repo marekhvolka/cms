@@ -245,10 +245,16 @@ class SnippetVar extends \yii\db\ActiveRecord
         return true;
     }
 
-    public static function deleteMultiple($modelSnippetVars, Snippet $snippet)
+    /**
+     * Multiple delete of SnippetVar models by given Snippet model (SnippetVar deleted by user).
+     * @param \backend\models\SnippetVar $snippetVars
+     * @param \backend\models\Snippet $snippet
+     * @return boolean if deleting was successfull.
+     */
+    public static function deleteMultiple($snippetVars, Snippet $snippet)
     {
         $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
-        $newVarsIDs = ArrayHelper::map($modelSnippetVars, 'id', 'id');
+        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');
         $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
 
         foreach ($varsIDsToDelete as $varID) {
@@ -258,7 +264,6 @@ class SnippetVar extends \yii\db\ActiveRecord
             }
         }
     }
-
 
     public function getDefaultValue()
     {
