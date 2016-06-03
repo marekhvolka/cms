@@ -124,10 +124,9 @@ class Section extends \yii\db\ActiveRecord
             $sections[$i] = $section;
         }
 
-
         return $sections;
     }
-
+    
     public function getPrefix()
     {
         $settings = $this->getChildCssSettings();
