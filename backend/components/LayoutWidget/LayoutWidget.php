@@ -17,6 +17,7 @@ class LayoutWidget extends Widget
 
     public $controllerUrl;
     public $sections;
+    public $type;
 
     public function init()
     {
@@ -30,15 +31,18 @@ class LayoutWidget extends Widget
         return $this->render('layoutWidget', [
                     'sections' => $this->sections,
                     'controllerUrl' => $this->controllerUrl,
+                    'type' => $this->type,
         ]);
     }
 
     /** Renders view for one appended section.
      * @return string
      */
-    public function appendSection()
+    public function appendSection($type)
     {
-        return $this->render('_section', ['section' => new Section()]);
+        $section = new Section();
+        $section->type = $type;
+        return $this->render('_section', ['section' => $section]);
     }
 
     /** Renders view for one appended rpw.

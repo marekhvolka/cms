@@ -58,6 +58,12 @@ class Column extends \yii\db\ActiveRecord
         ];
     }
     
+    public function beforeDelete()
+    {
+        $this->unlinkAll('blocks', true);
+        return parent::beforeDelete();
+    }
+    
     /*
      * Getter for $existing property which indicates if model allready exists.
      */
@@ -105,6 +111,7 @@ class Column extends \yii\db\ActiveRecord
                 $column = Column::findOne($dataItem['id']);
             } else {
                 $column = new Column();
+                $column->row_id = $dataItem['row_id'];
             }
 
             $column->existing = $dataItem['existing'];

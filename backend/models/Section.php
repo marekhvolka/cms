@@ -61,6 +61,14 @@ class Section extends \yii\db\ActiveRecord
             'type' => 'Type',
         ];
     }
+    
+    public function beforeDelete()
+    {
+        foreach ($this->rows as $row) {
+            $row->delete();
+        }
+        return parent::beforeDelete();
+    }
 
     /*
      * Getter for $existing property which indicates if model allready exists.

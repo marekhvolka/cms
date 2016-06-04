@@ -9,6 +9,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
 <div class="panel panel-default section" data-options="{}">
     <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $section->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $section->id ? : $postIndex, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][type]", $section->type, ['class' => 'type']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">

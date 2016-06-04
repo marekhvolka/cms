@@ -1,6 +1,6 @@
 var optionsElement;
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section',
+    section: controllerUrl + '/' + 'append-section?type=' + layoutType,
     row: controllerUrl + '/' + 'append-row',
     block: controllerUrl + '/' + 'append-block',
 }
@@ -45,13 +45,14 @@ function attachAddRowEvent(button) {
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
             attachRemoveSectionEvent(row.find('.btn-remove-row'));
+            attachAddBlockEvent(row.find('.column-option'));
         });
     });
 }
 
 attachAddRowEvent($('.add-row'));
 
-function attachAddRowEvent(button) { 
+function attachAddBlockEvent(button) { 
     button.click(function () {
         var column = $(this).parents('.column').first();
         var columnId = column.find('.id').first().val();
@@ -67,7 +68,7 @@ function attachAddRowEvent(button) {
     });
 }
 
-attachAddRowEvent($('.column-option'));
+attachAddBlockEvent($('.column-option'));
 
 function attachRemoveBlockEvent(removeButton) {
     removeButton.click(function () {

@@ -52,6 +52,12 @@ class Row extends \yii\db\ActiveRecord
         ];
     }
     
+    public function beforeDelete()
+    {
+        $this->unlinkAll('columns', true);
+        return parent::beforeDelete();
+    }
+    
     /*
      * Getter for $existing property which indicates if model allready exists.
      */
@@ -109,7 +115,8 @@ class Row extends \yii\db\ActiveRecord
             if ($dataItem['existing'] == 'true') {
                 $row = Row::findOne($dataItem['id']);
             } else {
-                $row = new Section();
+                $row = new Row();
+                $row->section_id = $dataItem['section_id'];
             }
 
             $row->existing = $dataItem['existing'];

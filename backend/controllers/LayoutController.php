@@ -23,11 +23,12 @@ class LayoutController extends BaseController
     
     /**
      * Action neccessary for LayoutWidget - appending one section at the end of the list.
+     * @param type $type
      * @return string - call of LayoutWidget method for rendering view.
      */
-    public function actionAppendSection()
+    public function actionAppendSection($type)
     {
-        return (new LayoutWidget())->appendSection();
+        return (new LayoutWidget())->appendSection($type);
     }
     
     /**

@@ -142,6 +142,7 @@ class Block extends \yii\db\ActiveRecord
                 $block = Block::findOne($dataItem['id']);
             } else {
                 $block = new Block();
+                $block->column_id = $dataItem['column_id'];
             }
 
             $block->existing = $dataItem['existing'];

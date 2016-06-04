@@ -57,6 +57,7 @@
 $js = <<<JS
 
 var controllerUrl = '$controllerUrl';
+var layoutType = '$type';
 JS;
 
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

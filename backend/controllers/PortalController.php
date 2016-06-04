@@ -221,89 +221,119 @@ class PortalController extends BaseController
         ]);
     }
 
-    
     // TODO - move this action to LayoutController
     public function actionFooterCreate()
     {
+//        $existingSections = Section::findAll([
+//                    'type' => 'footer',
+//                    'portal_id' => Yii::$app->session->get('portal_id')
+//        ]);
+//        foreach ($existingSections as $section) {
+//            $section->delete();
+//        }
         if (Yii::$app->request->isPost) {
-            $sectionsData = Yii::$app->request->post('Section');
-            $rowsData = Yii::$app->request->post('Row');
-            $columnsData = Yii::$app->request->post('Column');
-            $blocksData = Yii::$app->request->post('Block');
+            $existingSections = Section::findAll([
+                        'type' => 'footer',
+                        'portal_id' => Yii::$app->session->get('portal_id')
+            ]);
 
-            $sections = Section::createMultipleFromData($sectionsData);
-            $rows = Row::createMultipleFromData($rowsData);
-            $columns = Column::createMultipleFromData($columnsData);
-            $blocks = Block::createMultipleFromData($blocksData);
+            try {
+                 $sectionsData = Yii::$app->request->post('Section');
+                $rowsData = Yii::$app->request->post('Row');
+                $columnsData = Yii::$app->request->post('Column');
+                $blocksData = Yii::$app->request->post('Block');
 
-            $loadedSections = Model::loadMultiple($sections, Yii::$app->request->post());
-            $validSections = Model::validateMultiple($sections);
-           
-            $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
-            $validRows = Model::validateMultiple($rows);
+                $sections = Section::createMultipleFromData($sectionsData);
+                $rows = Row::createMultipleFromData($rowsData);
+                $columns = Column::createMultipleFromData($columnsData);
+                $blocks = Block::createMultipleFromData($blocksData);
 
-            $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
-            $validColumns = Model::validateMultiple($columns);
+                $loadedSections = Model::loadMultiple($sections, Yii::$app->request->post());
+                $validSections = Model::validateMultiple($sections);
 
-            $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
-            $validBlocks = Model::validateMultiple($blocks);
+                foreach ($sections as $section) {
+                    $formerId = $section->id;
 
-            foreach ($sections as $section) {
-                $formerId = $section->id;
-                if (!$section->save()) {
-                    return false;
-                }
+                    if ($section->existing == 'false') {
+                        $section->id = null;
+                        if (!$section->save()) {
+                            return false;
+                        }
 
-                if ($section->existing == 'false') {   // TODO or if ($formerId != $section->id)
-                    foreach ($rows as $row) {
-                        if ($row->section_id == $formerId) {
-                            $row->section_id = $section->id;
+                        foreach ($rows as $row) {
+                            $sectionId = $row->section_id;
+                            
+                            if ($sectionId == $formerId) {
+                                $row->section_id = $section->id;
+                            }
                         }
                     }
                 }
-            }
 
-            foreach ($rows as $row) {
-                $formerId = $row->id;
-                if (!$row->save()) {
-                    return false;
-                }
+                $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
+                $validRows = Model::validateMultiple($rows);
 
-                if ($row->existing == 'false') {   // TODO or if ($formerId != $section->id)
-                    foreach ($columns as $column) {
-                        if ($column->row_id == $formerId) {
-                            $column->row_id = $row->id;
+                foreach ($rows as $row) {
+                    $formerId = $row->id;
+
+                    if ($row->existing == 'false') {
+                        $row->id = null;
+                        if (!$row->save()) {
+                            return false;
+                        }
+
+                        foreach ($columns as $column) {
+                            if ($column->row_id == $formerId) {
+                                $column->row_id = $row->id;
+                            }
                         }
                     }
                 }
-            }
 
-            foreach ($columns as $column) {
-                $formerId = $column->id;
-                if (!$column->save()) {
-                    return false;
-                }
+                $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
+                $validColumns = Model::validateMultiple($columns);
 
-                if ($column->existing == 'false') {   // TODO or if ($formerId != $section->id)
-                    foreach ($blocks as $block) {
-                        if ($block->column_id == $formerId) {
-                            $block->column_id = $column->id;
+                foreach ($columns as $column) {
+                    $formerId = $column->id;
+                    if ($column->existing == 'false') {
+                        $column->id = null;
+                        if (!$column->save()) {
+                            return false;
+                        }
+
+                        foreach ($blocks as $block) {
+                            if ($block->column_id == $formerId) {
+                                $block->column_id = $column->id;
+                            }
                         }
                     }
                 }
-            }
-            
-            foreach ($blocks as $block) {
-                if (!$block->save()) {
-                    return false;
+
+                $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
+                $validBlocks = Model::validateMultiple($blocks);
+
+                foreach ($blocks as $block) {
+                    if (!$block->save()) {
+                        return false;
+                    }
                 }
+
+                $oldIDs = ArrayHelper::map($existingSections, 'id', 'id');
+                $newIDs = ArrayHelper::map($sections, 'id', 'id');
+                $IDsToDelete = array_diff($oldIDs, $newIDs);
+
+                foreach ($IDsToDelete as $id) {
+                    $sectionToDelete = Section::findOne($id);
+                    if ($sectionToDelete) {
+                        $sectionToDelete->delete();
+                    }
+                }
+            } catch (Exception $exc) {
+                $test = $exc;
             }
-            
+
             // TODO - add ordering functionality
             // TODO here comes deleting 
-            
-            
-            
         }
 
         $sections = Section::findAll([
