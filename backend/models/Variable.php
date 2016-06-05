@@ -61,4 +61,12 @@ class Variable extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
     }
+
+    /** Vrati true, ak je premenna typu portalovy/produktovy snippet
+     * @return bool
+     */
+    public function isSnippet()
+    {
+        return ($this->type->identifier == 'product_snippet' || $this->type->identifier == 'portal_snippet');
+    }
 }

@@ -69,7 +69,7 @@ class Row extends \yii\db\ActiveRecord
 
     public function getPrefix()
     {
-        return '<div class="row">' . PHP_EOL;
+        return '<div class="row" id="row$this->id">' . PHP_EOL;
     }
 
     public function getPostfix()

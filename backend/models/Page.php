@@ -267,9 +267,21 @@ class Page extends \yii\db\ActiveRecord
 
     public function getMainContent()
     {
-        $result = '<div id="content" class="col-md-8">';
+        if (!$this->sidebar_active)
+        {
+            $width = 12;
+        }
+        else
+        {
+            $width = 12 - $this->sidebar_size;
+        }
 
-        $result .= $this->contentSection->getContent();
+        $result = '<div id="content" class="col-md-' . $width . '">';
+
+        foreach($this->contentSection->rows as $row)
+        {
+            $result .= $row->getContent();
+        }
 
         $result .= '</div> <!-- Content End -->';
 
@@ -278,14 +290,19 @@ class Page extends \yii\db\ActiveRecord
 
     public function getSidebarContent()
     {
-        $result = '<div id="sidebar" class="col-md-4">';
+        $result = '';
 
         if ($this->sidebar_active && isset($this->sidebarSection))
         {
-            $result .= $this->sidebarSection->getContent();
-        }
+            $result = '<div id="sidebar" class="col-md-' . $this->sidebar_size . '">';
 
-        $result .= '</div> <!-- Sidebar End -->';
+            foreach($this->sidebarSection->rows as $row)
+            {
+                $result .= $row->getContent();
+            }
+
+            $result .= '</div> <!-- Sidebar End -->';
+        }
 
         return $result;
     }
@@ -328,7 +345,7 @@ class Page extends \yii\db\ActiveRecord
 
             $buffer .= ');' . PHP_EOL;
 
-            $buffer .= '$page = new ObjectBridge($tempObject);' . PHP_EOL;
+            $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
             if (isset($this->color_scheme))
             {
@@ -371,11 +388,11 @@ class Page extends \yii\db\ActiveRecord
 
                     break;
                 case 'sidebar':
-                    $buffer = $this->getMainContent();
+                    $buffer = $this->getSidebarContent();
 
                     break;
                 case 'content':
-                    $buffer = $this->getSidebarContent();
+                    $buffer = $this->getMainContent();
 
                     break;
             }
@@ -457,6 +474,7 @@ class Page extends \yii\db\ActiveRecord
 
                 <main>
               {$page_header}
+              <div id="page-content">
                 <div class="wrapper"><div class="container"><div class="row">
               {$page_content}
 
@@ -464,7 +482,7 @@ class Page extends \yii\db\ActiveRecord
                 </div> <!-- row end -->
                 </div> <!--container end -->
                 </div> <!--wrapper end -->
-
+                </div> <!-- page-content-->
               {$page_footer}
                 </main>
               {$global_footer}
@@ -518,12 +536,12 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getHead()
     {
-        $buffer = '\'page' . $this->id . '\' => (object) array(' . PHP_EOL;
+        $buffer = '$tempPage' . $this->id . ' = (object) array(' . PHP_EOL;
 
         $buffer .= '\'url\' => \'' . $this->getUrl() . '\', ' . PHP_EOL;
         $buffer .= '\'name\' => \'' . addslashes($this->name) . '\', ' . PHP_EOL;
 
-        $buffer .= '),' . PHP_EOL;
+        $buffer .= ');' . PHP_EOL;
 
         return $buffer;
     }

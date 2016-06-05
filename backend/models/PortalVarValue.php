@@ -10,9 +10,11 @@ use Yii;
  * @property integer $id
  * @property integer $portal_id
  * @property integer $variable_id
- * @property string $value
+ * @property string $value_text
  * @property int $value_page_id
+ * @property int value_block_id
  *
+ * @property Block $valueBlock
  * @property Page $valuePage
  * @property Portal $portal
  */
@@ -34,7 +36,7 @@ class PortalVarValue extends \yii\db\ActiveRecord
         return [
             [['var_id'], 'required'],
             [['portal_id', 'var_id', 'value_page_id'], 'integer'],
-            [['value'], 'string'],
+            [['value_text'], 'string'],
             [['var_id', 'portal_id'], 'unique', 'targetAttribute' => ['var_id', 'portal_id'], 'message' => 'The combination of Portal ID and Var ID has already been taken.']
         ];
     }
@@ -48,7 +50,8 @@ class PortalVarValue extends \yii\db\ActiveRecord
             'id' => 'ID',
             'portal_id' => 'Portal ID',
             'var_id' => 'Var ID',
-            'value' => 'Value',
+            'value_text' => 'Value',
+            'value_block' => 'Value Block',
         ];
     }
 
@@ -76,6 +79,14 @@ class PortalVarValue extends \yii\db\ActiveRecord
         return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValueBlock()
+    {
+        return $this->hasOne(Block::className(), ['id' => 'value_block_id']);
+    }
+
     public function getValue()
     {
         $value = '';
@@ -91,7 +102,7 @@ class PortalVarValue extends \yii\db\ActiveRecord
             case 'page' :
 
                 if (isset($this->valuePage))
-                    $value = '$page' . $this->valuePage->id;
+                    $value = '$portal->pages->page' . $this->valuePage->id;
                 else
                     $value = 'NULL';
 
@@ -105,8 +116,13 @@ class PortalVarValue extends \yii\db\ActiveRecord
 
                 break;
 
+            case 'portal_snippet' :
+
+                $value = $this->valueBlock->compileBlock();
+
+                break;
             default:
-                $value = '\''. addslashes($this->value) . '\'';
+                $value = '\''. addslashes($this->value_text) . '\'';
         }
 
         return $value;

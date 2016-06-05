@@ -264,7 +264,7 @@ class SnippetVar extends \yii\db\ActiveRecord
         {
             case 'list' :
 
-                $value = '(object) array()';
+                $value = ' array()';
 
                 break;
 

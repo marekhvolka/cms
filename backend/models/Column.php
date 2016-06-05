@@ -102,7 +102,7 @@ class Column extends \yii\db\ActiveRecord
         $settings = array();
 
         $settings['classes'] = '';
-        $settings['ids'] = '';
+        $settings['ids'] = 'col' . $this->id;
         $settings['styles'] = '';
 
         foreach($this->blocks as $block)
@@ -132,7 +132,8 @@ class Column extends \yii\db\ActiveRecord
 
         foreach ($this->blocks as $block)
         {
-            $result .= $block->getContent();
+            if ($block->active)
+                $result .= file_get_contents($block->getMainFile());
         }
 
         $result .= $this->getPostfix();

@@ -41,17 +41,17 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             <?php
                 switch($varValue->var->type->identifier) {
                     case 'textarea':
-                        echo Html::activeTextarea($varValue, 'value', [
+                        echo Html::activeTextarea($varValue, 'value_text', [
                             'class' => 'form-control',
                             'rows' => 5,
                             'placeholder' => $varValue->var->name,
-                            'name' => $varValueModelName . '[' . $postIndex . '][value]',
+                            'name' => $varValueModelName . '[' . $postIndex . '][value_text]',
                         ]);
                         break;
                     default:
-                        echo Html::activeTextInput($varValue, 'value', [
+                        echo Html::activeTextInput($varValue, 'value_text', [
                             'class' => 'form-control',
-                            'name' => $varValueModelName . '[' . $postIndex . '][value]',
+                            'name' => $varValueModelName . '[' . $postIndex . '][value_text]',
                         ]);
                         break;
                 }

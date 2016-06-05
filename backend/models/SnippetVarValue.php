@@ -43,7 +43,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
             [['var_id'], 'required'],
             [['block_id', 'var_id', 'value_page_id', 'value_tag_id', 'value_product_var_id', 'value_product_id'], 'integer'],
             [['value_text'], 'string'],
-            [['var_id', 'block_id', 'list_item_id'], 'unique', 'targetAttribute' => ['var_id', 'page_block_id', 'list_item_id'], 'message' => 'The combination of Page Block ID, ListItemID and Var ID has already been taken.']
+            [['var_id', 'block_id', 'list_item_id'], 'unique', 'targetAttribute' => ['var_id', 'block_id', 'list_item_id'], 'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.']
         ];
     }
 
@@ -54,7 +54,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'block_id' => 'Page Block ID',
+            'block_id' => 'Block ID',
             'var_id' => 'Var ID',
             'value' => 'Value',
         ];
@@ -82,6 +82,14 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     public function getValuePage()
     {
         return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValueTag()
+    {
+        return $this->hasOne(Tag::className(), ['id' => 'value_tag_id']);
     }
 
     /**
@@ -118,7 +126,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
             case 'page' :
 
                 if (isset($this->valuePage))
-                    $value = '$page' . $this->valuePage->id;
+                    $value = '$portal->pages->page' . $this->valuePage->id;
                 else
                     $value = 'NULL';
 
@@ -132,6 +140,12 @@ class SnippetVarValue extends \yii\db\ActiveRecord
 
                 break;
 
+            case 'product_tag' :
+
+                $value = '$' . $this->valueTag->identifier;
+
+                //TODO: dokoncit
+                break;
             default:
 
                 $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
