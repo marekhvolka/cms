@@ -60,13 +60,14 @@ class ListVar extends \yii\db\ActiveRecord
 
     public function getValue()
     {
-        $buffer = '(object) array(' . PHP_EOL;
+        $buffer = ' array(' . PHP_EOL;
 
+        $index = 0;
         foreach($this->listItems as $listItem)
         {
             if ($listItem->active)
             {
-                $buffer .= '\'' . $listItem->id . '\' => ' . $listItem->value . ', ';
+                $buffer .= '\'' . $index++ . '\' => ' . $listItem->value . ', ' . PHP_EOL;
             }
         }
 

@@ -1,12 +1,14 @@
-<?php 
+<?php
 
-use yii\helpers\Html;
 use conquer\codemirror\CodemirrorAsset;
 use conquer\codemirror\CodemirrorWidget;
 use yii\helpers\BaseHtml;
-use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use backend\models\Portal;
+
+/* @var $this yii\web\View */
+/* @var $snippetCode backend\models\SnippetCode */
+/* @var $form yii\widgets\ActiveForm */
 
 ?>
 <?php
@@ -34,14 +36,31 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-12">
-                <label class="control-label" for="snippetcode-code">
-                    <?= $snippetCode->getAttributeLabel('code'); ?>
-                </label>
                 <?php
-                echo BaseHtml::activeTextarea($snippetCode, "code", [
-                    'class' => 'form-control',
-                    'name' => "SnippetCode[$postIndex][code]",
-                ]);
+                echo CodemirrorWidget::widget([
+                        'name' => "SnippetCode[$postIndex][code]",
+                        'value' => $snippetCode->code,
+                        'assets' => [
+                            CodemirrorAsset::MODE_CLIKE,
+                            CodemirrorAsset::KEYMAP_EMACS,
+                            CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
+                            CodemirrorAsset::ADDON_COMMENT,
+                            CodemirrorAsset::ADDON_DIALOG,
+                            CodemirrorAsset::ADDON_SEARCHCURSOR,
+                            CodemirrorAsset::ADDON_SEARCH,
+                        ],
+                        'settings' => [
+                            'lineNumbers' => true,
+                            'mode' => 'text/x-csrc',
+                        ],
+                        'options' => [
+                            'class' => 'html-editor form-control code-code attribute',
+                            'data-attribute-name' => 'code',
+                            'autofocus' => 'false',
+                            'name' => "SnippetCode[$postIndex][code]",
+                        ]
+                    ]
+                );
                 ?>
             </div>
         </div><!-- .row -->

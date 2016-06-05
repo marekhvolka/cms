@@ -58,16 +58,16 @@
         },
         {
             "name": "bower-asset/codemirror",
-            "version": "5.14.2",
+            "version": "5.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/codemirror/CodeMirror.git",
-                "reference": "c50b08ba4411a68dce8050f3d283fb9cc2b5f8cf"
+                "reference": "8097c7e75ce7ef0512debe9967d7568626106e53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codemirror/CodeMirror/zipball/c50b08ba4411a68dce8050f3d283fb9cc2b5f8cf",
-                "reference": "c50b08ba4411a68dce8050f3d283fb9cc2b5f8cf",
+                "url": "https://api.github.com/repos/codemirror/CodeMirror/zipball/8097c7e75ce7ef0512debe9967d7568626106e53",
+                "reference": "8097c7e75ce7ef0512debe9967d7568626106e53",
                 "shasum": ""
             },
             "type": "bower-asset-library",
@@ -93,16 +93,16 @@
         },
         {
             "name": "bower-asset/jquery",
-            "version": "2.2.3",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jquery/jquery-dist.git",
-                "reference": "af22a351b2ea5801ffb1695abb3bb34d5bed9198"
+                "reference": "c0185ab7c75aab88762c5aae780b9d83b80eda72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/af22a351b2ea5801ffb1695abb3bb34d5bed9198",
-                "reference": "af22a351b2ea5801ffb1695abb3bb34d5bed9198",
+                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/c0185ab7c75aab88762c5aae780b9d83b80eda72",
+                "reference": "c0185ab7c75aab88762c5aae780b9d83b80eda72",
                 "shasum": ""
             },
             "type": "bower-asset-library",
@@ -578,12 +578,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-tree-manager.git",
-                "reference": "497c2f1f43a61611009fb058bff1fc6caaa46036"
+                "reference": "3944915919d159879cb35db90f1d66f65904f4c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/497c2f1f43a61611009fb058bff1fc6caaa46036",
-                "reference": "497c2f1f43a61611009fb058bff1fc6caaa46036",
+                "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/3944915919d159879cb35db90f1d66f65904f4c6",
+                "reference": "3944915919d159879cb35db90f1d66f65904f4c6",
                 "shasum": ""
             },
             "require": {
@@ -626,7 +626,7 @@
                 "tree",
                 "treeview"
             ],
-            "time": "2016-04-27 19:23:20"
+            "time": "2016-05-17 17:12:14"
         },
         {
             "name": "kartik-v/yii2-widget-activeform",
@@ -829,16 +829,16 @@
         },
         {
             "name": "latte/latte",
-            "version": "v2.3.11",
+            "version": "v2.3.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/latte.git",
-                "reference": "a337509d08f5622c0baff971346a4a101416842d"
+                "reference": "26af8b6b68ea68bb466ce692c12b8898524456bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/latte/zipball/a337509d08f5622c0baff971346a4a101416842d",
-                "reference": "a337509d08f5622c0baff971346a4a101416842d",
+                "url": "https://api.github.com/repos/nette/latte/zipball/26af8b6b68ea68bb466ce692c12b8898524456bd",
+                "reference": "26af8b6b68ea68bb466ce692c12b8898524456bd",
                 "shasum": ""
             },
             "require": {
@@ -880,7 +880,7 @@
                 "templating",
                 "twig"
             ],
-            "time": "2016-04-10 23:40:55"
+            "time": "2016-05-30 09:11:18"
         },
         {
             "name": "leafo/scssphp",
@@ -1045,16 +1045,16 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v3.0.6",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "65e764f404685f2dc20c057e889b3ad04b2e2db0"
+                "reference": "e17f386efef7258ac671c24e727673abd086b0cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/65e764f404685f2dc20c057e889b3ad04b2e2db0",
-                "reference": "65e764f404685f2dc20c057e889b3ad04b2e2db0",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/e17f386efef7258ac671c24e727673abd086b0cf",
+                "reference": "e17f386efef7258ac671c24e727673abd086b0cf",
                 "shasum": ""
             },
             "require": {
@@ -1063,7 +1063,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -1094,20 +1094,20 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:55:57"
+            "time": "2016-03-04 07:56:56"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v3.0.6",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "49b588841225b205700e5122fa01911cabada857"
+                "reference": "12aa63fd41b060d2bee9a34623d29eda70bc8fe3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/49b588841225b205700e5122fa01911cabada857",
-                "reference": "49b588841225b205700e5122fa01911cabada857",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/12aa63fd41b060d2bee9a34623d29eda70bc8fe3",
+                "reference": "12aa63fd41b060d2bee9a34623d29eda70bc8fe3",
                 "shasum": ""
             },
             "require": {
@@ -1123,7 +1123,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -1150,20 +1150,20 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-04-12 18:09:53"
+            "time": "2016-05-13 15:49:09"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.1.1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "1289d16209491b584839022f29257ad859b8532d"
+                "reference": "dff51f72b0706335131b00a7f49606168c582594"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/1289d16209491b584839022f29257ad859b8532d",
-                "reference": "1289d16209491b584839022f29257ad859b8532d",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/dff51f72b0706335131b00a7f49606168c582594",
+                "reference": "dff51f72b0706335131b00a7f49606168c582594",
                 "shasum": ""
             },
             "require": {
@@ -1175,7 +1175,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.2-dev"
                 }
             },
             "autoload": {
@@ -1209,7 +1209,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-01-20 09:13:37"
+            "time": "2016-05-18 14:26:46"
         },
         {
             "name": "wbraganca/yii2-dynamicform",

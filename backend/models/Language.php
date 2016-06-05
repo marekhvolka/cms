@@ -84,11 +84,11 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = Yii::$app->cacheEngine->cacheDirectory . $this->identifier . '/';
 
-        /*if (!file_exists($path))
+        if (!file_exists($path))
         {
             mkdir($path, 0777, true);
             mkdir($path . 'portals', 0777, true); //vytvori priecinok pre portaly
-        }*/
+        }
 
         return $path;
     }
@@ -102,7 +102,12 @@ class Language extends \yii\db\ActiveRecord
 
         if (!file_exists($path))
         {
-            $buffer = '<?php ' . PHP_EOL . '$slovnik = ';
+            $buffer = '<?php ' . PHP_EOL;
+
+            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
+            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
+
+            $buffer .= '$tempObject = ';
 
             $query = 'SELECT identifier, translation FROM word
           JOIN word_translation ON (word.id = word_id)
@@ -112,13 +117,14 @@ class Language extends \yii\db\ActiveRecord
                 [':language_id' => $this['id']])
                 ->queryAll(), 'identifier', 'translation');
 
-            $buffer .= var_export($words, true) . '; ?>';
+            $buffer .= var_export($words, true) . ';';
 
             $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
 
+            $buffer .= '$slovnik = new ObjectBridge($tempObject, \'slovnik\'); ?>' . PHP_EOL;
+
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }
-
         return $path;
     }
 
@@ -148,9 +154,12 @@ class Language extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
-            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
             //$buffer .= 'set_exception_handler(array(\'ExceptionHandler\', \'handleException\'));' . PHP_EOL;
+
+            foreach(Tag::find()->all() as $tag)
+            {
+                $buffer .= '$' . $tag->identifier . ' = ' . $tag->value . ';' . PHP_EOL;
+            }
 
             foreach ($this->products as $product)
             {
@@ -165,5 +174,17 @@ class Language extends \yii\db\ActiveRecord
         }
 
         return $path;
+    }
+
+    public function getIncludePrefix()
+    {
+        $prefix = '<?php' . PHP_EOL;
+
+        $prefix .= 'include "' . $this->getDictionaryCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->getProductsMainCacheFile() . '";' . PHP_EOL;
+
+        $prefix .= '?>' . PHP_EOL;
+
+        return $prefix;
     }
 }

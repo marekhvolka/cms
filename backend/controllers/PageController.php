@@ -168,6 +168,11 @@ class PageController extends BaseController
         }
     }
 
+    public static function e($variable)
+    {
+
+    }
+
     public function actionGenerate($id)
     {
         $cacheEngine = new CacheEngine();
@@ -234,17 +239,16 @@ class PageController extends BaseController
         $transaction = Yii::$app->db->beginTransaction();
 
         $pageBlocks = Block::find()
-            ->andWhere(['type' => 'snippet'])
-            ->andWhere('id >= 13000 AND id < 1300000')
+            //->andWhere(['type' => 'product_snippet'])
+            ->andWhere('id >= 21000 AND id < 21000000')
             ->all();
 
         foreach($pageBlocks as $block)
         {
-            //$parseEngine->convertMacrosToLatteStyle($block);
+            $parseEngine->convertMacrosToLatteStyle($block);
+            $parseEngine->convertMacrosToLatteStyle2($block);
             $parseEngine->parseSnippetVarValues($block);
         }
-
-
 
         /*$rows = $command = (new Query())
             ->select('*')
@@ -256,46 +260,60 @@ class PageController extends BaseController
         foreach($rows as $row)
         {
             $parseEngine->parsePageGlobalSection('portal', $row);
-        }*/
-
-
-        /*$rows = $command = (new Query())
-            ->select('*')
-            ->from('page_header')
-            ->where('page_id >= 800')
-            ->createCommand()
-            ->queryAll();
-
-        foreach($rows as $row)
-        {
-            $parseEngine->parsePageGlobalSection('page', $row);
-        }*/
-
-
-        /*$rows = $command = (new Query())
-            ->select('*')
-            ->from('page_footer')
-            ->where('page_id >= 1000 AND page_id < 100000')
-            ->createCommand()
-            ->queryAll();
-
-        foreach($rows as $row)
-        {
-            $parseEngine->parsePageGlobalSection('page', $row);
-        }*/
+        }
+        */
 
         /*
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_sidebar')
+            ->where('page_id = 322')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parseSidebar($row);
+        }
+
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_footer')
+            ->where('page_id = 322')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_header')
+            ->where('page_id = 322')
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }
+
         $rows = $command = (new Query())
             ->select('*')
             ->from('page')
-            ->where('id >= 1000 AND id < 1000000')
+            ->where('id = 322')
             ->createCommand()
             ->queryAll();
 
         foreach($rows as $row)
         {
             $parseEngine->parseMasterContent($row);
-        }*/
+        }
+        */
 
         $transaction->commit();
     }

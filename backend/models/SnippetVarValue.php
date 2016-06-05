@@ -14,9 +14,10 @@ use Yii;
  * @property int $value_product_id
  * @property int $value_tag_id
  * @property int $value_product_var_id
- * @property int $page_block_id
+ * @property int $block_id
  * @property int $value_list_id
  *
+ * @property mixed $value
  * @property ListVar $valueListVar
  * @property Product $valueProduct
  * @property Page $valuePage
@@ -40,9 +41,9 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         return [
             [['var_id'], 'required'],
-            [['page_block_id', 'var_id', 'value_page_id', 'value_tag_id', 'value_product_var_id', 'value_product_id'], 'integer'],
+            [['block_id', 'var_id', 'value_page_id', 'value_tag_id', 'value_product_var_id', 'value_product_id'], 'integer'],
             [['value_text'], 'string'],
-            [['var_id', 'page_block_id', 'list_item_id'], 'unique', 'targetAttribute' => ['var_id', 'page_block_id', 'list_item_id'], 'message' => 'The combination of Page Block ID, ListItemID and Var ID has already been taken.']
+            [['var_id', 'block_id', 'list_item_id'], 'unique', 'targetAttribute' => ['var_id', 'block_id', 'list_item_id'], 'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.']
         ];
     }
 
@@ -53,7 +54,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'page_block_id' => 'Page Block ID',
+            'block_id' => 'Block ID',
             'var_id' => 'Var ID',
             'value' => 'Value',
         ];
@@ -64,7 +65,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      */
     public function getPageBlock()
     {
-        return $this->hasOne(Block::className(), ['id' => 'page_block_id']);
+        return $this->hasOne(Block::className(), ['id' => 'block_id']);
     }
 
     /**
@@ -86,6 +87,14 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getValueTag()
+    {
+        return $this->hasOne(Tag::className(), ['id' => 'value_tag_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getValueProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'value_product_id']);
@@ -99,9 +108,12 @@ class SnippetVarValue extends \yii\db\ActiveRecord
         return $this->hasOne(ListVar::className(), ['id' => 'value_list_id']);
     }
 
+    /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
+     * @return mixed|string
+     */
     public function getValue()
     {
-        $value = '';
+        $value = null;
 
         switch ($this->var->type->identifier)
         {
@@ -114,7 +126,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
             case 'page' :
 
                 if (isset($this->valuePage))
-                    $value = '$page' . $this->valuePage->id;
+                    $value = '$portal->pages->page' . $this->valuePage->id;
                 else
                     $value = 'NULL';
 
@@ -128,10 +140,37 @@ class SnippetVarValue extends \yii\db\ActiveRecord
 
                 break;
 
+            case 'product_tag' :
+
+                $value = '$' . $this->valueTag->identifier;
+
+                //TODO: dokoncit
+                break;
             default:
-                $value = '\''. addslashes($this->value_text) . '\'';
+
+                $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
         }
 
         return $value;
+    }
+
+    /** Vrati default hodnotu podla typu produktu
+     * @param $productTypeId
+     * @return mixed|string
+     */
+    public function getDefaultValue($productTypeId)
+    {
+        $productTypeDefaultValue = SnippetVarDefaultValue::find()
+            ->andWhere([
+                'snippet_var_id' => $this->var->id,
+                'product_type_id' => $productTypeId
+            ])
+            ->one();
+
+        if ($productTypeDefaultValue != NULL)
+        {
+            return '\'' . Yii::$app->cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
+        }
+        return '\'\'';
     }
 }

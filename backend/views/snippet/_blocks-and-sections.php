@@ -1,5 +1,4 @@
 <?php
-
 /* @var $model backend\models\Snippet */
 ?>
 

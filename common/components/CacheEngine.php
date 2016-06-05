@@ -123,7 +123,7 @@ class CacheEngine extends Component
 
         //print_r($matches);
 
-        $string = addslashes($string);
+        //$string = addslashes($string);
 
         foreach ($matches[0] as $match )
         {

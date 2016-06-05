@@ -17,6 +17,8 @@ use Yii;
  */
 class Row extends \yii\db\ActiveRecord
 {
+    private $existing;  //Indicates if model allready exists.
+    
     /**
      * @inheritdoc
      */
@@ -49,6 +51,30 @@ class Row extends \yii\db\ActiveRecord
             'options' => 'Options',
         ];
     }
+    
+    public function beforeDelete()
+    {
+        $this->unlinkAll('columns', true);
+        return parent::beforeDelete();
+    }
+    
+    /*
+     * Getter for $existing property which indicates if model allready exists.
+     */
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property which indicates if model allready exists.
+     * @param string $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
+    
 
     /**
      * @return \yii\db\ActiveQuery
@@ -69,12 +95,35 @@ class Row extends \yii\db\ActiveRecord
 
     public function getPrefix()
     {
-        return '<div class="row">' . PHP_EOL;
+        return '<div class="row" id="row$this->id">' . PHP_EOL;
     }
 
     public function getPostfix()
     {
         return '</div> <!-- row end -->' . PHP_EOL;
+    }
+    
+    /** Returns array of newly created models from given data.
+     * @param $data
+     * @return array
+     */
+    public static function createMultipleFromData($data)
+    {
+        $rows = [];
+
+        foreach ($data as $i => $dataItem) {
+            if ($dataItem['existing'] == 'true') {
+                $row = Row::findOne($dataItem['id']);
+            } else {
+                $row = new Row();
+                $row->section_id = $dataItem['section_id'];
+            }
+
+            $row->existing = $dataItem['existing'];
+            $rows[$i] = $row;
+        }
+
+        return $rows;
     }
 
     public function getContent()

@@ -20,6 +20,8 @@ use Yii;
  */
 class Column extends \yii\db\ActiveRecord
 {
+    private $existing;  //Indicates if model allready exists.
+    
     /**
      * @inheritdoc
      */
@@ -55,6 +57,29 @@ class Column extends \yii\db\ActiveRecord
             'css_style' => 'Štýly stĺpca'
         ];
     }
+    
+    public function beforeDelete()
+    {
+        $this->unlinkAll('blocks', true);
+        return parent::beforeDelete();
+    }
+    
+    /*
+     * Getter for $existing property which indicates if model allready exists.
+     */
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property which indicates if model allready exists.
+     * @param string $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -72,6 +97,29 @@ class Column extends \yii\db\ActiveRecord
         return $this->hasMany(Block::className(), ['column_id' => 'id'])
             ->orderBy(['order' => SORT_ASC]);
     }
+    
+    /** Returns array of newly created models from given data.
+     * @param $data
+     * @return array
+     */
+    public static function createMultipleFromData($data)
+    {
+        $columns = [];
+
+        foreach ($data as $i => $dataItem) {
+            if ($dataItem['existing'] == 'true') {
+                $column = Column::findOne($dataItem['id']);
+            } else {
+                $column = new Column();
+                $column->row_id = $dataItem['row_id'];
+            }
+
+            $column->existing = $dataItem['existing'];
+            $columns[$i] = $column;
+        }
+
+        return $columns;
+    }
 
     public function getPrefix()
     {
@@ -81,7 +129,14 @@ class Column extends \yii\db\ActiveRecord
         $cssIds = trim("$this->css_id " . $settings['ids']);
         $cssStyles = trim("$this->css_style " . $settings['styles']);
 
-        $result = "<div class='$cssClasses' id='$cssIds' style='$cssStyles'>" . PHP_EOL;
+        $result = "<div";
+
+        $result .= $cssClasses != '' ? " class='$cssClasses'" : "";
+        $result .= $cssIds != '' ? " id='$cssIds'" : "";
+        $result .= $cssClasses != '' ? " style='$cssStyles'" : "";
+
+        $result .= ">" . PHP_EOL;
+
         $result .= '<div class="box">' . PHP_EOL;
 
         return $result;
@@ -95,7 +150,7 @@ class Column extends \yii\db\ActiveRecord
         $settings = array();
 
         $settings['classes'] = '';
-        $settings['ids'] = '';
+        $settings['ids'] = 'col' . $this->id;
         $settings['styles'] = '';
 
         foreach($this->blocks as $block)
@@ -125,7 +180,8 @@ class Column extends \yii\db\ActiveRecord
 
         foreach ($this->blocks as $block)
         {
-            $result .= $block->getContent();
+            if ($block->active)
+                $result .= file_get_contents($block->getMainFile());
         }
 
         $result .= $this->getPostfix();

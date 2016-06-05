@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
+ * @property ProductType $productType
  * @property Page[] $pages
  * @property User $lastEditUser
  * @property Language $language
@@ -137,7 +138,15 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSnippets()
     {
-        return $this->hasMany(Block::className(), ['product_id' => 'id']);
+        $array = array();
+
+        foreach($this->productVarValues as $productVarValue)
+        {
+            if ($productVarValue->var->isSnippet())
+                $array[] = $productVarValue->valueBlock;
+        }
+
+        return $array;
     }
 
     /**
@@ -175,33 +184,36 @@ class Product extends \yii\db\ActiveRecord
     /** Vrati cestu k suboru, v ktorom je nacachovany produkt
      * @return string
      */
-    public function getMainFile()
+    public function getProductVarsFile()
     {
-        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '.php';
+        $path = $this->getMainDirectory() . 'product_var.php';
 
         if (!file_exists($path))
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            $query = 'SELECT identifier, IF(value IS NULL, \'\', value ) value FROM product_var
-          LEFT JOIN product_var_value ON (product_var.id = var_id)
-          WHERE product_id = :product_id';
+            $buffer .= '$tempObject = (object) ';
 
-            $productVars = ArrayHelper::map(Yii::$app->db->createCommand($query,
-                [':product_id' => $this['id']])
-                ->queryAll(), 'identifier', 'value');
 
             if (isset($this->parent)) // ak ma produkt rodica
             {
-                $buffer .= '$tempObject = (object) array_merge((array) $' . $this->parent->identifier . '
-                , ' . var_export($productVars, true) . '); ' . PHP_EOL;
-            }
-            else
-            {
-                $buffer .= '$tempObject  = (object) ' . var_export($productVars, true) . ';' . PHP_EOL;
+                $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
             }
 
-            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject); ?>' . PHP_EOL;
+            $buffer .= 'array(' . PHP_EOL;
+
+            foreach($this->productVarValues as $productVarValue)
+            {
+                if (!$productVarValue->var->isSnippet())
+                    $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
+            }
+
+            if (isset($this->parent)) // ak ma produkt rodica
+                $buffer .= ')';
+
+            $buffer .= ');' . PHP_EOL;
+
+            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \''. $this->identifier . '\'); ' . PHP_EOL;
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }
@@ -209,13 +221,24 @@ class Product extends \yii\db\ActiveRecord
         return $path;
     }
 
-    public function getProductSnippetCacheDirectory()
+    public function getMainFile()
     {
-        $path = $this->language->getProductsCacheDirectory() . 'snippets/';
+        $path = $this->getMainDirectory() . 'main_file.php';
 
         if (!file_exists($path))
         {
-            mkdir($path, 0777, true);
+            $buffer = '<?php' . PHP_EOL;
+
+            $buffer .= 'include \'' . $this->getProductVarsFile() . '\';' . PHP_EOL;
+
+            foreach($this->productSnippets as $block)
+            {
+                $buffer .= '$' . $this->identifier . '->' . $block->productVarValue->var->identifier . ' = file_get_contents(\'' . $block->getMainFile() . '\');' . PHP_EOL;
+            }
+
+            $buffer .= '?>';
+
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -228,7 +251,7 @@ class Product extends \yii\db\ActiveRecord
         foreach ($this->productVarValues as $productVarValue)
         {
             $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
-                '&$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
+                '$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
         }
 
         if (isset($this->parent)) // ak ma produkt rodica
@@ -237,5 +260,17 @@ class Product extends \yii\db\ActiveRecord
         }
 
         return $buffer;
+    }
+
+    public function getMainDirectory()
+    {
+        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '/';
+
+        if (!file_exists($path))
+        {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
     }
 }

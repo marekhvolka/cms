@@ -1,14 +1,12 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $snippetVar backend\models\Variable */
-
 use backend\models\VarType;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
-?>
-<?php
+/* @var $this yii\web\View */
+/* @var $snippetVar backend\models\SnippetVar */
+
 $postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 

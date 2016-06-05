@@ -216,7 +216,19 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getColorSchemePath()
     {
-        return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
+        if ($this->color_scheme == 'inherit')
+        {
+            if (isset($this->parent))
+                return $this->parent->getColorSchemePath();
+            else
+                return $this->portal->getColorSchemePath();
+        }
+        else if ($this->color_scheme == '')
+        {
+            return $this->portal->getColorSchemePath();
+        }
+        else
+            return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
     }
 
     public function getHeaderContent()
@@ -255,9 +267,21 @@ class Page extends \yii\db\ActiveRecord
 
     public function getMainContent()
     {
-        $result = '<div id="content" class="col-md-8">';
+        if (!$this->sidebar_active)
+        {
+            $width = 12;
+        }
+        else
+        {
+            $width = 12 - $this->sidebar_size;
+        }
 
-        $result .= $this->contentSection->getContent();
+        $result = '<div id="content" class="col-md-' . $width . '">';
+
+        foreach($this->contentSection->rows as $row)
+        {
+            $result .= $row->getContent();
+        }
 
         $result .= '</div> <!-- Content End -->';
 
@@ -266,14 +290,19 @@ class Page extends \yii\db\ActiveRecord
 
     public function getSidebarContent()
     {
-        $result = '<div id="sidebar" class="col-md-4">';
+        $result = '';
 
         if ($this->sidebar_active && isset($this->sidebarSection))
         {
-            $result .= $this->sidebarSection->getContent();
-        }
+            $result = '<div id="sidebar" class="col-md-' . $this->sidebar_size . '">';
 
-        $result .= '</div> <!-- Sidebar End -->';
+            foreach($this->sidebarSection->rows as $row)
+            {
+                $result .= $row->getContent();
+            }
+
+            $result .= '</div> <!-- Sidebar End -->';
+        }
 
         return $result;
     }
@@ -306,11 +335,17 @@ class Page extends \yii\db\ActiveRecord
 
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= '$url = \'' . $cacheEngine->normalizeString($this->url) . '\';' . PHP_EOL;
-            $buffer .= '$name = \'' . $cacheEngine->normalizeString($this->name) . '\';' . PHP_EOL;
-            $buffer .= '$title = \'' . $cacheEngine->normalizeString($this->title) . '\';' . PHP_EOL;
-            $buffer .= '$description = \'' . $cacheEngine->normalizeString($this->description) . '\';' . PHP_EOL;
-            $buffer .= '$keywords = \'' . $cacheEngine->normalizeString($this->keywords) . '\';' . PHP_EOL;
+            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+
+            $buffer .= '\'url\' => \'' . $cacheEngine->normalizeString($this->url) . '\',' . PHP_EOL;
+            $buffer .= '\'name\' => \'' . $cacheEngine->normalizeString($this->name) . '\',' . PHP_EOL;
+            $buffer .= '\'title\' => \'' . $cacheEngine->normalizeString($this->title) . '\',' . PHP_EOL;
+            $buffer .= '\'description\' => \'' . $cacheEngine->normalizeString($this->description) . '\',' . PHP_EOL;
+            $buffer .= '\'keywords\' => \'' . $cacheEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
+
+            $buffer .= ');' . PHP_EOL;
+
+            $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
             if (isset($this->color_scheme))
             {
@@ -320,9 +355,8 @@ class Page extends \yii\db\ActiveRecord
             $buffer .= '/* Product Variables */' . PHP_EOL;
 
             if (isset($this->product))
-            {
-                $buffer .= $this->product->printVariables();
-            }
+                $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
+
             $buffer .= '?>';
 
             $cacheEngine->writeToFile($path, 'w+', $buffer);
@@ -354,11 +388,11 @@ class Page extends \yii\db\ActiveRecord
 
                     break;
                 case 'sidebar':
-                    $buffer = $this->getMainContent();
+                    $buffer = $this->getSidebarContent();
 
                     break;
                 case 'content':
-                    $buffer = $this->getSidebarContent();
+                    $buffer = $this->getMainContent();
 
                     break;
             }
@@ -397,10 +431,13 @@ class Page extends \yii\db\ActiveRecord
 
             $prefix .= '<?' . PHP_EOL;
 
-            $prefix .= '$page_header = "' . addslashes(file_get_contents($this->getLayoutCacheFile('header'))) . '";' . PHP_EOL;
-            $prefix .= '$page_footer = "' . addslashes(file_get_contents($this->getLayoutCacheFile('footer'))) . '";' . PHP_EOL;
-            $prefix .= '$page_sidebar = "' . addslashes(file_get_contents($this->getLayoutCacheFile('sidebar'))) . '";' . PHP_EOL;
-            $prefix .= '$page_content = "' . addslashes(file_get_contents($this->getLayoutCacheFile('content'))) . '";' . PHP_EOL;
+            $prefix .= '$global_header = addslashes(file_get_contents(\'' . $this->portal->getLayoutCacheFile('header') . '\'));' . PHP_EOL;
+            $prefix .= '$global_footer = addslashes(file_get_contents(\'' . $this->portal->getLayoutCacheFile('footer') . '\'));' . PHP_EOL;
+
+            $prefix .= '$page_header = file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
+            $prefix .= '$page_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
+            $prefix .= '$page_sidebar = file_get_contents(\'' . $this->getLayoutCacheFile('sidebar') . '\');' . PHP_EOL;
+            $prefix .= '$page_content = file_get_contents(\'' . $this->getLayoutCacheFile('content') . '\');' . PHP_EOL;
 
             $prefix .= '$bootstrap_css = \'http://www.hyperfinance.cz/css/bootstrap.min.css\';' . PHP_EOL;
             $prefix .= '$bootstrap_js = \'http://www.hyperfinance.cz/js/bootstrap.min.js\';' . PHP_EOL;
@@ -414,11 +451,11 @@ class Page extends \yii\db\ActiveRecord
             <head>
                 <meta charset="utf-8" />
               {$include_head}
-              <title>{$title}</title>
+              <title>{$page->title}</title>
               <link href=\'{$bootstrap_css}\' rel=\'stylesheet\' type=\'text/css\' />
               <link href=\'http://www.hyperfinance.cz/css/public/global.css\' rel=\'stylesheet\' type=\'text/css\' />
 
-              <meta name="description" content="{$description}" />
+              <meta name="description" content="{$page->description}" />
               <link href=\'{$color_scheme}\' rel=\'stylesheet\' type=\'text/css\' />
               <link href=\'{$font_awesome}\' rel=\'stylesheet\' type=\'text/css\' />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -437,6 +474,7 @@ class Page extends \yii\db\ActiveRecord
 
                 <main>
               {$page_header}
+              <div id="page-content">
                 <div class="wrapper"><div class="container"><div class="row">
               {$page_content}
 
@@ -444,13 +482,15 @@ class Page extends \yii\db\ActiveRecord
                 </div> <!-- row end -->
                 </div> <!--container end -->
                 </div> <!--wrapper end -->
-
+                </div> <!-- page-content-->
               {$page_footer}
                 </main>
               {$global_footer}
               {$include_body_end}
             </body>
             </html>';
+
+            $pageContent = html_entity_decode($pageContent);
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $pageContent);
         }
@@ -486,7 +526,7 @@ class Page extends \yii\db\ActiveRecord
 
         $prefix .= 'include "' . $this->getVarCacheFile() . '";' . PHP_EOL;
 
-        $prefix .= '?>';
+        $prefix .= '?>' . PHP_EOL;
 
         return $prefix;
     }
@@ -496,7 +536,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getHead()
     {
-        $buffer = '$page' . $this->id . ' = (object) array(' . PHP_EOL;
+        $buffer = '$tempPage' . $this->id . ' = (object) array(' . PHP_EOL;
 
         $buffer .= '\'url\' => \'' . $this->getUrl() . '\', ' . PHP_EOL;
         $buffer .= '\'name\' => \'' . addslashes($this->name) . '\', ' . PHP_EOL;

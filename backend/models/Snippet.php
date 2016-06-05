@@ -4,7 +4,6 @@ namespace backend\models;
 
 use Yii;
 use common\models\User;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "snippet".
@@ -168,10 +167,16 @@ class Snippet extends \yii\db\ActiveRecord
 
             $buffer = '<?php ' . PHP_EOL;
 
+            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+
             foreach($this->snippetVariables as $snippetVar)
             {
-                $buffer .= '$' . $snippetVar->identifier . ' = ' . $snippetVar->getDefaultValue() . ';' . PHP_EOL;
+                $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValue() . ',' . PHP_EOL;
             }
+
+            $buffer .= ');' . PHP_EOL;
+
+            $buffer .= '$snippet = new ObjectBridge($tempObject, \'snippet' . $this->id . '\');' . PHP_EOL;
 
             $buffer .= '?>' . PHP_EOL;
 

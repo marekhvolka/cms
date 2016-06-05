@@ -265,31 +265,50 @@ class Portal extends \yii\db\ActiveRecord
 
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= '$domain = \'' . $cacheEngine->normalizeString($this->domain) . '\';' . PHP_EOL;
-            $buffer .= '$name = \'' . $cacheEngine->normalizeString($this->name) . '\';' . PHP_EOL;
-            $buffer .= '$lang = \'' . $cacheEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
-            $buffer .= '$currency = \'' . $cacheEngine->normalizeString($this->language->currency) . '\';' . PHP_EOL;
-            $buffer .= '$color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
+            foreach($this->pages as $page)
+            {
+                $buffer .= $page->getHead();
+            }
 
-            $buffer .= '$include_head = \'' . $this->getTrackingCodesString('head') . '\';' . PHP_EOL;
-            $buffer .= '$include_head_end = \'' . $this->getTrackingCodesString('head_end') . '\';' . PHP_EOL;
-            $buffer .= '$include_body = \'' . $this->getTrackingCodesString('body') . '\';' . PHP_EOL;
-            $buffer .= '$include_body_end = \'' . $this->getTrackingCodesString('body_end') . '\';' . PHP_EOL;
+            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+
+            $buffer .= '\'domain\' => \'' . $cacheEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
+            $buffer .= '\'name\' => \'' . $cacheEngine->normalizeString($this->name) . '\',' . PHP_EOL;
+            $buffer .= '\'lang\' => \'' . $cacheEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
+            $buffer .= '\'currency\' => \'' . $cacheEngine->normalizeString($this->language->currency) . '\',' . PHP_EOL;
+            $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
+
+            $buffer .= '/* Portal pages */' . PHP_EOL;
+
+            $buffer .= '\'pages\' => (object) array(' . PHP_EOL;
+
+            foreach($this->pages as $page)
+            {
+                $buffer .= '\'page' . $page->id . '\' => new ObjectBridge($tempPage' . $page->id . ', \'page' . $page->id . '\'),' . PHP_EOL;
+            }
+
+            $buffer .= '),' . PHP_EOL;
+
+            $buffer .= ');' . PHP_EOL;
+
+            $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+
+            /*foreach($this->pages as $page)
+            {
+                $buffer .= '$page' . $page->id . ' = $portal->pages[\'page' . $page->id . '\'];' . PHP_EOL;
+            }*/
 
             $buffer .= '/* Portal vars */' . PHP_EOL;
 
             foreach ($this->portalVarValues as $portalVarValue)
             {
-                $buffer .= '$' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
+                $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
             }
 
-
-            $buffer .= '/* Portal pages */' . PHP_EOL;
-
-            foreach($this->pages as $page)
-            {
-                $buffer .= $page->getHead();
-            }
+            $buffer .= '$include_head = \'' . $this->getTrackingCodesString('head') . '\';' . PHP_EOL;
+            $buffer .= '$include_head_end = \'' . $this->getTrackingCodesString('head_end') . '\';' . PHP_EOL;
+            $buffer .= '$include_body = \'' . $this->getTrackingCodesString('body') . '\';' . PHP_EOL;
+            $buffer .= '$include_body_end = \'' . $this->getTrackingCodesString('body_end') . '\';' . PHP_EOL;
 
             $buffer .= '?>';
 
@@ -339,11 +358,20 @@ class Portal extends \yii\db\ActiveRecord
 
     public function getIncludePrefix()
     {
-        $prefix = '<?php' . PHP_EOL;
+        $prefix = $this->language->getIncludePrefix();
 
-        $prefix .= 'include "' . $this->language->getDictionaryCacheFile() . '";' . PHP_EOL;
-        $prefix .= 'include "' . $this->language->getProductsMainCacheFile() . '";' . PHP_EOL;
+        $prefix .= '<?php' . PHP_EOL;
+
         $prefix .= 'include "' . $this->getCacheFile() . '";' . PHP_EOL;
+
+        $prefix .= '?>' . PHP_EOL;
+
+        return $prefix;
+    }
+
+    public function getPortalLayout()
+    {
+        $prefix = '<?php' . PHP_EOL;
 
         $prefix .= '$global_header = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\'));' . PHP_EOL;
         $prefix .= '$global_footer = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\'));' . PHP_EOL;
