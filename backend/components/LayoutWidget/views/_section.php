@@ -1,24 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 15.05.16
- * Time: 0:30
- */
+use yii\helpers\BaseHtml;
 
 /* @var $section backend\models\Section */
 
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
-
-<?php 
-// Check for section existence. 
-// If new created, is used for javascript cloning whole element and adding as new (dynamic adding). 
-$clonedClass = $section->id == null ? 'cloned' : ''; 
-?>
-
 <!--SECTION TO ADD-->
-<li class="panel panel-default section <?=$clonedClass?>" 
-    data-options="{}">
+<div class="panel panel-default section" data-options="{}">
+    <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $section->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $section->id ? : $postIndex, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][type]", $section->type, ['class' => 'type']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -58,4 +49,4 @@ $clonedClass = $section->id == null ? 'cloned' : '';
             </ul>
         </div>
     </div>
-</li>
+</div>

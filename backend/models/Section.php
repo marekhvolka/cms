@@ -21,9 +21,13 @@ use Yii;
  */
 class Section extends \yii\db\ActiveRecord
 {
+
+    private $existing;  //Indicates if model allready exists.
+
     /**
      * @inheritdoc
      */
+
     public static function tableName()
     {
         return 'section';
@@ -57,6 +61,32 @@ class Section extends \yii\db\ActiveRecord
             'type' => 'Type',
         ];
     }
+    
+    public function beforeDelete()
+    {
+        foreach ($this->rows as $row) {
+            $row->delete();
+        }
+        return parent::beforeDelete();
+    }
+
+    /*
+     * Getter for $existing property which indicates if model allready exists.
+     */
+
+    public function getExisting()
+    {
+        return $this->existing;
+    }
+
+    /**
+     * Setter for $existing property which indicates if model allready exists.
+     * @param string $newExisting new property value.
+     */
+    public function setExisting($newExisting)
+    {
+        $this->existing = $newExisting;
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -64,7 +94,7 @@ class Section extends \yii\db\ActiveRecord
     public function getRows()
     {
         return $this->hasMany(Row::className(), ['section_id' => 'id'])
-            ->orderBy('order');
+                        ->orderBy('order');
     }
 
     /**
@@ -83,6 +113,28 @@ class Section extends \yii\db\ActiveRecord
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
     }
 
+    /** Returns array of newly created models from given data.
+     * @param $data
+     * @return array
+     */
+    public static function createMultipleFromData($data)
+    {
+        $sections = [];
+
+        foreach ($data as $i => $dataItem) {
+            if ($dataItem['existing'] == 'true') {
+                $section = Section::findOne($dataItem['id']);
+            } else {
+                $section = new Section();
+            }
+
+            $section->existing = $dataItem['existing'];
+            $sections[$i] = $section;
+        }
+
+        return $sections;
+    }
+    
     public function getPrefix()
     {
         $settings = $this->getChildCssSettings();
@@ -114,14 +166,10 @@ class Section extends \yii\db\ActiveRecord
         $settings['ids'] = 'section' . $this->id;
         $settings['styles'] = '';
 
-        foreach($this->rows as $row)
-        {
-            foreach($row->columns as $column)
-            {
-                foreach($column->blocks as $block)
-                {
-                    if (isset($block->snippetCode))
-                    {
+        foreach ($this->rows as $row) {
+            foreach ($row->columns as $column) {
+                foreach ($column->blocks as $block) {
+                    if (isset($block->snippetCode)) {
                         $settings['classes'] .= $block->snippetCode->snippet->section_class . ' ';
                         $settings['ids'] .= $block->snippetCode->snippet->section_id . ' ';
                         $settings['styles'] .= $block->snippetCode->snippet->section_style . ' ';
@@ -136,15 +184,14 @@ class Section extends \yii\db\ActiveRecord
     public function getPostfix()
     {
         return '</div> <!-- container end --> ' . PHP_EOL .
-            '</div> <!-- section end -->' . PHP_EOL;
+                '</div> <!-- section end -->' . PHP_EOL;
     }
 
     public function getContent()
     {
         $result = $this->getPrefix();
 
-        foreach($this->rows as $row)
-        {
+        foreach ($this->rows as $row) {
             $result .= $row->getContent();
         }
 
@@ -152,4 +199,5 @@ class Section extends \yii\db\ActiveRecord
 
         return $result;
     }
+
 }

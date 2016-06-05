@@ -11,9 +11,7 @@ use backend\models\Snippet;
 use backend\models\search\SnippetSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.
@@ -60,8 +58,6 @@ class SnippetController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                
-                
                 // Snippet model validated and saved.
                 $modelValidatedAndSaved = $model->validate() && $model->save();
                 
@@ -69,19 +65,6 @@ class SnippetController extends BaseController
                 // Array of SnippetCode models used later for multiple validation.
                 $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
                 
-                
-                // TODO ajax validation attempts
-                /*
-                if (Yii::$app->request->isAjax) {
-                    Yii::$app->response->format = 'json';
-                    $result = array_merge(\yii\bootstrap\ActiveForm::validate($model), 
-                            \yii\bootstrap\ActiveForm::validateMultiple($snippetCodes));
-                    //return \yii\bootstrap\ActiveForm::validate($model);
-                    return $result;
-                }
-                 * 
-                 */
-
                 // SnippetCode models multiple loading, validation and saving.
                 $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
                 $validCodes = Model::validateMultiple($snippetCodes);
