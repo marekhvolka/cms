@@ -69,9 +69,13 @@ class ProductController extends BaseController
                 $productVarValues = []; // Array of ProductVarValue models used later for multiple validation.
 
                 // $productVarValues array appended with retrieved newly created ProductVarValue models.
-                foreach ($productVarValuesData as $i => $productValueData) {
-                    $productVarValue = new ProductVarValue();
-                    $productVarValues[$i] = $productVarValue;
+
+                if (isset($productValueData))
+                {
+                    foreach ($productVarValuesData as $i => $productValueData) {
+                        $productVarValue = new ProductVarValue();
+                        $productVarValues[$i] = $productVarValue;
+                    }
                 }
 
                 // Product model validated and saved.

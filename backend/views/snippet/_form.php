@@ -40,7 +40,10 @@ use yii\web\View;
                 <ul class="snippet-codes">
                 <?php foreach ($snippetCodes as $snippetCode): ?>
                 <li>
-                    <?= $this->render('_code', ['snippetCode' => $snippetCode]) ;?>
+                    <?= $this->render('_code', [
+                        'snippetCode' => $snippetCode,
+                        'form' => $form
+                    ]) ;?>
                 </li>
                 <?php endforeach;?>
                 </ul>

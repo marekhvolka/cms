@@ -2,13 +2,13 @@ var optionsElement;
 var appendUrl = {
     section: controllerUrl + '/' + 'append-section?type=' + layoutType,
     row: controllerUrl + '/' + 'append-row',
-    block: controllerUrl + '/' + 'append-block',
-}
+    block: controllerUrl + '/' + 'append-block'
+};
 
 $('.btn-add-section').click(function () {
     $.get(appendUrl.section, function (data) {
         var row = $('<li></li>');
-        var row = row.appendTo($('.sections'));
+        row = row.appendTo($('.sections'));
         var appendedDiv = $(data);
         $(row).append(appendedDiv);
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
@@ -41,7 +41,7 @@ function attachAddRowEvent(button) {
         $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
             var sectionRows = section.find('.section-rows');
             var row = $('<li></li>');
-            var row = row.appendTo(sectionRows);
+            row = row.appendTo(sectionRows);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
             attachRemoveSectionEvent(row.find('.btn-remove-row'));
@@ -60,7 +60,7 @@ function attachAddBlockEvent(button) {
         $.get(appendUrl.block + '?id=' + columnId, function (data) {
             var row = $('<li></li>');
             var blockList = column.find('.column-elements');
-            var row = row.appendTo(blockList);
+            row = row.appendTo(blockList);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
             attachRemoveBlockEvent(row.find('.btn-remove-block'));
@@ -77,18 +77,6 @@ function attachRemoveBlockEvent(removeButton) {
 }
 
 attachRemoveBlockEvent($('.btn-remove-block'));
-
-
-
-
-
-
-
-
-
-
-
-
 
 function attachOptionsButtonEvent(button) {
     button.click(function () {

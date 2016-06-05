@@ -20,7 +20,6 @@ use yii\helpers\ArrayHelper;
  * @property string $default_value
  * @property string $snippet_id
  * @property string $parent_id
- * @property SnippetDropdown[] $snippetDropdowns
  * @property SnippetVarDefaultValue[] $defaultValues
  * @property SnippetVar $parent
  * @property SnippetVar[] $children
@@ -106,14 +105,6 @@ class SnippetVar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetDropdowns()
-    {
-        return $this->hasMany(SnippetDropdown::className(), ['variable_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getDefaultValues()
     {
         return $this->hasMany(SnippetVarDefaultValue::className(), ['variable_id' => 'id']);
@@ -173,13 +164,13 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
     {
+        $modelSnippetVars = [];      // Array of created SnippetVars.
+
         if (!$snippetVarData) {
             return $modelSnippetVars;
         }
 
-        $modelSnippetVars = [];      // Array of created SnippetVars.
-
-        foreach ($snippetVarData as $varData) {
+        foreach ($snippetVarData as $index => $varData) {
             if (isset($varData['identifier']) && $varData['identifier']) {
                 if ($varData['existing'] == 'true') {
                     $snippetVar = SnippetVar::find()->where(['id' => $varData['id']])->one();
@@ -197,7 +188,7 @@ class SnippetVar extends \yii\db\ActiveRecord
 //                // Set parent if SnippetVar is item of list type parent SnippetVar.
 //                $snippetVar->parent_id = $varData['parent_id'];
 
-                $modelSnippetVars[] = $snippetVar;
+                $modelSnippetVars[$index] = $snippetVar;
             }
         }
 
@@ -253,7 +244,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public static function deleteMultiple($snippetVars, Snippet $snippet)
     {
-        $oldVarsIDs = ArrayHelper::map($snippet->snippetVars, 'id', 'id');
+        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id');
         $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');
         $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
 
@@ -263,6 +254,8 @@ class SnippetVar extends \yii\db\ActiveRecord
                 $snippetVarToDelete->delete();
             }
         }
+
+        return true;
     }
 
     public function getDefaultValue()

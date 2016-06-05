@@ -3,7 +3,6 @@
 namespace backend\models;
 
 use Yii;
-use yii\helpers\BaseVarDumper;
 
 /**
  * This is the model class for table "snippet_value".
@@ -179,8 +178,6 @@ class Block extends \yii\db\ActiveRecord
      */
     public function getName()
     {
-        $name = '';
-
         switch ($this->type)
         {
             case 'html':
@@ -278,21 +275,16 @@ class Block extends \yii\db\ActiveRecord
     {
         $buffer = '<?php ' . PHP_EOL;
         /* @var $snippetVarValue SnippetVarValue */
-        $snippetVarValues = array();
         $snippetCode = null;
 
         if (isset($this->parent))
         {
             $buffer .= 'include "' . $this->parent->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
-            $snippetVarValues = $this->parent->snippetVarValues;
-
             $snippetCode = $this->parent->snippetCode;
         }
         else
         {
             $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
-            $snippetVarValues = $this->snippetVarValues;
-
             $snippetCode = $this->snippetCode;
         }
 

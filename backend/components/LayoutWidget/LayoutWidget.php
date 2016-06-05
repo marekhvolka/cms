@@ -3,7 +3,6 @@
 namespace backend\components\LayoutWidget;
 
 use yii\base\Widget;
-use yii\helpers\Html;
 use backend\models\Section;
 use backend\models\Row;
 use backend\models\Column;

@@ -12,7 +12,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <?= BaseHtml::hiddenInput("Row[$postIndex][existing]", $row->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][id]", $row->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][section_id]", $row->section_id, ['class' => 'section_id']); ?>
-    <?php $columns = $row->columns ? : $columns ?>
+    <?php $columns = $row->columns ? : array() ?>
     <?php foreach ($columns as $column) : ?>
         <!--COLUMN TO ADD-->
         <div class="<?= $column->width ? "col-md-$column->width" : ""; ?> panel panel-default column" 
