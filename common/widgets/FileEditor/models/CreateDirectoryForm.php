@@ -2,12 +2,11 @@
 
 namespace common\widgets\FileEditor\models;
 
-
 use common\widgets\FileEditor\FileEditorWidget;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-class UploadFileForm extends Model
+class CreateDirectoryForm extends Model
 {
     /**
      * @var string
@@ -16,12 +15,14 @@ class UploadFileForm extends Model
     /**
      * @var UploadedFile
      */
-    public $file;
+    public $name;
 
     /**
      * @var string
      */
     private $baseDir = '';
+
+    private $_builtPath = null;
 
     /**
      * UploadFileForm constructor.
@@ -33,32 +34,25 @@ class UploadFileForm extends Model
         $this->baseDir = $baseDir;
     }
 
-
     public function rules()
     {
         return [
-            [['file'], 'file', 'skipOnEmpty' => false],
+            ['name', 'required'],
             ['directory', function ($attribute, $parameters) {
-                $realpath = '/' . FileEditorWidget::normalizePath($this->baseDir . DIRECTORY_SEPARATOR . trim($this->$attribute, '/'));
+                $this->_builtPath = '/' . FileEditorWidget::normalizePath($this->baseDir . DIRECTORY_SEPARATOR . trim
+                        ($this->$attribute, '/') . DIRECTORY_SEPARATOR . trim($this->name, "/"));
 
-                if (strrpos($realpath, realpath($this->baseDir), -strlen($realpath)) === false) {
+                if (strrpos($this->_builtPath, realpath($this->baseDir), -strlen($this->_builtPath)) === false) {
                     $this->addError($attribute, 'Invalid directory.');
-                } else {
-                    FileEditorWidget::makePath($realpath);
                 }
             }]
         ];
     }
 
-    public function upload($validate = true)
+    public function create($validate = true)
     {
         if (!$validate || $this->validate()) {
-            $path = $this->baseDir . DIRECTORY_SEPARATOR . $this->directory . DIRECTORY_SEPARATOR .
-                $this->file->baseName . '.' . $this->file->extension;
-            $this->file->saveAs($path);
-            return $path;
-        } else {
-            return false;
+            FileEditorWidget::makePath($this->_builtPath);
         }
     }
 }
