@@ -44,4 +44,10 @@ $(function () {
         event.preventDefault();
         upload_file_directory_input.val($(this).attr('data-name')).trigger("change");
     });
+
+    if (file_name_input.val() != "") {
+        setTimeout(function () { // ensure to be called after CodeMirror load
+            $('.CodeMirror')[0].CodeMirror.setOption('readOnly', false);
+        }, 0);
+    }
 });
