@@ -68,14 +68,6 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'color_scheme')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'sidebar_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
-
-    <?= $form->field($model, 'sidebar_side')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'sidebar_size')->textInput() ?>
-
     <?= $form->field($model, 'footer_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
@@ -99,6 +91,14 @@ use kartik\switchinput\SwitchInput;
     )?>
 
     <h3 class="page-header">Sidebar</h3>
+
+    <?= $form->field($model, 'sidebar_active')->widget(SwitchInput::classname(), [
+        'type' => SwitchInput::CHECKBOX
+    ]) ?>
+
+    <?= $form->field($model, 'sidebar_side')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
     <?= LayoutWidget::widget([
             'sections' => $sidebarSections

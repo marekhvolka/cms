@@ -39,11 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Šablóna',
                 'value' => 'template.name'
             ],
-            // 'template_settings:ntext',
-            // 'active',
-            // 'publikovana',
-            // 'cache',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
