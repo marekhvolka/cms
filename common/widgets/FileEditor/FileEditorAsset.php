@@ -15,9 +15,10 @@ class FileEditorAsset extends AssetBundle
 {
     public $sourcePath = __DIR__ . '/web';
     public $css = [
-        'css/jQueryFileTree.min.css',
+        'css/jQueryFileTree.css',
     ];
     public $js = [
+        'js/file-editor.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'

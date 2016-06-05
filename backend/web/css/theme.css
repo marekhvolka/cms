@@ -2006,4 +2006,6 @@ table {
     color: #d9e6fc !important;
 }
 
-
+.top-bar-buttons a {
+    margin-right: 5px;
+}
