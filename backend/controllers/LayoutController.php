@@ -26,9 +26,9 @@ class LayoutController extends BaseController
      * @param type $type
      * @return string - call of LayoutWidget method for rendering view.
      */
-    public function actionAppendSection($type)
+    public function actionAppendSection($type, $portalId = null, $pageId = null)
     {
-        return (new LayoutWidget())->appendSection($type);
+        return (new LayoutWidget())->appendSection($type, $portalId, $pageId);
     }
     
     /**
