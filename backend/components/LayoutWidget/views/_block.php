@@ -19,7 +19,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" class="btn btn-default btn-sm text-content-btn">
+    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" data-id="<?= $block->id ?>"
+        data-target="#blockModal">
         <?php echo $block->name; ?>
     </button>
 

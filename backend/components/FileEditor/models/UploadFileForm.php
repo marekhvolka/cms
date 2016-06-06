@@ -1,9 +1,8 @@
 <?php
 
-namespace common\widgets\FileEditor\models;
+namespace backend\components\FileEditor\models;
 
-
-use common\widgets\FileEditor\FileEditorWidget;
+use backend\components\FileEditor\FileEditorWidget;
 use yii\base\Model;
 use yii\web\UploadedFile;
 

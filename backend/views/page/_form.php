@@ -3,6 +3,7 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use backend\models\Page;
@@ -22,7 +23,10 @@ use kartik\switchinput\SwitchInput;
 
 <div class="page-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -86,7 +90,9 @@ use kartik\switchinput\SwitchInput;
     <h3 class="page-header">Hlavný obsah</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $contentSections
+            'sections' => $contentSections,
+            'type' => 'content',
+            'controllerUrl' => Url::to(['/layout']),
         ]
     )?>
 
@@ -101,7 +107,9 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
     <?= LayoutWidget::widget([
-            'sections' => $sidebarSections
+            'sections' => $sidebarSections,
+            'type' => 'sidebar',
+            'controllerUrl' => Url::to(['/layout']),
         ]
     )?>
 
@@ -124,5 +132,13 @@ use kartik\switchinput\SwitchInput;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <div class="modal fade" id="blockModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="modal-content">
+
+            </div>
+        </div>
+    </div>
 
 </div>

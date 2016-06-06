@@ -144,4 +144,14 @@ $(function () {
     });
 });
 
+$('.btn-block-modal').click(function () {
+    var id = $(this).data('id');
+
+    $.get('/cms/cms/backend/web/page/block?id=' + id, function (data) {
+        var appendedDiv = $(data);
+        $('#modal-content').append(appendedDiv);
+        $('#modal-content').html = 'dasdasdasd';
+    });
+});
+
 

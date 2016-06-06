@@ -1,16 +1,20 @@
 <?php
-namespace common\widgets\FileEditor;
+namespace backend\components\FileEditor;
 
-use common\widgets\FileEditor\models\CreateDirectoryForm;
-use common\widgets\FileEditor\models\EditFileForm;
-use common\widgets\FileEditor\models\UploadFileForm;
+use backend\components\FileEditor\models\CreateDirectoryForm;
+use backend\components\FileEditor\models\EditFileForm;
+use backend\components\FileEditor\models\UploadFileForm;
 use DirectoryIterator;
+use InvalidArgumentException;
 use LogicException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use yii;
+use yii\bootstrap\Widget;
+use yii\helpers\Url;
+use yii\web\UploadedFile;
 
-class FileEditorWidget extends \yii\bootstrap\Widget
+class FileEditorWidget extends Widget
 {
     public $directory;
     public $compileScss = false;
@@ -21,7 +25,7 @@ class FileEditorWidget extends \yii\bootstrap\Widget
         parent::init();
 
         if (empty($this->directory) || !is_dir($this->directory)) {
-            throw new \InvalidArgumentException('Given directory does not exist.');
+            throw new InvalidArgumentException('Given directory does not exist.');
         }
 
         if (!empty(Yii::$app->request->get('file'))) {
@@ -46,7 +50,7 @@ class FileEditorWidget extends \yii\bootstrap\Widget
                         }
                     }
 
-                    Yii::$app->response->redirect(yii\helpers\Url::current(['fileAction' => null, 'file' => null]));
+                    Yii::$app->response->redirect(Url::current(['fileAction' => null, 'file' => null]));
                 }
             } else {
                 $file = Yii::$app->request->get('file');
@@ -73,7 +77,7 @@ class FileEditorWidget extends \yii\bootstrap\Widget
         }
 
         if ($upload_file_form->load(Yii::$app->request->post())) {
-            $upload_file_form->file = yii\web\UploadedFile::getInstance($upload_file_form, 'file');
+            $upload_file_form->file = UploadedFile::getInstance($upload_file_form, 'file');
             if ($upload_file_form->validate()) {
                 $path = $upload_file_form->upload(false);
                 $edit_file_form->fileName = $upload_file_form->directory . '/' . $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();

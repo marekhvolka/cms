@@ -1,6 +1,6 @@
 <?php
 
-namespace common\widgets\FileEditor\models;
+namespace backend\components\FileEditor\models;
 
 
 use yii\base\Model;

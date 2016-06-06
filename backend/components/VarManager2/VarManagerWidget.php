@@ -2,6 +2,7 @@
 
 namespace backend\components\VarManager2;
 
+use backend\models\SnippetVarValue;
 use yii\base\Widget;
 
 class VarManagerWidget extends Widget
@@ -40,6 +41,7 @@ class VarManagerWidget extends Widget
     }
 
     /** Renders view for one appended variable.
+     * @param $varValue
      * @return string
      */
     public function appendVariableValue($varValue)

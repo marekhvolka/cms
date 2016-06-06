@@ -1,9 +1,13 @@
 <?php
-use common\widgets\FileEditor\models\CreateDirectoryForm;
-use common\widgets\FileEditor\models\EditFileForm;
+use backend\components\FileEditor\FileEditorAsset;
+use backend\components\FileEditor\models\CreateDirectoryForm;
+use backend\components\FileEditor\models\EditFileForm;
 use conquer\codemirror\CodemirrorAsset;
 use conquer\codemirror\CodemirrorWidget;
+use kartik\select2\Select2;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this \yii\web\View */
 /* @var $editFileForm EditFileForm */
@@ -14,7 +18,7 @@ use yii\bootstrap\Html;
 /* @var $directoryTree array */
 /* @var $isImageLoaded boolean */
 
-\common\widgets\FileEditor\FileEditorAsset::register($this);
+FileEditorAsset::register($this);
 
 function build_one_level($data, $from_dir = '')
 {
@@ -26,7 +30,7 @@ function build_one_level($data, $from_dir = '')
                 // directory
                 ?>
                 <li class="directory expanded">
-                    <?= $index ?> <a href="<?= \yii\helpers\Url::current(['file' => $path,
+                    <?= $index ?> <a href="<?= Url::current(['file' => $path,
                                                                           'fileAction' => 'delete'])
                     ?>" class="delete">x</a> <a href="#"
                                                 class="add-file"
@@ -42,9 +46,9 @@ function build_one_level($data, $from_dir = '')
                 $path = $from_dir . '/' . $item;
                 ?>
                 <li class="file ext_<?= $extension ?>">
-                    <a data-name='<?= $path ?>' href="<?= \yii\helpers\Url::current(['file' => $path]) ?>"
+                    <a data-name='<?= $path ?>' href="<?= Url::current(['file' => $path]) ?>"
                        class="file-link"><?=
-                        $item ?></a> <a href="<?= \yii\helpers\Url::current(['file' => $path, 'fileAction' => 'delete'])
+                        $item ?></a> <a href="<?= Url::current(['file' => $path, 'fileAction' => 'delete'])
                     ?>" class="delete">x</a>
                 </li>
                 <?php
@@ -80,7 +84,7 @@ function build_one_level($data, $from_dir = '')
                 nový</h3><?php } ?>
 
             <div class="file-editing" <?php if ($isImageLoaded) : ?>style="display: none"<?php endif; ?>>
-                <?php $form = \yii\bootstrap\ActiveForm::begin() ?>
+                <?php $form = ActiveForm::begin() ?>
                 <?= CodemirrorWidget::widget([
                         'name'     => 'EditFileForm[text]',
                         'value'    => $editFileForm->text,
@@ -107,7 +111,7 @@ function build_one_level($data, $from_dir = '')
                 <?php $form->end() ?>
             </div>
             <div class="image">
-                <img src="<?php if($isImageLoaded) { echo \yii\helpers\Url::current(['file' => $editFileForm->fileName]); }?>">
+                <img src="<?php if($isImageLoaded) { echo Url::current(['file' => $editFileForm->fileName]); }?>">
             </div>
         </div>
     </div>
@@ -116,7 +120,7 @@ function build_one_level($data, $from_dir = '')
 <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <?php $form = \yii\widgets\ActiveForm::begin() ?>
+            <?php $form = ActiveForm::begin() ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Zavrieť">
                     <span aria-hidden="true">&times;</span>
@@ -125,7 +129,7 @@ function build_one_level($data, $from_dir = '')
             </div>
             <div class="modal-body">
                 <?= $form->field($uploadFileForm, 'file')->fileInput() ?>
-                <?= $form->field($uploadFileForm, 'directory')->widget(\kartik\select2\Select2::className(), [
+                <?= $form->field($uploadFileForm, 'directory')->widget(Select2::className(), [
                     'data' => $directoryTree,
                     'maintainOrder' => false,
                     'hideSearch' => true
@@ -146,7 +150,7 @@ function build_one_level($data, $from_dir = '')
 <div class="modal fade" id="createDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="createDirectoryModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <?php $form = \yii\widgets\ActiveForm::begin() ?>
+            <?php $form = ActiveForm::begin() ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Zavrieť">
                     <span aria-hidden="true">&times;</span>
@@ -155,7 +159,7 @@ function build_one_level($data, $from_dir = '')
             </div>
             <div class="modal-body">
                 <?= $form->field($createDirectoryForm, 'name')->textInput() ?>
-                <?= $form->field($createDirectoryForm, 'directory')->widget(\kartik\select2\Select2::className(), [
+                <?= $form->field($createDirectoryForm, 'directory')->widget(Select2::className(), [
                     'data'          => $directoryTree,
                     'maintainOrder' => false,
                     'hideSearch'    => true

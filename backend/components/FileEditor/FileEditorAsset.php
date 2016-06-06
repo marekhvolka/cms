@@ -6,7 +6,7 @@
  * Time: 16:33
  */
 
-namespace common\widgets\FileEditor;
+namespace backend\components\FileEditor;
 
 
 use yii\web\AssetBundle;
