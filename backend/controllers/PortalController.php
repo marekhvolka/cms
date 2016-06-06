@@ -313,6 +313,9 @@ class PortalController extends BaseController
                 $validBlocks = Model::validateMultiple($blocks);
 
                 foreach ($blocks as $block) {
+                    if ($block->existing == 'false') {
+                        $block->id = null;
+                    }
                     if (!$block->save()) {
                         return false;
                     }

@@ -111,6 +111,7 @@ class Column extends \yii\db\ActiveRecord
                 $column = Column::findOne($dataItem['id']);
             } else {
                 $column = new Column();
+                $column->id = $dataItem['id'];
                 $column->row_id = $dataItem['row_id'];
             }
 
