@@ -38,7 +38,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Posledná zmena',
                 'value' => function ($dataProvider) {
-                    return $dataProvider->last_edit;
+                    return $dataProvider->last_edit . ' (' .
+                    (isset($dataProvider->lastEditUser) ? $dataProvider->lastEditUser->username : '') . ')';
                 }
             ],
 

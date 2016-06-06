@@ -34,14 +34,7 @@ use yii\helpers\Url;
         'delimiter' => '_',
     ])?>
 
-    <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
-        'language' => 'en',
-        'options' => ['placeholder' => 'Vyber rodiča ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
+    <?= $form->field($model, 'parent_id') ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')

@@ -278,9 +278,12 @@ class Page extends \yii\db\ActiveRecord
 
         $result = '<div id="content" class="col-md-' . $width . '">';
 
-        foreach($this->contentSection->rows as $row)
+        if (isset($this->contentSection))
         {
-            $result .= $row->getContent();
+            foreach ($this->contentSection->rows as $row)
+            {
+                $result .= $row->getContent();
+            }
         }
 
         $result .= '</div> <!-- Content End -->';
