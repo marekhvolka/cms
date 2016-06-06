@@ -17,6 +17,7 @@ use Yii;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
+ * @property string $value
  * @property Tag[] $products
  * @property User $lastEditUser
  */
@@ -82,5 +83,20 @@ class Tag extends \yii\db\ActiveRecord
     public function getLastEditUser()
     {
         return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
+    }
+
+    /**
+     * Vrati objekt podstranky spolu so zoznamom zakladnych premennych
+     */
+    public function getValue()
+    {
+        $buffer = '(object) array(' . PHP_EOL;
+
+        $buffer .= '\'label\' => \'' . Yii::$app->cacheEngine->normalizeString($this->label) . '\', ' . PHP_EOL;
+        $buffer .= '\'id\' => \'' . $this->identifier . '\', ' . PHP_EOL;
+
+        $buffer .= ')' . PHP_EOL;
+
+        return $buffer;
     }
 }

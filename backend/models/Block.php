@@ -3,7 +3,6 @@
 namespace backend\models;
 
 use Yii;
-use yii\helpers\BaseVarDumper;
 
 /**
  * This is the model class for table "snippet_value".
@@ -13,6 +12,8 @@ use yii\helpers\BaseVarDumper;
  * @property string $product_id
  * @property integer $portal_id
  * @property integer $column_id
+ * @property integer $portal_var_id
+ * @property integer $product_var_id
  * @property integer $parent_id
  * @property integer $order
  * @property string $data
@@ -21,6 +22,8 @@ use yii\helpers\BaseVarDumper;
  * @property boolean $active
  *
  *
+ * @property PortalVarValue $portalVarValue
+ * @property ProductVarValue $productVarValue
  * @property string $name
  * @property Column $column
  * @property Block $parent
@@ -31,7 +34,7 @@ use yii\helpers\BaseVarDumper;
 class Block extends \yii\db\ActiveRecord
 {
     private $existing;  //Indicates if model allready exists.
-    
+
     /**
      * @inheritdoc
      */
@@ -64,6 +67,8 @@ class Block extends \yii\db\ActiveRecord
             'id' => 'ID',
             'snippet_id' => 'Snippet ID',
             'column_id' => 'Column ID',
+            'portal_var_id' => 'Portal Var ID',
+            'product_var_id' => 'Product Var ID',
             'parent_id' => 'Parent ID',
             'order' => 'Order',
             'data' => 'Data',
@@ -71,7 +76,7 @@ class Block extends \yii\db\ActiveRecord
             'active' => 'Aktívny'
         ];
     }
-    
+
     /*
      * Getter for $existing property which indicates if model allready exists.
      */
@@ -122,13 +127,29 @@ class Block extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPortalVarValue()
+    {
+        return $this->hasOne(PortalVarValue::className(), ['id' => 'portal_var_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductVarValue()
+    {
+        return $this->hasOne(ProductVarValue::className(), ['id' => 'product_var_id']);
+    }
+
+    /**
      * @return SnippetVarValue[]
      */
     public function getSnippetVarValues()
     {
         return $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id']);
     }
-    
+
     /** Returns array of newly created models from given data.
      * @param $data
      * @return array
@@ -157,8 +178,6 @@ class Block extends \yii\db\ActiveRecord
      */
     public function getName()
     {
-        $name = '';
-
         switch ($this->type)
         {
             case 'html':
@@ -182,23 +201,20 @@ class Block extends \yii\db\ActiveRecord
         return $name;
     }
 
-    public function getContent()
-    {
-        return $this->compileBlock();
-    }
-
-    public function compileBlock()
+    public function getMainFile()
     {
         $path = '';
         $buffer = '';
 
-        if (isset($this->portal)) //portalovy snippet
+        if (isset($this->portalVarValue)) //portalovy snippet
         {
-            $path = $this->portal->getPortalSnippetCacheDirectory();
+            $buffer = $this->portalVarValue->portal->getIncludePrefix();
+            $path = $this->portalVarValue->portal->getPortalSnippetCacheDirectory();
         }
-        else if (isset($this->product)) //produktovy snippet
+        else if (isset($this->productVarValue)) //produktovy snippet
         {
-            $path = $this->product->getProductSnippetCacheDirectory();
+            $buffer = '<?php include "' . $this->productVarValue->product->language->getDictionaryCacheFile() . '"; ?>';
+            $path = $this->productVarValue->product->getMainDirectory();
         }
         else if (isset($this->column->row->section->page)) //block podstranky
         {
@@ -214,62 +230,103 @@ class Block extends \yii\db\ActiveRecord
         switch ($this->type)
         {
             case 'snippet' :
+
                 $blockData = $this->prepareSnippetData();
-                $path .= 'snippet_cache' . $this->id . '.latte';
+
+                $path .= 'snippet_cache' . $this->id . '';
+
+                break;
+            case 'portal_snippet' :
+
+                $blockData = $this->prepareSnippetData();
+
+                $path .= 'portal_snippet_cache' . $this->id . '';
+
+                break;
+            case 'product_snippet' :
+
+                $blockData = $this->prepareSnippetData();
+
+                $path .= 'product_snippet_cache' . $this->id . '';
+
                 break;
             default:
-                $path .= 'block_cache' . $this->id . '.latte';
+
+                $path .= 'block_cache' . $this->id . '';
+
                 $blockData = $this->data;
         }
 
         $buffer .= $blockData;
 
-        if (!file_exists($path))
+        if (!file_exists($path . '.php'))
         {
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->cacheEngine->writeToFile($path . '.latte', 'w+', $buffer);
+            $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte', array()));
+
+            Yii::$app->cacheEngine->writeToFile($path . '.php', 'w+', $result);
+
         }
 
-        $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path, array()));
-
-        return $result;
+        return $path . '.php';
     }
 
     private function prepareSnippetData()
     {
         $buffer = '<?php ' . PHP_EOL;
+        /* @var $snippetVarValue SnippetVarValue */
+        $snippetCode = null;
 
-        if (!isset($this->snippetCode))
-            return '';
-
-        $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
-
-        $snippetVarValues = $this->snippetVarValues;
+        if (isset($this->parent))
+        {
+            $buffer .= 'include "' . $this->parent->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
+            $snippetCode = $this->parent->snippetCode;
+        }
+        else
+        {
+            $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
+            $snippetCode = $this->snippetCode;
+        }
 
         $buffer .= '/* Snippet values */' . PHP_EOL;
 
-        /* @var $snippetVarValue SnippetVarValue */
-        foreach($snippetVarValues as $snippetVarValue)
+        if (isset($this->column) && isset($this->column->row->section->page) && isset($this->column->row->section->page->product))
         {
-            $page = $this->column->row->section->page;
+            $buffer .= '/* Product type default var values  */' . PHP_EOL;
 
-            if (isset($page) && isset($page->product))
+            foreach($this->snippetVarValues as $snippetVarValue)
             {
-                $defaultValue = $snippetVarValue->getDefaultValue($page->product->productType);
-
+                $defaultValue = $snippetVarValue->getDefaultValue($this->column->row->section->page->product->productType);
                 $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
             }
+        }
 
+        if (($this->type == 'portal_snippet' || $this->type == 'product_snippet') && isset($this->parent)) //pripravime hodnoty pre port/prod. snippet
+        {
+            $buffer .= '/* Portal/Product var values  */' . PHP_EOL;
+
+            foreach ($this->parent->snippetVarValues as $snippetVarValue)
+            {
+                if (isset($snippetVarValue->value) && $snippetVarValue->value != '\'\'')
+                {
+                    $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
+                }
+            }
+        }
+
+        $buffer .= '/* Var values  */' . PHP_EOL;
+
+        foreach($this->snippetVarValues as $snippetVarValue)
+        {
             if (isset($snippetVarValue->value) && $snippetVarValue->value != '\'\'')
             {
                 $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->value . ';' . PHP_EOL;
             }
-
-            $buffer .= '$' . $snippetVarValue->var->identifier . ' = $snippet->' . $snippetVarValue->var->identifier . ';' . PHP_EOL;
         }
 
         $buffer .= '?>' . PHP_EOL;
 
-        $buffer .= file_get_contents($this->snippetCode->getMainFile());
+        $buffer .= file_get_contents($snippetCode->getMainFile());
 
         return $buffer;
     }

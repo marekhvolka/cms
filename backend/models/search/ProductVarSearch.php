@@ -3,7 +3,6 @@
 namespace backend\models\search;
 
 use backend\models\ProductVar;
-use backend\models\ProductVar;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;

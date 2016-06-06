@@ -235,11 +235,26 @@ UI.jqueryFileTree a.delete {
 
 .jqueryFileTree .add-file {
     color: green;
+    outline: none;
 }
 
 .jqueryFileTree .add-file:hover {
     background: none;
     text-decoration: underline;
+}
+
+.file-editor .list {
+    padding: 5px;
+    overflow-x: scroll;
+    min-height: 400px;
+    box-shadow: 0px 0px 3px 3px lightgray;
+}
+
+.file-editor .file-editing .CodeMirror {
+    border: 1px solid black;
+}
+.file-editor .image img {
+    max-width: 100%;
 }
 
 .file-editor .new-file {

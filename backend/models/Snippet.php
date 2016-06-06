@@ -176,7 +176,7 @@ class Snippet extends \yii\db\ActiveRecord
 
             $buffer .= ');' . PHP_EOL;
 
-            $buffer .= '$snippet = new ObjectBridge($tempObject);' . PHP_EOL;
+            $buffer .= '$snippet = new ObjectBridge($tempObject, \'snippet' . $this->id . '\');' . PHP_EOL;
 
             $buffer .= '?>' . PHP_EOL;
 

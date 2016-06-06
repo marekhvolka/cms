@@ -12,7 +12,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <?= BaseHtml::hiddenInput("Row[$postIndex][existing]", $row->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][id]", $row->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][section_id]", $row->section_id, ['class' => 'section_id']); ?>
-    <?php $columns = $row->columns ? : $columns ?>
+    <?php $columns = $row->columns ? : array() ?>
     <?php foreach ($columns as $column) : ?>
         <!--COLUMN TO ADD-->
         <div class="<?= $column->width ? "col-md-$column->width" : ""; ?> panel panel-default column" 
@@ -35,7 +35,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     <ul class="dropdown-menu">
                         <li><a class="column-option text-option" data-toggle="modal" data-target="#modal-text">Text</a></li>
                         <li><a class="column-option html-option">HTML</a></li>
-                        <li><a class="column-option smart-snippet-option">Smart snippet</a></li>
+                        <li><a class="column-option smart-snippet-option">Snippet</a></li>
                         <li><a class="column-option product-snippet-option">Produktový snippet</a></li>
                         <li><a class="column-option portal-snippet-option">Portálový snippet</a></li>
                     </ul>

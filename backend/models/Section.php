@@ -163,7 +163,7 @@ class Section extends \yii\db\ActiveRecord
         $settings = array();
 
         $settings['classes'] = '';
-        $settings['ids'] = '';
+        $settings['ids'] = 'section' . $this->id;
         $settings['styles'] = '';
 
         foreach ($this->rows as $row) {

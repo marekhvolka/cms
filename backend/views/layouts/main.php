@@ -39,9 +39,11 @@ AppAsset::register($this);
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-12">
                     <h1><?= Html::encode($this->title) ?>
-                        <?php if (isset($this->blocks['button'])): ?>
+                        <span class="top-bar-buttons">
+                            <?php if (isset($this->blocks['button'])): ?>
                             <?= $this->blocks['button'] ?>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </span>
                     </h1>
                     <?php
                     if (!empty($this->params['page-head-btn'])) {

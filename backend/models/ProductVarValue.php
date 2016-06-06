@@ -10,8 +10,10 @@ use Yii;
  * @property integer $id
  * @property integer $product_id
  * @property integer $var_id
- * @property string $value
+ * @property string $value_text
+ * @property int $value_block_id
  *
+ * @property Block $valueBlock
  * @property Product $product
  * @property ProductVar $var
  */
@@ -35,7 +37,7 @@ class ProductVarValue extends \yii\db\ActiveRecord
         return [
             [['var_id'], 'required'],
             [['product_id', 'var_id'], 'integer'],
-            [['value'], 'string'],
+            [['value_text'], 'string'],
             [['var_id', 'product_id'], 'unique', 'targetAttribute' => ['var_id', 'product_id'], 'message' => 'The combination of Product ID and Var ID has already been taken.']
         ];
     }
@@ -50,7 +52,7 @@ class ProductVarValue extends \yii\db\ActiveRecord
             'product_id' => 'Product ID',
             'portal_id' => 'Portal ID',
             'var_id' => 'Var ID',
-            'value' => 'Value',
+            'value_text' => 'Value',
         ];
     }
 
@@ -79,6 +81,58 @@ class ProductVarValue extends \yii\db\ActiveRecord
     public function getVar()
     {
         return $this->hasOne(ProductVar::className(), ['id' => 'var_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValueBlock()
+    {
+        return $this->hasOne(Block::className(), ['id' => 'value_block_id']);
+    }
+
+    /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
+     * @return mixed|string
+     */
+    public function getValue()
+    {
+        $value = null;
+
+        switch ($this->var->type->identifier)
+        {
+            case 'list' :
+
+                $value = $this->valueListVar->value;
+
+                break;
+
+            case 'page' :
+
+                if (isset($this->valuePage))
+                    $value = '$portal->pages->page' . $this->valuePage->id;
+                else
+                    $value = 'NULL';
+
+                break;
+
+            case 'product' :
+                if (isset($this->valueProduct))
+                    $value = '$' . $this->valueProduct->identifier;
+                else
+                    $value = 'NULL';
+
+                break;
+
+            case 'product_snippet' :
+
+                $value = $this->valueBlock->compileBlock();
+                break;
+            default:
+
+                $value = '\''. addslashes(html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text)))) . '\'';
+        }
+
+        return $value;
     }
     
 }

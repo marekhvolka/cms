@@ -14,9 +14,11 @@ use backend\models\SystemException;
 class ObjectBridge extends ArrayObject
 {
     public $obj;
+    public $string;
 
-    public function __construct(&$obj) {
+    public function __construct(&$obj, $string) {
         $this->obj = $obj;
+        $this->string = $string;
     }
 
     public function __get($a)
@@ -37,7 +39,7 @@ class ObjectBridge extends ArrayObject
 
             $exception->save();
 
-            return new ObjectBridge($tmp);
+            return new ObjectBridge($tmp, '');
         }
     }
 
@@ -45,12 +47,19 @@ class ObjectBridge extends ArrayObject
     {
         $this->obj->$key = $value;
     }
+
     public function __call($method,$args)
     {
         call_user_func_array(Array($this->obj,$method),$args);
     }
+
+    public function __isset($name)
+    {
+        return isset($this->obj->$name);
+    }
+
     public function __toString()
     {
-        return "";
+        return '' . $this->string;
     }
 }
