@@ -256,7 +256,3 @@ UI.jqueryFileTree a.delete {
 .file-editor .image img {
     max-width: 100%;
 }
-
-.file-editor .new-file {
-    display: none;
-}
