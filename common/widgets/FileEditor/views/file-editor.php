@@ -9,14 +9,21 @@ use yii\bootstrap\Html;
 /* @var $editFileForm EditFileForm */
 /* @var $uploadFileForm EditFileForm */
 /* @var $createDirectoryForm CreateDirectoryForm */
-/* @var $directory string */
-/* @var $fileTree array */
-/* @var $directoryTree array */
-/* @var $isImageLoaded boolean */
+/* @var $directory string directory to display */
+/* @var $fileTree array list of files / subdirectories */
+/* @var $directoryTree array list of directories (as strings with whole relative paths */
+/* @var $isImageLoaded boolean is an image shown by default? */
 
 \common\widgets\FileEditor\FileEditorAsset::register($this);
 
-function build_one_level($data, $from_dir = '')
+/**
+ * Displays one level of directory tree and recursively calls itself to display the inner items as trees as well.
+ *
+ * @param $data array directory / files tree... files are simple strings, directories are arrays containing other
+ * items (directory's name is the index key)
+ * @param string $from_dir the tree stored in $data param is subfolder of ...
+ */
+function build_file_tree($data, $from_dir = '')
 {
     ?>
     <ul class="jqueryFileTree">
@@ -26,14 +33,14 @@ function build_one_level($data, $from_dir = '')
                 // directory
                 ?>
                 <li class="directory expanded">
-                    <?= $index ?> <a href="<?= \yii\helpers\Url::current(['file' => $path,
+                    <?= $index ?> <a href="<?= \yii\helpers\Url::current(['file'       => $path,
                                                                           'fileAction' => 'delete'])
                     ?>" class="delete">x</a> <a href="#"
                                                 class="add-file"
                                                 data-name='<?= $path ?>'
                                                 data-toggle="modal"
                                                 data-target="#uploadFileModal">+</a>
-                    <?php build_one_level($item, $from_dir . '/' . $index) ?>
+                    <?php build_file_tree($item, $from_dir . '/' . $index) ?>
                 </li>
                 <?php
             } else {
@@ -68,18 +75,15 @@ function build_one_level($data, $from_dir = '')
 <div class="file-editor">
     <div class="col-xs-12 col-sm-3">
         <div class="row list">
-
-
-            <?php build_one_level($fileTree) ?>
+            <?php build_file_tree($fileTree) ?>
         </div>
     </div>
     <div class="col-xs-12 col-sm-9">
         <div class="row">
-            <h3 class="new-file">Nový súbor</h3>
-            <?php if ($editFileForm->fileName == null) { ?><h3 class="select-a-file">Vyberte súbor alebo pridajte
-                nový</h3><?php } ?>
-
-            <div class="file-editing" <?php if ($isImageLoaded) : ?>style="display: none"<?php endif; ?>>
+            <?php if ($editFileForm->fileName == null) : ?>
+                <h3 class="select-a-file">Vyberte súbor alebo nahrajte nový</h3>
+            <?php endif; ?>
+            <div class="file-editing" <?php if ($isImageLoaded || $editFileForm->fileName == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = \yii\bootstrap\ActiveForm::begin() ?>
                 <?= CodemirrorWidget::widget([
                         'name'     => 'EditFileForm[text]',
@@ -94,8 +98,7 @@ function build_one_level($data, $from_dir = '')
                             CodemirrorAsset::ADDON_SEARCH,
                         ],
                         'settings' => [
-                            'mode'        => 'application/x-httpd-php',
-                            'readOnly'    => true
+                            'mode'     => 'application/x-httpd-php'
                         ],
                     ]
                 ) ?>
@@ -106,13 +109,16 @@ function build_one_level($data, $from_dir = '')
                 ]) ?>
                 <?php $form->end() ?>
             </div>
-            <div class="image">
-                <img src="<?php if($isImageLoaded) { echo \yii\helpers\Url::current(['file' => $editFileForm->fileName]); }?>">
+            <div class="image"> <!-- will be shown only if an image is opened -->
+                <img src="<?php if ($isImageLoaded) {
+                    echo \yii\helpers\Url::current(['file' => $editFileForm->fileName]);
+                } ?>">
             </div>
         </div>
     </div>
 </div>
 
+<!-- UPLOAD A NEW FILE MODAL -->
 <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -126,9 +132,9 @@ function build_one_level($data, $from_dir = '')
             <div class="modal-body">
                 <?= $form->field($uploadFileForm, 'file')->fileInput() ?>
                 <?= $form->field($uploadFileForm, 'directory')->widget(\kartik\select2\Select2::className(), [
-                    'data' => $directoryTree,
+                    'data'          => $directoryTree,
                     'maintainOrder' => false,
-                    'hideSearch' => true
+                    'hideSearch'    => true
                 ]) ?>
             </div>
             <div class="modal-footer">
@@ -143,7 +149,9 @@ function build_one_level($data, $from_dir = '')
     </div>
 </div>
 
-<div class="modal fade" id="createDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="createDirectoryModalLabel">
+<!-- CREATE A NEW DIRECTORY MODAL -->
+<div class="modal fade" id="createDirectoryModal" tabindex="-1" role="dialog"
+     aria-labelledby="createDirectoryModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <?php $form = \yii\widgets\ActiveForm::begin() ?>

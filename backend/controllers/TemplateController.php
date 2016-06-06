@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\widgets\FileEditor\FileEditorWidget;
 use Yii;
 use backend\models\Template;
 use backend\models\search\TemplateSearch;
@@ -15,9 +16,9 @@ class TemplateController extends BaseController
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -35,7 +36,7 @@ class TemplateController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -93,9 +94,23 @@ class TemplateController extends BaseController
     {
         $template = $this->findModel($id);
 
-        return $this->render('edit-files', [
-            'template' => $template
+        /**
+         * @var $file_editor FileEditorWidget
+         */
+        $file_editor = Yii::createObject([
+            'class'     => FileEditorWidget::className(),
+            'directory' => __DIR__ . '/../testing-data'
         ]);
+        $state = $file_editor->performActions();
+
+        if ($state == false) {
+            return $this->render('edit-files', [
+                'template' => $template,
+                'fileEditor' => $file_editor
+            ]);
+        } else {
+            return $state;
+        }
     }
 
     /**

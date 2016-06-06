@@ -1,25 +1,73 @@
 <?php
 namespace common\widgets\FileEditor;
 
+use common\components\PathHelper;
 use common\widgets\FileEditor\models\CreateDirectoryForm;
 use common\widgets\FileEditor\models\EditFileForm;
 use common\widgets\FileEditor\models\UploadFileForm;
 use DirectoryIterator;
-use LogicException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
+use ReflectionClass;
 use yii;
+use yii\base\ViewContextInterface;
 
-class FileEditorWidget extends \yii\bootstrap\Widget
+/**
+ * The file editor. Setup:
+ *
+ * 1) create the object using Yii
+ *
+ * <code>
+ * $file_editor = Yii::createObject([
+ *      'class'     => FileEditorWidget::className(),
+ *      'directory' => __DIR__ . '/../testing-data'
+ * ]);
+ * </code>
+ *
+ * 2) the editor has some its actions that need to be performed, like to return the content of the file when
+ * requested by AJAX ... that is done by method performActions(); ... you need to store the return value
+ *
+ * <code>
+ * $state = $file_editor->performActions();
+ * </code>
+ *
+ * 3) the return value is either false meaning that you can proceed to displaying the content of the site, or string
+ * (or Response)... in such a case, return the returned object to be displayed
+ *
+ * <code>
+ * if ($state == false) {
+ *      return $this->render('editor', [
+ *          'fileEditor' => $file_editor
+ *      ]);
+ * } else {
+ *      return $state;
+ * }
+ * </code>
+ *
+ * 4) pass the FileEditorWidget instance to the template and display it using method display
+ *
+ * <code>
+ * <?php $fileEditor->display() ?>
+ * </code>
+ *
+ * @package common\widgets\FileEditor
+ */
+class FileEditorWidget extends yii\base\Component implements ViewContextInterface
 {
+    /**
+     * @var string the directory to be edited by the file editor
+     */
     public $directory;
+    // not implemented yet
     public $compileScss = false;
     public $compileTo = null;
 
-    public function init()
-    {
-        parent::init();
-
+    /**
+     * Perform internal actions. In case that it returns something apart from false, return the response to the Yii 2
+     * to display the result (used when it is needed to return the content of a file, which happens when using AJAX a
+     * file content is loaded into the editor).
+     *
+     * @return $this|bool|string
+     */
+    public function performActions() {
         if (empty($this->directory) || !is_dir($this->directory)) {
             throw new \InvalidArgumentException('Given directory does not exist.');
         }
@@ -28,81 +76,78 @@ class FileEditorWidget extends \yii\bootstrap\Widget
             if (!empty(Yii::$app->request->get('fileAction'))) {
                 if (Yii::$app->request->get('fileAction') == 'delete') {
                     $realpath = realpath($this->directory . Yii::$app->request->get('file'));
-                    if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
-                        if (is_dir($realpath)) {
-                            $it = new RecursiveDirectoryIterator($realpath, RecursiveDirectoryIterator::SKIP_DOTS);
-                            $files = new RecursiveIteratorIterator($it,
-                                RecursiveIteratorIterator::CHILD_FIRST);
-                            foreach ($files as $file) {
-                                if ($file->isDir()) {
-                                    rmdir($file->getRealPath());
-                                } else {
-                                    unlink($file->getRealPath());
-                                }
-                            }
-                            rmdir($realpath);
-                        } else {
-                            unlink($realpath);
-                        }
+                    if (PathHelper::isInside($realpath, realpath($this->directory))) {
+                        PathHelper::remove($realpath);
                     }
 
-                    Yii::$app->response->redirect(yii\helpers\Url::current(['fileAction' => null, 'file' => null]));
+                    return Yii::$app->response->redirect(yii\helpers\Url::current(['fileAction' => null, 'file' => null]));
                 }
             } else {
                 $file = Yii::$app->request->get('file');
-                Yii::$app->response->content = file_get_contents($this->directory . '/' . $file);
-                Yii::$app->response->send();
-                die;
+                return file_get_contents($this->directory . '/' . $file);
             }
         }
+
+        return false;
     }
 
-    public function run()
+    /**
+     * Display the editor itself - the tree and the textarea / image.
+     */
+    public function display()
     {
-        $edit_file_form = new EditFileForm();
         $is_image_loaded = false;
+        $edit_file_form = new EditFileForm($this->directory);
         $upload_file_form = new UploadFileForm($this->directory);
         $create_directory_form = new CreateDirectoryForm($this->directory);
 
+        // editing file
         if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) {
-            $realpath = '/' . self::normalizePath($this->directory . $edit_file_form->fileName); //realpath cannot
-            // be used, since the file may not exist
-            if (strrpos($realpath, realpath($this->directory), -strlen($realpath)) !== false) {
-                file_put_contents($realpath, $edit_file_form->text);
-            }
+            $edit_file_form->save(false);
         }
 
+        // uploading a new file
         if ($upload_file_form->load(Yii::$app->request->post())) {
             $upload_file_form->file = yii\web\UploadedFile::getInstance($upload_file_form, 'file');
             if ($upload_file_form->validate()) {
                 $path = $upload_file_form->upload(false);
                 $edit_file_form->fileName = $upload_file_form->directory . '/' . $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
-                if (!in_array(mb_strtolower(pathinfo($edit_file_form->fileName, PATHINFO_EXTENSION)), ["jpg", "jpeg", "gif", "png"])) {
-                    $edit_file_form->text = file_get_contents($path);
-                } else {
+
+                if (PathHelper::isImageFile($edit_file_form->fileName)) {
                     $is_image_loaded = true;
+                } else {
+                    $edit_file_form->text = file_get_contents($path);
                 }
             }
         }
 
+        // creating a new directory
         if ($create_directory_form->load(Yii::$app->request->post()) && $create_directory_form->validate()) {
             $create_directory_form->create(false);
             $create_directory_form = new CreateDirectoryForm($this->directory);
         }
 
+        // building tree
         $fileTree = $this->buildTreeForDirectory($this->directory);
 
-        return $this->render('file-editor', [
+        echo Yii::$app->getView()->render('file-editor', [
             'directory'      => $this->directory,
             'fileTree'       => $fileTree['with-files'],
-            'directoryTree'  => array_merge(["/" => "/"], $fileTree['only-directories']),
+            'directoryTree'  => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
             'editFileForm'   => $edit_file_form,
             'uploadFileForm' => $upload_file_form,
             'createDirectoryForm' => $create_directory_form,
             'isImageLoaded'  => $is_image_loaded
-        ]);
+        ], $this);
     }
 
+    /**
+     * Build a tree for the directory.
+     *
+     * @param $directory
+     * @return array an array containing two items - under 'with-files', the whole tree is stored... under
+     * 'only-directories' only directories as string with their full paths are stored
+     */
     private function buildTreeForDirectory($directory)
     {
         $directoriesList = [];
@@ -128,44 +173,15 @@ class FileEditorWidget extends \yii\bootstrap\Widget
         return ['with-files' => $tree, 'only-directories' => $directoriesList];
     }
 
-    public static function makePath($path, $moveDeeper = false)
+    /**
+     * Returns the directory containing the view files for this widget.
+     * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
+     * @return string the directory containing the view files for this widget.
+     */
+    public function getViewPath()
     {
-        $dir = $moveDeeper ? pathinfo($path, PATHINFO_DIRNAME) : $path;
+        $class = new ReflectionClass($this);
 
-        if (is_dir($dir)) {
-            return true;
-        } else {
-            if (self::makePath($dir, true)) {
-                if (mkdir($dir)) {
-                    chmod($dir, 0777);
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public static function normalizePath($path, $separator = '\\/')
-    {
-        // Remove any kind of funky unicode whitespace
-        $normalized = preg_replace('#\p{C}+|^\./#u', '', $path);
-
-        // Path remove self referring paths ("/./").
-        $normalized = preg_replace('#/\.(?=/)|^\./|\./$#', '', $normalized);
-
-        // Regex for resolving relative paths
-        $regex = '#\/*[^/\.]+/\.\.#Uu';
-
-        while (preg_match($regex, $normalized)) {
-            $normalized = preg_replace($regex, '', $normalized);
-        }
-
-        if (preg_match('#/\.{2}|\.{2}/#', $normalized)) {
-            throw new LogicException('Path is outside of the defined root, path: [' . $path . '], resolved: [' . $normalized . ']');
-        }
-
-        return trim($normalized, $separator);
+        return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
     }
 }
