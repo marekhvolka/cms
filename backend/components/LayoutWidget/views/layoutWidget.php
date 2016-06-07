@@ -54,10 +54,15 @@
 </div>
 
 <?php
+$portalIdJs = $portalId ? : 'null';
+$pageIdJs = $pageId ? : 'null';
+
 $js = <<<JS
 
 var controllerUrl = '$controllerUrl';
 var layoutType = '$type';
+var portalId = $portalIdJs;
+var pageId = $portalIdJs;
 JS;
 
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

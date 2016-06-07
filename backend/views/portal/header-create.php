@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections backend\models\Section */
 ?>
-
+ 
 <?php $form = ActiveForm::begin([
         'id' => 'form', 
         'enableAjaxValidation' => true,

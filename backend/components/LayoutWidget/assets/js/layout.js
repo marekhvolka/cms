@@ -1,6 +1,7 @@
 var optionsElement;
+var portalIdUrlParam = portalId ? '&portalId=' + portalId : '';
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section?type=' + layoutType,
+    section: controllerUrl + '/' + 'append-section?type=' + layoutType + portalIdUrlParam,
     row: controllerUrl + '/' + 'append-row',
     block: controllerUrl + '/' + 'append-block'
 };

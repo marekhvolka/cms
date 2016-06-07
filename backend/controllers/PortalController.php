@@ -240,7 +240,7 @@ class PortalController extends BaseController
             ]);
 
             try {
-                 $sectionsData = Yii::$app->request->post('Section');
+                $sectionsData = Yii::$app->request->post('Section');
                 $rowsData = Yii::$app->request->post('Row');
                 $columnsData = Yii::$app->request->post('Column');
                 $blocksData = Yii::$app->request->post('Block');
@@ -252,6 +252,7 @@ class PortalController extends BaseController
 
                 $loadedSections = Model::loadMultiple($sections, Yii::$app->request->post());
                 $validSections = Model::validateMultiple($sections);
+                $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
 
                 foreach ($sections as $section) {
                     $formerId = $section->id;
@@ -264,17 +265,17 @@ class PortalController extends BaseController
 
                         foreach ($rows as $row) {
                             $sectionId = $row->section_id;
-                            
+
                             if ($sectionId == $formerId) {
                                 $row->section_id = $section->id;
                             }
                         }
                     }
                 }
-
-                $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
+                
                 $validRows = Model::validateMultiple($rows);
-
+                $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
+                
                 foreach ($rows as $row) {
                     $formerId = $row->id;
 
@@ -291,10 +292,10 @@ class PortalController extends BaseController
                         }
                     }
                 }
-
-                $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
+                
                 $validColumns = Model::validateMultiple($columns);
-
+                $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
+                
                 foreach ($columns as $column) {
                     $formerId = $column->id;
                     if ($column->existing == 'false') {
@@ -310,11 +311,13 @@ class PortalController extends BaseController
                         }
                     }
                 }
-
-                $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
+                
                 $validBlocks = Model::validateMultiple($blocks);
 
                 foreach ($blocks as $block) {
+                    if ($block->existing == 'false') {
+                        $block->id = null;
+                    }
                     if (!$block->save()) {
                         return false;
                     }

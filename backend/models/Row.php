@@ -117,6 +117,7 @@ class Row extends \yii\db\ActiveRecord
             } else {
                 $row = new Row();
                 $row->section_id = $dataItem['section_id'];
+                $row->id = $dataItem['id'];
             }
 
             $row->existing = $dataItem['existing'];
