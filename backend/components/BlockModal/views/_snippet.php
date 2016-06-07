@@ -9,21 +9,19 @@
                             <span title="Rozbaliť / zbaliť všetko" onclick="toggleSmartSnippetListAll()" style="margin-right: 5px; cursor: pointer;">
                                 <i class="fa fa-sort"></i>
                             </span>
-                            <span id="myModalLabelSmartSnippetAppend">Vlastnosti pôžičky</span>
-                        </h4>
+                            <span id="myModalLabelSmartSnippetAppend"><?= $model->snippetCode->snippet->name ?></span>
 
-                        <div class="form-group fixed_alternative">
                             <div class="btn-group" data-toggle="buttons">
                                 <?php foreach ($model->snippetCode->snippet->snippetCodes as $snippetCode) : ?>
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="code_select" onchange="changeSmartSnippetCode($(this).val())" checked="checked" value="171">
-                                    <?= $snippetCode->name ?>
-                                </label>
+                                    <label class="btn btn-primary <?php ($model->snippetCode->id == $snippetCode->id) ? 'active': '';?>">
+                                        <input type="radio" name="code_select" onchange="changeSmartSnippetCode($(this).val())" checked="checked" value="171">
+                                        <?= $snippetCode->name ?>
+                                    </label>
                                 <?php endforeach; ?>
                             </div>
-                        </div>
-                        <button type="button" class="btn btn-warning btn-xs btn-remove-var" style="right: 60px; top: 13px;" data-toggle="modal" data-target="#supportModal" title="Nápoveda"><span class="fa fa-question"></span></button>
-                        <div class="clearfix"></div>
+
+                            <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right" style="right: 60px; top: 13px;" data-toggle="modal" data-target="#supportModal" title="Nápoveda"><span class="fa fa-question"></span></button>
+                        </h4>
                     </div>
                     <div class="clearfix"></div>
                     <script>$(".alternative_hidden").css('width', $(document).width()*0.5)</script>
@@ -36,8 +34,6 @@
                         ?>
                     </div>
                 </div>
-                <input type="hidden" id="idBlockLayoutSmartSnippetEdit">
-                <input type="hidden" id="idHiddenSmartSnippetEdit" value="snippet_11755808_h_37257620">
                 <div class="clearfix"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>

@@ -928,6 +928,8 @@ class ParseEngine
         $block->data = str_replace('{horna_hranica_splatnosti_novy}', '{$product->horna_hranica_splatnosti_novy}', $block->data);
         $block->data = str_replace('{nazov_produktu}', '{$product->nazov_produktu}', $block->data);
 
+        $block->data = str_replace('{slovnik.', '{$slovnik->', $block->data);
+
         $block->save();
     }
 

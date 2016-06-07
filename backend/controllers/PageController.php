@@ -232,43 +232,21 @@ class PageController extends BaseController
         //$cacheEngine->cachePageVars(Page::findOne(['id' => '356']));
     }
 
-    public function actionParse()
+    /** Parsovanie podstranky
+     * @param $pageId - ID podstranky
+     * @throws \yii\db\Exception
+     */
+    public function actionParse($pageId)
     {
         $parseEngine = new ParseEngine();
 
+
         $transaction = Yii::$app->db->beginTransaction();
-
-        $pageBlocks = Block::find()
-            //->andWhere(['type' => 'product_snippet'])
-            ->andWhere('id >= 21000 AND id < 21000000')
-            ->all();
-
-        foreach($pageBlocks as $block)
-        {
-            $parseEngine->convertMacrosToLatteStyle($block);
-            $parseEngine->convertMacrosToLatteStyle2($block);
-            $parseEngine->parseSnippetVarValues($block);
-        }
-
-        /*$rows = $command = (new Query())
-            ->select('*')
-            ->from('portal_global')
-            //->where('page_id = 356')
-            ->createCommand()
-            ->queryAll();
-
-        foreach($rows as $row)
-        {
-            $parseEngine->parsePageGlobalSection('portal', $row);
-        }
-        */
-
-        /*
 
         $rows = $command = (new Query())
             ->select('*')
             ->from('page_sidebar')
-            ->where('page_id = 322')
+            ->where(['page_id' => $pageId])
             ->createCommand()
             ->queryAll();
 
@@ -277,11 +255,10 @@ class PageController extends BaseController
             $parseEngine->parseSidebar($row);
         }
 
-
         $rows = $command = (new Query())
             ->select('*')
             ->from('page_footer')
-            ->where('page_id = 322')
+            ->where(['page_id' => $pageId])
             ->createCommand()
             ->queryAll();
 
@@ -293,7 +270,7 @@ class PageController extends BaseController
         $rows = $command = (new Query())
             ->select('*')
             ->from('page_header')
-            ->where('page_id = 322')
+            ->where(['page_id' => $pageId])
             ->createCommand()
             ->queryAll();
 
@@ -305,7 +282,7 @@ class PageController extends BaseController
         $rows = $command = (new Query())
             ->select('*')
             ->from('page')
-            ->where('id = 322')
+            ->where(['id' => $pageId])
             ->createCommand()
             ->queryAll();
 
@@ -313,7 +290,25 @@ class PageController extends BaseController
         {
             $parseEngine->parseMasterContent($row);
         }
-        */
+
+        /* @var $page Page */
+        $page = Page::find()->where(['id' => $pageId])->one();
+
+        foreach($page->sections as $section)
+        {
+            foreach($section->rows as $row)
+            {
+                foreach($row->columns as $column)
+                {
+                    foreach($column->blocks as $block)
+                    {
+                        $parseEngine->convertMacrosToLatteStyle($block);
+                        $parseEngine->convertMacrosToLatteStyle2($block);
+                        $parseEngine->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
 
         $transaction->commit();
     }

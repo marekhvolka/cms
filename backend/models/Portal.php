@@ -313,10 +313,10 @@ class Portal extends \yii\db\ActiveRecord
                 $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
             }
 
-            $buffer .= '$include_head = \'' . $this->getTrackingCodesString('head') . '\';' . PHP_EOL;
-            $buffer .= '$include_head_end = \'' . $this->getTrackingCodesString('head_end') . '\';' . PHP_EOL;
-            $buffer .= '$include_body = \'' . $this->getTrackingCodesString('body') . '\';' . PHP_EOL;
-            $buffer .= '$include_body_end = \'' . $this->getTrackingCodesString('body_end') . '\';' . PHP_EOL;
+            $buffer .= '$include_head = stripcslashes(\'' . $this->getTrackingCodesString('head') . '\');' . PHP_EOL;
+            $buffer .= '$include_head_end = stripcslashes(\'' . $this->getTrackingCodesString('head_end') . '\');' . PHP_EOL;
+            $buffer .= '$include_body = stripcslashes(\'' . $this->getTrackingCodesString('body') . '\');' . PHP_EOL;
+            $buffer .= '$include_body_end = stripcslashes(\'' . $this->getTrackingCodesString('body_end') . '\');' . PHP_EOL;
 
             $buffer .= '?>';
 
@@ -381,8 +381,8 @@ class Portal extends \yii\db\ActiveRecord
     {
         $prefix = '<?php' . PHP_EOL;
 
-        $prefix .= '$global_header = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\'));' . PHP_EOL;
-        $prefix .= '$global_footer = addslashes(file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\'));' . PHP_EOL;
+        $prefix .= '$global_header = file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
+        $prefix .= '$global_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
