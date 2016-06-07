@@ -203,3 +203,8 @@ ul {
 #login-box li {
     padding: 8px 8px;
 }
+
+.multimedia-files-update .select-subcategory {
+    min-width: 220px;
+    padding-left: 10px;
+}

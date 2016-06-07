@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="multimedia-index">
 
+    <h2>Kategórie</h2>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns'      => [
@@ -26,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'  => 'Meno',
                 'format' => 'raw',
                 'value'  => function ($dataProvider) {
-                    return Html::a($dataProvider->name, Url::to(['/multimedia/update/', 'name' => $dataProvider->name]));
+                    return Html::a($dataProvider->name, Url::to(['/multimedia/files/', 'name' => $dataProvider->name]));
                 },
             ],
 
@@ -35,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template'   => '{update} {delete}',
                 'urlCreator' => function ($action, $model, $key, $index) {
                     $url = Url::to([$action, 'name' => $model->name]);
+
                     return $url;
                 }
             ],

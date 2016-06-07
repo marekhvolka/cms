@@ -7,10 +7,9 @@ use yii\helpers\Html;
 
 $this->title = 'Upraviť multimediálnu kategóriu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Multimédia', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->name]];
-$this->params['breadcrumbs'][] = 'Upraviť';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-update">
+<div class="multimedia-update">
 
     <?= $this->render('_form', [
         'model' => $model,
