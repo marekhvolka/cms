@@ -45,7 +45,7 @@ function attachAddRowEvent(button) {
             row = row.appendTo(sectionRows);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
-            attachRemoveSectionEvent(row.find('.btn-remove-row'));
+            attachRemoveRowEvent(row.find('.btn-remove-row'));
             attachAddBlockEvent(row.find('.column-option'));
         });
     });

@@ -21,6 +21,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             <?= BaseHtml::hiddenInput("Column[$postIndex][existing]", $column->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
             <?= BaseHtml::hiddenInput("Column[$postIndex][id]", $column->id ? : $postIndex, ['class' => 'id']); ?>
             <?= BaseHtml::hiddenInput("Column[$postIndex][row_id]", $row->id, ['class' => 'row_id']); ?>
+            <?= BaseHtml::hiddenInput("Column[$postIndex][width]", $column->width, ['class' => 'width']); ?>
             <div class="btn-group section-buttons">
                 <div class="section-button">
                     <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">

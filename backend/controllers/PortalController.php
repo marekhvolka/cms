@@ -226,19 +226,13 @@ class PortalController extends BaseController
     // TODO - move this action to LayoutController
     public function actionFooterCreate()
     {
-//        $existingSections = Section::findAll([
-//                    'type' => 'footer',
-//                    'portal_id' => Yii::$app->session->get('portal_id')
-//        ]);
-//        foreach ($existingSections as $section) {
-//            $section->delete();
-//        }
         if (Yii::$app->request->isPost) {
             $existingSections = Section::findAll([
                         'type' => 'footer',
                         'portal_id' => Yii::$app->session->get('portal_id')
             ]);
 
+            $transaction = Yii::$app->db->beginTransaction();
             try {
                 $sectionsData = Yii::$app->request->post('Section');
                 $rowsData = Yii::$app->request->post('Row');
@@ -260,7 +254,7 @@ class PortalController extends BaseController
                     if ($section->existing == 'false') {
                         $section->id = null;
                         if (!$section->save()) {
-                            return false;
+                            throw new Exception;
                         }
 
                         foreach ($rows as $row) {
@@ -272,17 +266,17 @@ class PortalController extends BaseController
                         }
                     }
                 }
-                
+
                 $validRows = Model::validateMultiple($rows);
                 $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
-                
+
                 foreach ($rows as $row) {
                     $formerId = $row->id;
 
                     if ($row->existing == 'false') {
                         $row->id = null;
                         if (!$row->save()) {
-                            return false;
+                            throw new Exception;
                         }
 
                         foreach ($columns as $column) {
@@ -292,16 +286,16 @@ class PortalController extends BaseController
                         }
                     }
                 }
-                
+
                 $validColumns = Model::validateMultiple($columns);
                 $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
-                
+
                 foreach ($columns as $column) {
                     $formerId = $column->id;
                     if ($column->existing == 'false') {
                         $column->id = null;
                         if (!$column->save()) {
-                            return false;
+                            throw new Exception;
                         }
 
                         foreach ($blocks as $block) {
@@ -311,7 +305,7 @@ class PortalController extends BaseController
                         }
                     }
                 }
-                
+
                 $validBlocks = Model::validateMultiple($blocks);
 
                 foreach ($blocks as $block) {
@@ -319,26 +313,24 @@ class PortalController extends BaseController
                         $block->id = null;
                     }
                     if (!$block->save()) {
-                        return false;
+                        throw new Exception;
                     }
                 }
 
-                $oldIDs = ArrayHelper::map($existingSections, 'id', 'id');
-                $newIDs = ArrayHelper::map($sections, 'id', 'id');
-                $IDsToDelete = array_diff($oldIDs, $newIDs);
+                Section::deleteMultiple($existingSections, $sections);
+                $existingRows = ArrayHelper::getColumn($existingSections, 'row_id');
+                // TODO deleting
+                Section::deleteMultiple($existingSections, $sections);
+                Section::deleteMultiple($existingSections, $sections);
 
-                foreach ($IDsToDelete as $id) {
-                    $sectionToDelete = Section::findOne($id);
-                    if ($sectionToDelete) {
-                        $sectionToDelete->delete();
-                    }
-                }
+                $transaction->commit();
             } catch (Exception $exc) {
-                $test = $exc;
-            }
+                $transaction->rollBack();
 
-            // TODO - add ordering functionality
-            // TODO here comes deleting 
+                return $this->render('header-create', [
+                            'sections' => $sections
+                ]);
+            }
         }
 
         $sections = Section::findAll([
@@ -372,14 +364,13 @@ class PortalController extends BaseController
         $parseEngine = new ParseEngine();
 
         $rows = $command = (new Query())
-            ->select('*')
-            ->from('portal_global')
-            ->where(['portal_id' => $portalId])
-            ->createCommand()
-            ->queryAll();
+                ->select('*')
+                ->from('portal_global')
+                ->where(['portal_id' => $portalId])
+                ->createCommand()
+                ->queryAll();
 
-        foreach($rows as $row)
-        {
+        foreach ($rows as $row) {
             $parseEngine->parsePageGlobalSection('portal', $row);
         }
     }

@@ -126,6 +126,20 @@ class Row extends \yii\db\ActiveRecord
 
         return $rows;
     }
+    
+    public static function deleteMultiple($existingModels, $models)
+    {
+        $oldIDs = ArrayHelper::map($existingModels, 'id', 'id');
+        $newIDs = ArrayHelper::map($models, 'id', 'id');
+        $IDsToDelete = array_diff($oldIDs, $newIDs);
+
+        foreach ($IDsToDelete as $id) {
+            $modelsToDelete = Row::findOne($id);
+            if ($modelsToDelete) {
+                $modelsToDelete->delete();
+            }
+        }
+    }
 
     public function getContent()
     {

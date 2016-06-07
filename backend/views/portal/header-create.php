@@ -16,8 +16,9 @@ use yii\helpers\Url;
         ]); ?>
 
 <?= LayoutWidget::widget([
-        'type' => 'header', // TODO set type of layout.
+        'type' => 'footer', // TODO set type of layout.
         'sections' => $sections,
+        'portalId' => Yii::$app->session->get('portal_id'),
         'controllerUrl' => Url::to(['/layout']),
     ]
 )?>
