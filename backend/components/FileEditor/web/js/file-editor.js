@@ -44,6 +44,13 @@ $(function () {
         openFile(_this.attr('data-name'), _this.attr('data-directory'), _this.attr('href'));
     });
 
+    // confirmation of deleting
+    file_editor.find(".delete").click(function (e) {
+        if (!window.confirm("Skutočne chcete zmazať '" + $(this).attr("data-path") + "'?")){
+            e.preventDefault();
+        }
+    });
+
     // add file to a directory
     $('.add-file').click(function (event) {
         event.preventDefault();

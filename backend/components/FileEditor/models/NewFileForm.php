@@ -6,11 +6,11 @@ use backend\components\PathHelper;
 use yii\base\Model;
 
 /**
- * Used to edit a file.
+ * Used to create a file.
  *
  * @package common\widgets\FileEditor\models
  */
-class EditFileForm extends Model
+class NewFileForm extends Model
 {
     /**
      * The new content of the file.
@@ -59,7 +59,7 @@ class EditFileForm extends Model
             ['name', 'required'],
             ['text', 'safe'],
             ['directory', function ($attribute) {
-                if (!PathHelper::isInside(realpath($this->getFullPath()), realpath($this->baseDir))) {
+                if (!PathHelper::isInside(DIRECTORY_SEPARATOR . PathHelper::normalizePath($this->getFullPath()), realpath($this->baseDir))) {
                     $this->addError($attribute, 'Nevalídny súbor.');
 
                     return;
@@ -82,10 +82,11 @@ class EditFileForm extends Model
     /**
      * Return the full path to the file.
      *
-     *  @return string the path
+     * @return string the path
      */
     public function getFullPath()
     {
-        return $this->baseDir . DIRECTORY_SEPARATOR . trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
+        return DIRECTORY_SEPARATOR . $this->baseDir . DIRECTORY_SEPARATOR . trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim
+        ($this->name, "/");
     }
 }
