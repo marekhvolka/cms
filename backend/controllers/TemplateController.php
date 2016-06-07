@@ -104,7 +104,7 @@ class TemplateController extends BaseController
         ]);
         $state = $file_editor->performActions();
 
-        if ($state == false) {
+        if ($state === false) {
             return $this->render('edit-files', [
                 'template' => $template,
                 'fileEditor' => $file_editor

@@ -43,7 +43,7 @@ use yii\web\UploadedFile;
  * (or Response)... in such a case, return the returned object to be displayed
  *
  * <code>
- * if ($state == false) {
+ * if ($state === false) {
  *      return $this->render('editor', [
  *          'fileEditor' => $file_editor
  *      ]);
