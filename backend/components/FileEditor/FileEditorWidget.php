@@ -7,6 +7,8 @@ use backend\components\FileEditor\models\EditFileForm;
 use backend\components\FileEditor\models\UploadFileForm;
 use DirectoryIterator;
 use InvalidArgumentException;
+use Leafo\ScssPhp\Compiler;
+use Leafo\ScssPhp\Formatter\Compressed;
 use ReflectionClass;
 use yii;
 use yii\base\Component;
@@ -61,8 +63,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
      */
     public $directory;
     // not implemented yet
-    public $compileScss = false;
-    public $compileTo = null;
+    public $compileScssTo = false;
 
     /**
      * Perform internal actions. In case that it returns something apart from false, return the response to the Yii 2
@@ -71,7 +72,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
      *
      * @return $this|bool|string
      */
-    public function performActions() {
+    public function performActions()
+    {
         if (empty($this->directory) || !is_dir($this->directory)) {
             throw new InvalidArgumentException('Given directory does not exist.');
         }
@@ -88,6 +90,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
                 }
             } else {
                 $file = Yii::$app->request->get('file');
+
                 return file_get_contents($this->directory . '/' . $file);
             }
         }
@@ -108,6 +111,12 @@ class FileEditorWidget extends Component implements ViewContextInterface
         // editing file
         if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) {
             $edit_file_form->save(false);
+
+            $edited_file_path = $edit_file_form->getFullPath();
+            if ($this->compileScssTo && PathHelper::isSCSSFile($edited_file_path)) {
+                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                $this->compileScss($edited_file_path, $compiled_path);
+            }
         }
 
         // uploading a new file
@@ -121,6 +130,11 @@ class FileEditorWidget extends Component implements ViewContextInterface
                     $is_image_loaded = true;
                 } else {
                     $edit_file_form->text = file_get_contents($path);
+
+                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->fileName)) {
+                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                        $this->compileScss($path, $compiled_path);
+                    }
                 }
             }
         }
@@ -135,14 +149,29 @@ class FileEditorWidget extends Component implements ViewContextInterface
         $fileTree = $this->buildTreeForDirectory($this->directory);
 
         echo Yii::$app->getView()->render('file-editor', [
-            'directory'      => $this->directory,
-            'fileTree'       => $fileTree['with-files'],
-            'directoryTree'  => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
-            'editFileForm'   => $edit_file_form,
-            'uploadFileForm' => $upload_file_form,
+            'directory'           => $this->directory,
+            'fileTree'            => $fileTree['with-files'],
+            'directoryTree'       => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
+            'editFileForm'        => $edit_file_form,
+            'uploadFileForm'      => $upload_file_form,
             'createDirectoryForm' => $create_directory_form,
-            'isImageLoaded'  => $is_image_loaded
+            'isImageLoaded'       => $is_image_loaded
         ], $this);
+    }
+
+    /**
+     * Compile css file determined by its path
+     *
+     * @param $from string path of the file to be compiled
+     * @param $to string save the compiled script to (extension will be replaced by 'css')
+     */
+    private function compileScss($from, $to)
+    {
+        $to = preg_replace('/\\.[^.\\s]{3,4}$/', '', $to) . ".css";
+        $scss_compiler = new Compiler();
+        PathHelper::makePath($to, true);
+        $scss_compiler->setFormatter(new Compressed());
+        file_put_contents($to, $scss_compiler->compile(file_get_contents($from)));
     }
 
     /**

@@ -69,4 +69,14 @@ class EditFileForm extends Model
             file_put_contents($this->baseDir . $this->fileName, $this->text);
         }
     }
+
+    /**
+     * Return the full path to the file.
+     *
+     *  @return string the path
+     */
+    public function getFullPath()
+    {
+        return $this->baseDir . $this->fileName;
+    }
 }

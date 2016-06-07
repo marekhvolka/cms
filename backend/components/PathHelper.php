@@ -114,4 +114,14 @@ class PathHelper
     {
         return in_array(mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION)), ["jpg", "jpeg", "gif", "png"]);
     }
+
+    /**
+     * Does the given path contain an scss file?
+     *
+     * @param $fileName string the path
+     * @return bool yes or not?
+     */
+    public static function isSCSSFile($fileName){
+        return mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION)) == "scss";
+    }
 }
