@@ -24,9 +24,13 @@ use yii\web\UploadedFile;
  * <code>
  * $file_editor = Yii::createObject([
  *      'class'     => FileEditorWidget::className(),
- *      'directory' => __DIR__ . '/../testing-data'
+ *      'directory' => __DIR__ . '/../testing-data',
+ *      'compileScssTo' => __DIR__ . '/../testing-data-compiled'
  * ]);
  * </code>
+ *
+ * Note that if you want to compile scss files, set the 'compileScssTo' path to the directory into which the
+ * generated items will be saved (inner directories will be created according the directories in 'directory' param).
  *
  * 2) the editor has some its actions that need to be performed, like to return the content of the file when
  * requested by AJAX ... that is done by method performActions(); ... you need to store the return value
