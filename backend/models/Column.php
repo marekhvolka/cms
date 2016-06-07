@@ -150,7 +150,7 @@ class Column extends \yii\db\ActiveRecord
         $settings = array();
 
         $settings['classes'] = '';
-        $settings['ids'] = 'col' . $this->id;
+        $settings['ids'] = ''; //'col' . $this->id;
         $settings['styles'] = '';
 
         foreach($this->blocks as $block)
