@@ -38,7 +38,7 @@ function build_file_tree($data, $from_dir = '')
                 ?>
                 <li class="directory expanded">
                     <?= $index ?> <a href="<?= Url::current(['file'       => $path,
-                        'fileAction' => 'delete'])
+                                                             'fileAction' => 'delete'])
                     ?>" class="delete">x</a> <a href="#"
                                                 class="add-file"
                                                 data-name='<?= $path ?>'
@@ -53,10 +53,16 @@ function build_file_tree($data, $from_dir = '')
                 $path = $from_dir . '/' . $item;
                 ?>
                 <li class="file ext_<?= $extension ?>">
-                    <a data-name='<?= $path ?>' href="<?= Url::current(['file' => $path]) ?>"
-                       class="file-link"><?=
-                        $item ?></a> <a href="<?= Url::current(['file' => $path, 'fileAction' => 'delete'])
-                    ?>" class="delete">x</a>
+                    <a data-dir='<?= $from_dir ?>'
+                       data-name='<?= $item ?>'
+                       href="<?= Url::current(['file' => $path]) ?>"
+                       class="file-link">
+                        <?= $item ?>
+                    </a>
+                    <a href="<?= Url::current(['file' => $path, 'fileAction' => 'delete']) ?>"
+                       class="delete">
+                        x
+                    </a>
                 </li>
                 <?php
             }
@@ -70,10 +76,10 @@ function build_file_tree($data, $from_dir = '')
 
 <?php $this->beginBlock('button'); ?>
 <?= Html::a('Nahrať súbor', "#", ['class'       => 'btn btn-success pull-right', 'data-name' => '/',
-    'data-toggle' => "modal", 'data-target' => '#uploadFileModal']) ?>
+                                  'data-toggle' => "modal", 'data-target' => '#uploadFileModal']) ?>
 
 <?= Html::a('Vytvoriť priečinok', "#", ['class'       => 'btn btn-success pull-right', 'data-name' => '/',
-    'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
+                                        'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">
@@ -84,10 +90,11 @@ function build_file_tree($data, $from_dir = '')
     </div>
     <div class="col-xs-12 col-sm-9">
         <div class="row">
-            <?php if ($editFileForm->fileName == null) : ?>
+            <?php if ($editFileForm->name == null) : ?>
                 <h3 class="select-a-file">Vyberte súbor alebo nahrajte nový</h3>
             <?php endif; ?>
-            <div class="file-editing" <?php if ($isImageLoaded || $editFileForm->fileName == null) : ?>style="display: none"<?php endif; ?>>
+            <div class="file-editing"
+                 <?php if ($isImageLoaded || $editFileForm->name == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = ActiveForm::begin() ?>
                 <?= CodemirrorWidget::widget([
                         'name'     => 'EditFileForm[text]',
@@ -102,11 +109,12 @@ function build_file_tree($data, $from_dir = '')
                             CodemirrorAsset::ADDON_SEARCH,
                         ],
                         'settings' => [
-                            'mode'     => 'application/x-httpd-php'
+                            'mode' => 'application/x-httpd-php'
                         ],
                     ]
                 ) ?>
-                <?= $form->field($editFileForm, 'fileName')->hiddenInput()->label(false) ?>
+                <?= $form->field($editFileForm, 'name')->hiddenInput()->label(false) ?>
+                <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
                 <?= Html::submitButton('Uložiť', [
                     'class' => 'btn btn-success',
                     'id'    => 'submit-btn'
@@ -115,7 +123,7 @@ function build_file_tree($data, $from_dir = '')
             </div>
             <div class="image"> <!-- will be shown only if an image is opened -->
                 <img src="<?php if ($isImageLoaded) {
-                    echo Url::current(['file' => $editFileForm->fileName]);
+                    echo Url::current(['file' => $editFileForm->directory . DIRECTORY_SEPARATOR . $editFileForm->name]);
                 } ?>">
             </div>
         </div>

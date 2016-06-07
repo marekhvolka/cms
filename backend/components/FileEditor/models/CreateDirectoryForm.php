@@ -59,7 +59,12 @@ class CreateDirectoryForm extends Model
                 $this->buildPath();
 
                 if (!PathHelper::isInside($this->_builtPath, realpath($this->baseDir))) {
-                    $this->addError($attribute, 'Invalid directory.');
+                    $this->addError($attribute, 'Nevalídny priečinok.');
+                    return;
+                }
+
+                if(is_dir($this->_builtPath)){
+                    $this->addError($attribute, 'Daný priečinok už existuje.');
                 }
             }]
         ];

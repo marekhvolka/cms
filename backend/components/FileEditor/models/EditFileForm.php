@@ -20,11 +20,18 @@ class EditFileForm extends Model
     public $text;
 
     /**
-     * The name + path to the file to be edited.
+     * The name of the file to be edited.
      *
      * @var string
      */
-    public $fileName;
+    public $name;
+
+    /**
+     * The directory to which the file belongs to.
+     *
+     * @var string
+     */
+    public $directory;
 
     /**
      * The base / root directory to the directory be put in.
@@ -39,7 +46,7 @@ class EditFileForm extends Model
     public function __construct($baseDir)
     {
         parent::__construct();
-        $this->baseDir = $baseDir;
+        $this->baseDir = trim($baseDir, "/");
     }
 
 
@@ -49,11 +56,13 @@ class EditFileForm extends Model
     public function rules()
     {
         return [
-            ['fileName', 'required'],
+            [['name', 'directory'], 'required'],
             ['text', 'safe'],
-            ['fileName', function ($attribute) {
-                if (!PathHelper::isInside(realpath($this->baseDir . $this->fileName), realpath($this->baseDir))) {
-                    $this->addError($attribute, 'Invalid directory.');
+            ['directory', function ($attribute) {
+                if (!PathHelper::isInside(realpath($this->getFullPath()), realpath($this->baseDir))) {
+                    $this->addError($attribute, 'Nevalídny súbor.');
+
+                    return;
                 }
             }]
         ];
@@ -66,7 +75,7 @@ class EditFileForm extends Model
     public function save($validate)
     {
         if (!$validate || $this->validate()) {
-            file_put_contents($this->baseDir . $this->fileName, $this->text);
+            file_put_contents($this->getFullPath(), $this->text);
         }
     }
 
@@ -77,6 +86,6 @@ class EditFileForm extends Model
      */
     public function getFullPath()
     {
-        return $this->baseDir . $this->fileName;
+        return $this->baseDir . DIRECTORY_SEPARATOR . trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
     }
 }

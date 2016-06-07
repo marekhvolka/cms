@@ -118,7 +118,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
 
             $edited_file_path = $edit_file_form->getFullPath();
             if ($this->compileScssTo && PathHelper::isSCSSFile($edited_file_path)) {
-                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
                 $this->compileScss($edited_file_path, $compiled_path);
             }
         }
@@ -128,15 +128,16 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $upload_file_form->file = UploadedFile::getInstance($upload_file_form, 'file');
             if ($upload_file_form->validate()) {
                 $path = $upload_file_form->upload(false);
-                $edit_file_form->fileName = $upload_file_form->directory . '/' . $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
+                $edit_file_form->directory = $upload_file_form->directory;
+                $edit_file_form->name = $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
 
-                if (PathHelper::isImageFile($edit_file_form->fileName)) {
+                if (PathHelper::isImageFile($edit_file_form->name)) {
                     $is_image_loaded = true;
                 } else {
                     $edit_file_form->text = file_get_contents($path);
 
-                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->fileName)) {
-                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->name)) {
+                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
                         $this->compileScss($path, $compiled_path);
                     }
                 }
