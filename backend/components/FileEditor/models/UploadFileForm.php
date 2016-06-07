@@ -53,7 +53,7 @@ class UploadFileForm extends Model
             ['directory', function ($attribute) {
                 $realpath = '/' . PathHelper::normalizePath($this->baseDir . DIRECTORY_SEPARATOR . trim($this->$attribute, '/'));
 
-                if (PathHelper::isInside($realpath, realpath($this->baseDir))) {
+                if (!PathHelper::isInside($realpath, realpath($this->baseDir))) {
                     $this->addError($attribute, 'Invalid directory.');
                 }
             }]

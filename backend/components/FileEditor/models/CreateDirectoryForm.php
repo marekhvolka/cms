@@ -58,7 +58,7 @@ class CreateDirectoryForm extends Model
             ['directory', function ($attribute) {
                 $this->buildPath();
 
-                if (PathHelper::isInside($this->_builtPath, realpath($this->baseDir))) {
+                if (!PathHelper::isInside($this->_builtPath, realpath($this->baseDir))) {
                     $this->addError($attribute, 'Invalid directory.');
                 }
             }]
