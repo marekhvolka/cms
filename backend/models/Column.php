@@ -125,17 +125,17 @@ class Column extends \yii\db\ActiveRecord
     {
         $settings = $this->getChildCssSettings();
 
-        $cssClasses = trim("col-md-$this->width $this->css_class " . $settings['classes']);
-        $cssIds = trim("$this->css_id " . $settings['ids']);
-        $cssStyles = trim("$this->css_style " . $settings['styles']);
+        $cssClasses = trim('col-md-' . $this->width . ' ' . $this->css_class . ' ' . $settings['classes']);
+        $cssIds = trim($this->css_id . ' ' . $settings['ids']);
+        $cssStyles = trim($this->css_style . ' ' . $settings['styles']);
 
-        $result = "<div";
+        $result = '<div';
 
-        $result .= $cssClasses != '' ? " class='$cssClasses'" : "";
-        $result .= $cssIds != '' ? " id='$cssIds'" : "";
-        $result .= $cssClasses != '' ? " style='$cssStyles'" : "";
+        $result .= $cssClasses != '' ? ' class="' . $cssClasses . '"' : '';
+        $result .= $cssIds != '' ? ' id="' . $cssIds . '"' : '';
+        $result .= $cssStyles != '' ? ' style="' . $cssStyles . '"' : '';
 
-        $result .= ">" . PHP_EOL;
+        $result .= '>' . PHP_EOL;
 
         $result .= '<div class="box">' . PHP_EOL;
 

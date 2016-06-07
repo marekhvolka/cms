@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use common\components\ParseEngine;
 use Exception;
 use Yii;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -359,6 +361,23 @@ class PortalController extends BaseController
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionParse($portalId)
+    {
+        $parseEngine = new ParseEngine();
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('portal_global')
+            ->where(['portal_id' => $portalId])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('portal', $row);
         }
     }
 

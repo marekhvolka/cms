@@ -5,9 +5,11 @@
  * Date: 06.06.16
  * Time: 11:11
  */
+use backend\models\Page;
 use backend\models\Product;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
+use kartik\color\ColorInput;
 
 /* @var $varValue backend\models\SnippetVarValue */
 
@@ -20,9 +22,11 @@ switch ($model->var->type->identifier)
         <div class="panel panel-default" style="position: relative; display: block">
             <div class="panel-heading">
                 <span>
-                    <i class="fa fa-angle-down">
-                        <?= $model->var->identifier ?>
-                    </i>
+                    <a data-toggle="collapse" href="#panel<?= $model->id ?>">
+                        <i class="fa fa-angle-down">
+                            <?= $model->var->identifier ?>
+                        </i>
+                    </a>
                 </span>
                 <span>
                     Počet položiek: <?= sizeof($model->valueListVar->listItems) ?>
@@ -33,15 +37,17 @@ switch ($model->var->type->identifier)
                 </button>
             </div>
 
-            <div class="panel-body">
+            <div class="panel-body panel-collapse collapse in" id="panel<?= $model->id ?>">
                 <ul class="list-unstyled">
                     <?php foreach($model->valueListVar->listItems as $listItem) : ?>
                     <li>
                         <div class="panel panel-default" style="position: relative">
                             <div class="panel-heading">
-                                <span>
+                                <a data-toggle="collapse" href="#panelItem<?= $listItem->id ?>">
+                                    <span>
                                     <i class="fa fa-angle-down"></i>
                                 </span>
+                                </a>
                                 <span>
                                     <i class="fa fa-bars"></i>
                                 </span>
@@ -53,7 +59,7 @@ switch ($model->var->type->identifier)
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </button>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body panel-collapse collapse in" id="panelItem<?= $listItem->id ?>">
                                 <?php foreach($listItem->values as $snippetVarValue)
                                 {
                                     echo $this->render('_snippet_var', [
@@ -66,18 +72,15 @@ switch ($model->var->type->identifier)
                     </li>
                     <?php endforeach; ?>
                 </ul>
-
             </div>
         </div>
     <?php
         break;
-
     case 'textinput' : ?>
-
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
+                <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" placeholder="<?= $model->var->default_value ?>">
                 <?php if(!empty($model->var->default_value)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->var->default_value ?></strong></p>
                 <?php endif; ?>
@@ -89,7 +92,7 @@ switch ($model->var->type->identifier)
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value ?>" placeholder="<?= $model->var->default_value ?>">
+                <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
 
                 <?php if(!empty($model->var->default_value)) : ?>
                 <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->var->default_value ?></strong></p>
@@ -99,18 +102,14 @@ switch ($model->var->type->identifier)
     <?php
         break;
     case 'textarea' : ?>
-
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->var->default_value) ?>">
-                    <?= $model->value_text ?>
-                </textarea>
+                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->var->default_value) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
                 <?php if(!empty($model->var->default_value)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->var->default_value) ?></strong></p>
                 <?php endif; ?>
-
             </div>
         </div>
     <?php
@@ -120,7 +119,7 @@ switch ($model->var->type->identifier)
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
+                    <input type="color" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
                     <span class="input-group-addon"><i></i></span>
                 </div>
 
@@ -132,11 +131,25 @@ switch ($model->var->type->identifier)
 
     <?php
         break;
+    case 'editor' : ?>
+        <div class="form-group code" style="position: relative;">
+            <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->var->default_value) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
-    case 'product' : ?>
+                <?php if(!empty($model->var->default_value)) : ?>
+                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->var->default_value) ?></strong></p>
+                <?php endif; ?>
 
-
+            </div>
+        </div>
     <?php
         break;
+    case 'product' :
 
+        break;
+    case 'page' :
+
+
+        break;
 }

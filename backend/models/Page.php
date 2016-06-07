@@ -434,8 +434,8 @@ class Page extends \yii\db\ActiveRecord
 
             $prefix .= '<?' . PHP_EOL;
 
-            $prefix .= '$global_header = addslashes(file_get_contents(\'' . $this->portal->getLayoutCacheFile('header') . '\'));' . PHP_EOL;
-            $prefix .= '$global_footer = addslashes(file_get_contents(\'' . $this->portal->getLayoutCacheFile('footer') . '\'));' . PHP_EOL;
+            $prefix .= '$global_header = file_get_contents(\'' . $this->portal->getLayoutCacheFile('header') . '\');' . PHP_EOL;
+            $prefix .= '$global_footer = file_get_contents(\'' . $this->portal->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
 
             $prefix .= '$page_header = file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
             $prefix .= '$page_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
@@ -510,7 +510,7 @@ class Page extends \yii\db\ActiveRecord
 
         if (!file_exists($path))
         {
-            $result = html_entity_decode(stripcslashes(Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array())));
+            $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array()));
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $result);
         }
