@@ -1,7 +1,9 @@
 <?php
 
 namespace backend\models;
+
 use backend\components\PathHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * Represents a single multimedia category.
@@ -70,6 +72,26 @@ class MultimediaCategory extends Model
         }, array_filter(glob(self::MULTIMEDIA_PATH . '/*'), 'is_dir'));
     }
 
+    public function getSubcategories()
+    {
+        $portals = Portal::find()->asArray(true)->all();
+
+        return array_merge(['global' => 'Spoločné pre všetky portály'], ArrayHelper::map($portals, 'id', 'name'));
+    }
+
+    public function getItems($subcategory = null)
+    {
+        return array_map(function ($file) {
+            $item = new MultimediaItem();
+            $split_path = explode("/", $file);
+            $item->name = end($split_path);
+            $item->categoryName = $this->name;
+            $item->subcategory = $split_path[count($split_path) - 2];
+
+            return $item;
+        }, array_filter(glob(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), 'is_file'));
+    }
+
     /**
      * If the model is valid, saves the category.
      *
@@ -110,11 +132,11 @@ class MultimediaCategory extends Model
 
     /**
      * Removes the category.
-     * 
+     *
      * @return bool
      */
     public function delete()
     {
-        return PathHelper::remove(self::MULTIMEDIA_PATH.DIRECTORY_SEPARATOR.$this->name);
+        return PathHelper::remove(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name);
     }
 }

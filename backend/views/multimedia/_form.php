@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="user-form">
+<div class="multimedia-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
