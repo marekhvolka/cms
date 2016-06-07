@@ -73,10 +73,29 @@ class UploadFileForm extends Model
 
             PathHelper::makePath(PathHelper::normalizePath($path));
 
-            $path .= DIRECTORY_SEPARATOR . $this->file->baseName . '.' . $this->file->extension;
+            $path = $this->generateFileName($path, DIRECTORY_SEPARATOR . $this->file->baseName, $this->file->extension);
+
             $this->file->saveAs($path);
 
             return $path;
+        }
+    }
+
+    /**
+     * Generates a
+     *
+     * @param $path
+     * @param $fileName
+     * @param $extension
+     * @return string
+     */
+    private function generateFileName($path, $fileName, $extension)
+    {
+        $generated_path = $path . DIRECTORY_SEPARATOR . $fileName . '.' . $extension;
+        if (is_file($generated_path)) {
+            return $this->generateFileName($path, $fileName . "(conflict-copy)", $extension);
+        } else {
+            return $generated_path;
         }
     }
 }

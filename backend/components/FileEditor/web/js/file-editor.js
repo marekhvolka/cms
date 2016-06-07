@@ -4,10 +4,11 @@ $(function () {
     /**
      * Opens a file in the editor. In case of an image, shows not the textarea but the image itself.
      *
-     * @param filePath the path to the file
+     * @param name the name of the file
+     * @param directory the directory of the file
      * @param url the url containing the file (will be called by AJAX to acquire the content of the file)
      */
-    function openFile(filePath, url) {
+    function openFile(name, directory, url) {
         file_editor.find('.select-a-file').hide();
 
         var code_mirror = $('.CodeMirror')[0].CodeMirror;
@@ -15,7 +16,8 @@ $(function () {
         // disable editing during loading the file
         code_mirror.setOption('readOnly', true);
         // set the hidden input's value determining the path to the file to the file which should be opened
-        file_editor.find('#editfileform-filename').val(filePath);
+        file_editor.find('#editfileform-name').val(name);
+        file_editor.find('#editfileform-directory').val(directory);
 
         var extension = /(?:\.([^.]+))?$/.exec(url)[1];
         // is the file an image?
@@ -39,7 +41,14 @@ $(function () {
     file_editor.find('.file-link').click(function (e) {
         e.preventDefault();
         var _this = $(this);
-        openFile(_this.attr('data-name'), _this.attr('href'));
+        openFile(_this.attr('data-name'), _this.attr('data-directory'), _this.attr('href'));
+    });
+
+    // confirmation of deleting
+    file_editor.find(".delete").click(function (e) {
+        if (!window.confirm("Skutočne chcete zmazať '" + $(this).attr("data-path") + "'?")){
+            e.preventDefault();
+        }
     });
 
     // add file to a directory

@@ -256,3 +256,15 @@ UI.jqueryFileTree a.delete {
 .file-editor .image img {
     max-width: 100%;
 }
+
+#createFileModal .CodeMirror {
+    margin-top: 20px;
+    border: 1px solid #E5E6E7;
+    border-radius: 1px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    min-width: 20px;
+}
+
+#createFileModal .CodeMirror:focus {
+    border-color: #66AFE9;
+}

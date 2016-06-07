@@ -1,6 +1,7 @@
 <?php
 namespace backend\components\FileEditor;
 
+use backend\components\FileEditor\models\NewFileForm;
 use backend\components\PathHelper;
 use backend\components\FileEditor\models\CreateDirectoryForm;
 use backend\components\FileEditor\models\EditFileForm;
@@ -108,17 +109,31 @@ class FileEditorWidget extends Component implements ViewContextInterface
     public function display()
     {
         $is_image_loaded = false;
+        $new_file_form = new NewFileForm($this->directory);
         $edit_file_form = new EditFileForm($this->directory);
         $upload_file_form = new UploadFileForm($this->directory);
         $create_directory_form = new CreateDirectoryForm($this->directory);
 
-        // editing file
-        if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) {
+        // creating file
+        if ($new_file_form->load(Yii::$app->request->post()) && $new_file_form->validate()) {
+            $new_file_form->save(false);
+
+            $new_file_path = $new_file_form->getFullPath();
+            if ($this->compileScssTo && PathHelper::isSCSSFile($new_file_path)) {
+                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($new_file_form->directory) . DIRECTORY_SEPARATOR . trim($new_file_form->name, "/");
+                $this->compileScss($new_file_path, $compiled_path);
+            }
+
+            $edit_file_form->text = $new_file_form->text;
+            $edit_file_form->name = $new_file_form->name;
+            $edit_file_form->directory = $new_file_form->directory;
+            $new_file_form = new NewFileForm($this->directory);
+        } else if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) { // editing file
             $edit_file_form->save(false);
 
             $edited_file_path = $edit_file_form->getFullPath();
             if ($this->compileScssTo && PathHelper::isSCSSFile($edited_file_path)) {
-                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
                 $this->compileScss($edited_file_path, $compiled_path);
             }
         }
@@ -128,15 +143,16 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $upload_file_form->file = UploadedFile::getInstance($upload_file_form, 'file');
             if ($upload_file_form->validate()) {
                 $path = $upload_file_form->upload(false);
-                $edit_file_form->fileName = $upload_file_form->directory . '/' . $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
+                $edit_file_form->directory = $upload_file_form->directory;
+                $edit_file_form->name = $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
 
-                if (PathHelper::isImageFile($edit_file_form->fileName)) {
+                if (PathHelper::isImageFile($edit_file_form->name)) {
                     $is_image_loaded = true;
                 } else {
                     $edit_file_form->text = file_get_contents($path);
 
-                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->fileName)) {
-                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->fileName, "/");
+                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->name)) {
+                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
                         $this->compileScss($path, $compiled_path);
                     }
                 }
@@ -158,6 +174,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
             'directoryTree'       => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
             'editFileForm'        => $edit_file_form,
             'uploadFileForm'      => $upload_file_form,
+            'newFileForm'         => $new_file_form,
             'createDirectoryForm' => $create_directory_form,
             'isImageLoaded'       => $is_image_loaded
         ], $this);
