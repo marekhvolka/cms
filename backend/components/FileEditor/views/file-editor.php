@@ -62,7 +62,8 @@ function build_file_tree($data, $from_dir = '')
                         <?= $item ?>
                     </a>
                     <a href="<?= Url::current(['file' => $path, 'fileAction' => 'delete']) ?>"
-                       class="delete">
+                       class="delete"
+                       data-path="<?= $path ?>">
                         x
                     </a>
                 </li>
