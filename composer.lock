@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "37e53f03958bd05944d247629813f336",
-    "content-hash": "f810a7daf13fd244d6fc50ed7d94c6fb",
+    "hash": "4e05559a743336fff806ea7e2d3dc8cd",
+    "content-hash": "9a75f944ec5e5606f88972895ae5a36e",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -674,6 +674,60 @@
                 "yii2"
             ],
             "time": "2015-12-11 19:07:50"
+        },
+        {
+            "name": "kartik-v/yii2-widget-colorinput",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-widget-colorinput.git",
+                "reference": "3f6e847ef72cf6e27e4d3b4870b00b8f80d51752"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-colorinput/zipball/3f6e847ef72cf6e27e4d3b4870b00b8f80d51752",
+                "reference": "3f6e847ef72cf6e27e4d3b4870b00b8f80d51752",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-krajee-base": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "kartik\\color\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An enhanced Yii 2 widget encapsulating the HTML 5 color input (sub repo split from yii2-widgets)",
+            "homepage": "https://github.com/kartik-v/yii2-widget-colorinput",
+            "keywords": [
+                "HTML5",
+                "color",
+                "extension",
+                "form",
+                "input",
+                "jquery",
+                "plugin",
+                "widget",
+                "yii2"
+            ],
+            "time": "2016-01-14 11:15:49"
         },
         {
             "name": "kartik-v/yii2-widget-select2",

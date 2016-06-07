@@ -27,7 +27,8 @@
         "kartik-v/yii2-sortable": "*",
         "yiisoft/yii2-smarty": "^2.0",
         "latte/latte": "^2.3",
-        "leafo/scssphp": "^0.6.3"
+        "leafo/scssphp": "^0.6.3",
+        "kartik-v/yii2-widget-colorinput": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

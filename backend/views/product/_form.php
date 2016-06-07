@@ -50,7 +50,7 @@ use yii\helpers\Url;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
     
-    <?=VarManagerWidget::widget([
+    <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
         'assignedVariableValues' => $productVarValues,
         'appendVarValueUrl' => Url::to(['product/append-var-value']),

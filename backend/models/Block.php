@@ -262,7 +262,7 @@ class Block extends \yii\db\ActiveRecord
         if (!file_exists($path . '.php'))
         {
             Yii::$app->cacheEngine->writeToFile($path . '.latte', 'w+', $buffer);
-            $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte', array()));
+            $result = stripcslashes(html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte', array())));
 
             Yii::$app->cacheEngine->writeToFile($path . '.php', 'w+', $result);
 

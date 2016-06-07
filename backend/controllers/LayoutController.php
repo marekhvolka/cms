@@ -20,7 +20,7 @@ class LayoutController extends BaseController
             ],
         ]);
     }
-    
+
     /**
      * Action neccessary for LayoutWidget - appending one section at the end of the list.
      * @param type $type
@@ -30,7 +30,7 @@ class LayoutController extends BaseController
     {
         return (new LayoutWidget())->appendSection($type, $portalId, $pageId);
     }
-    
+
     /**
      * Action neccessary for LayoutWidget - appending one row at the end of the list.
      * @return string - call of LayoutWidget method for rendering view.
@@ -39,10 +39,10 @@ class LayoutController extends BaseController
     {
         $columnsWidth = Yii::$app->request->post('columns');
         $sectionId = Yii::$app->request->post('sectionId');
-        
+
         return (new LayoutWidget())->appendRow($columnsWidth, $sectionId);
     }
-    
+
     /**
      * Action neccessary for LayoutWidget - appending one block at the end of the list.
      * @param type $id id of column.

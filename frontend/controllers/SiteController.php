@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use backend\models\Page;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -65,12 +66,23 @@ class SiteController extends Controller
         ];
     }
 
+    public function actionIndex($pageId = null)
+    {
+        $page = Page::findOne(['id' => $pageId]);
+
+        if (isset($page))
+            $path = $page->getMainCacheFile();
+
+        if (isset($path))
+            echo file_get_contents($path);
+    }
+
     /**
      * Displays homepage.
      *
      * @return mixed
      */
-    public function actionIndex()
+    public function actionOldIndex()
     {
         return $this->render('index');
     }

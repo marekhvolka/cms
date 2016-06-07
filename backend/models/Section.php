@@ -139,14 +139,14 @@ class Section extends \yii\db\ActiveRecord
     {
         $settings = $this->getChildCssSettings();
 
-        $cssClasses = trim("wrapper $this->css_class " . $settings['classes']);
-        $cssIds = trim("$this->css_id " . $settings['ids']);
-        $cssStyles = trim("$this->css_style " . $settings['styles']);
+        $cssClasses = trim('wrapper ' . $this->css_class . ' ' . $settings['classes']);
+        $cssIds = trim($this->css_id . ' ' . $settings['ids']);
+        $cssStyles = trim($this->css_style . ' ' . $settings['styles']);
 
-        $result = "<div class='$cssClasses'";
+        $result = '<div class="' . $cssClasses . '"';
 
-        $result .= $cssIds != '' ? " id='$cssIds'" : "";
-        $result .= $cssClasses != '' ? " style='$cssStyles'" : "";
+        $result .= $cssIds != '' ? ' id="' . $cssIds . '"' : '';
+        $result .= $cssClasses != '' ? ' style="' . $cssStyles . '"' : '';
 
         $result .= ">" . PHP_EOL;
 
@@ -163,7 +163,7 @@ class Section extends \yii\db\ActiveRecord
         $settings = array();
 
         $settings['classes'] = '';
-        $settings['ids'] = 'section' . $this->id;
+        $settings['ids'] = ''; //'section' . $this->id . ' ';
         $settings['styles'] = '';
 
         foreach ($this->rows as $row) {

@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'searchTerm') ?>
+    <?= $form->field($model, 'searchTerm') ?> <!-- TODO: where does the variable $model come from? -->
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

@@ -65,15 +65,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     ]);?>
             </div>
         </div>
-        
-        <?php
-        if ($snippetVar->parent_id) {
-            $parentId = $snippetVar->parent_id;
-        }
-        ?>
 
         <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][parent_id]", 
-                isset($parentId) ? $parentId : ''); ?>
+                isset($snippetVar->parent_id) ? $snippetVar->parent_id : ''); ?>
         
         <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][id]", $snippetVar->id ? $snippetVar->id : $postIndex, ['class' => 'variable-id']); ?>
         
