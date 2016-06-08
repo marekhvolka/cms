@@ -28,6 +28,7 @@ use common\models\User;
  * @property integer $header_active
  * @property string $last_edit
  * @property integer $last_edit_user
+ * @property integer $parsed
  *
  * @property Portal $portal
  * @property User $lastEditUser
@@ -162,7 +163,7 @@ class Page extends \yii\db\ActiveRecord
     {
         $product = $this->hasOne(Product::className(), ['id' => 'product_id']);
 
-        if (!isset($product) && (isset($this->parent)))
+        if (!$product->exists() && (isset($this->parent)))
             return $this->parent->product;
         return $product;
     }
@@ -346,6 +347,18 @@ class Page extends \yii\db\ActiveRecord
             $buffer .= '\'description\' => \'' . $cacheEngine->normalizeString($this->description) . '\',' . PHP_EOL;
             $buffer .= '\'keywords\' => \'' . $cacheEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
 
+            if (isset($this->parent))
+                $buffer .= '\'parent\' => $portal->pages->page' . $this->parent->id . ',' . PHP_EOL;
+
+            if (isset($this->product))
+            {
+                $buffer .= '\'product\' => $' . $this->product->identifier . ',' . PHP_EOL;
+            }
+            else if (isset($this->parent))
+            {
+                $buffer .= '\'product\' => $portal->pages->page' . $this->parent->id . '->product' . ',' . PHP_EOL;
+            }
+
             $buffer .= ');' . PHP_EOL;
 
             $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
@@ -358,7 +371,7 @@ class Page extends \yii\db\ActiveRecord
             $buffer .= '/* Product Variables */' . PHP_EOL;
 
             if (isset($this->product))
-                $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
+                $buffer .= '$product = $page->product;' . PHP_EOL;
 
             $buffer .= '?>';
 
