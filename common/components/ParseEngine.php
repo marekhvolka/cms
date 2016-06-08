@@ -655,7 +655,7 @@ class ParseEngine
                                 case 'portal_snippet' :
                                     $pageBlock->type = 'portal_snippet';
 
-                                    $old_portal_snippet_id = json_decode($tableRow['layout_element'], true)[$type]['master'][$sectionId][$index . $poradieID][$tempId];
+                                    $old_portal_snippet_id = json_decode($tableRow['layout_element'], true)[$type][$sectionId][$index . $poradieID][$tempId];
 
                                     $parentBlock = Block::find()
                                         ->andWhere([
@@ -672,7 +672,7 @@ class ParseEngine
                                 case 'product_snippet':
                                     $pageBlock->type = 'product_snippet';
 
-                                    $old_product_snippet_id = json_decode($tableRow['layout_element'], true)[$type]['master'][$sectionId][$index . $poradieID][$tempId];
+                                    $old_product_snippet_id = json_decode($tableRow['layout_element'], true)[$type][$sectionId][$index . $poradieID][$tempId];
 
                                     $parentBlock = Block::find()
                                         ->andWhere([

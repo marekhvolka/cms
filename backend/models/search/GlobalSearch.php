@@ -23,7 +23,7 @@ class GlobalSearch
         $results['product'] = Yii::$app->db
             ->createCommand('SELECT * FROM product WHERE name LIKE %?% OR identifier LIKE %?%',
                 $this->globalSearch, $this->globalSearch);
+
         return $results;
     }
-
 }

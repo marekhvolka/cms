@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use backend\models\Page;
+use common\components\ParseEngine;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -9,6 +10,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\base\InvalidParamException;
+use yii\db\Query;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -66,15 +68,123 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionIndex($pageId = null)
+    public function actionIndex($url = null)
     {
-        $page = Page::findOne(['id' => $pageId]);
+        $identifiers = explode("/", $url);
+
+        $pages = Page::find()->all();
+
+        $page = $this->findPage($pages, $identifiers, 0);
+
+        if (!isset($page))
+            $page = Page::find(['identifier' => '404'])->one();
+
+        if ($page->parsed == 0)
+        {
+            $this->parse($page);
+
+            $page->parsed = 1;
+            $page->save();
+        }
 
         if (isset($page))
             $path = $page->getMainCacheFile();
 
         if (isset($path))
             echo file_get_contents($path);
+    }
+
+    private function parse($page)
+    {
+        $parseEngine = new ParseEngine();
+
+        $pageId = $page->id;
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_sidebar')
+            ->where(['page_id' => $pageId])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parseSidebar($row);
+        }
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_footer')
+            ->where(['page_id' => $pageId])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page_header')
+            ->where(['page_id' => $pageId])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('page', $row);
+        }
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('page')
+            ->where(['id' => $pageId])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parseMasterContent($row);
+        }
+
+        /* @var $page Page */
+        $page = Page::find()->where(['id' => $pageId])->one();
+
+        foreach($page->sections as $section)
+        {
+            foreach($section->rows as $row)
+            {
+                foreach($row->columns as $column)
+                {
+                    foreach($column->blocks as $block)
+                    {
+                        $parseEngine->convertMacrosToLatteStyle($block);
+                        $parseEngine->convertMacrosToLatteStyle2($block);
+                        $parseEngine->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        $transaction->commit();
+    }
+
+    private function findPage($pages, $identifiers, $index)
+    {
+        foreach($pages as $page)
+        {
+            if ($page->identifier == $identifiers[$index])
+            {
+                if ((sizeof($identifiers) > $index + 1 && $identifiers[$index+1] != ''))
+                    return $this->findPage($page->pages, $identifiers, $index + 1);
+                else
+                    return $page;
+            }
+        }
+        return null;
     }
 
     /**
