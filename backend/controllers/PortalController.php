@@ -318,10 +318,18 @@ class PortalController extends BaseController
                 }
 
                 Section::deleteMultiple($existingSections, $sections);
-                $existingRows = ArrayHelper::getColumn($existingSections, 'row_id');
-                // TODO deleting
-                Section::deleteMultiple($existingSections, $sections);
-                Section::deleteMultiple($existingSections, $sections);
+                
+                $existingRows = [];
+                foreach ($sections as $section) {
+                    $existingRows = array_merge($existingRows, $section->rows);
+                }
+                Row::deleteMultiple($existingRows, $rows);
+                
+                $existingBlocks = [];
+                foreach ($columns as $column) {
+                    $existingBlocks = array_merge($existingBlocks, $column->blocks);
+                }
+                Block::deleteMultiple($existingBlocks, $blocks);
 
                 $transaction->commit();
             } catch (Exception $exc) {
