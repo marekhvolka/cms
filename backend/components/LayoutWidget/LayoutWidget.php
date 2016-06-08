@@ -19,6 +19,7 @@ class LayoutWidget extends Widget
     public $type;
     public $portalId;
     public $pageId;
+    public $formId;
 
     public function init()
     {
@@ -35,6 +36,7 @@ class LayoutWidget extends Widget
                     'type' => $this->type,
                     'portalId' => $this->portalId,
                     'pageId' => $this->pageId,
+                    'formId' => $this->formId,
         ]);
     }
 

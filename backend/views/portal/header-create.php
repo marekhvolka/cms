@@ -11,7 +11,7 @@ use yii\helpers\Url;
 ?>
  
 <?php $form = ActiveForm::begin([
-        'id' => 'form', 
+        'id' => 'form-layout', 
         'enableAjaxValidation' => true,
         ]); ?>
 
@@ -20,6 +20,7 @@ use yii\helpers\Url;
         'sections' => $sections,
         'portalId' => Yii::$app->session->get('portal_id'),
         'controllerUrl' => Url::to(['/layout']),
+        'formId' => 'form-layout',
     ]
 )?>
 

@@ -6,6 +6,7 @@ var appendUrl = {
     block: controllerUrl + '/' + 'append-block'
 };
 
+// Event for appending new section.
 $('.btn-add-section').click(function () {
     $.get(appendUrl.section, function (data) {
         var row = $('<li></li>');
@@ -17,13 +18,14 @@ $('.btn-add-section').click(function () {
     });
 });
 
+// Event for removing section under remove button clicked.
 function attachRemoveSectionEvent(removeButton) {
     removeButton.click(function () {
         $(this).parents('li').remove();
     });
 }
 
-attachRemoveSectionEvent($('.btn-remove-section'));
+attachRemoveSectionEvent($('.btn-remove-section')); // Remove section event attached.
 
 function attachRemoveRowEvent(removeButton) {
     removeButton.click(function () {
@@ -38,11 +40,8 @@ function attachAddRowEvent(button) {
         var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
         var section = $(this).parents('.section').first();
         var sectionId = section.find('.id').first().val();
-        
-        
-        var order = section.find('.id').first().val();
 
-        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId, order: order}, function (data) {
+        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
             var sectionRows = section.find('.section-rows');
             var row = $('<li></li>');
             row = row.appendTo(sectionRows);
@@ -56,11 +55,11 @@ function attachAddRowEvent(button) {
 
 attachAddRowEvent($('.add-row'));
 
-function attachAddBlockEvent(button) { 
+function attachAddBlockEvent(button) {
     button.click(function () {
         var column = $(this).parents('.column').first();
         var columnId = column.find('.id').first().val();
-        
+
         $.get(appendUrl.block + '?id=' + columnId, function (data) {
             var row = $('<li></li>');
             var blockList = column.find('.column-elements');
@@ -70,6 +69,15 @@ function attachAddBlockEvent(button) {
             attachRemoveBlockEvent(row.find('.btn-remove-block'));
         });
     });
+}
+
+function appendElement(parentElement, type, wrapper) {
+    var row = $('<li></li>');
+    var blockList = parentElement.find('.column-elements');
+    row = row.appendTo(blockList);
+    var appendedDiv = $(data);
+    $(row).append(appendedDiv);
+    attachRemoveBlockEvent(row.find('.btn-remove-block'));
 }
 
 attachAddBlockEvent($('.column-option'));
@@ -98,6 +106,33 @@ function getColumnsWidths(rowType) {
             return ['4', '8'];
     }
 }
+
+// Handles elements (blocks, columns, rows) ordering.
+$('#' + formId).submit(function () {
+    $(".section-rows").each(function () {
+        var rowOrder = 1;
+        var rows = $(this).find('.layout-row');
+        rows.each(function () {
+            $(this).find('.order').val(rowOrder);
+            rowOrder++;
+            var columnOrder = 1;
+            var columns = $(this).find('.column');
+            columns.each(function () {
+                $(this).find('.order').val(columnOrder);
+                columnOrder++;
+                var blocks = $(this).find('.layout-block');
+                var blockOrder = 1;
+                blocks.each(function () {
+                    $(this).find('.order').val(blockOrder);
+                    blockOrder++;
+                });
+            });
+        });
+    });
+    return true;
+});
+
+
 
 // Clearing modal window.
 $(function () {
