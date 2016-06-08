@@ -53,7 +53,7 @@ class LayoutWidget extends Widget
     /** Renders view for one appended rpw.
      * @return string
      */
-    public function appendRow($columnsWidth, $sectionId)
+    public function appendRow($sectionId, $order, $columnsWidth)
     {
         if (!$columnsWidth) {
             return false;

@@ -38,8 +38,11 @@ function attachAddRowEvent(button) {
         var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
         var section = $(this).parents('.section').first();
         var sectionId = section.find('.id').first().val();
+        
+        
+        var order = section.find('.id').first().val();
 
-        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
+        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId, order: order}, function (data) {
             var sectionRows = section.find('.section-rows');
             var row = $('<li></li>');
             row = row.appendTo(sectionRows);

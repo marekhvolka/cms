@@ -38,9 +38,10 @@ class LayoutController extends BaseController
     public function actionAppendRow()
     {
         $columnsWidth = Yii::$app->request->post('columns');
+        $order = Yii::$app->request->post('order');
         $sectionId = Yii::$app->request->post('sectionId');
 
-        return (new LayoutWidget())->appendRow($columnsWidth, $sectionId);
+        return (new LayoutWidget())->appendRow($sectionId, $order, $columnsWidth);
     }
 
     /**
