@@ -3,17 +3,35 @@
 namespace backend\models;
 
 use backend\components\PathHelper;
+use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
+/**
+ * Represents one file in a subcategory of a category.
+ *
+ * @package backend\models
+ */
 class MultimediaItem extends Model
 {
+    /**
+     * Uploading a new file scenario.
+     */
     const SCENARIO_UPLOAD = 'upload';
 
+    /**
+     * @var string The name of the subcategory.
+     */
     public $subcategory = 'global';
+    /**
+     * @var string the name of the category
+     */
     public $categoryName;
+    /**
+     * @var string the name of the file
+     */
     public $name;
     /**
-     * @var UploadedFile
+     * @var UploadedFile the new file in case of upload scenario
      */
     public $file;
 
@@ -33,6 +51,14 @@ class MultimediaItem extends Model
         ];
     }
 
+    /**
+     * Find a particular MultimediaItem. Return null if not found.
+     *
+     * @param $categoryName string the category of the item
+     * @param $subcategory string the subcategory of the item
+     * @param $name string the name of the item
+     * @return MultimediaItem|null
+     */
     public static function find($categoryName, $subcategory, $name)
     {
         if (is_file(MultimediaCategory::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $categoryName . DIRECTORY_SEPARATOR . $subcategory . DIRECTORY_SEPARATOR . $name)) {
@@ -40,14 +66,38 @@ class MultimediaItem extends Model
             $item->name = $name;
             $item->categoryName = $categoryName;
             $item->subcategory = $subcategory;
+
             return $item;
         } else {
-            return false;
+            return null;
         }
     }
 
-    public function getContent(){
-        return file_get_contents(MultimediaCategory::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . $this->subcategory . DIRECTORY_SEPARATOR . $this->name);
+    /**
+     * Get content of the file.
+     * @return string
+     */
+    public function getContent()
+    {
+        $path = realpath($this->getPath());
+
+        return file_get_contents($path);
+    }
+
+    /**
+     * Return the path to the file.
+     * @return string
+     * @throws UnauthorizedHttpException in case of an illegal access to a file
+     */
+    public function getPath()
+    {
+        $path = realpath(MultimediaCategory::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . $this->subcategory . DIRECTORY_SEPARATOR . $this->name);
+
+        if (PathHelper::isInside($path, realpath(MultimediaCategory::MULTIMEDIA_PATH))) {
+            return $path;
+        } else {
+            throw new UnauthorizedHttpException();
+        }
     }
 
     /**
@@ -61,6 +111,11 @@ class MultimediaItem extends Model
         ];
     }
 
+    /**
+     * Upload the new file, so that the new multimedia item gets saved.
+     *
+     * @return bool the successfulness of the operation
+     */
     public function upload()
     {
         if ($this->validate(['file', 'categoryName', 'subcategory'])) {
@@ -73,10 +128,14 @@ class MultimediaItem extends Model
         return false;
     }
 
-    public function delete(){
-        $path = MultimediaCategory::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . $this->subcategory . DIRECTORY_SEPARATOR . $this->name;
+    /**
+     * Delete the item.
+     */
+    public function delete()
+    {
+        $path = $this->getPath();
 
-        if(is_file($path)){
+        if (is_file($path)) {
             PathHelper::remove($path);
         }
     }
