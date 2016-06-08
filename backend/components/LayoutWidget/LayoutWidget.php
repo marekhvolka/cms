@@ -17,6 +17,8 @@ class LayoutWidget extends Widget
     public $controllerUrl;
     public $sections;
     public $type;
+    public $portalId;
+    public $pageId;
 
     public function init()
     {
@@ -31,23 +33,27 @@ class LayoutWidget extends Widget
                     'sections' => $this->sections,
                     'controllerUrl' => $this->controllerUrl,
                     'type' => $this->type,
+                    'portalId' => $this->portalId,
+                    'pageId' => $this->pageId,
         ]);
     }
 
     /** Renders view for one appended section.
      * @return string
      */
-    public function appendSection($type)
+    public function appendSection($type, $portalId= null, $pageId = null)
     {
         $section = new Section();
         $section->type = $type;
+        $section->portal_id = $portalId;
+        $section->page_id = $pageId;
         return $this->render('_section', ['section' => $section]);
     }
 
     /** Renders view for one appended rpw.
      * @return string
      */
-    public function appendRow($columnsWidth, $sectionId)
+    public function appendRow($sectionId, $order, $columnsWidth)
     {
         if (!$columnsWidth) {
             return false;

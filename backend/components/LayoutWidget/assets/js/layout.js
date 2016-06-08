@@ -1,6 +1,7 @@
 var optionsElement;
+var portalIdUrlParam = portalId ? '&portalId=' + portalId : '';
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section?type=' + layoutType,
+    section: controllerUrl + '/' + 'append-section?type=' + layoutType + portalIdUrlParam,
     row: controllerUrl + '/' + 'append-row',
     block: controllerUrl + '/' + 'append-block'
 };
@@ -37,14 +38,17 @@ function attachAddRowEvent(button) {
         var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
         var section = $(this).parents('.section').first();
         var sectionId = section.find('.id').first().val();
+        
+        
+        var order = section.find('.id').first().val();
 
-        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
+        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId, order: order}, function (data) {
             var sectionRows = section.find('.section-rows');
             var row = $('<li></li>');
             row = row.appendTo(sectionRows);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
-            attachRemoveSectionEvent(row.find('.btn-remove-row'));
+            attachRemoveRowEvent(row.find('.btn-remove-row'));
             attachAddBlockEvent(row.find('.column-option'));
         });
     });
@@ -77,42 +81,6 @@ function attachRemoveBlockEvent(removeButton) {
 }
 
 attachRemoveBlockEvent($('.btn-remove-block'));
-
-function attachOptionsButtonEvent(button) {
-    button.click(function () {
-        var jsonStringOptions = $(this).parents('.panel').first().attr('data-options');
-        var options = JSON.parse(jsonStringOptions);
-        if (!$.isEmptyObject(options)) {
-            $('#options').find('[name="section-id"]').val(options.id);
-            $('#options').find('[name="section-class"]').val(options.class);
-            $('#options').find('[name="section-style"]').val(options.style);
-//            $('#options').find('[name="section-id"]').val('dasd');
-//            $('#options').find('[name="section-class"]').val('2w');
-//            $('#options').find('[name="section-style"]').val('uyyydyy');
-        }
-
-        optionsElement = $(this).parents('.panel').first();
-    });
-}
-
-$('.btn-save-options').click(function () {
-    var options = {};
-    options.id = $('#options').find('[name="section-id"]').val();
-    options.class = $('#options').find('[name="section-class"]').val();
-    options.style = $('#options').find('[name="section-style"]').val();
-
-    var optionsJson = JSON.stringify(options);
-    optionsElement.attr('data-options', optionsJson);
-
-    return true;
-});
-
-
-function clearOptions() {
-    $('#options').find('[name="section-id"]').val('');
-    $('#options').find('[name="section-class"]').val('');
-    $('#options').find('[name="section-style"]').val('');
-}
 
 function getColumnsWidths(rowType) {
     switch (rowType) {

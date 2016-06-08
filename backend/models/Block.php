@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_value".
@@ -171,6 +172,21 @@ class Block extends \yii\db\ActiveRecord
         }
 
         return $blocks;
+    }
+    
+    // TODO - this is also in column, block, row, .... should be put into behavior or baseclass
+    public static function deleteMultiple($existingModels, $models)
+    {
+        $oldIDs = ArrayHelper::map($existingModels, 'id', 'id');
+        $newIDs = ArrayHelper::map($models, 'id', 'id');
+        $IDsToDelete = array_diff($oldIDs, $newIDs);
+
+        foreach ($IDsToDelete as $id) {
+            $modelsToDelete = self::findOne($id);
+            if ($modelsToDelete) {
+                $modelsToDelete->delete();
+            }
+        }
     }
 
     /**

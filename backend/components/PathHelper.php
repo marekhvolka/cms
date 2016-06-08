@@ -71,6 +71,7 @@ class PathHelper
     /**
      * Remove the given directory or file. If directory is provided, recursively remove all files contained in in.
      * @param $path string the path
+     * @return bool true if successful, false otherwise
      */
     public static function remove($path)
     {
@@ -86,9 +87,9 @@ class PathHelper
                     unlink($file->getRealPath());
                 }
             }
-            rmdir($path);
+            return @rmdir($path);
         } else {
-            unlink($path);
+            return @unlink($path);
         }
     }
 

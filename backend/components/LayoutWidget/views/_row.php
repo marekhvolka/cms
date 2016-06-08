@@ -12,7 +12,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <?= BaseHtml::hiddenInput("Row[$postIndex][existing]", $row->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][id]", $row->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput("Row[$postIndex][section_id]", $row->section_id, ['class' => 'section_id']); ?>
-    <?php $columns = $row->columns ? : array() ?>
+    <?= BaseHtml::hiddenInput("Row[$postIndex][order]", $row->order, ['class' => 'order']); ?>
+    <?php $columns = $row->columns ? : $columns ?>
     <?php foreach ($columns as $column) : ?>
         <!--COLUMN TO ADD-->
         <div class="<?= $column->width ? "col-md-$column->width" : ""; ?> panel panel-default column" 
@@ -21,6 +22,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             <?= BaseHtml::hiddenInput("Column[$postIndex][existing]", $column->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
             <?= BaseHtml::hiddenInput("Column[$postIndex][id]", $column->id ? : $postIndex, ['class' => 'id']); ?>
             <?= BaseHtml::hiddenInput("Column[$postIndex][row_id]", $row->id, ['class' => 'row_id']); ?>
+            <?= BaseHtml::hiddenInput("Column[$postIndex][width]", $column->width, ['class' => 'width']); ?>
+            <?= BaseHtml::hiddenInput("Column[$postIndex][order]", $column->order, ['class' => 'order']); ?>
             <div class="btn-group section-buttons">
                 <div class="section-button">
                     <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
