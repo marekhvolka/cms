@@ -9,8 +9,9 @@ var appendUrl = {
 // Event for appending new section.
 $('.btn-add-section').click(function () {
     $.get(appendUrl.section, function (data) {
+        var layouts = $(this).parents('.layouts').find('.children-list').first();
         var row = $('<li></li>');
-        row = row.appendTo($('.sections'));
+        row = row.appendTo(layouts);
         var appendedDiv = $(data);
         $(row).append(appendedDiv);
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
@@ -42,8 +43,8 @@ function attachAddRowEvent(button) {
         var sectionId = section.find('.id').first().val();
 
         $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
-            var sectionRows = section.find('.section-rows');
             var row = $('<li></li>');
+            var sectionRows = section.find('.children-list').first();
             row = row.appendTo(sectionRows);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
@@ -62,7 +63,7 @@ function attachAddBlockEvent(button) {
 
         $.get(appendUrl.block + '?id=' + columnId, function (data) {
             var row = $('<li></li>');
-            var blockList = column.find('.column-elements');
+            var blockList = column.find('.children-list');
             row = row.appendTo(blockList);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
@@ -71,14 +72,15 @@ function attachAddBlockEvent(button) {
     });
 }
 
-function appendElement(parentElement, type, wrapper) {
+function appendElement(parentElement, dataToAppend) {
     var row = $('<li></li>');
-    var blockList = parentElement.find('.column-elements');
-    row = row.appendTo(blockList);
-    var appendedDiv = $(data);
+    var list = parentElement.find('.children-list').first();
+    row = row.appendTo(list);
+    var appendedDiv = dataToAppend;
     $(row).append(appendedDiv);
-    attachRemoveBlockEvent(row.find('.btn-remove-block'));
+    return row;
 }
+
 
 attachAddBlockEvent($('.column-option'));
 

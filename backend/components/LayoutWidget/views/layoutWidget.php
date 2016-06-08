@@ -5,7 +5,7 @@
 /* @var $sections \backend\models\Section */
 ?>
 
-<div class="section-form">
+<div class="layouts">
 
     <?php /*
     Modal::begin([
