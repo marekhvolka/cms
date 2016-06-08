@@ -11,14 +11,16 @@ use yii\helpers\Url;
 ?>
  
 <?php $form = ActiveForm::begin([
-        'id' => 'form', 
+        'id' => 'form-layout', 
         'enableAjaxValidation' => true,
         ]); ?>
 
 <?= LayoutWidget::widget([
-        'type' => 'header', // TODO set type of layout.
+        'type' => 'footer', // TODO set type of layout.
         'sections' => $sections,
+        'portalId' => Yii::$app->session->get('portal_id'),
         'controllerUrl' => Url::to(['/layout']),
+        'formId' => 'form-layout',
     ]
 )?>
 

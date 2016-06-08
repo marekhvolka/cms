@@ -5,7 +5,7 @@
 /* @var $sections \backend\models\Section */
 ?>
 
-<div class="section-form">
+<div class="layouts">
 
     <?php /*
     Modal::begin([
@@ -63,6 +63,8 @@ var controllerUrl = '$controllerUrl';
 var layoutType = '$type';
 var portalId = $portalIdJs;
 var pageId = $portalIdJs;
+var formId = '$formId';
+        
 JS;
 
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

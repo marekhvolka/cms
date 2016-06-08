@@ -19,6 +19,7 @@ class LayoutWidget extends Widget
     public $type;
     public $portalId;
     public $pageId;
+    public $formId;
 
     public function init()
     {
@@ -35,6 +36,7 @@ class LayoutWidget extends Widget
                     'type' => $this->type,
                     'portalId' => $this->portalId,
                     'pageId' => $this->pageId,
+                    'formId' => $this->formId,
         ]);
     }
 
@@ -53,7 +55,7 @@ class LayoutWidget extends Widget
     /** Renders view for one appended rpw.
      * @return string
      */
-    public function appendRow($columnsWidth, $sectionId)
+    public function appendRow($sectionId, $order, $columnsWidth)
     {
         if (!$columnsWidth) {
             return false;
