@@ -6,36 +6,6 @@
 ?>
 
 <div class="layouts">
-
-    <?php /*
-    Modal::begin([
-        'header' => '<h4 class="modal-title">Nastavenia sekcie</h4>',
-        'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
-                <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
-        'size' => 'modal-lg',
-        'id' => 'modal-options',
-    ]);
-
-    echo $this->render('_options');
-
-    Modal::end(); */
-    ?>
-    
-    <?php /*
-    Modal::begin([
-        'header' => '<h4 class="modal-title">Pridať text</h4>',
-        'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
-                <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
-        // 'toggleButton' => ['label' => 'click me2'],
-        'size' => 'modal-lg',
-        'id' => 'modal-text',
-    ]);
-    
-    echo '<textarea class="text-textarea"></textarea>';
-
-    Modal::end(); */
-    ?>
-
     <?php
     $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>

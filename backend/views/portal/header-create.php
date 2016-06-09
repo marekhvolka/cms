@@ -37,21 +37,3 @@ use yii\helpers\Url;
 
 <?php ActiveForm::end(); ?>
 
-<?php
-//$url = Url::to(['portal/header-create']);
-//
-//$js = <<<JS
-//
-//var pageParams = {};
-//
-//pageParams.url = '$url';
-//        
-//JS;
-//
-//$this->registerJs($js);
-//$this->registerJsFile('@web/js/portal-elements.js', [
-//    'position' => \yii\web\View::POS_END,
-//    'depends' => [\yii\web\JqueryAsset::className()]
-//    ]);
-?>
-
