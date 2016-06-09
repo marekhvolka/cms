@@ -2,6 +2,7 @@
 
 use backend\components\PathHelper;
 use backend\models\MultimediaItem;
+use backend\models\Portal;
 use kartik\select2\Select2;
 use yii\bootstrap\ActiveForm;
 use yii\grid\GridView;
@@ -34,7 +35,7 @@ $subcategories = $model->getSubcategories();
             <td class="select-subcategory">
                 <?php
                 echo Select2::widget([
-                    'data'  => array_merge([null => 'Všetky súbory'], $subcategories),
+                    'data'  => [null => 'Všetky súbory'] + $subcategories,
                     'name'  => 'subcategory',
                     'value' => $activeSubcategory
                 ]);
@@ -61,6 +62,16 @@ $subcategories = $model->getSubcategories();
                             'name'         => $dataProvider->name], 'http'
                         ), ['class' => PathHelper::isImageFile($dataProvider->name) ? 'image-multimedia' : '']
                     );
+                },
+            ],
+
+            [
+                'label'  => 'Podkategória',
+                'format' => 'raw',
+                'value'  => function ($dataProvider) {
+                    $portal = Portal::findOne($dataProvider->subcategory);
+
+                    return $dataProvider->subcategory == "global" ? "Spoločné pre všetky portály" : ($portal == null ? null : $portal->name);
                 },
             ],
 
