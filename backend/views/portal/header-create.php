@@ -16,10 +16,10 @@ use yii\helpers\Url;
         ]); ?>
 
 <?= LayoutWidget::widget([
-        'type' => 'content', // TODO set type of layout.
+        'type' => 'footer', // TODO set type of layout.
         'sections' => $sections,
-        'pageId' => '300',
-        'controllerUrl' => Url::to(['/layout']),
+        'portalId' => Yii::$app->session->get('portal_id'),
+        'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
     ]
 )?>
