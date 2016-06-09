@@ -1,19 +1,29 @@
 var optionsElement;
 var portalIdUrlParam = portalId ? '&portalId=' + portalId : '';
+var pageIdUrlParam = pageId ? '&pageId=' + pageId : '';
+
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section?type=' + layoutType + portalIdUrlParam,
+    section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
     block: controllerUrl + '/' + 'append-block'
 };
 
 // Event for appending new section.
 $('.btn-add-section').click(function () {
-    $.get(appendUrl.section, function (data) {
-        var layouts = $(this).parents('.layouts').find('.children-list').first();
-        var row = $('<li></li>');
-        row = row.appendTo(layouts);
-        var appendedDiv = $(data);
-        $(row).append(appendedDiv);
+    var layouts = $(this).parents('.layouts');
+    var postData = {
+        type : layoutType,
+    };
+    
+    if (pageId) {
+        postData.pageId = pageId;
+    }
+    
+    if (portalId) {
+        postData.portalId = portalId;
+    }
+    $.post(appendUrl.section, postData, function (data) {
+        var row = appendElement(layouts, data);
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
         attachAddRowEvent(row.find('.add-row'));
     });
@@ -43,11 +53,7 @@ function attachAddRowEvent(button) {
         var sectionId = section.find('.id').first().val();
 
         $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
-            var row = $('<li></li>');
-            var sectionRows = section.find('.children-list').first();
-            row = row.appendTo(sectionRows);
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
+            var row = appendElement(section, data);
             attachRemoveRowEvent(row.find('.btn-remove-row'));
             attachAddBlockEvent(row.find('.column-option'));
         });
@@ -62,11 +68,7 @@ function attachAddBlockEvent(button) {
         var columnId = column.find('.id').first().val();
 
         $.get(appendUrl.block + '?id=' + columnId, function (data) {
-            var row = $('<li></li>');
-            var blockList = column.find('.children-list');
-            row = row.appendTo(blockList);
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
+            var row = appendElement(column, data);
             attachRemoveBlockEvent(row.find('.btn-remove-block'));
         });
     });

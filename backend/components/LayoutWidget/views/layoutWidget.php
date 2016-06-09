@@ -39,7 +39,7 @@
     <?php
     $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>
-    <ul class="sections" id="<?= $idHash?>">
+    <ul class="children-list" id="<?= $idHash?>">
         <?php foreach ($sections as $section) : ?>
         <li>
             <?= $this->render('_section', ['section' => $section]); ?>
@@ -51,7 +51,7 @@
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
     </div>
-</div>
+</div> 
 
 <?php
 $portalIdJs = $portalId ? : 'null';
@@ -62,7 +62,7 @@ $js = <<<JS
 var controllerUrl = '$controllerUrl';
 var layoutType = '$type';
 var portalId = $portalIdJs;
-var pageId = $portalIdJs;
+var pageId = $pageIdJs;
 var formId = '$formId';
         
 JS;
