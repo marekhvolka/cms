@@ -11,7 +11,8 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use kartik\color\ColorInput;
 
-/* @var $varValue backend\models\SnippetVarValue */
+/* @var $model backend\models\SnippetVarValue */
+/* @var $productType backend\models\ProductType */
 
 ?>
 

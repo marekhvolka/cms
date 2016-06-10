@@ -170,7 +170,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     }
 
     /** Vrati default hodnotu podla typu produktu
-     * @param $productTypeId
+     * @param $productType
      * @return mixed|string
      */
     public function getDefaultValue($productType)
