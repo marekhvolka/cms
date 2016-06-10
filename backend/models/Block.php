@@ -175,8 +175,9 @@ class Block extends \yii\db\ActiveRecord
 
     /**
      * Saves multiple models to database.
-     * @param backend\models\Block $blocks
-     * @return boolean
+     * @param Block $blocks
+     * @return bool
+     * @throws Exception
      */
     public static function saveMultiple($blocks)
     {

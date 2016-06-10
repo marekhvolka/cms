@@ -175,16 +175,26 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      */
     public function getDefaultValue($productType)
     {
-        $productTypeDefaultValue = SnippetVarDefaultValue::find()
-            ->andWhere([
-                'snippet_var_id' => $this->var->id,
-                'product_type_id' => $productType->id
-            ])
-            ->one();
+        if (isset($productType)) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->var->id,
+                    'product_type_id' => $productType->id
+                ])
+                ->one();
+        }
+        if (!isset($defaultValue)) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->var->id,
+                    'product_type_id' => null
+                ])
+                ->one();
+        }
 
-        if ($productTypeDefaultValue != NULL)
+        if ($defaultValue != NULL)
         {
-            return '\'' . Yii::$app->cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
+            return '\'' . Yii::$app->cacheEngine->normalizeString($defaultValue->value) . '\'';
         }
         return null;
     }

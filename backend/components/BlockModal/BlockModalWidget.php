@@ -14,6 +14,8 @@ class BlockModalWidget extends Widget
 {
     public $block;
 
+    public $productType;
+
     public function init()
     {
         parent::init();
@@ -36,6 +38,7 @@ class BlockModalWidget extends Widget
     {
         return $this->render('view', [
             'model' => $block,
+            'productType' => $this->productType
         ]);
     }
 }

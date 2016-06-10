@@ -29,7 +29,10 @@
                         <?php
                             foreach ($model->snippetVarValues as $variable)
                             {
-                                echo $this->render('_snippet_var', ['model' => $variable]);
+                                echo $this->render('_snippet_var', [
+                                    'model' => $variable,
+                                    'productType' => $productType,
+                                ]);
                             }
                         ?>
                     </div>
