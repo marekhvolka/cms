@@ -17,6 +17,7 @@ use kartik\color\ColorInput;
 ?>
 
 <?php
+$defaultValue = $model->getDefaultValue($productType);
 switch ($model->var->type->identifier)
 {
     case 'list' : ?>
@@ -83,7 +84,7 @@ switch ($model->var->type->identifier)
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
-                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <?php if(!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
                 <?php endif; ?>
             </div>
@@ -96,7 +97,7 @@ switch ($model->var->type->identifier)
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
 
-                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <?php if(!empty($defaultValue)) : ?>
                 <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
                 <?php endif; ?>
             </div>
@@ -109,7 +110,7 @@ switch ($model->var->type->identifier)
             <div class="col-sm-10">
                 <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
-                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <?php if(!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
             </div>
@@ -125,7 +126,7 @@ switch ($model->var->type->identifier)
                     <span class="input-group-addon"><i></i></span>
                 </div>
 
-                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <?php if(!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
             </div>
@@ -139,7 +140,7 @@ switch ($model->var->type->identifier)
             <div class="col-sm-10">
                 <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
-                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <?php if(!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
 
