@@ -24,6 +24,10 @@
 <?php
     switch($model->type)
     {
+        case 'product_snippet' :
+
+        case 'portal_snippet' :
+
         case 'snippet' :
 
             echo $this->render('_snippet', ['model' => $model]);

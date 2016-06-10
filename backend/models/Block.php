@@ -13,8 +13,6 @@ use yii\helpers\ArrayHelper;
  * @property string $product_id
  * @property integer $portal_id
  * @property integer $column_id
- * @property integer $portal_var_id
- * @property integer $product_var_id
  * @property integer $parent_id
  * @property integer $order
  * @property string $data
@@ -23,8 +21,6 @@ use yii\helpers\ArrayHelper;
  * @property boolean $active
  *
  *
- * @property PortalVarValue $portalVarValue
- * @property ProductVarValue $productVarValue
  * @property string $name
  * @property Column $column
  * @property Block $parent
@@ -68,8 +64,8 @@ class Block extends \yii\db\ActiveRecord
             'id' => 'ID',
             'snippet_id' => 'Snippet ID',
             'column_id' => 'Column ID',
-            'portal_var_id' => 'Portal Var ID',
-            'product_var_id' => 'Product Var ID',
+            'portal_var_value_id' => 'Portal Var ID',
+            'product_var_value_id' => 'Product Var ID',
             'parent_id' => 'Parent ID',
             'order' => 'Order',
             'data' => 'Data',
@@ -132,7 +128,7 @@ class Block extends \yii\db\ActiveRecord
      */
     public function getPortalVarValue()
     {
-        return $this->hasOne(PortalVarValue::className(), ['id' => 'portal_var_id']);
+        return $this->hasOne(PortalVarValue::className(), ['value_block_id' => 'id']);
     }
 
     /**
@@ -140,7 +136,7 @@ class Block extends \yii\db\ActiveRecord
      */
     public function getProductVarValue()
     {
-        return $this->hasOne(ProductVarValue::className(), ['id' => 'product_var_id']);
+        return $this->hasOne(ProductVarValue::className(), ['value_block_id' => 'id']);
     }
 
     /**
@@ -201,9 +197,12 @@ class Block extends \yii\db\ActiveRecord
                 break;
             case 'snippet':
                 //TODO: fix with valid database
-                if ($this->snippetCode) {
+                if ($this->snippetCode)
+                {
                     $name = $this->snippetCode->snippet->name;
-                } else {
+                }
+                else
+                {
                     $name = 'Zmazaný kód snippetu';
                 }
                 break;
@@ -313,7 +312,9 @@ class Block extends \yii\db\ActiveRecord
             foreach($this->snippetVarValues as $snippetVarValue)
             {
                 $defaultValue = $snippetVarValue->getDefaultValue($this->column->row->section->page->product->productType);
-                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
+
+                if (isset($defaultValue))
+                    $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
             }
         }
 

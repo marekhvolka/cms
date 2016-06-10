@@ -339,6 +339,15 @@ class Page extends \yii\db\ActiveRecord
 
             $buffer = '<?php ' . PHP_EOL;
 
+            if (isset($this->product))
+            {
+                $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
+            }
+            else if (isset($this->parent))
+            {
+                $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
+            }
+
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
             $buffer .= '\'url\' => \'' . $cacheEngine->normalizeString($this->url) . '\',' . PHP_EOL;
@@ -351,13 +360,7 @@ class Page extends \yii\db\ActiveRecord
                 $buffer .= '\'parent\' => $portal->pages->page' . $this->parent->id . ',' . PHP_EOL;
 
             if (isset($this->product))
-            {
-                $buffer .= '\'product\' => $' . $this->product->identifier . ',' . PHP_EOL;
-            }
-            else if (isset($this->parent))
-            {
-                $buffer .= '\'product\' => $portal->pages->page' . $this->parent->id . '->product' . ',' . PHP_EOL;
-            }
+                $buffer .= '\'product\' => $product,' . PHP_EOL;
 
             $buffer .= ');' . PHP_EOL;
 
@@ -369,9 +372,6 @@ class Page extends \yii\db\ActiveRecord
             }
 
             $buffer .= '/* Product Variables */' . PHP_EOL;
-
-            if (isset($this->product))
-                $buffer .= '$product = $page->product;' . PHP_EOL;
 
             $buffer .= '?>';
 
@@ -523,7 +523,9 @@ class Page extends \yii\db\ActiveRecord
 
         if (!file_exists($path))
         {
-            $result = html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array()));
+            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+
+            $result = html_entity_decode($result, ENT_QUOTES);
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $result);
         }

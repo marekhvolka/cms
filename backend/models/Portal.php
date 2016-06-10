@@ -23,7 +23,7 @@ use yii\db\Query;
  * @property Page[] $pages
  * @property Language $language
  * @property Template $template
- * @property Block[] $portalSnippets
+ * @property PortalVarValue[] $portalSnippets
  * @property Section[] $headerSections
  * @property Section[] $footerSections
  * @property SnippetVarValue[] $portalVarValues
@@ -105,12 +105,20 @@ class Portal extends \yii\db\ActiveRecord
         return $this->hasOne(Template::className(), ['id' => 'template_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
+    /** Vrati zoznam blokov - portalovych snippetov
+     * @return array
      */
     public function getPortalSnippets()
     {
-        return $this->hasMany(Block::className(), ['portal_id' => 'id']);
+        $array = array();
+
+        foreach($this->portalVarValues as $portalVarValue)
+        {
+            if ($portalVarValue->var->isSnippet())
+                $array[] = $portalVarValue;
+        }
+
+        return $array;
     }
 
     /**
