@@ -17,7 +17,6 @@ use yii\helpers\ArrayHelper;
  * @property integer $last_edit_user
  *
  * @property User $lastEditUser
- * @property string $default_value
  * @property string $snippet_id
  * @property string $parent_id
  * @property SnippetVarDefaultValue[] $defaultValues
@@ -46,7 +45,6 @@ class SnippetVar extends \yii\db\ActiveRecord
             [['identifier', 'type_id'], 'required'],
             [['type_id', 'description'], 'string'],
             [['identifier'], 'string', 'max' => 50],
-            [['default_value'], 'string'],
             [['snippet_id', 'parent_id', 'id'], 'integer'],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
@@ -65,7 +63,6 @@ class SnippetVar extends \yii\db\ActiveRecord
             'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'type_id' => 'Typ premennej',
-            'default_value' => 'Predvolená hodnota',
             'snippet_id' => 'Snippet ID',
             'parent_id' => 'Parent ID',
         ];
@@ -178,15 +175,6 @@ class SnippetVar extends \yii\db\ActiveRecord
                     $snippetVar = new SnippetVar();
                     $snippetVar->id = $varData['id'];
                 }
-//
-//                // Set all neccessary attributes.
-//                $snippetVar->identifier = $varData['identifier'];
-//                $snippetVar->type_id = $varData['type_id'];
-//                $snippetVar->default_value = $varData['default_value'];
-//                $snippetVar->description = $varData['description'];
-//
-//                // Set parent if SnippetVar is item of list type parent SnippetVar.
-//                $snippetVar->parent_id = $varData['parent_id'];
 
                 $modelSnippetVars[$index] = $snippetVar;
             }
