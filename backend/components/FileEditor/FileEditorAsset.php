@@ -10,7 +10,7 @@ use yii\web\AssetBundle;
  */
 class FileEditorAsset extends AssetBundle
 {
-    public $sourcePath = __DIR__ . '/web';
+    public $sourcePath = '' . __DIR__ . '/web';
     public $css = [
         'css/file-editor.css',
     ];
