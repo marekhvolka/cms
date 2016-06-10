@@ -1,29 +1,42 @@
 var optionsElement;
 var portalIdUrlParam = portalId ? '&portalId=' + portalId : '';
+var pageIdUrlParam = pageId ? '&pageId=' + pageId : '';
+
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section?type=' + layoutType + portalIdUrlParam,
+    section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
     block: controllerUrl + '/' + 'append-block'
 };
 
+// Event for appending new section.
 $('.btn-add-section').click(function () {
-    $.get(appendUrl.section, function (data) {
-        var row = $('<li></li>');
-        row = row.appendTo($('.sections'));
-        var appendedDiv = $(data);
-        $(row).append(appendedDiv);
+    var layouts = $(this).parents('.layouts');
+    var postData = {
+        type : layoutType,
+    };
+    
+    if (pageId) {
+        postData.pageId = pageId;
+    }
+    
+    if (portalId) {
+        postData.portalId = portalId;
+    }
+    $.post(appendUrl.section, postData, function (data) {
+        var row = appendElement(layouts, data);
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
         attachAddRowEvent(row.find('.add-row'));
     });
 });
 
+// Event for removing section under remove button clicked.
 function attachRemoveSectionEvent(removeButton) {
     removeButton.click(function () {
         $(this).parents('li').remove();
     });
 }
 
-attachRemoveSectionEvent($('.btn-remove-section'));
+attachRemoveSectionEvent($('.btn-remove-section')); // Remove section event attached.
 
 function attachRemoveRowEvent(removeButton) {
     removeButton.click(function () {
@@ -38,16 +51,9 @@ function attachAddRowEvent(button) {
         var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
         var section = $(this).parents('.section').first();
         var sectionId = section.find('.id').first().val();
-        
-        
-        var order = section.find('.id').first().val();
 
-        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId, order: order}, function (data) {
-            var sectionRows = section.find('.section-rows');
-            var row = $('<li></li>');
-            row = row.appendTo(sectionRows);
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
+        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
+            var row = appendElement(section, data);
             attachRemoveRowEvent(row.find('.btn-remove-row'));
             attachAddBlockEvent(row.find('.column-option'));
         });
@@ -56,21 +62,27 @@ function attachAddRowEvent(button) {
 
 attachAddRowEvent($('.add-row'));
 
-function attachAddBlockEvent(button) { 
+function attachAddBlockEvent(button) {
     button.click(function () {
         var column = $(this).parents('.column').first();
         var columnId = column.find('.id').first().val();
-        
+
         $.get(appendUrl.block + '?id=' + columnId, function (data) {
-            var row = $('<li></li>');
-            var blockList = column.find('.column-elements');
-            row = row.appendTo(blockList);
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
+            var row = appendElement(column, data);
             attachRemoveBlockEvent(row.find('.btn-remove-block'));
         });
     });
 }
+
+function appendElement(parentElement, dataToAppend) {
+    var row = $('<li></li>');
+    var list = parentElement.find('.children-list').first();
+    row = row.appendTo(list);
+    var appendedDiv = dataToAppend;
+    $(row).append(appendedDiv);
+    return row;
+}
+
 
 attachAddBlockEvent($('.column-option'));
 
@@ -98,6 +110,33 @@ function getColumnsWidths(rowType) {
             return ['4', '8'];
     }
 }
+
+// Handles elements (blocks, columns, rows) ordering.
+$('#' + formId).submit(function () {
+    $(".section-rows").each(function () {
+        var rowOrder = 1;
+        var rows = $(this).find('.layout-row');
+        rows.each(function () {
+            $(this).find('.order').val(rowOrder);
+            rowOrder++;
+            var columnOrder = 1;
+            var columns = $(this).find('.column');
+            columns.each(function () {
+                $(this).find('.order').val(columnOrder);
+                columnOrder++;
+                var blocks = $(this).find('.layout-block');
+                var blockOrder = 1;
+                blocks.each(function () {
+                    $(this).find('.order').val(blockOrder);
+                    blockOrder++;
+                });
+            });
+        });
+    });
+    return true;
+});
+
+
 
 // Clearing modal window.
 $(function () {

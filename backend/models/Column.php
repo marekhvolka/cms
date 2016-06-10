@@ -20,11 +20,13 @@ use Yii;
  */
 class Column extends \yii\db\ActiveRecord
 {
+
     private $existing;  //Indicates if model allready exists.
-    
+
     /**
      * @inheritdoc
      */
+
     public static function tableName()
     {
         return 'column';
@@ -57,16 +59,17 @@ class Column extends \yii\db\ActiveRecord
             'css_style' => 'Štýly stĺpca'
         ];
     }
-    
+
     public function beforeDelete()
     {
         $this->unlinkAll('blocks', true);
         return parent::beforeDelete();
     }
-    
+
     /*
      * Getter for $existing property which indicates if model allready exists.
      */
+
     public function getExisting()
     {
         return $this->existing;
@@ -95,9 +98,9 @@ class Column extends \yii\db\ActiveRecord
     public function getBlocks()
     {
         return $this->hasMany(Block::className(), ['column_id' => 'id'])
-            ->orderBy(['order' => SORT_ASC]);
+                        ->orderBy(['order' => SORT_ASC]);
     }
-    
+
     /** Returns array of newly created models from given data.
      * @param $data
      * @return array
@@ -120,6 +123,35 @@ class Column extends \yii\db\ActiveRecord
         }
 
         return $columns;
+    }
+
+    /**
+     * Saves multiple models to database.
+     * @param backend\models\Column $columns
+     * @param backend\models\Block $blocks
+     * @return boolean
+     */
+    public static function saveMultiple($columns, $blocks)
+    {
+        foreach ($columns as $column) {
+            $formerId = $column->id;
+            if ($column->existing == 'false') {
+                $column->id = null;
+                if (!$column->save()) {
+                    throw new Exception;
+                }
+
+                // column_id of every block with id set to former id of column 
+                // (newly created column with random generated id) is set to current
+                // id of saved column
+                foreach ($blocks as $block) {
+                    if ($block->column_id == $formerId) {
+                        $block->column_id = $column->id;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public function getPrefix()
@@ -154,10 +186,8 @@ class Column extends \yii\db\ActiveRecord
         $settings['ids'] = ''; //'col' . $this->id;
         $settings['styles'] = '';
 
-        foreach($this->blocks as $block)
-        {
-            if (isset($block->snippetCode))
-            {
+        foreach ($this->blocks as $block) {
+            if (isset($block->snippetCode)) {
                 $settings['classes'] .= $block->snippetCode->snippet->column_class . ' ';
                 $settings['ids'] .= $block->snippetCode->snippet->column_id . ' ';
                 $settings['styles'] .= $block->snippetCode->snippet->column_style . ' ';
@@ -179,8 +209,7 @@ class Column extends \yii\db\ActiveRecord
     {
         $result = $this->getPrefix();
 
-        foreach ($this->blocks as $block)
-        {
+        foreach ($this->blocks as $block) {
             if ($block->active)
                 $result .= file_get_contents($block->getMainFile());
         }
@@ -189,4 +218,5 @@ class Column extends \yii\db\ActiveRecord
 
         return $result;
     }
+
 }

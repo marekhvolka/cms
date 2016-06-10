@@ -42,7 +42,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <div class="panel-heading"><h3 class="panel-title">Sekcia</h3></div>
     <div class="panel-body">
         <div class="col-sm-12">
-            <ul class="section-rows">
+            <ul class="children-list">
                 <?php foreach ($section->rows as $row) : ?>
                     <li>
                         <?= $this->render('_row', ['row' => $row]); ?>

@@ -11,7 +11,7 @@ use yii\helpers\Url;
 ?>
  
 <?php $form = ActiveForm::begin([
-        'id' => 'form', 
+        'id' => 'form-layout', 
         'enableAjaxValidation' => true,
         ]); ?>
 
@@ -19,7 +19,8 @@ use yii\helpers\Url;
         'type' => 'footer', // TODO set type of layout.
         'sections' => $sections,
         'portalId' => Yii::$app->session->get('portal_id'),
-        'controllerUrl' => Url::to(['/layout']),
+        'controllerUrl' => Url::to(['/portal']),
+        'formId' => 'form-layout',
     ]
 )?>
 
@@ -35,22 +36,4 @@ use yii\helpers\Url;
 </div>
 
 <?php ActiveForm::end(); ?>
-
-<?php
-//$url = Url::to(['portal/header-create']);
-//
-//$js = <<<JS
-//
-//var pageParams = {};
-//
-//pageParams.url = '$url';
-//        
-//JS;
-//
-//$this->registerJs($js);
-//$this->registerJsFile('@web/js/portal-elements.js', [
-//    'position' => \yii\web\View::POS_END,
-//    'depends' => [\yii\web\JqueryAsset::className()]
-//    ]);
-?>
 

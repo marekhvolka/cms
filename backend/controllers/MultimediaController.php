@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\PathHelper;
 use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use Yii;
@@ -17,6 +18,9 @@ use yii\web\UploadedFile;
  */
 class MultimediaController extends BaseController
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -78,7 +82,7 @@ class MultimediaController extends BaseController
         $model = $this->findModel($name);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($name != $model->name) {
+            if ($name != $model->name) { // if the category's name gets changed
                 $model->rename($name);
             }
         }
@@ -101,6 +105,15 @@ class MultimediaController extends BaseController
         return $this->redirect(['index']);
     }
 
+    /**
+     * List the files of the given category.
+     *
+     * @param $name string name of the category
+     * @param string|null $subcategory the name of the subcategory... defaults to null - show all files of all
+     * subcategories
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionFiles($name, $subcategory = null)
     {
         $model = $this->findModel($name);
@@ -108,6 +121,7 @@ class MultimediaController extends BaseController
         $upload_file->categoryName = $name;
         $upload_file->subcategory = $subcategory;
 
+        // uploading new file
         if ($upload_file->load(Yii::$app->request->post())) {
             $upload_file->file = UploadedFile::getInstance($upload_file, 'file');
 
@@ -121,10 +135,11 @@ class MultimediaController extends BaseController
         $request = Yii::$app->request;
         $file_action = $request->get('file-action');
 
+        // deleting an item
         if (!empty($file_action)) {
             if ($file_action == "delete") {
                 $item_to_delete = MultimediaItem::find($model->name, $request->get('item-subcategory'), $request->get('item-name'));
-                if ($item_to_delete) {
+                if ($item_to_delete != null) {
                     $item_to_delete->delete();
                 }
                 $this->redirect(Url::current(['file-action' => null, 'item-name' => null, 'item-subcategory' => null]));
@@ -149,6 +164,15 @@ class MultimediaController extends BaseController
         ]);
     }
 
+    /**
+     * Return the content of a multimedia file.
+     *
+     * @param $name string the name of the file
+     * @param $categoryName string the name of its category
+     * @param $subcategory string the name of its subcategory
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionFile($name, $categoryName, $subcategory)
     {
         $item = MultimediaItem::find($categoryName, $subcategory, $name);
@@ -156,7 +180,12 @@ class MultimediaController extends BaseController
         if ($item != null) {
             Yii::$app->response->format = Response::FORMAT_RAW;
 
-            return $item->getContent();
+            if (PathHelper::isImageFile($name)) {
+                Yii::$app->response->headers->set('Content-Type', 'image/' . pathinfo($name, PATHINFO_EXTENSION));
+                return $item->getContent();
+            } else {
+                return Yii::$app->response->sendFile($item->getPath());
+            }
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

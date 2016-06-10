@@ -86,11 +86,7 @@ class PortalController extends BaseController
                 );
             }
 
-            // validate all models
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsPortalVarValue) && $valid;
-
-            if ($valid) {
+            if (Model::validateMultiple($modelsPortalVarValue) && $model->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
@@ -155,14 +151,9 @@ class PortalController extends BaseController
                 return ArrayHelper::merge(
                                 ActiveForm::validateMultiple($modelsPortalVarValue), ActiveForm::validate($model)
                 );
-            }
+            };
 
-            // validate all models
-            $valid = $model->validate();
-
-            $valid = Model::validateMultiple($modelsPortalVarValue) && $valid;
-
-            if ($valid) {
+            if (Model::validateMultiple($modelsPortalVarValue) && $valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
@@ -234,11 +225,13 @@ class PortalController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
+                // Getting all data for creating/updating sections, rows, columns and blocks.
                 $sectionsData = Yii::$app->request->post('Section');
                 $rowsData = Yii::$app->request->post('Row');
                 $columnsData = Yii::$app->request->post('Column');
                 $blocksData = Yii::$app->request->post('Block');
 
+                // Creating sections, rows, columns and blocks from given data.
                 $sections = Section::createMultipleFromData($sectionsData);
                 $rows = Row::createMultipleFromData($rowsData);
                 $columns = Column::createMultipleFromData($columnsData);
@@ -248,76 +241,25 @@ class PortalController extends BaseController
                 $validSections = Model::validateMultiple($sections);
                 $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
 
-                foreach ($sections as $section) {
-                    $formerId = $section->id;
-
-                    if ($section->existing == 'false') {
-                        $section->id = null;
-                        if (!$section->save()) {
-                            throw new Exception;
-                        }
-
-                        foreach ($rows as $row) {
-                            $sectionId = $row->section_id;
-
-                            if ($sectionId == $formerId) {
-                                $row->section_id = $section->id;
-                            }
-                        }
-                    }
-                }
+                Section::saveMultiple($sections, $rows);
 
                 $validRows = Model::validateMultiple($rows);
                 $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
 
-                foreach ($rows as $row) {
-                    $formerId = $row->id;
-
-                    if ($row->existing == 'false') {
-                        $row->id = null;
-                        if (!$row->save()) {
-                            throw new Exception;
-                        }
-
-                        foreach ($columns as $column) {
-                            if ($column->row_id == $formerId) {
-                                $column->row_id = $row->id;
-                            }
-                        }
-                    }
-                }
+                Row::saveMultiple($rows, $columns);
 
                 $validColumns = Model::validateMultiple($columns);
                 $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
 
-                foreach ($columns as $column) {
-                    $formerId = $column->id;
-                    if ($column->existing == 'false') {
-                        $column->id = null;
-                        if (!$column->save()) {
-                            throw new Exception;
-                        }
-
-                        foreach ($blocks as $block) {
-                            if ($block->column_id == $formerId) {
-                                $block->column_id = $column->id;
-                            }
-                        }
-                    }
-                }
+                Column::saveMultiple($columns, $blocks);
 
                 $validBlocks = Model::validateMultiple($blocks);
 
-                foreach ($blocks as $block) {
-                    if ($block->existing == 'false') {
-                        $block->id = null;
-                    }
-                    if (!$block->save()) {
-                        throw new Exception;
-                    }
-                }
+                Block::saveMultiple($blocks);
 
                 Section::deleteMultiple($existingSections, $sections);
+                
+                $test = ArrayHelper::getColumn($sections, 'rows');
                 
                 $existingRows = [];
                 foreach ($sections as $section) {
@@ -371,7 +313,7 @@ class PortalController extends BaseController
     {
         $parseEngine = new ParseEngine();
 
-        $rows = $command = (new Query())
+        $rows = (new Query())
                 ->select('*')
                 ->from('portal_global')
                 ->where(['portal_id' => $portalId])

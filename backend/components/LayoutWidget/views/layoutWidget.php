@@ -5,41 +5,11 @@
 /* @var $sections \backend\models\Section */
 ?>
 
-<div class="section-form">
-
-    <?php /*
-    Modal::begin([
-        'header' => '<h4 class="modal-title">Nastavenia sekcie</h4>',
-        'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
-                <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
-        'size' => 'modal-lg',
-        'id' => 'modal-options',
-    ]);
-
-    echo $this->render('_options');
-
-    Modal::end(); */
-    ?>
-    
-    <?php /*
-    Modal::begin([
-        'header' => '<h4 class="modal-title">Pridať text</h4>',
-        'footer' => '<button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
-                <button type="button" class="btn btn-primary btn-save-options" data-dismiss="modal">Uložiť</button>',
-        // 'toggleButton' => ['label' => 'click me2'],
-        'size' => 'modal-lg',
-        'id' => 'modal-text',
-    ]);
-    
-    echo '<textarea class="text-textarea"></textarea>';
-
-    Modal::end(); */
-    ?>
-
+<div class="layouts">
     <?php
     $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>
-    <ul class="sections" id="<?= $idHash?>">
+    <ul class="children-list" id="<?= $idHash?>">
         <?php foreach ($sections as $section) : ?>
         <li>
             <?= $this->render('_section', ['section' => $section]); ?>
@@ -51,7 +21,7 @@
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
     </div>
-</div>
+</div> 
 
 <?php
 $portalIdJs = $portalId ? : 'null';
@@ -62,7 +32,9 @@ $js = <<<JS
 var controllerUrl = '$controllerUrl';
 var layoutType = '$type';
 var portalId = $portalIdJs;
-var pageId = $portalIdJs;
+var pageId = $pageIdJs;
+var formId = '$formId';
+        
 JS;
 
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

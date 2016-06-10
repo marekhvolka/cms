@@ -18,11 +18,13 @@ use yii\helpers\ArrayHelper;
  */
 class Row extends \yii\db\ActiveRecord
 {
+
     private $existing;  //Indicates if model allready exists.
-    
+
     /**
      * @inheritdoc
      */
+
     public static function tableName()
     {
         return 'row';
@@ -52,16 +54,17 @@ class Row extends \yii\db\ActiveRecord
             'options' => 'Options',
         ];
     }
-    
+
     public function beforeDelete()
     {
         $this->unlinkAll('columns', true);
         return parent::beforeDelete();
     }
-    
+
     /*
      * Getter for $existing property which indicates if model allready exists.
      */
+
     public function getExisting()
     {
         return $this->existing;
@@ -75,7 +78,6 @@ class Row extends \yii\db\ActiveRecord
     {
         $this->existing = $newExisting;
     }
-    
 
     /**
      * @return \yii\db\ActiveQuery
@@ -83,7 +85,7 @@ class Row extends \yii\db\ActiveRecord
     public function getColumns()
     {
         return $this->hasMany(Column::className(), ['row_id' => 'id'])
-            ->orderBy('order');
+                        ->orderBy('order');
     }
 
     /**
@@ -103,7 +105,7 @@ class Row extends \yii\db\ActiveRecord
     {
         return '</div> <!-- row end -->' . PHP_EOL;
     }
-    
+
     /** Returns array of newly created models from given data.
      * @param $data
      * @return array
@@ -127,7 +129,37 @@ class Row extends \yii\db\ActiveRecord
 
         return $rows;
     }
-    
+
+    /**
+     * Saves multiple models to database.
+     * @param backend\models\Row $rows
+     * @param backend\models\Column $columns
+     * @return boolean
+     */
+    public static function saveMultiple($rows, $columns)
+    {
+        foreach ($rows as $row) {
+            $formerId = $row->id;
+
+            if ($row->existing == 'false') {
+                $row->id = null;
+                if (!$row->save()) {
+                    throw new Exception;    // If error occurred, exception is thrown
+                }
+
+                // row_id of every column with id set to former id of row 
+                // (newly created row with random generated id) is set to current
+                // id of saved row
+                foreach ($columns as $column) {
+                    if ($column->row_id == $formerId) {
+                        $column->row_id = $row->id;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public static function deleteMultiple($existingModels, $models)
     {
         $oldIDs = ArrayHelper::map($existingModels, 'id', 'id');
@@ -146,8 +178,7 @@ class Row extends \yii\db\ActiveRecord
     {
         $result = $this->getPrefix();
 
-        foreach($this->columns as $column)
-        {
+        foreach ($this->columns as $column) {
             $result .= $column->getContent();
         }
 
@@ -155,4 +186,5 @@ class Row extends \yii\db\ActiveRecord
 
         return $result;
     }
+
 }

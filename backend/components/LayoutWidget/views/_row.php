@@ -52,7 +52,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
 
             <div class="panel-heading"><?php echo $column->order; ?>. stĺpec</div>
             <div class="panel-body">
-                <ul class="column-elements">
+                <ul class="children-list">
                     <?php foreach ($column->blocks as $block) : ?>
                         <li>
                             <?= $this->render('_block', ['block' => $block]); ?>

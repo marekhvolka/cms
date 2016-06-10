@@ -136,6 +136,38 @@ class Section extends \yii\db\ActiveRecord
         return $sections;
     }
 
+    /**
+     * Saves multiple models to database.
+     * @param backend\models\Section $sections
+     * @param backend\models\Row $rows
+     * @return boolean
+     */
+    public static function saveMultiple($sections, $rows)
+    {
+        foreach ($sections as $section) {
+            $formerId = $section->id;
+
+            if ($section->existing == 'false') {
+                $section->id = null;
+                if (!$section->save()) {
+                    throw new Exception;
+                }
+
+                // section_id of every row with id set to former id of section 
+                // (newly created section with random generated id) is set to current
+                // id of saved section
+                foreach ($rows as $row) {
+                    $sectionId = $row->section_id;
+
+                    if ($sectionId == $formerId) {
+                        $row->section_id = $section->id;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     // TODO - this is also in column, block, row, .... should be put into behavior or baseclass
     public static function deleteMultiple($existingModels, $models)
     {
@@ -148,6 +180,14 @@ class Section extends \yii\db\ActiveRecord
             if ($modelsToDelete) {
                 $modelsToDelete->delete();
             }
+        }
+    }
+
+    public static function getSectionsRows()
+    {
+        $existingRows = [];
+        foreach ($sections as $section) {
+            $existingRows = array_merge($existingRows, $section->rows);
         }
     }
 

@@ -8,7 +8,6 @@ use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
 use Yii;
 use yii\filters\AccessControl;
-use yii\helpers\Url;
 use yii\web\Controller;
 
 /**
@@ -51,9 +50,13 @@ abstract class BaseController extends Controller
      * @param type $type
      * @return string - call of LayoutWidget method for rendering view.
      */
-    public function actionAppendSection($type)
+    public function actionAppendSection()
     {
-        return (new LayoutWidget())->appendSection($type);
+        $type = Yii::$app->request->post('type');
+        $portalId = Yii::$app->request->post('portalId');
+        $pageId = Yii::$app->request->post('pageId');
+        
+        return (new LayoutWidget())->appendSection($type, $portalId, $pageId);
     }
 
     /**
@@ -63,9 +66,10 @@ abstract class BaseController extends Controller
     public function actionAppendRow()
     {
         $columnsWidth = Yii::$app->request->post('columns');
+        $order = Yii::$app->request->post('order');
         $sectionId = Yii::$app->request->post('sectionId');
 
-        return (new LayoutWidget())->appendRow($columnsWidth, $sectionId);
+        return (new LayoutWidget())->appendRow($sectionId, $order, $columnsWidth);
     }
 
     /**

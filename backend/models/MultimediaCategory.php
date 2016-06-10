@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Represents a single multimedia category.
+ *
  * @package backend\models
  */
 class MultimediaCategory extends Model
@@ -72,13 +73,36 @@ class MultimediaCategory extends Model
         }, array_filter(glob(self::MULTIMEDIA_PATH . '/*'), 'is_dir'));
     }
 
+    /**
+     * Return all possible subcategories.
+     *
+     * @return array
+     */
     public function getSubcategories()
     {
-        $portals = Portal::find()->asArray(true)->all();
-
-        return array_merge(['global' => 'Spoločné pre všetky portály'], ArrayHelper::map($portals, 'id', 'name'));
+        return ['global' => 'Spoločné pre všetky portály'] + ArrayHelper::map(Portal::find()->asArray(true)->all(), 'id', 'name');
     }
 
+    /**
+     * Remove subcategory form all categories.
+     *
+     * @param $id string subcategory's name
+     */
+    public static function removeSubcategory($id)
+    {
+        foreach (array_filter(glob(self::MULTIMEDIA_PATH . '/*/*'), function($item) use ($id) {
+            return is_dir($item) && end(explode("/", $item)) == $id;
+        }) as $dir) {
+            PathHelper::remove($dir);
+        }
+    }
+
+    /**
+     * Return all possible items (set their category name, subcategory, etc);
+     *
+     * @param null $subcategory
+     * @return array
+     */
     public function getItems($subcategory = null)
     {
         return array_map(function ($file) {
