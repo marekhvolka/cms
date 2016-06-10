@@ -54,6 +54,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             </div>
         </div>
 
+
+        <?php //TODO:: dokoncit
+        /*
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-default_value">
@@ -65,6 +68,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                     ]);?>
             </div>
         </div>
+
+        */ ?>
 
         <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][parent_id]", 
                 isset($snippetVar->parent_id) ? $snippetVar->parent_id : ''); ?>

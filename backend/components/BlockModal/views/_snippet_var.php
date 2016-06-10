@@ -64,6 +64,7 @@ switch ($model->var->type->identifier)
                                 {
                                     echo $this->render('_snippet_var', [
                                         'model' => $snippetVarValue,
+                                        'productType' => $productType
                                     ]);
                                 }
                                 ?>
@@ -80,9 +81,9 @@ switch ($model->var->type->identifier)
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" placeholder="<?= $model->var->default_value ?>">
-                <?php if(!empty($model->var->default_value)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->var->default_value ?></strong></p>
+                <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
+                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -92,10 +93,10 @@ switch ($model->var->type->identifier)
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
+                <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
 
-                <?php if(!empty($model->var->default_value)) : ?>
-                <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->var->default_value ?></strong></p>
+                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -105,10 +106,10 @@ switch ($model->var->type->identifier)
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->var->default_value) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
+                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
-                <?php if(!empty($model->var->default_value)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->var->default_value) ?></strong></p>
+                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -119,12 +120,12 @@ switch ($model->var->type->identifier)
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
                 <div class="input-group">
-                    <input type="color" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->var->default_value ?>">
+                    <input type="color" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
                     <span class="input-group-addon"><i></i></span>
                 </div>
 
-                <?php if(!empty($model->var->default_value)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->var->default_value) ?></strong></p>
+                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -135,10 +136,10 @@ switch ($model->var->type->identifier)
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->var->default_value) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
+                <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
-                <?php if(!empty($model->var->default_value)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->var->default_value) ?></strong></p>
+                <?php if(!empty($model->getDefaultValue($productType))) : ?>
+                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
 
             </div>

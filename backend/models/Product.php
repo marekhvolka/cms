@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
+ * @property int $parsed
  *
  * @property ProductType $productType
  * @property Page[] $pages
@@ -26,7 +27,7 @@ use yii\helpers\ArrayHelper;
  * @property Language $language
  * @property Product $parent
  * @property Product[] $products
- * @property ProductSnippet[] $productSnippets
+ * @property ProductVarValue[] $productSnippets
  * @property Tag[] $tags
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
@@ -82,9 +83,11 @@ class Product extends \yii\db\ActiveRecord
     
     public function beforeSave($insert)
     {
-        $userId = Yii::$app->user->identity->id;
-        $this->last_edit_user = $userId;
-        
+        $userIdentity = Yii::$app->user->identity;
+
+        if (isset($userIdentity))
+            $this->last_edit_user = $userIdentity->id;
+
         return parent::beforeSave($insert);
     }
     
@@ -159,7 +162,7 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasMany(Product::className(), ['parent_id' => 'id']);
     }
 
-    /**
+    /** Vrati zoznam hodnot premennych - produktovych snippetov
      * @return \yii\db\ActiveQuery
      */
     public function getProductSnippets()
@@ -169,7 +172,7 @@ class Product extends \yii\db\ActiveRecord
         foreach($this->productVarValues as $productVarValue)
         {
             if ($productVarValue->var->isSnippet())
-                $array[] = $productVarValue->valueBlock;
+                $array[] = $productVarValue;
         }
 
         return $array;
@@ -258,9 +261,9 @@ class Product extends \yii\db\ActiveRecord
 
             $buffer .= 'include \'' . $this->getProductVarsFile() . '\';' . PHP_EOL;
 
-            foreach($this->productSnippets as $block)
+            foreach($this->productSnippets as $productVarValue)
             {
-                $buffer .= '$' . $this->identifier . '->' . $block->productVarValue->var->identifier . ' = file_get_contents(\'' . $block->getMainFile() . '\');' . PHP_EOL;
+                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier . ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainFile() . '\');' . PHP_EOL;
             }
 
             $buffer .= '?>';
@@ -269,24 +272,6 @@ class Product extends \yii\db\ActiveRecord
         }
 
         return $path;
-    }
-
-    public function printVariables()
-    {
-        $buffer = '';
-
-        foreach ($this->productVarValues as $productVarValue)
-        {
-            $buffer .= '$' . $productVarValue->var->identifier . ' = ' .
-                '$' . $this->identifier . '->' . $productVarValue->var->identifier . ';' . PHP_EOL;
-        }
-
-        if (isset($this->parent)) // ak ma produkt rodica
-        {
-            $buffer .= $this->parent->printVariables();
-        }
-
-        return $buffer;
     }
 
     public function getMainDirectory()

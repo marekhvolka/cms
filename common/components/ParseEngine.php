@@ -14,11 +14,14 @@ use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\Block;
+use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Row;
 use backend\models\Section;
 use backend\models\SnippetCode;
 use backend\models\SnippetVar;
+use backend\models\SnippetVarDefaultValue;
+use backend\models\SnippetVarDropdown;
 use backend\models\SnippetVarValue;
 use backend\models\Tag;
 use Yii;
@@ -29,25 +32,91 @@ use yii\helpers\VarDumper;
 
 class ParseEngine
 {
-    /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabuliek page_block
-     * @param $type string
+    /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabulky block
+     * @param $portal
      */
-    public function parsePortalProductSnippet($type)
+    public function parsePortalSnippet(Portal $portal)
     {
-        if ($type == 'product')
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $query = 'DELETE FROM portal_var_value WHERE value_block_id IS NOT NULL AND portal_id = :portal_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'portal_id' => $portal->id
+        ])
+            ->execute();
+
+        $query = 'INSERT INTO block (type, snippet_code_id, data, old_id)
+              SELECT \'portal_snippet\', snippet_code_id, json, id FROM portal_snippet WHERE portal_id = :portal_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'portal_id' => $portal->id
+        ])
+            ->execute();
+
+        $query = 'INSERT INTO portal_var_value (portal_id, var_id, value_block_id)
+            SELECT portal_snippet.portal_id, portal_snippet.portal_var_id, block.id FROM block JOIN portal_snippet ON (block.old_id = portal_snippet.id)
+            WHERE type = \'portal_snippet\' AND portal_snippet.portal_id = :portal_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'portal_id' => $portal->id
+        ])
+            ->execute();
+
+        $parseEngine = new ParseEngine();
+
+        foreach($portal->portalSnippets as $portalSnippet)
         {
-            $tableName = 'product_snippet';
+            $portalSnippet->valueBlock->data = $parseEngine->convertMacrosToLatteStyle($portalSnippet->valueBlock->data);
+
+            $portalSnippet->valueBlock->save();
+
+            $parseEngine->parseSnippetVarValues($portalSnippet->valueBlock);
         }
-        else if ($type == 'portal')
-            $tableName = 'portal_snippet';
 
-        $result = $command = (new Query())
-            ->select('*')
-            ->from($tableName)
-            ->createCommand()
-            ->queryAll();
+        $transaction->commit();
+    }
 
-        //TODO: dokoncit
+    public function parseProductSnippet(Product $product)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $query = 'DELETE FROM product_var_value WHERE value_block_id IS NOT NULL AND product_id = :product_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'product_id' => $product->id
+        ])
+            ->execute();
+
+        $query = 'INSERT INTO block (type, snippet_code_id, data, old_id)
+            SELECT \'product_snippet\', snippet_code_id, json, id FROM product_snippet WHERE product_id = :product_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'product_id' => $product->id
+        ])
+            ->execute();
+
+        $query = 'INSERT INTO product_var_value (product_id, var_id, value_block_id)
+            SELECT product_snippet.product_id, product_snippet.product_var_id, block.id FROM block JOIN product_snippet ON (block.old_id = product_snippet.id)
+            WHERE type = \'product_snippet\' AND product_snippet.product_id = :product_id;';
+
+        Yii::$app->db->createCommand($query, [
+            'product_id' => $product->id
+        ])
+            ->execute();
+
+        $parseEngine = new ParseEngine();
+
+        foreach($product->productSnippets as $productSnippet)
+        {
+            $productSnippet->valueBlock->data = $parseEngine->convertMacrosToLatteStyle($productSnippet->valueBlock->data);
+
+            $productSnippet->valueBlock->save();
+
+            $parseEngine->parseSnippetVarValues($productSnippet->valueBlock);
+        }
+
+        $transaction->commit();
     }
 
     /**
@@ -168,9 +237,12 @@ class ParseEngine
                                 ->createCommand()
                                 ->queryOne();
 
-                            $pageBlock->snippet_code_id = $snippetCodeId = $pageBlock->data = json_decode(json_decode($result['json'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId])->code_select;
-
                             $pageBlock->data = json_decode($result['json'], true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+
+                            if (isset(json_decode($pageBlock->data)->code_select))
+                                $pageBlock->snippet_code_id = json_decode($pageBlock->data)->code_select;
+                            else
+                                $pageBlock->snippet_code_id = json_decode(json_decode($pageBlock->data)->result)->code_select;
 
                             break;
 
@@ -739,13 +811,20 @@ class ParseEngine
             return;
         $json = $data->snippet;
 
+        if (isset($pageBlock->snippetCode))
+            $snippetId =  $pageBlock->snippetCode->snippet_id;
+        else if (isset($pageBlock->parent))
+            $snippetId = $pageBlock->parent->snippetCode->snippet_id;
+        else
+            return;
+
         foreach($json as $key => $value)
         {
             $key2 = str_replace('-', '_', $key);
 
             /* @var $snippetVar SnippetVar */
             $snippetVar = SnippetVar::find()
-                ->andWhere(['snippet_id' => $pageBlock->snippetCode->snippet_id])
+                ->andWhere(['snippet_id' => $snippetId])
                 ->andFilterWhere([
                     'or',
                     ['identifier' => $key],
@@ -771,11 +850,11 @@ class ParseEngine
 
             switch($snippetVar->type->identifier)
             {
-                case 'list':
-                    $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock);
+                case 'list' :
+                    $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock, $snippetVar->id);
 
                     break;
-                case 'page':
+                case 'page' :
 
                     $page = Page::findOne(['id' => substr($value, 8)]);
 
@@ -784,7 +863,7 @@ class ParseEngine
 
                     break;
 
-                case 'product':
+                case 'product' :
 
                     $product = Product::findOne(['identifier' => $value]);
 
@@ -792,12 +871,27 @@ class ParseEngine
                         $snippetVarValue->value_product_id = $product->id;
 
                     break;
-                case 'product_tag':
+                case 'product_tag' :
 
                     $tag = Tag::findOne(['identifier' => $value]);
 
                     if (isset($tag))
                         $snippetVarValue->value_tag_id = $tag->id;
+
+                    break;
+                case 'dropdown' :
+
+                    $dropdowns = SnippetVarDropdown::find()
+                        ->where([
+                            'var_id' => $snippetVarValue->var_id,
+                        ])
+                        ->orderBy('id')
+                        ->all();
+
+                    if (!isset($value) || ($value == '') || $value +1 > sizeof($dropdowns))
+                        $snippetVarValue->value_dropdown_id = $snippetVar->defaultValue;
+                    else
+                        $snippetVarValue->value_dropdown_id = $dropdowns[$value]->id;
 
                     break;
                 default:
@@ -821,7 +915,7 @@ class ParseEngine
      * @param $pageBlock Block - blok, ktoreho sa zoznamy tykaju
      * @return int
      */
-    private function parseSnippetList($value, Block $pageBlock)
+    private function parseSnippetList($value, Block $pageBlock, $listVarId)
     {
         $list = new ListVar();
         $list->save();
@@ -848,6 +942,7 @@ class ParseEngine
                         ['identifier' => $itemVarIdentifier],
                         ['identifier' => $itemVarIdentifier2]
                     ])
+                    ->andWhere(['parent_id' => $listVarId])
                     ->one();
 
                 if ($snippetListVar == null)
@@ -868,11 +963,11 @@ class ParseEngine
 
                 switch($snippetListVar->type->identifier)
                 {
-                    case 'list':
-                        $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock);
+                    case 'list' :
+                        $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock, $snippetListVar->id);
 
                         break;
-                    case 'page':
+                    case 'page' :
 
                         $page = Page::findOne(['id' => substr($itemVarValue, 8)]);
 
@@ -881,7 +976,7 @@ class ParseEngine
 
                         break;
 
-                    case 'product':
+                    case 'product' :
 
                         $product = Product::findOne(['identifier' => $itemVarValue]);
 
@@ -889,12 +984,59 @@ class ParseEngine
                             $snippetListVarValue->value_product_id = $product->id;
 
                         break;
-                    case 'product_tag':
+                    case 'product_tag' :
 
                         $tag = Tag::findOne(['identifier' => $itemVarValue]);
 
                         if (isset($tag))
                             $snippetListVarValue->value_tag_id = $tag->id;
+
+                        break;
+                    case 'dropdown' :
+
+                        $dropdowns = SnippetVarDropdown::find()
+                            ->where([
+                                'var_id' => $snippetListVarValue->var_id,
+                            ])
+                            ->orderBy('id')
+                            ->all();
+
+                        if (!isset($itemVarValue) || ($itemVarValue == '') || $itemVarValue +1 > sizeof($dropdowns))
+                        {
+                            $productTypeDefaultValue = SnippetVarDefaultValue::find()
+                                ->andWhere([
+                                    'snippet_var_id' => $snippetListVar->id,
+                                    'product_type_id' => NULL
+                                ])
+                                ->one();
+
+                            $snippetListVarValue->value_dropdown_id = $productTypeDefaultValue->value_dropdown_id;
+                        }
+                        else
+                        {
+                            $dropdowns = SnippetVarDropdown::find()
+                                ->where([
+                                    'var_id' => $snippetListVarValue->var_id,
+                                    //'value' => $itemVarValue
+                                ])
+                                ->orderBy('id')
+                                ->all();
+
+                            if (array_key_exists($itemVarValue, $dropdowns))
+                                $snippetListVarValue->value_dropdown_id = $dropdowns[$itemVarValue]->id;
+                            else
+                            {
+                                $dropdown = SnippetVarDropdown::find()
+                                    ->where([
+                                        'var_id' => $snippetListVarValue->var_id,
+                                        'value' => $itemVarValue
+                                    ])
+                                    ->orderBy('id')
+                                    ->one();
+
+                                $snippetListVarValue->value_dropdown_id = $dropdown->id;
+                            }
+                        }
 
                         break;
                     default:
@@ -916,37 +1058,32 @@ class ParseEngine
     }
 
     /** Funkcia prekonvertuje zapisane premenne pre dany blok na Latte style
-     * @param Block $block
+     * @param string $string
+     * @return mixed|string
      */
-    public function convertMacrosToLatteStyle(Block $block)
+    public function convertMacrosToLatteStyle($string)
     {
-        $block->data = str_replace('{dolna_hranica_pozicky}', '{$product->dolna_hranica_pozicky}', $block->data);
-        $block->data = str_replace('{horna_hranica_pozicky}', '{$product->horna_hranica_pozicky}', $block->data);
-        $block->data = str_replace('{dolna_hranica_splatnosti}', '{$product->dolna_hranica_splatnosti}', $block->data);
-        $block->data = str_replace('{horna_hranica_splatnosti}', '{$product->horna_hranica_splatnosti}', $block->data);
-        $block->data = str_replace('{horna_hranica_pozicky_novy}', '{$product->horna_hranica_pozicky_novy}', $block->data);
-        $block->data = str_replace('{horna_hranica_splatnosti_novy}', '{$product->horna_hranica_splatnosti_novy}', $block->data);
-        $block->data = str_replace('{nazov_produktu}', '{$product->nazov_produktu}', $block->data);
+        $string = str_replace('{dolna_hranica_pozicky}', '{$product->dolna_hranica_pozicky}', $string);
+        $string = str_replace('{horna_hranica_pozicky}', '{$product->horna_hranica_pozicky}', $string);
+        $string = str_replace('{dolna_hranica_splatnosti}', '{$product->dolna_hranica_splatnosti}', $string);
+        $string = str_replace('{horna_hranica_splatnosti}', '{$product->horna_hranica_splatnosti}', $string);
+        $string = str_replace('{horna_hranica_pozicky_novy}', '{$product->horna_hranica_pozicky_novy}', $string);
+        $string = str_replace('{horna_hranica_splatnosti_novy}', '{$product->horna_hranica_splatnosti_novy}', $string);
+        $string = str_replace('{nazov_produktu}', '{$product->nazov_produktu}', $string);
+        $string = str_replace('{urok_porovnavac}', '{$product->urok_porovnavac}', $string);
 
-        $block->data = str_replace('{slovnik.', '{$slovnik->', $block->data);
+        $string = str_replace('{slovnik.', '{$slovnik->', $string);
 
-        $block->save();
-    }
+        $string = str_replace('{$dolna_hranica_pozicky}', '{$product->dolna_hranica_pozicky}', $string);
+        $string = str_replace('{$horna_hranica_pozicky}', '{$product->horna_hranica_pozicky}', $string);
+        $string = str_replace('{$dolna_hranica_splatnosti}', '{$product->dolna_hranica_splatnosti}', $string);
+        $string = str_replace('{$horna_hranica_splatnosti}', '{$product->horna_hranica_splatnosti}', $string);
+        $string = str_replace('{$horna_hranica_pozicky_novy}', '{$product->horna_hranica_pozicky_novy}', $string);
+        $string = str_replace('{$horna_hranica_splatnosti_novy}', '{$product->horna_hranica_splatnosti_novy}', $string);
+        $string = str_replace('{$nazov_produktu}', '{$product->nazov_produktu}', $string);
+        $string = str_replace('{$urok_porovnavac}', '{$product->urok_porovnavac}', $string);
 
-    /** Funkcia prekonvertuje zapisane premenne pre dany blok na Latte style
-     * @param Block $block
-     */
-    public function convertMacrosToLatteStyle2(Block $block)
-    {
-        $block->data = str_replace('{$dolna_hranica_pozicky}', '{$product->dolna_hranica_pozicky}', $block->data);
-        $block->data = str_replace('{$horna_hranica_pozicky}', '{$product->horna_hranica_pozicky}', $block->data);
-        $block->data = str_replace('{$dolna_hranica_splatnosti}', '{$product->dolna_hranica_splatnosti}', $block->data);
-        $block->data = str_replace('{$horna_hranica_splatnosti}', '{$product->horna_hranica_splatnosti}', $block->data);
-        $block->data = str_replace('{$horna_hranica_pozicky_novy}', '{$product->horna_hranica_pozicky_novy}', $block->data);
-        $block->data = str_replace('{$horna_hranica_splatnosti_novy}', '{$product->horna_hranica_splatnosti_novy}', $block->data);
-        $block->data = str_replace('{$nazov_produktu}', '{$product->nazov_produktu}', $block->data);
-
-        $block->save();
+        return $string;
     }
 
 }

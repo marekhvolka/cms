@@ -1,7 +1,9 @@
 <?php
 namespace frontend\controllers;
 
+use backend\models\Block;
 use backend\models\Page;
+use backend\models\Product;
 use common\components\ParseEngine;
 use Yii;
 use common\models\LoginForm;
@@ -70,21 +72,62 @@ class SiteController extends Controller
 
     public function actionIndex($url = null)
     {
+        $parseEngine = new ParseEngine();
+
+        $products = Product::find()->all();
+
+        foreach($products as $product)
+        {
+            if ($product->parsed == 0)
+            {
+                $transaction = Yii::$app->db->beginTransaction();
+
+                $parseEngine->parseProductSnippet($product);
+
+                $product->parsed = 1;
+
+                $product->save();
+
+                $transaction->commit();
+            }
+        }
+
         $identifiers = explode("/", $url);
 
-        $pages = Page::find()->all();
+        $pages = Page::find()
+            ->where([
+            'parent_id' => null
+        ])->all();
 
         $page = $this->findPage($pages, $identifiers, 0);
 
         if (!isset($page))
-            $page = Page::find(['identifier' => '404'])->one();
+            $page = Page::find()
+                ->where(['identifier' => '404'])->one();
+
+        if ($page->portal->parsed == 0)
+        {
+            $transaction = Yii::$app->db->beginTransaction();
+
+            $this->parsePortal($page->portal);
+
+            $page->portal->parsed = 1;
+
+            $page->portal->save();
+
+            $transaction->commit();
+        }
 
         if ($page->parsed == 0)
         {
-            $this->parse($page);
+            $transaction = Yii::$app->db->beginTransaction();
+
+            $this->parsePage($page);
 
             $page->parsed = 1;
             $page->save();
+
+            $transaction->commit();
         }
 
         if (isset($page))
@@ -94,64 +137,106 @@ class SiteController extends Controller
             echo file_get_contents($path);
     }
 
-    private function parse($page)
+    private function parsePortal($portal)
+    {
+        $parseEngine = new ParseEngine();
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('portal_global')
+            ->where(['portal_id' => $portal->id])
+            ->createCommand()
+            ->queryAll();
+
+        foreach($rows as $row)
+        {
+            $parseEngine->parsePageGlobalSection('portal', $row);
+        }
+
+        foreach($portal->headerSections as $section)
+        {
+            foreach($section->rows as $row)
+            {
+                foreach($row->columns as $column)
+                {
+                    foreach($column->blocks as $block)
+                    {
+                        $block->data = $parseEngine->convertMacrosToLatteStyle($block->data);
+                        $block->save();
+
+                        $parseEngine->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        foreach($portal->footerSections as $section)
+        {
+            foreach($section->rows as $row)
+            {
+                foreach($row->columns as $column)
+                {
+                    foreach($column->blocks as $block)
+                    {
+                        $block->data = $parseEngine->convertMacrosToLatteStyle($block->data);
+                        $block->save();
+
+                        $parseEngine->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        $parseEngine->parsePortalSnippet($portal);
+    }
+
+    private function parsePage($page)
     {
         $parseEngine = new ParseEngine();
 
         $pageId = $page->id;
 
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $rows = $command = (new Query())
+        $row = (new Query())
             ->select('*')
             ->from('page_sidebar')
             ->where(['page_id' => $pageId])
             ->createCommand()
-            ->queryAll();
+            ->queryOne();
 
-        foreach($rows as $row)
-        {
-            $parseEngine->parseSidebar($row);
-        }
+        $parseEngine->parseSidebar($row);
 
-        $rows = $command = (new Query())
+        $row = (new Query())
             ->select('*')
             ->from('page_footer')
             ->where(['page_id' => $pageId])
             ->createCommand()
-            ->queryAll();
+            ->queryOne();
 
-        foreach($rows as $row)
-        {
-            $parseEngine->parsePageGlobalSection('page', $row);
-        }
+        $parseEngine->parsePageGlobalSection('page', $row);
 
-        $rows = $command = (new Query())
+        $row = (new Query())
             ->select('*')
             ->from('page_header')
             ->where(['page_id' => $pageId])
             ->createCommand()
-            ->queryAll();
+            ->queryOne();
 
-        foreach($rows as $row)
-        {
-            $parseEngine->parsePageGlobalSection('page', $row);
-        }
+        $parseEngine->parsePageGlobalSection('page', $row);
 
-        $rows = $command = (new Query())
+        $row = $command = (new Query())
             ->select('*')
             ->from('page')
             ->where(['id' => $pageId])
             ->createCommand()
-            ->queryAll();
+            ->queryOne();
 
-        foreach($rows as $row)
-        {
-            $parseEngine->parseMasterContent($row);
-        }
+        $parseEngine->parseMasterContent($row);
 
         /* @var $page Page */
         $page = Page::find()->where(['id' => $pageId])->one();
+
+        $page->description = $parseEngine->convertMacrosToLatteStyle($page->description);
+        $page->save();
 
         foreach($page->sections as $section)
         {
@@ -161,15 +246,13 @@ class SiteController extends Controller
                 {
                     foreach($column->blocks as $block)
                     {
-                        $parseEngine->convertMacrosToLatteStyle($block);
-                        $parseEngine->convertMacrosToLatteStyle2($block);
+                        $block->data = $parseEngine->convertMacrosToLatteStyle($block->data);
+                        $block->save();
                         $parseEngine->parseSnippetVarValues($block);
                     }
                 }
             }
         }
-
-        $transaction->commit();
     }
 
     private function findPage($pages, $identifiers, $index)

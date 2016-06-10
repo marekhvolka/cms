@@ -246,11 +246,14 @@ class SnippetVar extends \yii\db\ActiveRecord
         return true;
     }
 
+    /** Metoda, ktora vrati vseobecnu defaultnu hodnotu (nie pre konkretny typ produktov)
+     * @return string
+     */
     public function getDefaultValue()
     {
         $cacheEngine = Yii::$app->cacheEngine;
 
-        $value = '';
+        $value = '\'\'';
 
         switch ($this->type->identifier)
         {
@@ -269,6 +272,19 @@ class SnippetVar extends \yii\db\ActiveRecord
                 $value = 'NULL';
                 break;
 
+            case 'dropdown' :
+
+                $productTypeDefaultValue = SnippetVarDefaultValue::find()
+                    ->andWhere([
+                        'snippet_var_id' => $this->id,
+                        'product_type_id' => NULL
+                    ])
+                    ->one();
+
+                if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown))
+                    $value = '\''. $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
+
+                break;
             default:
 
                 $productTypeDefaultValue = SnippetVarDefaultValue::find()

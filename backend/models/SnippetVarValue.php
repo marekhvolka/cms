@@ -16,8 +16,10 @@ use Yii;
  * @property int $value_product_var_id
  * @property int $block_id
  * @property int $value_list_id
+ * @property int $value_dropdown_id
  *
  * @property mixed $value
+ * @property SnippetVarDropdown $valueDropdown
  * @property ListVar $valueListVar
  * @property Product $valueProduct
  * @property Page $valuePage
@@ -95,6 +97,14 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getValueDropdown()
+    {
+        return $this->hasOne(SnippetVarDropdown::className(), ['id' => 'value_dropdown_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getValueProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'value_product_id']);
@@ -146,6 +156,11 @@ class SnippetVarValue extends \yii\db\ActiveRecord
 
                 //TODO: dokoncit
                 break;
+            case 'dropdown' :
+
+                $value = '\'' . $this->valueDropdown->value . '\'';
+
+                break;
             default:
 
                 $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
@@ -158,19 +173,29 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      * @param $productTypeId
      * @return mixed|string
      */
-    public function getDefaultValue($productTypeId)
+    public function getDefaultValue($productType)
     {
-        $productTypeDefaultValue = SnippetVarDefaultValue::find()
-            ->andWhere([
-                'snippet_var_id' => $this->var->id,
-                'product_type_id' => $productTypeId
-            ])
-            ->one();
-
-        if ($productTypeDefaultValue != NULL)
-        {
-            return '\'' . Yii::$app->cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
+        if (isset($productType)) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->var->id,
+                    'product_type_id' => $productType->id
+                ])
+                ->one();
         }
-        return '\'\'';
+        if (!isset($defaultValue)) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->var->id,
+                    'product_type_id' => null
+                ])
+                ->one();
+        }
+
+        if ($defaultValue != NULL)
+        {
+            return '\'' . Yii::$app->cacheEngine->normalizeString($defaultValue->value) . '\'';
+        }
+        return null;
     }
 }
