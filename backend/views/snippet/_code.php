@@ -48,6 +48,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                             CodemirrorAsset::ADDON_DIALOG,
                             CodemirrorAsset::ADDON_SEARCHCURSOR,
                             CodemirrorAsset::ADDON_SEARCH,
+                            CodemirrorAsset::ADDON_DISPLAY_FULLSCREEN,
+                            CodemirrorAsset::ADDON_DISPLAY_RULERS,
+                            CodemirrorAsset::ADDON_FOLD_BRACE_FOLD
                         ],
                         'settings' => [
                             'lineNumbers' => true,
@@ -56,8 +59,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                         'options' => [
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
-                            'autofocus' => 'false',
+                            'autofocus' => 'true',
                             'name' => "SnippetCode[$postIndex][code]",
+                            'rows' => 40
                         ]
                     ]
                 );

@@ -24,6 +24,7 @@ use backend\models\SnippetVarDefaultValue;
 use backend\models\SnippetVarDropdown;
 use backend\models\SnippetVarValue;
 use backend\models\Tag;
+use Exception;
 use Yii;
 use yii\db\mysql\QueryBuilder;
 use yii\db\Query;
@@ -316,48 +317,16 @@ class ParseEngine
                     else
                     {
                         BaseVarDumper::dump($pageBlock->errors);
-
-                        BaseVarDumper::dump($pageBlock->snippet_code_id);
-                        BaseVarDumper::dump($section->page_id);
                     }
                 }
 
             }
         }
-
-
-        /*
-        $pagesBlockSett = $command = (new Query())
-            ->select('*')
-            ->from('page_block_sett')
-            ->createCommand()
-            ->queryAll();
-
-        foreach ($pagesBlockSett as $page)
-        {
-            $rows = json_decode($page['settings']['content']);
-
-            foreach ($rows as $rowId => $row) //loop through rows
-            {
-                $json = json_decode($row);
-
-                $command = Yii::$app->db->createCommand('UPDATE row
-                        SET
-                        VALUES(:section_id, :id)');
-
-                $command->bindValue(':section_id', $section['id']);
-                $command->bindValue(':id', $rowIds[$i]);
-
-                $command->execute();
-            }
-        }*/
     }
 
     public function parseSidebar($pageDbRow)
     {
         $rowIds = explode(',', $pageDbRow['block_poradie']);
-
-        //$rowWidth = explode(',', $pageDbRow['layout_poradie']);
 
         $section = Section::findOne(
             [
@@ -377,8 +346,6 @@ class ParseEngine
 
         for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
         {
-            //VarDumper::dump('Row ' . $rowIds[$i] . PHP_EOL);
-
             $row = new Row();
 
             $row->section_id = $section->id;
@@ -398,11 +365,9 @@ class ParseEngine
             if (!isset($layoutData['sidebar']))
                 continue;
 
-            $columns = $layoutData['sidebar']['master'];
-
             $columnsCount = 1;
 
-            for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
+            for ($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
             {
                 $column = new Column();
                 $column->row_id = $row->id;
@@ -429,8 +394,6 @@ class ParseEngine
                 foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId)
                 {
                     $pageBlockType = json_decode($pageDbRow['layout_element_type'], true)['sidebar']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                    //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
 
                     $pageBlock = new Block();
 
@@ -508,41 +471,11 @@ class ParseEngine
                     else
                     {
                         BaseVarDumper::dump($pageBlock->errors);
-
-                        BaseVarDumper::dump($pageBlock->snippet_code_id);
-                        BaseVarDumper::dump($section->page_id);
                     }
                 }
 
             }
         }
-
-
-        /*
-        $pagesBlockSett = $command = (new Query())
-            ->select('*')
-            ->from('page_block_sett')
-            ->createCommand()
-            ->queryAll();
-
-        foreach ($pagesBlockSett as $page)
-        {
-            $rows = json_decode($page['settings']['content']);
-
-            foreach ($rows as $rowId => $row) //loop through rows
-            {
-                $json = json_decode($row);
-
-                $command = Yii::$app->db->createCommand('UPDATE row
-                        SET
-                        VALUES(:section_id, :id)');
-
-                $command->bindValue(':section_id', $section['id']);
-                $command->bindValue(':id', $rowIds[$i]);
-
-                $command->execute();
-            }
-        }*/
     }
 
     /** Parsovanie dat z glob. hlavicky a paticky portalu ale aj podstranky
@@ -551,8 +484,6 @@ class ParseEngine
      */
     public function parsePageGlobalSection($dataType, $tableRow)
     {
-        //VarDumper::dump($tableRow['id']);
-
         if ($tableRow['sekcia_settings'] == '' || $tableRow['layout_element'] == '')
             return;
 
@@ -570,17 +501,11 @@ class ParseEngine
         $sectionsBlockPoradie = json_decode($tableRow['block_poradie'], true)[$type];
         $sectionsLayoutElementType = json_decode($tableRow['layout_element_type'], true)[$type];
         $sectionsLayoutElementActive = json_decode($tableRow['layout_element_active'], true)[$type];
-        $sectionsLayoutElementTimeFrom = json_decode($tableRow['layout_element_time_from'], true)[$type];
-        $sectionsLayoutElementTimeTo = json_decode($tableRow['layout_element_time_to'], true)[$type];
         $sectionsJsonSmartsnippet = json_decode($tableRow['json_smart_snippet'], true)[$type];
         $sectionsBlockSettings = json_decode($tableRow['block_settings'], true)[$type];
 
-        //BaseVarDumper::dump('Riadok ' . $tableRow['id']);
-
         foreach ($sectionsBlockPoradie as $sectionId => $sectionData)
         {
-            //BaseVarDumper::dump('Sekcia  ' . $sectionId . PHP_EOL);
-
             try
             {
                 $section = new Section();
@@ -644,8 +569,6 @@ class ParseEngine
                         BaseVarDumper::dump($row->errors);
                     }
 
-                    //BaseVarDumper::dump($columnsCount . PHP_EOL);
-
                     for($index = 1; $index <= $columnsCount; $index++)
                     {
                         $column = new Column();
@@ -673,8 +596,6 @@ class ParseEngine
                             $column->width = 12/$columnsCount;
                         }
 
-                        //BaseVarDumper::dump('Sirka ' .$column->width . PHP_EOL);
-
                         if ($column->validate())
                         {
                             $column->save();
@@ -685,6 +606,7 @@ class ParseEngine
                         }
 
                         $pageBlockOrder = 1;
+
                         if (!isset($sectionsLayoutElement[$sectionId]))
                             continue;
 
@@ -780,9 +702,6 @@ class ParseEngine
                             else
                             {
                                 BaseVarDumper::dump($pageBlock->errors);
-
-                                BaseVarDumper::dump($pageBlock->type);
-                                BaseVarDumper::dump($section->page_id);
                             }
                         }
                     }
@@ -839,8 +758,6 @@ class ParseEngine
                 if ($key != 'button_text' && $key != 'button_url') //z tabulky splatok vyhodeny button
                 {
                     VarDumper::dump('ERROR');
-                    VarDumper::dump($pageBlock);
-                    VarDumper::dump($key);
                 }
                 continue;
             }
@@ -950,7 +867,6 @@ class ParseEngine
                     if ($itemVarIdentifier != 'init' && $itemVarIdentifier != 'active')
                     {
                         VarDumper::dump('ERROR') . PHP_EOL;
-                        VarDumper::dump($itemVarIdentifier);
                     }
                     continue;
                 }

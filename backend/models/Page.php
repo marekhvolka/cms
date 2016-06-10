@@ -355,6 +355,7 @@ class Page extends \yii\db\ActiveRecord
             $buffer .= '\'title\' => \'' . $cacheEngine->normalizeString($this->title) . '\',' . PHP_EOL;
             $buffer .= '\'description\' => \'' . $cacheEngine->normalizeString($this->description) . '\',' . PHP_EOL;
             $buffer .= '\'keywords\' => \'' . $cacheEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
+            $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
 
             if (isset($this->parent))
                 $buffer .= '\'parent\' => $portal->pages->page' . $this->parent->id . ',' . PHP_EOL;
@@ -462,49 +463,10 @@ class Page extends \yii\db\ActiveRecord
 
             $prefix .= '?>' . PHP_EOL;
 
-            $pageContent = $prefix . '<!DOCTYPE html>
-            <html class="no-js">
-            <head>
-                <meta charset="utf-8" />
-              {$include_head}
-              <title>{$page->title}</title>
-              <link href=\'{$bootstrap_css}\' rel=\'stylesheet\' type=\'text/css\' />
-              <link href=\'http://www.hyperfinance.cz/css/public/global.css\' rel=\'stylesheet\' type=\'text/css\' />
+            $templateIndex = file_get_contents(Yii::$app->params['templatesDirectory']
+                . $this->portal->template->identifier . '/index.php');
 
-              <meta name="description" content="{$page->description}" />
-              <link href=\'{$color_scheme}\' rel=\'stylesheet\' type=\'text/css\' />
-              <link href=\'{$font_awesome}\' rel=\'stylesheet\' type=\'text/css\' />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-              <link href=\'http://fonts.googleapis.com/css?family=Open+Sans:700&amp;subset=latin,latin-ext\' rel=\'stylesheet\' type=\'text/css\' />
-
-              <script src=\'{$jquery}\'></script>
-              <script src=\'{$bootstrap_js}\'></script>
-
-              {$include_head_end}
-            </head>
-            <body>
-              {$include_body}
-
-              {$global_header}
-
-                <main>
-              {$page_header}
-              <div id="page-content">
-                <div class="wrapper"><div class="container"><div class="row">
-              {$page_content}
-
-              {$page_sidebar}
-                </div> <!-- row end -->
-                </div> <!--container end -->
-                </div> <!--wrapper end -->
-                </div> <!-- page-content-->
-              {$page_footer}
-                </main>
-              {$global_footer}
-              {$include_body_end}
-            </body>
-            </html>';
+            $pageContent = $prefix . $templateIndex;
 
             $pageContent = html_entity_decode($pageContent);
 
@@ -558,6 +520,7 @@ class Page extends \yii\db\ActiveRecord
 
         $buffer .= '\'url\' => \'' . $this->getUrl() . '\', ' . PHP_EOL;
         $buffer .= '\'name\' => \'' . addslashes($this->name) . '\', ' . PHP_EOL;
+        $buffer .= '\'active\' => ' . $this->active . ', ' . PHP_EOL;
 
         $buffer .= ');' . PHP_EOL;
 

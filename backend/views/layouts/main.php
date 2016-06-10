@@ -68,3 +68,19 @@ AppAsset::register($this);
 </body>
 </html>
 <?php $this->endPage() ?>
+
+<script>
+$('.ajax-action').click(function() {
+    $.ajax({
+        type     :'POST',
+        cache    : false,
+        url  : $(this).attr('href'),
+        success  : function(response) {
+            location.reload();
+        }
+    });
+
+    return false;
+})
+
+</script>

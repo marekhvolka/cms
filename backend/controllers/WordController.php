@@ -81,16 +81,25 @@ class WordController extends BaseController
                     if ($translation->validate())
                     {
                         $translation->save();
+
+                        Yii::$app->session->setFlash('success', 'Uložené');
                     }
                     else
                     {
                         BaseVarDumper::dump($translation->errors);
+                        Yii::$app->session->setFlash('error', 'Nastala chyba');
                     }
                 }
-                return $this->redirect(['update', 'id' => $model->id]);
             }
             else
                 BaseVarDumper::dump($model->errors);
+
+            $continue = Yii::$app->request->post('continue');
+
+            if (isset($continue))
+                return $this->redirect(['update', 'id' => $model->id]);
+            else
+                return $this->redirect(['index']);
         }
         else
         {
@@ -130,9 +139,20 @@ class WordController extends BaseController
                 {
                     $translation->save();
                 }
+
+                Yii::$app->session->setFlash('success', 'Uložené');
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'Nastala chyba');
             }
 
-            return $this->redirect(['update', 'id' => $id]);
+            $continue = Yii::$app->request->post('continue');
+
+            if (isset($continue))
+                return $this->redirect(['update', 'id' => $model->id]);
+            else
+                return $this->redirect(['index']);
         }
         else
         {

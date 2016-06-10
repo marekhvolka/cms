@@ -115,7 +115,8 @@ function build_file_tree($data, $from_dir = '')
                             CodemirrorAsset::ADDON_SEARCH,
                         ],
                         'settings' => [
-                            'mode' => 'application/x-httpd-php'
+                            'mode' => 'application/x-httpd-php',
+                            'lineNumbers' => true,
                         ],
                     ]
                 ) ?>
