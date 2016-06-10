@@ -446,7 +446,7 @@ class Page extends \yii\db\ActiveRecord
         {
             $prefix = $this->getIncludePrefix();
 
-            $prefix .= '<?' . PHP_EOL;
+            $prefix .= '<?php' . PHP_EOL;
 
             $prefix .= '$global_header = file_get_contents(\'' . $this->portal->getLayoutCacheFile('header') . '\');' . PHP_EOL;
             $prefix .= '$global_footer = file_get_contents(\'' . $this->portal->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
