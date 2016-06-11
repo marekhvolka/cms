@@ -1,0 +1,26 @@
+.tree-grid .body .row > div, .tree-grid .head .row > div {
+    line-height: 1.42857;
+    padding: 8px;
+    vertical-align: top;
+    border: 1px solid #E7E7E7;
+    border-top: none;
+    border-left: none;
+}
+
+.tree-grid .body .row > div:first-of-type, .tree-grid .head .row > div:first-of-type {
+    border-left: 1px solid #E7E7E7;
+}
+
+.tree-grid .head .row > div {
+    background-color: #F5F5F6;
+    font-weight: bold;
+    border-top: 1px solid #E7E7E7;
+}
+
+.tree-grid .subitem-identifier {
+    margin-right: 5px;
+}
+
+.tree-grid .toggle {
+    margin-right: 5px;
+}

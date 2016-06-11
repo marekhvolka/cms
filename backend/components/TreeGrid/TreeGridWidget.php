@@ -19,7 +19,7 @@ class TreeGridWidget extends Widget
 
     public function run()
     {
-        return $this->render('treeGridWidget', [
+        return $this->render('main', [
             'rows' => $this->rows,
             'columns' => $this->columns,
             'childrenIdentifier' => $this->childrenIdentifier

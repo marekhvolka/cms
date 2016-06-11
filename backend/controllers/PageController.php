@@ -2,21 +2,13 @@
 
 namespace backend\controllers;
 
-use backend\models\Language;
-use backend\models\Block;
-use backend\models\Portal;
-use backend\models\Product;
-use backend\models\Section;
-use backend\models\Snippet;
-use common\components\CacheEngine;
-use common\components\ParseEngine;
-use Yii;
 use backend\models\Page;
 use backend\models\search\PageSearch;
-use yii\db\Query;
-use yii\helpers\VarDumper;
-use yii\web\NotFoundHttpException;
+use backend\models\Section;
+use common\components\CacheEngine;
+use Yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * PageController implements the CRUD actions for Page model.
@@ -25,9 +17,9 @@ class PageController extends BaseController
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -42,29 +34,13 @@ class PageController extends BaseController
     public function actionIndex()
     {
         $searchModel = new PageSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
-        
+
+        $pages = $searchModel->search(Yii::$app->request->queryParams, true)
+            ->andWhere('parent_id IS NULL')
+            ->all();
+
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Lists all Page models.
-     * @return mixed
-     */
-    public function actionIndex2()
-    {
-        $searchModel = new PageSearch();
-
-        $pages = Page::findAll([
-            'portal_id' => Yii::$app->session->get('portal_id'),
-            'parent_id' => NULL
-        ]);
-
-        return $this->render('index2', [
-            'pages' => $pages,
+            'pages'       => $pages,
             'searchModel' => $searchModel
         ]);
     }
@@ -87,9 +63,9 @@ class PageController extends BaseController
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
-                'model' => $model,
-                'headerSections' => $headerSections,
-                'footerSections' => $footerSections,
+                'model'           => $model,
+                'headerSections'  => $headerSections,
+                'footerSections'  => $footerSections,
                 'contentSections' => $contentSections,
                 'sidebarSections' => $sidebarSections,
             ]);
@@ -107,22 +83,22 @@ class PageController extends BaseController
         $model = $this->findModel($id);
 
         $headerSections = Section::findAll([
-            'type' => 'header',
+            'type'    => 'header',
             'page_id' => $id
         ]);
 
         $footerSections = Section::findAll([
-            'type' => 'footer',
+            'type'    => 'footer',
             'page_id' => $id
         ]);
 
         $contentSections = Section::findAll([
-            'type' => 'content',
+            'type'    => 'content',
             'page_id' => $id
         ]);
 
         $sidebarSections = Section::findAll([
-            'type' => 'sidebar',
+            'type'    => 'sidebar',
             'page_id' => $id
         ]);
 
@@ -130,9 +106,9 @@ class PageController extends BaseController
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
-                'model' => $model,
-                'headerSections' => $headerSections,
-                'footerSections' => $footerSections,
+                'model'           => $model,
+                'headerSections'  => $headerSections,
+                'footerSections'  => $footerSections,
                 'contentSections' => $contentSections,
                 'sidebarSections' => $sidebarSections,
             ]);

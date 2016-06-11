@@ -1,57 +1,52 @@
 <?php
 
+use backend\components\TreeGrid\TreeGridWidget;
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
 use backend\models\User;
-use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PageSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $pages \backend\models\Page */
+/* @var $pagination \yii\data\Pagination */
 
 $this->title = 'Podstránky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success pull-right']) ?>
-<?php $this->endBlock(); ?>
+
 <div class="page-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <p>
+        <?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
 
     <?= $this->render('_search', [
         'model' => $searchModel,
     ]) ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+    <?= TreeGridWidget::widget([
+        'rows'               => $pages,
+        'columns'            => [
             [
-                'label'=>'Názov',
-                'format' => 'raw',
-                'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name,Url::to(['/page/update/', 'id' => $dataProvider->id]));
-                },
+                'label' => 'Podstránka',
+                'value' => 'name',
+                'size'  => '5'
             ],
-            'url',
             [
-                'label' => 'Rodič',
-                'value' => 'parent.name'
+                'label' => 'Url',
+                'value' => 'url',
+                'size' => '4'
             ],
-            'active:boolean',
+            [
+                'label' => 'Aktívna',
+                'value' => 'active',
+                'size' => '1'
+            ],
             [
                 'label' => 'Posledná zmena',
-                'value' => function ($dataProvider) {
-                    return $dataProvider->last_edit . ' (' .
-                    (isset($dataProvider->lastEditUser) ? $dataProvider->lastEditUser->username : '') . ')';
-                }
-            ],
+                'value' => 'last_edit',
+                'size' => '2'
+            ]
         ],
-    ]); ?>
-
+        'childrenIdentifier' => 'pages'
+    ]) ?>
 </div>

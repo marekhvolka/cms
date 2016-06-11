@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\Page;
+use yii\db\Query;
 
 /**
  * PageSearch represents the model behind the search form about `app\models\Page`.
@@ -28,30 +29,26 @@ class PageSearch extends Page
     /**
      * @inheritdoc
      */
-    public function scenarios()
+    public function attributeLabels()
     {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
+        return ['globalSearch' => 'Vyhľadávať hlavné stránky (ignoruje podstránky)'] + parent::attributeLabels();
     }
 
+
     /**
-     * Creates data provider instance with search query applied
+     * Return the query to fetch all pages which satisfy the search term.
      *
-     * @param array $params, $byPortal indicates if returned dataProvider is bound to current Portal
-     *
-     * @return ActiveDataProvider
+     * @param $params array parameters
+     * @param bool $byPortal indicates if the returned query is bound to current Portal
+     * @return Query
      */
     public function search($params, $byPortal = null)
     {
         $query = Page::find();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-        
         if ($byPortal) {
             $portalID = Yii::$app->session->get('portal_id');
-            $query->andWhere(['portal_id' => $portalID]);
+            $query->where(['portal_id' => $portalID]);
         }
 
         $this->load($params);
@@ -59,12 +56,13 @@ class PageSearch extends Page
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
-            return $dataProvider;
+            return $query;
         }
 
-        $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch]);
+        if (!empty($this->globalSearch)) {
+            $query->andFilterWhere(['like', 'name', $this->globalSearch]);
+        }
 
-        return $dataProvider;
+        return $query;
     }
 }
