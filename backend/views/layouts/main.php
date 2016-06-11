@@ -4,13 +4,11 @@
 /* @var $content string */
 
 use backend\assets\AppAsset;
+use backend\components\AjaxLoading\AjaxLoadingWidget;
 use common\widgets\Box;
-use backend\components\GlobalSearchWidget;
 use common\widgets\Navigation;
-use kartik\sidenav\SideNav;
 use yii\helpers\Html;
 use common\widgets\Alert;
-use yii\widgets\Breadcrumbs;
 
 AppAsset::register($this);
 ?>
@@ -64,6 +62,8 @@ AppAsset::register($this);
     <div class="container">
     </div>
 </footer>
+
+<?= AjaxLoadingWidget::widget() ?>
 <?php $this->endBody() ?>
 </body>
 </html>
