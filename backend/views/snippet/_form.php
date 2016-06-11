@@ -103,6 +103,7 @@ use yii\web\View;
 $urlForAppendVar = Url::to(['/snippet/append-var']);
 $urlForAppendCode = Url::to(['/snippet/append-code']);
 $urlForAppendChildVarBox = Url::to(['/snippet/append-child-var-box']);
+$urlForAppendDefaultValue = Url::to(['/snippet/append-default-value']);
 $listIdJs = VarType::find()->where(['identifier' => 'list'])->one()->id;
 
 $js = <<<JS
@@ -114,6 +115,7 @@ var snippetVarParams = {
     appendVarUrl: '$urlForAppendVar',
     appendCodeUrl: '$urlForAppendCode',
     appendChildVarBox: '$urlForAppendChildVarBox',
+    appendDefaultValueUrl: '$urlForAppendDefaultValue'
 }
         
 JS;

@@ -1,3 +1,5 @@
+// CODE MANAGEMENT (ALTERNATIVES)
+
 function attachAddCodeEvent(addButton) {
     addButton.click(function () {
         $.get(snippetVarParams.appendCodeUrl, function (data) {
@@ -23,6 +25,8 @@ function attachRemoveCodeEvent(removeButton) {
 attachAddCodeEvent($('.btn-add-snippet-code'));
 attachRemoveCodeEvent($('.btn-remove-snippet-code'));
 
+// VARIABLES MANAGEMENT
+
 function attachAddVarEvent(addButton, varWrapper, parent) {
     // Adding new variable.
     addButton.click(function () {
@@ -31,7 +35,7 @@ function attachAddVarEvent(addButton, varWrapper, parent) {
             var parentId = parent.find('.variable-id').val();
             url += '?id=' + parentId;
         }
-        
+
         $.get(url, function (data) {
             var row = $('<li></li>');
             var row = row.appendTo(varWrapper);
@@ -51,6 +55,8 @@ function attachRemoveVarEvent(removeButton) {
 
 attachRemoveVarEvent($('.btn-remove-snippet-var'));
 attachAddVarEvent($('.btn-add-snippet-var'), $('.snippet-vars'), null);
+
+// VARIABLE TYPE MANAGEMENT
 
 // Attachment event for changing variable type to list.
 function attachSelectToListChangeEvent(variable) {
@@ -73,3 +79,34 @@ $(".snippet-var").each(function () {
     attachSelectToListChangeEvent($(this));
 });
 
+// VARIABLE DEFAULT VALUE MANAGEMENT
+
+function attachAddDefaultValueEvent(addButton, varWrapper, parent) {
+    // Adding new variable.
+    addButton.click(function () {
+        var _this = $(this),
+            url   = snippetVarParams.appendDefaultValueUrl;
+        if (parent) {
+            var parentId = parent.find('.variable-id').val();
+            url += '&id=' + parentId;
+        }
+
+        $.get(url, function (data) {
+            var row = $('<li></li>');
+            var row = row.appendTo(_this.parents(varWrapper).first());
+            var appendedDiv = $(data);
+            $(row).append(appendedDiv);
+            attachRemoveVarEvent(appendedDiv.find('.btn-remove-snippet-default-value'));
+            attachAddDefaultValueEvent(appendedDiv.find('.btn-add-snippet-default-value'), $('.snippet-var-default-values'), null);
+        });
+    });
+}
+
+function attachRemoveDefaultValueEvent(removeButton) {
+    removeButton.click(function () {
+        $(this).parents('li').first().remove();
+    });
+}
+
+attachRemoveDefaultValueEvent($('.btn-remove-snippet-default-value'));
+attachAddDefaultValueEvent($('.btn-add-snippet-default-value'), '.snippet-var-default-values', null);

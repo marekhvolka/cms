@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
 class SnippetVar extends \yii\db\ActiveRecord
 {
     private $existing;  //Indicates if model allready exists.
-    
+
     /**
      * @inheritdoc
      */
@@ -59,12 +59,12 @@ class SnippetVar extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'identifier' => 'Identifikátor',
+            'id'          => 'ID',
+            'identifier'  => 'Identifikátor',
             'description' => 'Popis',
-            'type_id' => 'Typ premennej',
-            'snippet_id' => 'Snippet ID',
-            'parent_id' => 'Parent ID',
+            'type_id'     => 'Typ premennej',
+            'snippet_id'  => 'Snippet ID',
+            'parent_id'   => 'Parent ID',
         ];
     }
 
@@ -73,12 +73,14 @@ class SnippetVar extends \yii\db\ActiveRecord
         if (!$this->parent_id) {
             $this->parent_id = null;
         }
+
         return parent::beforeSave($insert);
     }
 
     public function beforeDelete()
     {
         $this->unlinkAll('children', true);
+
         return parent::beforeDelete();
     }
 
@@ -104,7 +106,7 @@ class SnippetVar extends \yii\db\ActiveRecord
      */
     public function getDefaultValues()
     {
-        return $this->hasMany(SnippetVarDefaultValue::className(), ['variable_id' => 'id']);
+        return $this->hasMany(SnippetVarDefaultValue::className(), ['snippet_var_id' => 'id']);
     }
 
     /**
@@ -255,8 +257,7 @@ class SnippetVar extends \yii\db\ActiveRecord
 
         $value = '\'\'';
 
-        switch ($this->type->identifier)
-        {
+        switch ($this->type->identifier) {
             case 'list' :
 
                 $value = ' array()';
@@ -276,26 +277,26 @@ class SnippetVar extends \yii\db\ActiveRecord
 
                 $productTypeDefaultValue = SnippetVarDefaultValue::find()
                     ->andWhere([
-                        'snippet_var_id' => $this->id,
-                        'product_type_id' => NULL
+                        'snippet_var_id'  => $this->id,
+                        'product_type_id' => null
                     ])
                     ->one();
 
                 if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown))
-                    $value = '\''. $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
+                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
 
                 break;
             default:
 
                 $productTypeDefaultValue = SnippetVarDefaultValue::find()
                     ->andWhere([
-                        'snippet_var_id' => $this->id,
-                        'product_type_id' => NULL
+                        'snippet_var_id'  => $this->id,
+                        'product_type_id' => null
                     ])
                     ->one();
 
                 if (isset($productTypeDefaultValue))
-                    $value = '\''. $cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
+                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
         }
 
         return $value;

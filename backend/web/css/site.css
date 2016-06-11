@@ -117,15 +117,23 @@ ul {
     list-style: none;
 }
 
-.snippet-codes, .snippet-vars {
-    padding-left: 0px;
+.snippet-codes, .snippet-vars, .snippet-var-default-values {
+    padding-left: 0;
 }
 
-.btn-remove-snippet-code, .btn-remove-snippet-var {
+.btn-remove-snippet-code, .btn-remove-snippet-var, .btn-remove-snippet-default-value, .btn-add-snippet-default-value {
     position: absolute;
     right: 15px;
     top: 10px;
     z-index: 1;
+}
+
+.btn-remove-snippet-default-value, .btn-add-snippet-default-value {
+    top: 6px;
+}
+
+.btn-remove-snippet-default-value {
+    right: 43px;
 }
 
 .btn-add-snippet-code {
@@ -207,4 +215,8 @@ ul {
 .multimedia-files-update .select-subcategory {
     min-width: 220px;
     padding-left: 10px;
+}
+
+.column-without-padding {
+    padding: 0;
 }

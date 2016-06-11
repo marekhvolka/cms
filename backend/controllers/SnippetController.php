@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\SnippetCode;
 use backend\models\SnippetVar;
+use backend\models\SnippetVarDefaultValue;
 use Exception;
 use Yii;
 use backend\models\Model;
@@ -203,6 +204,15 @@ class SnippetController extends BaseController
     {
         $snippetVar = $id == null ? new SnippetVar() : SnippetVar::find()->where(['id' => $id])->one();
         return $this->renderAjax('_child-var-box', ['snippetVar' => $snippetVar]);
+    }
+
+    /**
+     * Ajax action for appending one wrapper of
+     * @return string rendered view for one wrapper box.
+     */
+    public function actionAppendDefaultValue()
+    {
+        return $this->renderAjax('_variable-default-val', ['defaultValue' => new SnippetVarDefaultValue()]);
     }
 
     /**

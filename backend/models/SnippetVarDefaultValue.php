@@ -48,10 +48,10 @@ class SnippetVarDefaultValue extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'snippet_var_id' => 'Snippet Var ID',
+            'id'              => 'ID',
+            'snippet_var_id'  => 'Snippet Var ID',
             'product_type_id' => 'Product Type ID',
-            'value' => 'Value',
+            'value'           => 'Predvolená hodnota',
         ];
     }
 
