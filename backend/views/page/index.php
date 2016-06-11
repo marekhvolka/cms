@@ -1,16 +1,15 @@
 <?php
+    use backend\components\TreeGrid\TreeGridWidget;
+    use yii\helpers\Html;
+    use yii\helpers\Url;
 
-use backend\components\TreeGrid\TreeGridWidget;
-use yii\helpers\Html;
-use backend\models\User;
+    /* @var $this yii\web\View */
+    /* @var $searchModel backend\models\PageSearch */
+    /* @var $pages \backend\models\Page */
+    /* @var $pagination \yii\data\Pagination */
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\PageSearch */
-/* @var $pages \backend\models\Page */
-/* @var $pagination \yii\data\Pagination */
-
-$this->title = 'Podstránky';
-$this->params['breadcrumbs'][] = $this->title;
+    $this->title = 'Podstránky';
+    $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
@@ -25,27 +24,39 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <?= TreeGridWidget::widget([
-        'rows'               => $pages,
-        'columns'            => [
+        'rows'    => $pages,
+        'columns' => [
             [
                 'label' => 'Podstránka',
-                'value' => 'name',
-                'size'  => '5'
+                'value' => function ($data) {
+                    return Html::a($data->name, Url::to(['update', 'id' => $data->id]));
+                },
+                'size'  => '4'
             ],
             [
                 'label' => 'Url',
                 'value' => 'url',
-                'size'  => '4'
+                'size'  => '3',
             ],
             [
                 'label' => 'Aktívna',
                 'value' => 'active',
-                'size'  => '1'
+                'size'  => '1',
             ],
             [
                 'label' => 'Posledná zmena',
-                'value' => 'last_edit',
-                'size'  => '2'
+                'value' => function ($data) {
+                    return $data->last_edit . ' (' .
+                    (isset($data->lastEditUser) ? $data->lastEditUser->username : '') . ')';
+                },
+                'size'  => '3',
+            ],
+            [
+                'label' => 'Akcie',
+                'value' => function($data) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', Url::to(['delete', 'id' => $data->id]));
+                },
+                'size' => 1
             ]
         ],
         'childrenIdentifier' => 'pages'
