@@ -88,7 +88,15 @@ class SnippetController extends BaseController
                 }
 
                 $transaction->commit();
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('success', 'Uložené');
+
+                $continue = Yii::$app->request->post('continue');
+
+                if (isset($continue))
+                    return $this->redirect(['update', 'id' => $model->id]);
+                else
+                    return $this->redirect(['index']);
+
             } catch (Exception $e) {
                 $transaction->rollBack();
                 
@@ -155,7 +163,14 @@ class SnippetController extends BaseController
                 }
 
                 $transaction->commit();
-                return $this->redirect(['index']);
+
+                $continue = Yii::$app->request->post('continue');
+
+                if (isset($continue))
+                    return $this->redirect(['update', 'id' => $model->id]);
+                else
+                    return $this->redirect(['index']);
+
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->render('create', [

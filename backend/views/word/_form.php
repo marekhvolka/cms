@@ -73,6 +73,13 @@ function generate_form_for_language($index, $translation, $form)
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
                     'id'    => 'submit-btn'
                 ]) ?>
+
+                <?= Html::submitButton('Uložiť a pokračovať', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id'    => 'submit-btn',
+                    'name' => 'continue'
+                ]) ?>
+
             </div>
         </div>
     </div>

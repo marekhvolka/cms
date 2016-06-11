@@ -91,6 +91,12 @@ use yii\web\View;
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
                     'id' => 'submit-btn'
                 ]) ?>
+
+                <?= Html::submitButton('Uložiť a pokračovať', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id'    => 'submit-btn',
+                    'name' => 'continue'
+                ]) ?>
             </div>
         </div>
     </div>

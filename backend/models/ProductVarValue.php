@@ -13,6 +13,7 @@ use Yii;
  * @property string $value_text
  * @property int $value_block_id
  *
+ * @property string $value
  * @property Block $valueBlock
  * @property Product $product
  * @property ProductVar $var
