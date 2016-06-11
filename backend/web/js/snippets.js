@@ -97,7 +97,7 @@ function attachAddDefaultValueEvent(addButton, varWrapper, parent) {
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
             attachRemoveVarEvent(appendedDiv.find('.btn-remove-snippet-default-value'));
-            attachAddDefaultValueEvent(appendedDiv.find('.btn-add-snippet-default-value'), $('.snippet-var-default-values'), null);
+            attachAddDefaultValueEvent(appendedDiv.find('.btn-add-snippet-default-value'), '.snippet-var-default-values', null);
         });
     });
 }
