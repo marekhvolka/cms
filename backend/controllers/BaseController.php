@@ -3,12 +3,13 @@
 namespace backend\controllers;
 
 use backend\components\BlockModal\BlockModalWidget;
-use backend\components\GlobalSearch\GlobalSearchWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
+use backend\models\search\GlobalSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * WordController implements the CRUD actions for Word model.
@@ -35,7 +36,18 @@ abstract class BaseController extends Controller
     {
         parent::init();
 
-        $this->view->params['globalSearchModel'] = new GlobalSearchWidget();
+        $this->view->params['globalSearchModel'] = new GlobalSearch();
+    }
+
+    /**
+     * Returns the result of the global search as JSON.
+     * 
+     * @param $q string the query to search by
+     * @return array
+     */
+    public function actionGlobalSearchResults($q){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return (new GlobalSearch)->search($q);
     }
 
     public function actionChangeCurrentPortal($id)

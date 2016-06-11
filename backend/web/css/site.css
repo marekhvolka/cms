@@ -220,3 +220,39 @@ ul {
 .column-without-padding {
     padding: 0;
 }
+
+.global-search {
+    display: inline-block;
+    min-width: 300px;
+
+    position: relative;
+}
+
+.global-search input {
+    margin-top: 8px;
+    z-index: 2;
+    position: relative;
+}
+
+.global-search .data {
+    display: none;
+    position: absolute;
+    left: 0;
+    margin-top: -1px;
+    padding: 5px;
+    background-color: white;
+    width: 100%;
+    border: 1px solid #C9C9C9;
+    border-top: none;
+    z-index: 1;
+}
+
+.global-search .data ul {
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.global-search .data li {
+    list-style-type: none;
+}
+
