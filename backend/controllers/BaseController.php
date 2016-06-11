@@ -54,7 +54,7 @@ abstract class BaseController extends Controller
     {
         $session = Yii::$app->session;
         $session->set('portal_id', $id);
-        return $this->goBack();
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

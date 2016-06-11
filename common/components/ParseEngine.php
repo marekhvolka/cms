@@ -631,7 +631,11 @@ class ParseEngine
                                     $json = json_decode($sectionsJsonSmartsnippet[$sectionId][$index . $poradieID][$tempId], true);
 
                                     if (!isset($json['code_select']))
-                                        continue;
+                                    {
+                                        if (!isset($json['result']))
+                                            continue;
+                                        $json = $json['result'];
+                                    }
 
                                     $pageBlock->type = 'snippet';
 
