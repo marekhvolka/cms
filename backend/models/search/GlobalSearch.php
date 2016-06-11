@@ -33,21 +33,34 @@ class GlobalSearch
         $snippets = (new Query())->select("id, name")->from("snippet")->where(['like', 'name', $searchTerm])
             ->limit(3)->all();
 
-        foreach($snippets as $snippet){
+        foreach ($snippets as $snippet) {
             $results['snippet'][] = ['link' => Url::to(['/snippet/update', 'id' => $snippet['id']])] + $snippet;
         }
 
         // SNIPPET CODES / ALTERNATIVES
 
-        $snippet_codes = (new Query())->select("id, name, snippet_id")->from("snippet_code")->filterWhere(['like', 'name', $searchTerm])->limit(3)->all();
+        $snippet_codes = (new Query())->select("id, name, snippet_id")
+            ->from("snippet_code")
+            ->filterWhere(['like', 'name', $searchTerm])
+            ->limit(3)
+            ->all();
 
         foreach ($snippet_codes as $snippet_code) {
-            $results['snippet_code'][] = ['link' => Url::to(['/snippet/update', 'id' => $snippet_code['snippet_id']])] + $snippet_code;
+            $results['snippet_code'][] = ['link' => Url::to([
+                    '/snippet/update',
+                    'id' => $snippet_code['snippet_id'],
+                    '#' => 'code' . $snippet_code['id'],
+                ])] + $snippet_code;
         }
 
         // PAGES
 
-        $pages = (new Query())->select("id, name")->from("page")->filterWhere(['like', 'name', $searchTerm])
+        $pages = (new Query())->select("id, name")->from("page")->filterWhere([
+            'or',
+            ['like', 'name', $searchTerm],
+            ['like', 'identifier', $searchTerm],
+            ['like', 'title', $searchTerm],
+            ])
             ->limit(3)->all();
 
         foreach ($pages as $page) {

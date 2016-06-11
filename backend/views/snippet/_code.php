@@ -16,6 +16,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
 ?>
 
 <div class="item panel panel-default snippet-code"><!-- widgetBody -->
+    <a class="anchor" id="code<?= $snippetCode->id?>"></a>
     <div class="panel-heading"> 
         <div class="input-group">
             <?= BaseHtml::activeTextInput($snippetCode, "name", [
