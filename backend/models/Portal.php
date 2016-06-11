@@ -297,6 +297,7 @@ class Portal extends \yii\db\ActiveRecord
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
             $buffer .= '\'domain\' => \'' . $cacheEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
+            $buffer .= '\'url\' => \'' . $cacheEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
             $buffer .= '\'name\' => \'' . $cacheEngine->normalizeString($this->name) . '\',' . PHP_EOL;
             $buffer .= '\'lang\' => \'' . $cacheEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
             $buffer .= '\'currency\' => \'' . $cacheEngine->normalizeString($this->language->currency) . '\',' . PHP_EOL;
