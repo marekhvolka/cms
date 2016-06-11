@@ -13,11 +13,12 @@ $this->title = 'Podstránky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="page-index">
+<?php $this->beginBlock('button'); ?>
+<?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?php $this->endBlock(); ?>
 
-    <p>
-        <?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+
+<div class="page-index">
 
     <?= $this->render('_search', [
         'model' => $searchModel,
@@ -34,17 +35,17 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Url',
                 'value' => 'url',
-                'size' => '4'
+                'size'  => '4'
             ],
             [
                 'label' => 'Aktívna',
                 'value' => 'active',
-                'size' => '1'
+                'size'  => '1'
             ],
             [
                 'label' => 'Posledná zmena',
                 'value' => 'last_edit',
-                'size' => '2'
+                'size'  => '2'
             ]
         ],
         'childrenIdentifier' => 'pages'
