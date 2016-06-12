@@ -17,7 +17,7 @@ $portalName = isset($portal->name) ? $portal->name : '';
 
 NavBar::begin([
     'brandLabel'           => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
-    //'brandUrl'             => Yii::$app->homeUrl,
+    'brandUrl'             => Yii::$app->homeUrl,
     'renderInnerContainer' => false,
     'options'              => [
         'class' => 'navbar-inverse navbar-fixed-top',

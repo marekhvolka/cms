@@ -76,11 +76,16 @@ class MultimediaCategory extends Model
     /**
      * Return all possible subcategories.
      *
+     * @param integer $portal subcategories for a portal
      * @return array
      */
-    public function getSubcategories()
+    public static function getSubcategories($portal = null)
     {
-        return ['global' => 'Spoločné pre všetky portály'] + ArrayHelper::map(Portal::find()->asArray(true)->all(), 'id', 'name');
+        $query = Portal::find();
+        if (!empty($portal)) {
+            $query = $query->where(['id' => $portal]);
+        }
+        return ArrayHelper::map($query->asArray(true)->all(), 'id', 'name') + ['global' => 'Spoločné pre všetky portály'];
     }
 
     /**
@@ -90,7 +95,7 @@ class MultimediaCategory extends Model
      */
     public static function removeSubcategory($id)
     {
-        foreach (array_filter(glob(self::MULTIMEDIA_PATH . '/*/*'), function($item) use ($id) {
+        foreach (array_filter(glob(self::MULTIMEDIA_PATH . '/*/*'), function ($item) use ($id) {
             return is_dir($item) && end(explode("/", $item)) == $id;
         }) as $dir) {
             PathHelper::remove($dir);

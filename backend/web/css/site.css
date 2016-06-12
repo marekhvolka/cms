@@ -272,3 +272,15 @@ a.anchor {
     visibility: hidden;
 }
 
+.multimedia-index .table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.multimedia-index .table > tbody > tr > td:last-of-type {
+    text-align: center;
+}
+
+.multimedia-index .thumbnail {
+    max-width: 100px;
+    margin: 0;
+}

@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\components\PathHelper;
 use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
+use backend\models\Portal;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
@@ -25,7 +26,7 @@ class MultimediaController extends BaseController
     {
         return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -39,18 +40,70 @@ class MultimediaController extends BaseController
      */
     public function actionIndex()
     {
-        $dataProvider = new ArrayDataProvider([
-            'allModels'  => MultimediaCategory::loadAll(),
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-            'sort'       => [
-                'attributes' => ['name'],
-            ],
-        ]);
+        $request = Yii::$app->request;
+        $upload_file = new MultimediaItem(['scenario' => MultimediaItem::SCENARIO_UPLOAD]);
+        $upload_file->subcategory = Yii::$app->session->get('portal_id');
+
+        // uploading new file
+        if ($upload_file->load($request->post())) {
+            $upload_file->file = UploadedFile::getInstance($upload_file, 'file');
+
+            if ($upload_file->validate()) {
+                $upload_file->upload();
+                return $this->redirect(Url::current());
+            }
+        }
+
+        $categories = MultimediaCategory::loadAll();
+        $subcategories = MultimediaCategory::getSubcategories(Yii::$app->session->get('portal_id'));
+
+        $data = [];
+
+
+        $file_action = $request->get('file-action');
+
+        // deleting an item
+        if (!empty($file_action)) {
+            if ($file_action == "delete") {
+                $item_to_delete = MultimediaItem::find($request->get('item-category'), $request->get('item-subcategory'), $request->get('item-name'));
+                if ($item_to_delete != null) {
+                    $item_to_delete->delete();
+                }
+                $this->redirect(Url::current(['file-action' => null, 'item-name' => null, 'item-subcategory' => null]));
+            }
+        }
+
+        /**
+         * @var $category MultimediaCategory
+         */
+        foreach ($subcategories as $index => $subcategory) {
+            foreach ($categories as $subindex => $category) {
+                $items = $category->getItems($index);
+
+                if (count($items) > 0) {
+                    $data[] = [
+                        'category' => $category,
+                        'subcategory' => $subcategory,
+                        'dataProvider' => new ArrayDataProvider([
+                            'allModels' => $items,
+                            'pagination' => [
+                                'pageSize' => 10,
+                            ],
+                            'sort' => [
+                                'attributes' => ['name'],
+                            ]
+                        ])
+                    ];
+                }
+
+            }
+        }
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider
+            'data' => $data,
+            'uploadFile' => $upload_file,
+            'allSubcategories' => MultimediaCategory::getSubcategories(),
+            'allCategories' => $categories
         ]);
     }
 
@@ -103,65 +156,6 @@ class MultimediaController extends BaseController
         $this->findModel($name)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    /**
-     * List the files of the given category.
-     *
-     * @param $name string name of the category
-     * @param string|null $subcategory the name of the subcategory... defaults to null - show all files of all
-     * subcategories
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionFiles($name, $subcategory = null)
-    {
-        $model = $this->findModel($name);
-        $upload_file = new MultimediaItem(['scenario' => MultimediaItem::SCENARIO_UPLOAD]);
-        $upload_file->categoryName = $name;
-        $upload_file->subcategory = $subcategory;
-
-        // uploading new file
-        if ($upload_file->load(Yii::$app->request->post())) {
-            $upload_file->file = UploadedFile::getInstance($upload_file, 'file');
-
-            if ($upload_file->validate()) {
-                $upload_file->upload();
-                $upload_file = new MultimediaItem(['scenario' => MultimediaItem::SCENARIO_UPLOAD]);;
-                $upload_file->categoryName = $name;
-            }
-        }
-
-        $request = Yii::$app->request;
-        $file_action = $request->get('file-action');
-
-        // deleting an item
-        if (!empty($file_action)) {
-            if ($file_action == "delete") {
-                $item_to_delete = MultimediaItem::find($model->name, $request->get('item-subcategory'), $request->get('item-name'));
-                if ($item_to_delete != null) {
-                    $item_to_delete->delete();
-                }
-                $this->redirect(Url::current(['file-action' => null, 'item-name' => null, 'item-subcategory' => null]));
-            }
-        }
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels'  => $model->getItems($subcategory),
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-            'sort'       => [
-                'attributes' => ['name'],
-            ]
-        ]);
-
-        return $this->render('files', [
-            'model'             => $model,
-            'dataProvider'      => $dataProvider,
-            'uploadFile'        => $upload_file,
-            'activeSubcategory' => $subcategory
-        ]);
     }
 
     /**
