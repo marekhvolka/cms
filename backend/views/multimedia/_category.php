@@ -1,7 +1,6 @@
 <?php
 use backend\components\PathHelper;
 use backend\models\MultimediaCategory;
-use backend\models\Portal;
 use yii\bootstrap\Html;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
