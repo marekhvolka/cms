@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
+use backend\models\Portal;
 use backend\models\search\GlobalSearch;
 use Yii;
 use yii\filters\AccessControl;
@@ -38,7 +39,7 @@ abstract class BaseController extends Controller
 
         $change_portal = Yii::$app->request->get('change-portal');
 
-        if(!empty($change_portal)){
+        if(!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1){
             Yii::$app->session->set('portal_id', $change_portal);
         }
     }
