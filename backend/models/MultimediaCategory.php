@@ -24,7 +24,7 @@ class MultimediaCategory extends Model
      * Get path containing all categories of files.
      */
     public static function GET_MULTIMEDIA_PATH() {
-        return Yii::getAlias('@frontend') . '/web/multimedia';
+        return Yii::getAlias('@frontend') . '/web/multimedia'; // WITHOUT SLASH AT THE END!!
     }
 
     /**
