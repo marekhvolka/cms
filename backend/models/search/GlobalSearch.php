@@ -3,6 +3,7 @@
 namespace backend\models\search;
 
 use backend\models\Model;
+use backend\models\Page;
 use Yii;
 use yii\db\Query;
 use yii\helpers\Url;
@@ -42,7 +43,7 @@ class GlobalSearch
         $snippet_codes = (new Query())->select("id, name, snippet_id")
             ->from("snippet_code")
             ->filterWhere(['like', 'name', $searchTerm])
-            ->limit(3)
+            ->limit(5)
             ->all();
 
         foreach ($snippet_codes as $snippet_code) {
@@ -61,7 +62,7 @@ class GlobalSearch
             ['like', 'identifier', $searchTerm],
             ['like', 'title', $searchTerm],
             ])
-            ->limit(3)->all();
+            ->limit(10)->all();
 
         foreach ($pages as $page) {
             $results['page'][] = ['link' => Url::to(['/page/update', 'id' => $page['id']])] + $page;
@@ -70,7 +71,7 @@ class GlobalSearch
         // PRODUCTS
 
         $products = (new Query())->select("id, name")->from("product")->filterWhere(['like', 'name', $searchTerm])
-            ->limit(3)->all();
+            ->limit(8)->all();
 
         foreach ($products as $product) {
             $results['product'][] = ['link' => Url::to(['/product/update', 'id' => $product['id']])] + $product;

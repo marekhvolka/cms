@@ -61,7 +61,12 @@ if (!empty($this->params['breadcrumbs'])) {
 $this->registerJs("var globalSearchUrl = \"" . Url::to(['global-search-results']) . "\";", \yii\web\View::POS_END);
 ?>
     <div class="global-search">
-        <?= Html::input('string', 'globalSearch', null, ["id" => "global-search-input", 'placeholder' => 'Globálne vyhľadávanie', 'class' => 'form-control']) ?>
+        <?= Html::input('string', 'globalSearch', null, [
+            'id' => 'global-search-input',
+            'placeholder' => 'Globálne vyhľadávanie',
+            'class' => 'form-control',
+            'autofocus' => 'autofocus'
+        ]) ?>
         <div class="data">
             <ul>
                 <li>Žiadne výsledky</li>
