@@ -42,11 +42,14 @@ class ProductController extends BaseController
     public function actionIndex()
     {
         $searchModel = new ProductSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $products = $searchModel->search(Yii::$app->request->queryParams)
+            ->andWhere('parent_id IS NULL')
+            ->all();
 
         return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'products' => $products,
         ]);
     }
 

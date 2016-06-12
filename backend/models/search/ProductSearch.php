@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\Product;
+use yii\db\Query;
 
 /**
  * ProductSearch represents the model behind the search form about `app\models\Product`.
@@ -39,28 +40,26 @@ class ProductSearch extends Product
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return Query
      */
     public function search($params)
     {
         $query = Product::find();
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
-            return $dataProvider;
+            return $query;
         }
 
-        $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'identifier', $this->globalSearch])
-            ->orFilterWhere(['like', 'popis', $this->globalSearch]);
+        if (!empty($this->globalSearch)) {
+            $query->andFilterWhere(['like', 'name', $this->globalSearch]);
+            $query->andFilterWhere(['like', 'identifier', $this->globalSearch]);
+            $query->andFilterWhere(['like', 'popis', $this->globalSearch]);
+        }
 
-        return $dataProvider;
+        return $query;
     }
 }
