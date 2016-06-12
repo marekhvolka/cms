@@ -25,6 +25,13 @@ class MultimediaModalWidget extends Widget implements ViewContextInterface
     public $successCallJSFunction;
 
     /**
+     * Show only images?
+     *
+     * @var bool
+     */
+    public $onlyImages = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -51,7 +58,7 @@ class MultimediaModalWidget extends Widget implements ViewContextInterface
              * @var $category MultimediaCategory
              */
             foreach ($categories as $category) {
-                $items = $category->getItems($index);
+                $items = $category->getItems($index, $this->onlyImages);
 
                 if (count($items) > 0) {
                     $data[] = [

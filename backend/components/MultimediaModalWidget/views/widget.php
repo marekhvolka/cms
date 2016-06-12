@@ -19,13 +19,14 @@ if (window.multimediaWidgetLoaded !== true){
             var funcName = $nameOfFunction;
             
             $nameOfFunction($(this).attr("href"));
+            
+            $("#selectFileFromMultimedia").modal("hide");
         })
     });
 }
 JS;
 
 $this->registerJs($js, View::POS_END);
-
 ?>
 
 <div class="modal fade" id="selectFileFromMultimedia" tabindex="-1" role="dialog"

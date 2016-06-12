@@ -38,7 +38,8 @@ class BlockModalWidget extends Widget
     {
         return $this->render('view', [
             'model' => $block,
-            'productType' => $this->productType
+            'productType' => $this->productType,
+            'htmlBody' => true
         ]);
     }
 }
