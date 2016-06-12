@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
  * @property int $parsed
  *
  * @property ProductType $productType
+ * @property string $productTypeName
  * @property Page[] $pages
  * @property User $lastEditUser
  * @property Language $language
@@ -208,6 +209,14 @@ class Product extends \yii\db\ActiveRecord
     public function getProductType()
     {
         return $this->hasOne(ProductType::className(), ['id' => 'type_id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductTypeName()
+    {
+        return $this->productType->name;
     }
 
     /** Vrati cestu k suboru, v ktorom je nacachovany produkt

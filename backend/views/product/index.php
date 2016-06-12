@@ -1,12 +1,13 @@
 <?php
 
+use backend\components\TreeGrid\TreeGridWidget;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\ProductSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel backend\models\search\ProductSearch */
+/* @var $products \backend\models\Product */
 
 $this->title = 'Produkty';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,38 +22,42 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_search', [
         'model' => $searchModel,
     ]) ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
+    <?= TreeGridWidget::widget([
+        'rows'    => $products,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             [
-                'label'=>'Názov',
-                'format' => 'raw',
-                'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name,Url::to(['/product/update/', 'id' => $dataProvider->id]));
+                'label' => 'Produkt',
+                'value' => function ($data) {
+                    return Html::a($data->name, Url::to(['update', 'id' => $data->id]));
                 },
-            ],
-            [
-                'label' => 'Rodič',
-                'value' => 'parent.name'
+                'size'  => '4'
             ],
             [
                 'label' => 'Typ produktu',
-                'value' => 'productType.name'
+                'value' => 'productTypeName',
+                'size'  => '3',
             ],
-            'identifier',
+            [
+                'label' => 'Aktívna',
+                'value' => 'active',
+                'size'  => '1',
+            ],
             [
                 'label' => 'Posledná zmena',
-                'value' => function ($dataProvider) {
-                    return $dataProvider->last_edit . ' (' .
-                    (isset($dataProvider->lastEditUser) ? $dataProvider->lastEditUser->username : '') . ')';
-                }
+                'value' => function ($data) {
+                    return $data->last_edit . ' (' .
+                    (isset($data->lastEditUser) ? $data->lastEditUser->username : '') . ')';
+                },
+                'size'  => '3',
             ],
-            ['class' => 'yii\grid\ActionColumn',
-            'template' => '{delete}'],
+            [
+                'label' => 'Akcie',
+                'value' => function($data) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', Url::to(['delete', 'id' => $data->id]));
+                },
+                'size' => 1
+            ]
         ],
-    ]); ?>
-
+        'childrenIdentifier' => 'products'
+    ]) ?>
 </div>
