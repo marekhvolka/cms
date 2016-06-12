@@ -29,7 +29,7 @@ $portals = Portal::find()->all();
 foreach ($portals as $portal) {
     $item = [
         'label' => $portal->name,
-        'url'   => Url::to(['/portal/change-current-portal/', 'id' => $portal->id]),
+        'url'   => Url::current(['change-portal' => $portal->id]),
     ];
     $items[] = $item;
 }

@@ -36,7 +36,11 @@ abstract class BaseController extends Controller
     {
         parent::init();
 
-        $this->view->params['globalSearchModel'] = new GlobalSearch();
+        $change_portal = Yii::$app->request->get('change-portal');
+
+        if(!empty($change_portal)){
+            Yii::$app->session->set('portal_id', $change_portal);
+        }
     }
 
     /**
@@ -48,13 +52,6 @@ abstract class BaseController extends Controller
     public function actionGlobalSearchResults($q){
         Yii::$app->response->format = Response::FORMAT_JSON;
         return (new GlobalSearch)->search($q);
-    }
-
-    public function actionChangeCurrentPortal($id)
-    {
-        $session = Yii::$app->session;
-        $session->set('portal_id', $id);
-        return $this->goBack();
     }
 
     /**
