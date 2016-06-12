@@ -5,47 +5,71 @@
  * Date: 06.06.16
  * Time: 11:00
  */
+use backend\assets\AppAsset;
+use backend\components\AjaxLoading\AjaxLoadingWidget;
+use backend\models\Block;
+use yii\bootstrap\Html;
 
 /* @var $model Block */
+/* @var $htmlBody bool */
 
+AppAsset::register($this);
+
+if(!isset($htmlBody)){
+    $htmlBody = false;
+}
 ?>
 <style>
     .modal-dialog {
         width: 1000px !important;
     }
-
 </style>
 
-<link href="http://www.hyperfinance.cz/css/bootstrap.min.css" rel="stylesheet" />
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href="http://www.hyperfinance.cz/css/bootstrap.min.css" rel="stylesheet" />
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="http://www.hyperfinance.cz/js/bootstrap.min.js"></script>
+<?php if($htmlBody) : ?>
+<?php $this->beginPage() ?>
+<html>
+<head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= Html::csrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
+<?php endif; ?>
 <?php
-    switch($model->type)
-    {
-        case 'product_snippet' :
+switch ($model->type) {
+    case 'product_snippet' :
 
-        case 'portal_snippet' :
+    case 'portal_snippet' :
 
-        case 'snippet' :
+    case 'snippet' :
 
-            echo $this->render('_snippet', [
-                'model' => $model,
-                'productType' => $productType
-            ]);
+        echo $this->render('_snippet', [
+            'model' => $model,
+            'productType' => $productType
+        ]);
 
-            break;
-        case 'text' :
+        break;
+    case 'text' :
 
-            echo $this->render('_text', ['model' => $model]);
+        echo $this->render('_text', ['model' => $model]);
 
-            break;
-        case 'html' :
+        break;
+    case 'html' :
 
-            echo $this->render('_html', ['model' => $model]);
+        echo $this->render('_html', ['model' => $model]);
 
-            break;
-    }
+        break;
+}
 ?>
+<?php if ($htmlBody) : ?>
+<?= AjaxLoadingWidget::widget() ?>
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>
+<?php endif; ?>
+
 

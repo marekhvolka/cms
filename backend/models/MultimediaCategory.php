@@ -106,9 +106,10 @@ class MultimediaCategory extends Model
      * Return all possible items (set their category name, subcategory, etc);
      *
      * @param null $subcategory
+     * @param bool $only_images
      * @return array
      */
-    public function getItems($subcategory = null)
+    public function getItems($subcategory = null, $only_images = false)
     {
         return array_map(function ($file) {
             $item = new MultimediaItem();
@@ -118,7 +119,9 @@ class MultimediaCategory extends Model
             $item->subcategory = $split_path[count($split_path) - 2];
 
             return $item;
-        }, array_filter(glob(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), 'is_file'));
+        }, array_filter(glob(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), function ($item) use ($only_images) {
+            return is_file($item) && (!$only_images || PathHelper::isImageFile($item));
+        }));
     }
 
     /**
