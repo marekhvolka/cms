@@ -14,7 +14,7 @@ CKEditorAsset::register($this);
             </div>
             <div class="modal-body">
                 <textarea class="form-control editor ckeditor" id="textModal" rows="3">
-
+                    <?= $model->data ?>
                 </textarea>
             </div>
             <input type="hidden" id="idBlockLayoutText">
