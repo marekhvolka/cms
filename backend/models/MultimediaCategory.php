@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use backend\components\PathHelper;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -13,16 +14,18 @@ use yii\helpers\ArrayHelper;
 class MultimediaCategory extends Model
 {
     /**
-     * Path containing all categories of files.
-     */
-    const MULTIMEDIA_PATH = __DIR__ . '/../testing-data';
-
-    /**
      * A name of the category.
      *
      * @var string
      */
     public $name;
+
+    /**
+     * Get path containing all categories of files.
+     */
+    private static function GET_MULTIMEDIA_PATH() {
+        return Yii::getAlias('@frontend') . '/web/multimedia/';
+    }
 
     /**
      * Return the model if found, otherwise return null.
@@ -32,7 +35,7 @@ class MultimediaCategory extends Model
      */
     public static function find($name)
     {
-        if (is_dir(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $name)) {
+        if (is_dir(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $name)) {
             $category = new MultimediaCategory();
             $category->name = $name;
 
@@ -67,10 +70,13 @@ class MultimediaCategory extends Model
     {
         return array_map(function ($dir) {
             $category = new MultimediaCategory();
-            $category->name = end(explode("/", $dir));
+
+            $dirsArray = explode('/', $dir);
+
+            $category->name = end($dirsArray);
 
             return $category;
-        }, array_filter(glob(self::MULTIMEDIA_PATH . '/*'), 'is_dir'));
+        }, array_filter(glob(self::GET_MULTIMEDIA_PATH() . '/*'), 'is_dir'));
     }
 
     /**
@@ -95,7 +101,7 @@ class MultimediaCategory extends Model
      */
     public static function removeSubcategory($id)
     {
-        foreach (array_filter(glob(self::MULTIMEDIA_PATH . '/*/*'), function ($item) use ($id) {
+        foreach (array_filter(glob(self::GET_MULTIMEDIA_PATH() . '/*/*'), function ($item) use ($id) {
             return is_dir($item) && end(explode("/", $item)) == $id;
         }) as $dir) {
             PathHelper::remove($dir);
@@ -118,7 +124,7 @@ class MultimediaCategory extends Model
             $item->subcategory = $split_path[count($split_path) - 2];
 
             return $item;
-        }, array_filter(glob(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), 'is_file'));
+        }, array_filter(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), 'is_file'));
     }
 
     /**
@@ -130,7 +136,7 @@ class MultimediaCategory extends Model
     public function save($validate = true)
     {
         if (!$validate || $this->validate()) {
-            $path = self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name;
+            $path = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name;
             if (!is_dir($path)) {
                 return @mkdir($path, 0777);
             }
@@ -149,8 +155,8 @@ class MultimediaCategory extends Model
      */
     public function rename($from)
     {
-        $old_path = self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $from;
-        $new_name = self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name;
+        $old_path = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $from;
+        $new_name = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name;
 
         if (is_dir($old_path)) {
             return @rename($old_path, $new_name);
@@ -166,6 +172,6 @@ class MultimediaCategory extends Model
      */
     public function delete()
     {
-        return PathHelper::remove(self::MULTIMEDIA_PATH . DIRECTORY_SEPARATOR . $this->name);
+        return PathHelper::remove(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name);
     }
 }
