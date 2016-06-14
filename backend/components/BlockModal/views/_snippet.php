@@ -24,7 +24,9 @@
                         </h4>
                     </div>
                     <div class="clearfix"></div>
-                    <script>$(".alternative_hidden").css('width', $(document).width()*0.5)</script>
+                    <script>
+                        //$(".alternative_hidden").css('width', $(document).width()*0.5)
+                    </script>
                     <div class="modal-body snippet-modal">
                         <?php
                             foreach ($model->snippetVarValues as $variable)
