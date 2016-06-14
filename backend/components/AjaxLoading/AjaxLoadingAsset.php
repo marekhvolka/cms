@@ -10,7 +10,7 @@ use yii\web\AssetBundle;
  */
 class AjaxLoadingAsset extends AssetBundle
 {
-    public $sourcePath = '' . __DIR__ . '/web';
+    //public $sourcePath = '' . __DIR__ . '/web';   // Error here.
     public $css = [
         'css/ajax-loader.css',
     ];
