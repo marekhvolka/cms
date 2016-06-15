@@ -173,9 +173,9 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      * @param $productType
      * @return mixed|string
      */
-    public function getDefaultValue($productType)
+    public function getDefaultValue($productType = null)
     {
-        if (isset($productType)) {
+        if ($productType) {
             $defaultValue = SnippetVarDefaultValue::find()
                 ->andWhere([
                     'snippet_var_id' => $this->var->id,

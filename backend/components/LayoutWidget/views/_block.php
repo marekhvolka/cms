@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\BaseHtml;
+use backend\components\BlockModal\BlockModalWidget;
 
 /* @var $block \backend\models\Block */
 
@@ -18,8 +19,10 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" data-id="<?= $block->id ?>"
-            data-target="#blockModal">
+    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" 
+            data-id="<?= $block->id ?>"
+            data-target="#modal-<?= $block->id ?>"
+            data-toggle="modal">
                 <?php echo $block->name; ?>
     </button>
 
@@ -39,3 +42,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <span class="glyphicon glyphicon-remove"></span>
     </button>
 </div>
+
+<?= BlockModalWidget::widget([
+    'block' => $block,
+    'productType' => null,
+    ])?>

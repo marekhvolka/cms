@@ -21,12 +21,16 @@ use yii\helpers\ArrayHelper;
  * @property boolean $active
  *
  *
+ * @property string $existing
  * @property string $name
+ * @property string $mainFile
  * @property Column $column
  * @property Block $parent
  * @property Block[] $pageBlocks
  * @property SnippetCode $snippetCode
  * @property SnippetVarValue[] $snippetVarValues
+ * @property PortalVarValue $portalVarValue
+ * @property ProductValue $productVarValue
  */
 class Block extends \yii\db\ActiveRecord
 {
