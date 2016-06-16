@@ -17,8 +17,9 @@ use Yii;
  * @property int $block_id
  * @property int $value_list_id
  * @property int $value_dropdown_id
+ * @property int $list_item_id
  *
- * @property mixed $value
+ * @property string $value
  * @property SnippetVarDropdown $valueDropdown
  * @property ListVar $valueListVar
  * @property Product $valueProduct
@@ -28,6 +29,7 @@ use Yii;
  */
 class SnippetVarValue extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -43,9 +45,14 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         return [
             [['var_id'], 'required'],
-            [['block_id', 'var_id', 'value_page_id', 'value_tag_id', 'value_product_var_id', 'value_product_id'], 'integer'],
+            [['block_id', 'var_id', 'value_page_id', 'value_tag_id',
+            'value_product_var_id', 'value_product_id', 'list_item_id'], 'integer'],
             [['value_text'], 'string'],
-            [['var_id', 'block_id', 'list_item_id'], 'unique', 'targetAttribute' => ['var_id', 'block_id', 'list_item_id'], 'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.']
+            [
+                ['var_id', 'block_id', 'list_item_id'], 'unique',
+                'targetAttribute' => ['var_id', 'block_id', 'list_item_id'],
+                'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.'
+            ]
         ];
     }
 
@@ -125,8 +132,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         $value = null;
 
-        switch ($this->var->type->identifier)
-        {
+        switch ($this->var->type->identifier) {
             case 'list' :
 
                 $value = $this->valueListVar->value;
@@ -163,7 +169,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
                 break;
             default:
 
-                $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
+                $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
         }
 
         return $value;
@@ -177,25 +183,25 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     {
         if ($productType) {
             $defaultValue = SnippetVarDefaultValue::find()
-                ->andWhere([
-                    'snippet_var_id' => $this->var->id,
-                    'product_type_id' => $productType->id
-                ])
-                ->one();
+                    ->andWhere([
+                        'snippet_var_id' => $this->var->id,
+                        'product_type_id' => $productType->id
+                    ])
+                    ->one();
         }
         if (!isset($defaultValue)) {
             $defaultValue = SnippetVarDefaultValue::find()
-                ->andWhere([
-                    'snippet_var_id' => $this->var->id,
-                    'product_type_id' => null
-                ])
-                ->one();
+                    ->andWhere([
+                        'snippet_var_id' => $this->var->id,
+                        'product_type_id' => null
+                    ])
+                    ->one();
         }
 
-        if ($defaultValue != NULL)
-        {
+        if ($defaultValue != NULL) {
             return '\'' . Yii::$app->cacheEngine->normalizeString($defaultValue->value) . '\'';
         }
         return null;
     }
+
 }

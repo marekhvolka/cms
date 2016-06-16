@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 06.06.16
- * Time: 11:11
- */
 use backend\models\Page;
 use backend\models\Product;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use kartik\color\ColorInput;
+use yii\helpers\Html;
 
 /* @var $model backend\models\SnippetVarValue */
 /* @var $productType backend\models\ProductType */
@@ -80,10 +75,16 @@ switch ($model->var->type->identifier)
     <?php
         break;
     case 'textinput' : ?>
+    <?=  Html::textInput('SnippetVar[]', htmlspecialchars($model->value_text, ENT_QUOTES),[
+        'class' => ''
+    ])?>
+
         <div class="form-group code" style="position: relative;">
             <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
+                <input type="text" class="form-control" id="<?= $model->id ?>" 
+                       value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" 
+                       placeholder="<?= $model->getDefaultValue($productType) ?>">
                 <?php if(!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
                 <?php endif; ?>

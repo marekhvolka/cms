@@ -5,7 +5,7 @@ use backend\components\AjaxLoading\AjaxLoadingWidget;
 use backend\models\Block;
 use yii\bootstrap\Html;
 
-/* @var $model Block */
+/* @var $block Block */
 /* @var $htmlBody bool */
 ?>
 <style>
@@ -15,9 +15,9 @@ use yii\bootstrap\Html;
 </style>
 
 <!-- Modal -->
-<div class="modal fade" id="modal-<?= $model->id ?>" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal-<?= $block->id ?>" tabindex="-1" role="dialog">
     <?php
-    switch ($model->type) {
+    switch ($block->type) {
         case 'product_snippet' :
 
         case 'portal_snippet' :
@@ -25,19 +25,19 @@ use yii\bootstrap\Html;
         case 'snippet' :
 
             echo $this->render('_snippet', [
-                'model' => $model,
+                'block' => $block,
                 'productType' => $productType
             ]);
 
             break;
         case 'text' :
 
-            echo $this->render('_text', ['model' => $model]);
+            echo $this->render('_text', ['model' => $block]);
 
             break;
         case 'html' :
 
-            echo $this->render('_html', ['model' => $model]);
+            echo $this->render('_html', ['model' => $block]);
 
             break;
     }

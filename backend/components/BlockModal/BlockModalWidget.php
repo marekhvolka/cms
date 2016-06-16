@@ -26,7 +26,7 @@ class BlockModalWidget extends Widget
         AssetBundle::register($this->getView());
 
         return $this->render('blockModalWidget', [
-            'model' => $this->block,
+            'block' => $this->block,
             'productType' => $this->productType,
         ]);
     }

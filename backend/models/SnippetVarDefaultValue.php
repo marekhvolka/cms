@@ -11,7 +11,7 @@ use Yii;
  * @property integer $snippet_var_id
  * @property integer $product_type_id
  * @property string $value
- * @property int $value_dropdown_id
+ * @property integer $value_dropdown_id
  *
  * @property SnippetVarDropdown $valueDropdown
  * @property ProductType $productType

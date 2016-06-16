@@ -26,7 +26,7 @@ use yii\db\Query;
  * @property PortalVarValue[] $portalSnippets
  * @property Section[] $headerSections
  * @property Section[] $footerSections
- * @property SnippetVarValue[] $portalVarValues
+ * @property PortalVarValue[] $portalVarValues
  */
 class Portal extends \yii\db\ActiveRecord
 {

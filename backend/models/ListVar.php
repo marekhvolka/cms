@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  *
+ * @property string $value
  * @property ListItem[] $listItems
  * @property SnippetVarValue[] $snippetVarValues
  */

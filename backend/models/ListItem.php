@@ -12,7 +12,6 @@ use Yii;
  * @property integer $active
  *
  * @property SnippetVarValue[] $values
- *
  * @property ListVar $list
  */
 class ListItem extends \yii\db\ActiveRecord
