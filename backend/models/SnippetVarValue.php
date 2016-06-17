@@ -203,5 +203,13 @@ class SnippetVarValue extends \yii\db\ActiveRecord
         }
         return null;
     }
+    
+    /** Getter for $typeName property
+     * @return string
+     */
+    public function getTypeName() 
+    {
+        return $this->getVar()->one()->type->identifier;
+    }
 
 }

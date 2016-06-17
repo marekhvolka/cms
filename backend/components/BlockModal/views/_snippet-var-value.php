@@ -5,6 +5,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use kartik\color\ColorInput;
 use yii\helpers\Html;
+use backend\models\SnippetVarValue;
 
 /* @var $model backend\models\SnippetVarValue */
 /* @var $productType backend\models\ProductType */
@@ -12,8 +13,29 @@ use yii\helpers\Html;
 ?>
 
 <?php
+$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
+?>
+
+<?php 
+//$model = new SnippetVarValue; 
+//$model->var_id = 17491; 
+?>
+
+<?php foreach($model->attributes as $attributeName => $attributeValue):?>
+    <?php 
+    if ($attributeName == 'id') {
+        $attributeValue = $attributeValue ? : $postIndex;
+    }
+    ?>
+    <?php if(strpos($attributeName, 'id') !== false):?>
+    <?= Html::hiddenInput("SnippetVarValue[$postIndex][$attributeName]", $attributeValue, ['data-property-name' => $attributeName]); ?>
+    <?php endif;?>
+<?php endforeach;?>
+
+<?php
 $defaultValue = $model->getDefaultValue($productType);
-switch ($model->var->type->identifier)
+
+switch ($model->typeName)
 {
     case 'list' : ?>
         <div class="panel panel-default" style="position: relative; display: block">
@@ -59,7 +81,7 @@ switch ($model->var->type->identifier)
                             <div class="panel-body panel-collapse collapse in" id="panelItem<?= $listItem->id ?>">
                                 <?php foreach($listItem->values as $snippetVarValue)
                                 {
-                                    echo $this->render('_snippet_var', [
+                                    echo $this->render('_snippet-var-value', [
                                         'model' => $snippetVarValue,
                                         'productType' => $productType
                                     ]);
@@ -75,34 +97,39 @@ switch ($model->var->type->identifier)
     <?php
         break;
     case 'textinput' : ?>
-    <?=  Html::textInput('SnippetVar[]', htmlspecialchars($model->value_text, ENT_QUOTES),[
-        'class' => ''
-    ])?>
-
-        <div class="form-group code" style="position: relative;">
-            <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" 
-                       value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>" 
-                       placeholder="<?= $model->getDefaultValue($productType) ?>">
-                <?php if(!empty($defaultValue)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
-                <?php endif; ?>
-            </div>
-        </div>
+        <?php
+        $rawInput = Html::textInput("SnippetVarValue[$postIndex][value_text]", htmlspecialchars($model->value_text, ENT_QUOTES),[
+            'class' => 'form-control',
+            'data-property-name' => 'value_text',
+            'placeholder' => $defaultValue,
+        ])?>
+        <?php
+        $myVar = "foo";
+        $myFunction = function($arg1, $arg2) use ($myVar) {
+            $test = 'dasda';
+            return $arg1 . $myVar . $arg2;
+        };
+        
+        $testtt = $myFunction('aaaa-','bbbb-');
+        
+        $input = function() use($model, $defaultValue, $rawInput) 
+        {
+            $test = 0;
+//            $input = $this->render('_snippet-var-value-input', [
+//                            'model' => $model,
+//                            'defaultValue' => $defaultValue,
+//                            'input' =>  $rawInput,
+//            ]);
+            return $test;
+        }
+        ?>
     <?php
         break;
     case 'url' : ?>
-        <div class="form-group code" style="position: relative;">
-            <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="<?= $model->id ?>" name="" value="<?= $model->value_text ?>" placeholder="<?= $model->getDefaultValue($productType) ?>">
-
-                <?php if(!empty($defaultValue)) : ?>
-                <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= $model->getDefaultValue($productType) ?></strong></p>
-                <?php endif; ?>
-            </div>
-        </div>
+        <?php
+        
+        //$test = $input();
+        ?>
     <?php
         break;
     case 'textarea' : ?>
@@ -112,7 +139,7 @@ switch ($model->var->type->identifier)
                 <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3" placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text, ENT_QUOTES) ?></textarea>
 
                 <?php if(!empty($defaultValue)) : ?>
-                    <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
+                <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
                 <?php endif; ?>
             </div>
         </div>

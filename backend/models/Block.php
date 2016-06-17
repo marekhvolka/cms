@@ -31,6 +31,7 @@ use yii\helpers\ArrayHelper;
  * @property SnippetVarValue[] $snippetVarValues
  * @property PortalVarValue $portalVarValue
  * @property ProductValue $productVarValue
+ * @property SnippetCode $snippetCodes
  */
 class Block extends \yii\db\ActiveRecord
 {
@@ -128,6 +129,14 @@ class Block extends \yii\db\ActiveRecord
     public function getSnippetCode()
     {
         return $this->hasOne(SnippetCode::className(), ['id' => 'snippet_code_id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSnippetCodes()
+    {
+        return $this->getSnippetCode()->one()->snippet->snippetCodes;
     }
 
     /**

@@ -16,7 +16,7 @@
                     <span id="myModalLabelSmartSnippetAppend"><?= $block->snippetCode->snippet->name ?></span>
 
                     <div class="btn-group" data-toggle="buttons">
-                        <?php foreach ($block->snippetCode->snippet->snippetCodes as $snippetCode) : ?>
+                        <?php foreach ($block->snippetCodes as $snippetCode) : ?>
                             <label class="btn btn-primary <?php ($block->snippetCode->id == $snippetCode->id) ? 'active' : ''; ?>">
                                 <input type="radio" name="code_select" checked="checked" value="171">
                                 <?= $snippetCode->name ?>
@@ -35,9 +35,9 @@
 
             <div class="modal-body snippet-modal">
                 <?php
-                foreach ($block->snippetVarValues as $variable) {
-                    echo $this->render('_snippet_var', [
-                        'model' => $variable,
+                foreach ($block->snippetVarValues as $snippetVarValue) {
+                    echo $this->render('_snippet-var-value', [
+                        'model' => $snippetVarValue,
                         'productType' => $productType,
                     ]);
                 }
