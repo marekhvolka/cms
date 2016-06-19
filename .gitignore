@@ -1,3 +1,6 @@
+/frontend/web/cache
+/frontend/web/public
+
 # yii console command
 /yii
 
