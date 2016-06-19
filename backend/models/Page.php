@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\ICacheable;
 use Yii;
 use common\models\User;
 
@@ -42,7 +43,7 @@ use common\models\User;
  * @property Section $contentSection
  * @property Section $sidebarSection
  */
-class Page extends \yii\db\ActiveRecord
+class Page extends \yii\db\ActiveRecord implements ICacheable
 {
     /**
      * @inheritdoc
@@ -314,7 +315,7 @@ class Page extends \yii\db\ActiveRecord
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre danu podstranku
      * @return string
      */
-    public function getMainCacheDirectory()
+    public function getCacheDirectory()
     {
         $path = $this->portal->getPagesMainCacheDirectory() . 'page' . $this->id . '/';
 
@@ -327,11 +328,12 @@ class Page extends \yii\db\ActiveRecord
     }
 
     /** Vrati cestu k suboru, v ktorom su ulozene premenne podstranky
+     * @param bool $reload
      * @return string
      */
     public function getVarCacheFile($reload = false)
     {
-        $path = $this->getMainCacheDirectory() . 'page_var.php';
+        $path = $this->getCacheDirectory() . 'page_var.php';
 
         if (!file_exists($path) || $reload)
         {
@@ -387,7 +389,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getLayoutCacheFile($type, $reload = false)
     {
-        $path = $this->getMainCacheDirectory() . 'page_' . $type . '.php';
+        $path = $this->getCacheDirectory() . 'page_' . $type . '.php';
 
         if (!file_exists($path) || $reload)
         {
@@ -424,7 +426,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getPageBlocksMainCacheDirectory()
     {
-        $path = $this->getMainCacheDirectory() . 'blocks/';
+        $path = $this->getCacheDirectory() . 'blocks/';
 
         if (!file_exists($path))
         {
@@ -440,7 +442,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getMainPreCacheFile($reload = false)
     {
-        $path = $this->getMainCacheDirectory() . 'page_prepared.latte';
+        $path = $this->getCacheDirectory() . 'page_prepared.latte';
 
         if (!file_exists($path) || $reload)
         {
@@ -488,7 +490,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getMainCacheFile($reload = false)
     {
-        $path = $this->getMainCacheDirectory() . 'page_compiled.html';
+        $path = $this->getCacheDirectory() . 'page_compiled.html';
 
         if (!file_exists($path) || $reload)
         {

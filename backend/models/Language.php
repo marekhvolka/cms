@@ -163,7 +163,7 @@ class Language extends \yii\db\ActiveRecord
 
             foreach ($this->products as $product)
             {
-                $productPath = $product->getMainFile();
+                $productPath = $product->getMainCacheFile();
 
                 $buffer .= 'include "' . $productPath . '";' . PHP_EOL;
             }

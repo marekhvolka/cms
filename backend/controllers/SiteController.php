@@ -74,7 +74,7 @@ class SiteController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
 
-            $this->actionChangeCurrentPortal($model->portal_id);
+            Yii::$app->session->set('portal_id', $model->portal_id);
 
             return $this->goBack();
         } else {

@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\ICacheable;
 use Yii;
 use common\models\User;
 
@@ -27,7 +28,7 @@ use common\models\User;
  * @property SnippetCode[] $snippetCodes
  * @property SnippetVar[] $snippetVariables
  */
-class Snippet extends \yii\db\ActiveRecord
+class Snippet extends \yii\db\ActiveRecord implements ICacheable
 {
     /**
      * @inheritdoc
@@ -142,7 +143,7 @@ class Snippet extends \yii\db\ActiveRecord
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
      * @return string
      */
-    public function getDirectory()
+    public function getCacheDirectory()
     {
         $path = Yii::$app->cacheEngine->getSnippetsMainDirectory() . 'snippet' . $this->id . '/';
 
@@ -156,13 +157,14 @@ class Snippet extends \yii\db\ActiveRecord
 
     /** Metoda na vratenie cesty k hlavnemu suboru pre dany snippet (obsahuje premenne snippetu
      * s default hodnotami a nastavenia snippetu)
+     * @param bool $reload
      * @return string
      */
-    public function getMainFile()
+    public function getMainCacheFile($reload = false)
     {
-        $path = $this->getDirectory() . 'snippet.php';
+        $path = $this->getCacheDirectory() . 'snippet.php';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $cacheEngine = Yii::$app->cacheEngine;
 

@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use common\models\User;
+use backend\models\ICacheable;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -33,7 +34,7 @@ use yii\helpers\ArrayHelper;
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
  */
-class Product extends \yii\db\ActiveRecord
+class Product extends \yii\db\ActiveRecord implements ICacheable
 {
     /**
      * @inheritdoc
@@ -274,11 +275,11 @@ class Product extends \yii\db\ActiveRecord
         return $path;
     }
 
-    public function getMainFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getCacheDirectory() . 'main_file.php';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $buffer = '<?php' . PHP_EOL;
 

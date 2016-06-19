@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  * @property string $name
  * @property Column $column
  * @property Block $parent
- * @property Block[] $pageBlocks
+ * @property Block[] $childBlocks
  * @property SnippetCode $snippetCode
  * @property SnippetVarValue[] $snippetVarValues
  */
@@ -118,7 +118,7 @@ class Block extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageBlocks()
+    public function getChildBlocks()
     {
         return $this->hasMany(Block::className(), ['parent_id' => 'id']);
     }
@@ -254,7 +254,7 @@ class Block extends \yii\db\ActiveRecord
             $path = $this->portalVarValue->portal->getPortalSnippetCacheDirectory();
         } else if (isset($this->productVarValue)) { //produktovy snippet
             $buffer = '<?php include "' . $this->productVarValue->product->language->getDictionaryCacheFile() . '"; ?>';
-            $path = $this->productVarValue->product->getMainDirectory();
+            $path = $this->productVarValue->product->getCacheDirectory();
         } else if (isset($this->column->row->section->page)) { //block podstranky
             $buffer = $this->column->row->section->page->getIncludePrefix();
             $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
@@ -314,10 +314,10 @@ class Block extends \yii\db\ActiveRecord
         $snippetCode = null;
 
         if (isset($this->parent)) {
-            $buffer .= 'include "' . $this->parent->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
+            $buffer .= 'include "' . $this->parent->snippetCode->snippet->getMainCacheFile() . '";' . PHP_EOL;
             $snippetCode = $this->parent->snippetCode;
         } else {
-            $buffer .= 'include "' . $this->snippetCode->snippet->getMainFile() . '";' . PHP_EOL;
+            $buffer .= 'include "' . $this->snippetCode->snippet->getMainCacheFile() . '";' . PHP_EOL;
             $snippetCode = $this->snippetCode;
         }
 

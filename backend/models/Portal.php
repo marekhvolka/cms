@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\ICacheable;
 use Yii;
 use yii\db\Query;
 
@@ -28,7 +29,7 @@ use yii\db\Query;
  * @property Section[] $footerSections
  * @property PortalVarValue[] $portalVarValues
  */
-class Portal extends \yii\db\ActiveRecord
+class Portal extends \yii\db\ActiveRecord implements ICacheable
 {
     /**
      * @inheritdoc
@@ -345,11 +346,11 @@ class Portal extends \yii\db\ActiveRecord
         return $path;
     }
 
-    public function getMainFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getCacheDirectory() . 'main_file.php';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $buffer = '<?php' . PHP_EOL;
 
@@ -412,7 +413,7 @@ class Portal extends \yii\db\ActiveRecord
 
         $prefix .= '<?php' . PHP_EOL;
 
-        $prefix .= 'include "' . $this->getMainFile() . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->getMainCacheFile() . '";' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
