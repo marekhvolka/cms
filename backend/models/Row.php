@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use Exception;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -132,8 +133,8 @@ class Row extends \yii\db\ActiveRecord
 
     /**
      * Saves multiple models to database.
-     * @param backend\models\Row $rows
-     * @param backend\models\Column $columns
+     * @param Row $rows
+     * @param Column $columns
      * @return boolean
      */
     public static function saveMultiple($rows, $columns)
@@ -174,12 +175,12 @@ class Row extends \yii\db\ActiveRecord
         }
     }
 
-    public function getContent()
+    public function getContent($reload = false)
     {
         $result = $this->getPrefix();
 
         foreach ($this->columns as $column) {
-            $result .= $column->getContent();
+            $result .= $column->getContent($reload);
         }
 
         $result .= $this->getPostfix();

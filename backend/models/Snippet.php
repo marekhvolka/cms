@@ -74,10 +74,11 @@ class Snippet extends \yii\db\ActiveRecord
             'last_edit_user' => 'Last Edit User',
         ];
     }
-    
+
     /**
      * Event fired before save model. User id is set as last user who edits model.
      * @param type $insert true if save is insert type, false if update.
+     * @return bool
      */
     public function beforeSave($insert)
     {

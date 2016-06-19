@@ -5,14 +5,13 @@ namespace backend\controllers;
 use Yii;
 use backend\models\SystemException;
 use backend\models\SystemExceptionSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * SystemExceptionController implements the CRUD actions for SystemException model.
  */
-class SystemExceptionController extends Controller
+class SystemExceptionController extends BaseController
 {
     /**
      * @inheritdoc

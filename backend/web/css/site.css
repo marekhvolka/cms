@@ -284,3 +284,7 @@ a.anchor {
     max-width: 100px;
     margin: 0;
 }
+
+.CodeMirror {
+    height: initial !important;
+}

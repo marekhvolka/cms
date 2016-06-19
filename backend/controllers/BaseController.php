@@ -57,8 +57,8 @@ abstract class BaseController extends Controller
 
     /**
      * Action neccessary for LayoutWidget - appending one section at the end of the list.
-     * @param type $type
      * @return string - call of LayoutWidget method for rendering view.
+     * @internal param string $type
      */
     public function actionAppendSection()
     {

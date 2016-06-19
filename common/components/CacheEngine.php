@@ -98,43 +98,18 @@ class CacheEngine extends Component
 
     public function normalizeString($string)
     {
-        /*$re = '~
-			(?P<comment>\\*.*?\\*{\n{0,2})|
-			(?P<macro>(?:
-				\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"|
-				\{(?:\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"|[^\'"{}])*+\}|
-				[^\'"{}]
-			)+?)
-			}
-			(?P<rmargin>[ \t]*(?=\n))?
-		~xsiA';
+        if (isset($string)) {
+            $re = '/{\$[\w->]+}/';
 
-		preg_match($re, $var, $matches);
+            preg_match_all($re, $string, $matches);
 
-		foreach ($matches as $match ) {
-			$match = str_replace("{", "' . ", $match);
-		}*/
+            foreach ($matches[0] as $match) {
+                $newString = str_replace("{", "' . ", $match);
+                $newString = str_replace("}", " . '", $newString);
 
-        $re = '/{\$[\w->]+}/';
-
-        //$code = str_replace("stdClass::__set_state", "(object)", $code);
-
-        preg_match_all($re, $string, $matches);
-
-        //print_r($matches);
-
-        //$string = addslashes($string);
-
-        foreach ($matches[0] as $match )
-        {
-            $newString = str_replace("{", "' . ", $match);
-            $newString = str_replace("}", " . '", $newString);
-
-            //echo $newString;
-
-            $string = str_replace($match, $newString, $string);
+                $string = str_replace($match, $newString, $string);
+            }
         }
-
         return $string;
     }
 }

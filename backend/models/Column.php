@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use Exception;
 use Yii;
 
 /**
@@ -127,8 +128,8 @@ class Column extends \yii\db\ActiveRecord
 
     /**
      * Saves multiple models to database.
-     * @param backend\models\Column $columns
-     * @param backend\models\Block $blocks
+     * @param Column $columns
+     * @param Block $blocks
      * @return boolean
      */
     public static function saveMultiple($columns, $blocks)
@@ -205,13 +206,13 @@ class Column extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getContent()
+    public function getContent($reload = false)
     {
         $result = $this->getPrefix();
 
         foreach ($this->blocks as $block) {
             if ($block->active)
-                $result .= file_get_contents($block->getMainFile());
+                $result .= file_get_contents($block->getMainFile($reload));
         }
 
         $result .= $this->getPostfix();

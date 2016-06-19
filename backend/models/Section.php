@@ -243,12 +243,12 @@ class Section extends \yii\db\ActiveRecord
                 '</div> <!-- section end -->' . PHP_EOL;
     }
 
-    public function getContent()
+    public function getContent($reload = false)
     {
         $result = $this->getPrefix();
 
         foreach ($this->rows as $row) {
-            $result .= $row->getContent();
+            $result .= $row->getContent($reload);
         }
 
         $result .= $this->getPostfix();

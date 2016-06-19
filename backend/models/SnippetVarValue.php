@@ -23,7 +23,7 @@ use Yii;
  * @property ListVar $valueListVar
  * @property Product $valueProduct
  * @property Page $valuePage
- * @property Block $pageBlock
+ * @property Block $block
  * @property SnippetVar $var
  */
 class SnippetVarValue extends \yii\db\ActiveRecord
@@ -65,7 +65,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageBlock()
+    public function getBlock()
     {
         return $this->hasOne(Block::className(), ['id' => 'block_id']);
     }
@@ -119,9 +119,10 @@ class SnippetVarValue extends \yii\db\ActiveRecord
     }
 
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
+     * @param null $productType
      * @return mixed|string
      */
-    public function getValue()
+    public function getValue($productType = null)
     {
         $value = null;
 
@@ -163,7 +164,12 @@ class SnippetVarValue extends \yii\db\ActiveRecord
                 break;
             default:
 
-                $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
+                if (isset($this->value_text) && $this->value_text != '')
+                    $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
+                else
+                {
+                    $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->getDefaultValue($productType)))) . '\'';
+                }
         }
 
         return $value;
@@ -194,7 +200,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
 
         if ($defaultValue != NULL)
         {
-            return '\'' . Yii::$app->cacheEngine->normalizeString($defaultValue->value) . '\'';
+            return Yii::$app->cacheEngine->normalizeString($defaultValue->value);
         }
         return null;
     }

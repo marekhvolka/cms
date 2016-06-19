@@ -232,7 +232,7 @@ class Page extends \yii\db\ActiveRecord
             return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
     }
 
-    public function getHeaderContent()
+    public function getHeaderContent($reload = false)
     {
         $result = '<div id="page-header">';
 
@@ -240,7 +240,7 @@ class Page extends \yii\db\ActiveRecord
         {
             foreach($this->headerSections as $section)
             {
-                $result .= $section->getContent();
+                $result .= $section->getContent($reload);
             }
         }
 
@@ -249,7 +249,7 @@ class Page extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getFooterContent()
+    public function getFooterContent($reload = false)
     {
         $result = '<div id="page-footer">';
 
@@ -257,7 +257,7 @@ class Page extends \yii\db\ActiveRecord
         {
             foreach($this->footerSections as $section)
             {
-                $result .= $section->getContent();
+                $result .= $section->getContent($reload);
             }
         }
 
@@ -266,7 +266,7 @@ class Page extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getMainContent()
+    public function getMainContent($reload = false)
     {
         if (!$this->sidebar_active)
         {
@@ -283,7 +283,7 @@ class Page extends \yii\db\ActiveRecord
         {
             foreach ($this->contentSection->rows as $row)
             {
-                $result .= $row->getContent();
+                $result .= $row->getContent($reload);
             }
         }
 
@@ -292,7 +292,7 @@ class Page extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getSidebarContent()
+    public function getSidebarContent($reload = false)
     {
         $result = '';
 
@@ -302,7 +302,7 @@ class Page extends \yii\db\ActiveRecord
 
             foreach($this->sidebarSection->rows as $row)
             {
-                $result .= $row->getContent();
+                $result .= $row->getContent($reload);
             }
 
             $result .= '</div> <!-- Sidebar End -->';
@@ -329,25 +329,24 @@ class Page extends \yii\db\ActiveRecord
     /** Vrati cestu k suboru, v ktorom su ulozene premenne podstranky
      * @return string
      */
-    public function getVarCacheFile()
+    public function getVarCacheFile($reload = false)
     {
         $path = $this->getMainCacheDirectory() . 'page_var.php';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $cacheEngine = Yii::$app->cacheEngine;
 
             $buffer = '<?php ' . PHP_EOL;
 
             if (isset($this->product))
-            {
                 $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
-            }
             else if (isset($this->parent))
-            {
                 $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
+            else {
+                $buffer .= '$emptyProduct = (object) array();' . PHP_EOL;
+                $buffer .= '$product = new ObjectBridge($emptyProduct, \'\');' . PHP_EOL;
             }
-
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
             $buffer .= '\'url\' => \'' . $cacheEngine->normalizeString($this->url) . '\',' . PHP_EOL;
@@ -386,30 +385,30 @@ class Page extends \yii\db\ActiveRecord
      * @param string $type - cast - header, footer, sidebar, content
      * @return string
      */
-    public function getLayoutCacheFile($type)
+    public function getLayoutCacheFile($type, $reload = false)
     {
         $path = $this->getMainCacheDirectory() . 'page_' . $type . '.php';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $buffer = '';
 
             switch($type)
             {
                 case 'header':
-                    $buffer = $this->getHeaderContent();
+                    $buffer = $this->getHeaderContent($reload);
 
                     break;
                 case 'footer':
-                    $buffer = $this->getFooterContent();
+                    $buffer = $this->getFooterContent($reload);
 
                     break;
                 case 'sidebar':
-                    $buffer = $this->getSidebarContent();
+                    $buffer = $this->getSidebarContent($reload);
 
                     break;
                 case 'content':
-                    $buffer = $this->getMainContent();
+                    $buffer = $this->getMainContent($reload);
 
                     break;
             }
@@ -436,13 +435,14 @@ class Page extends \yii\db\ActiveRecord
     }
 
     /** Vrati cestu k suboru, kde je ulozeny finalny obsah stranky pred kompilaciou
+     * @param bool $reload
      * @return string
      */
-    public function getMainPreCacheFile()
+    public function getMainPreCacheFile($reload = false)
     {
         $path = $this->getMainCacheDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
             $prefix = $this->getIncludePrefix();
 
@@ -451,10 +451,16 @@ class Page extends \yii\db\ActiveRecord
             $prefix .= '$global_header = file_get_contents(\'' . $this->portal->getLayoutCacheFile('header') . '\');' . PHP_EOL;
             $prefix .= '$global_footer = file_get_contents(\'' . $this->portal->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
 
-            $prefix .= '$page_header = file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
-            $prefix .= '$page_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
-            $prefix .= '$page_sidebar = file_get_contents(\'' . $this->getLayoutCacheFile('sidebar') . '\');' . PHP_EOL;
-            $prefix .= '$page_content = file_get_contents(\'' . $this->getLayoutCacheFile('content') . '\');' . PHP_EOL;
+            $prefix .= '$page_header = file_get_contents(\'' . $this->getLayoutCacheFile('header', $reload) . '\');' . PHP_EOL;
+            $prefix .= '$page_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer', $reload) . '\');' . PHP_EOL;
+
+            $prefix .= '$page_sidebar = file_get_contents(\'' . $this->getLayoutCacheFile('sidebar', $reload) . '\');' . PHP_EOL;
+            $prefix .= '$page_content = file_get_contents(\'' . $this->getLayoutCacheFile('content', $reload) . '\');' . PHP_EOL;
+
+            if ($this->sidebar_side == 'left')
+                $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
+            else
+                $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
 
             $prefix .= '$bootstrap_css = \'http://www.hyperfinance.cz/css/bootstrap.min.css\';' . PHP_EOL;
             $prefix .= '$bootstrap_js = \'http://www.hyperfinance.cz/js/bootstrap.min.js\';' . PHP_EOL;
@@ -477,15 +483,16 @@ class Page extends \yii\db\ActiveRecord
     }
 
     /** Vrati cestu k suboru, kde je ulozeny finalny obsah stranky po kompilacii
+     * @param bool $reload
      * @return string
      */
-    public function getMainCacheFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getMainCacheDirectory() . 'page_compiled.html';
 
-        if (!file_exists($path))
+        if (!file_exists($path) || $reload)
         {
-            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile($reload), array());
 
             $result = html_entity_decode($result, ENT_QUOTES);
 
@@ -498,13 +505,13 @@ class Page extends \yii\db\ActiveRecord
     /** Vrati hlavicku s includami pre danu podstranku
      * @return string
      */
-    public function getIncludePrefix()
+    public function getIncludePrefix($reload = false)
     {
         $prefix = $this->portal->getIncludePrefix();
 
         $prefix .= '<?php ' . PHP_EOL;
 
-        $prefix .= 'include "' . $this->getVarCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include "' . $this->getVarCacheFile($reload) . '";' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 

@@ -58,7 +58,7 @@ class ListVar extends \yii\db\ActiveRecord
         return $this->hasMany(SnippetVarValue::className(), ['value_list_id' => 'id']);
     }
 
-    public function getValue()
+    public function getValue($productType = null)
     {
         $buffer = ' array(' . PHP_EOL;
 
@@ -67,7 +67,7 @@ class ListVar extends \yii\db\ActiveRecord
         {
             if ($listItem->active)
             {
-                $buffer .= '\'' . $index++ . '\' => ' . $listItem->value . ', ' . PHP_EOL;
+                $buffer .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
             }
         }
 
