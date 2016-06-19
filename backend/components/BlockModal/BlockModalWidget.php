@@ -25,9 +25,10 @@ class BlockModalWidget extends Widget
     {
         AssetBundle::register($this->getView());
 
-        /*return $this->render('view', [
-            'model' => $this->block,
-        ]);*/
+        return $this->render('blockModalWidget', [
+            'block' => $this->block,
+            'productType' => $this->productType,
+        ]);
     }
 
     /** Renders view for one appended variable.

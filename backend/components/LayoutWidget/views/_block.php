@@ -1,6 +1,7 @@
 <?php
 
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
+use backend\components\BlockModal\BlockModalWidget;
 
 /* @var $block \backend\models\Block */
 
@@ -9,23 +10,25 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
 
 <div class="btn-group layout-block block-<?= $block->id ?>"
      data-content="" role="group">
-         <?= BaseHtml::hiddenInput("Block[$postIndex][existing]", $block->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-         <?= BaseHtml::hiddenInput("Block[$postIndex][id]", $block->id ? : $postIndex, ['class' => 'id']); ?>
-         <?= BaseHtml::hiddenInput("Block[$postIndex][column_id]", $block->column_id, ['class' => 'column_id']); ?>
-         <?= BaseHtml::hiddenInput("Block[$postIndex][type]", $block->type, ['class' => 'type']); ?>
-         <?= BaseHtml::hiddenInput("Block[$postIndex][order]", $block->order, ['class' => 'order']); ?>
+         <?= Html::hiddenInput("Block[$postIndex][existing]", $block->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+         <?= Html::hiddenInput("Block[$postIndex][id]", $block->id ? : $postIndex, ['class' => 'id']); ?>
+         <?= Html::hiddenInput("Block[$postIndex][column_id]", $block->column_id, ['class' => 'column_id']); ?>
+         <?= Html::hiddenInput("Block[$postIndex][type]", $block->type, ['class' => 'type']); ?>
+         <?= Html::hiddenInput("Block[$postIndex][order]", $block->order, ['class' => 'order']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" data-id="<?= $block->id ?>"
-            data-target="#blockModal">
+    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" 
+            data-id="<?= $block->id ?>"
+            data-target="#modal-<?= $block->id ?>"
+            data-toggle="modal">
                 <?php echo $block->name; ?>
     </button>
 
     <?php if (($block->type == 'snippet') && isset($block->snippetCode)) : ?>
         <?=
-        BaseHtml::a(
+        Html::a(
                 '<span class="glyphicon glyphicon-link"></span>', $block->snippetCode->url, [
             'class' => 'btn btn-info btn-sm',
             'title' => 'Upraviť snippet',
@@ -39,3 +42,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <span class="glyphicon glyphicon-remove"></span>
     </button>
 </div>
+
+<?= BlockModalWidget::widget([
+    'block' => $block,
+    'productType' => null,
+    ])?>

@@ -12,13 +12,13 @@ use yii\helpers\ArrayHelper;
  * @property string $identifier
  * @property string $description
  * @property integer $type_id
- * @property VarType $type
  * @property string $product_type
  * @property integer $last_edit_user
- *
- * @property User $lastEditUser
  * @property string $snippet_id
  * @property string $parent_id
+ *
+ * @property VarType $type
+ * @property User $lastEditUser
  * @property SnippetVarDefaultValue[] $defaultValues
  * @property SnippetVar $parent
  * @property SnippetVar[] $children

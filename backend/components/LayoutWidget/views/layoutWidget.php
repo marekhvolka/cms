@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections \backend\models\Section */
@@ -9,15 +8,15 @@
     <?php
     $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>
-    <ul class="children-list" id="<?= $idHash?>">
+    <ul class="children-list" id="<?= $idHash ?>">
         <?php foreach ($sections as $section) : ?>
-        <li>
-            <?= $this->render('_section', ['section' => $section]); ?>
-        </li>
+            <li>
+                <?= $this->render('_section', ['section' => $section]); ?>
+            </li>
         <?php endforeach; ?>
     </ul>
     <div class="col-sm-10 col-sm-offset-2">
-        <button type="button" class="btn btn-success btn-sm btn-add-section" data-sections-id="<?=$idHash?>">
+        <button type="button" class="btn btn-success btn-sm btn-add-section" data-sections-id="<?= $idHash ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
     </div>

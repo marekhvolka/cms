@@ -83,7 +83,6 @@ function appendElement(parentElement, dataToAppend) {
     return row;
 }
 
-
 attachAddBlockEvent($('.column-option'));
 
 function attachRemoveBlockEvent(removeButton) {
@@ -136,29 +135,34 @@ $('#' + formId).submit(function () {
     return true;
 });
 
+$('.btn-block-modal').click(function() {
+    
+    return true;
+});
+
 
 
 // Clearing modal window.
-$(function () {
-    $('#modal-options').on('hidden.bs.modal', function () {
-        clearOptions();
-    });
-});
-
-$(function () {
-    $('#modal-text').on('hidden.bs.modal', function () {
-        $('.text-textarea').val('');
-    });
-});
-
-$('.btn-block-modal').click(function () {
-    var id = $(this).data('id');
-
-    $.get('/cms/backend/web/page/block?id=' + id, function (data) {
-        var appendedDiv = $(data);
-        $('#modal-content').append(appendedDiv);
-        $('#modal-content').html = 'dasdasdasd';
-    });
-});
+//$(function () {
+//    $('#modal-options').on('hidden.bs.modal', function () {
+//        clearOptions();
+//    });
+//});
+//
+//$(function () {
+//    $('#modal-text').on('hidden.bs.modal', function () {
+//        $('.text-textarea').val('');
+//    });
+//});
+//
+//$('.btn-block-modal').click(function () {
+//    var id = $(this).data('id');
+//
+//    $.get('/cms/backend/web/page/block?id=' + id, function (data) {
+//        var appendedDiv = $(data);
+//        $('#modal-content').append(appendedDiv);
+//        $('#modal-content').html = 'dasdasdasd';
+//    });
+//});
 
 
