@@ -40,9 +40,10 @@ class MultimediaController extends BaseController
      */
     public function actionIndex()
     {
+        $active_portal_name = Portal::findOne(Yii::$app->session->get('portal_id'))->name;
         $request = Yii::$app->request;
         $upload_file = new MultimediaItem(['scenario' => MultimediaItem::SCENARIO_UPLOAD]);
-        $upload_file->subcategory = Yii::$app->session->get('portal_id');
+        $upload_file->subcategory = $active_portal_name;
 
         // uploading new file
         if ($upload_file->load($request->post())) {
@@ -55,7 +56,7 @@ class MultimediaController extends BaseController
         }
 
         $categories = MultimediaCategory::loadAll();
-        $subcategories = MultimediaCategory::getSubcategories(Yii::$app->session->get('portal_id'));
+        $subcategories = MultimediaCategory::getSubcategories($active_portal_name);
 
         $data = [];
 
