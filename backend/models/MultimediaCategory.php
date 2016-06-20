@@ -118,8 +118,7 @@ class MultimediaCategory extends Model
      */
     public function getItems($subcategory = null, $only_images = false)
     {
-        $process = function ($data, $only_images, $global, $category_name)
-        {
+        $process = function ($data, $only_images, $global, $category_name) {
             return array_map(function ($file) use ($global, $category_name) {
                 $item = new MultimediaItem();
                 $split_path = explode("/", $file);
@@ -133,11 +132,19 @@ class MultimediaCategory extends Model
             }));
         };
 
-        return
-            $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . '/*'), $only_images, true, $this->name)
-            +
-            $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), $only_images, false, $this->name);
+        $data = [];
 
+        if ($subcategory == null || $subcategory == 'global') {
+            $data = $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . '/*'), $only_images, true, $this->name);
+
+            if ($subcategory == 'global') {
+                return $data;
+            }
+        }
+
+        $data += $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), $only_images, false, $this->name);
+
+        return $data;
     }
 
     /**
