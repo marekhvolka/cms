@@ -188,4 +188,9 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
 
         return $path;
     }
+
+    public function resetAfterUpdate()
+    {
+        // TODO: Implement resetAfterUpdate() method.
+    }
 }

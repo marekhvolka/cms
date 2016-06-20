@@ -7,6 +7,8 @@ use yii\bootstrap\Html;
 
 /* @var $block Block */
 /* @var $htmlBody bool */
+/* @var $productType \backend\models\ProductType */
+
 ?>
 <style>
     .modal-dialog {
@@ -20,8 +22,10 @@ use yii\bootstrap\Html;
     switch ($block->type) {
         case 'product_snippet' :
 
+            break;
         case 'portal_snippet' :
 
+            break;
         case 'snippet' :
 
             echo $this->render('_snippet', [

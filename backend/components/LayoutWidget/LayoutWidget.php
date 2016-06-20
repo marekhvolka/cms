@@ -31,12 +31,12 @@ class LayoutWidget extends Widget
         AssetBundle::register($this->getView());
 
         return $this->render('layoutWidget', [
-                    'sections' => $this->sections,
-                    'controllerUrl' => $this->controllerUrl,
-                    'type' => $this->type,
-                    'portalId' => $this->portalId,
-                    'pageId' => $this->pageId,
-                    'formId' => $this->formId,
+            'sections' => $this->sections,
+            'controllerUrl' => $this->controllerUrl,
+            'type' => $this->type,
+            'portalId' => $this->portalId,
+            'pageId' => $this->pageId,
+            'formId' => $this->formId,
         ]);
     }
 

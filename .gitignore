@@ -33,3 +33,4 @@ phpunit.phar
 
 # log files and debug
 backend/runtime
+/common/components/tmp/

@@ -358,7 +358,7 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
 
             foreach($this->portalSnippets as $portalSnippet)
             {
-                $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents(\'' . $portalSnippet->valueBlock->getMainFile() . '\');' . PHP_EOL;
+                $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents(\'' . $portalSnippet->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
             }
 
             $buffer .= '?>';
@@ -430,5 +430,10 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
         $prefix .= '?>' . PHP_EOL;
 
         return $prefix;
+    }
+
+    public function resetAfterUpdate()
+    {
+        // TODO: Implement resetAfterUpdate() method.
     }
 }

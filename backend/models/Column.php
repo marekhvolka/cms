@@ -130,7 +130,8 @@ class Column extends \yii\db\ActiveRecord
      * Saves multiple models to database.
      * @param Column $columns
      * @param Block $blocks
-     * @return boolean
+     * @return bool
+     * @throws Exception
      */
     public static function saveMultiple($columns, $blocks)
     {
@@ -211,8 +212,14 @@ class Column extends \yii\db\ActiveRecord
         $result = $this->getPrefix();
 
         foreach ($this->blocks as $block) {
-            if ($block->active)
-                $result .= file_get_contents($block->getMainFile($reload));
+            if ($block->active) {
+
+                $result .= '<?php' . PHP_EOL;
+
+                $result .= 'include("' . $block->getMainCacheFile($reload) . '");' . PHP_EOL;
+
+                $result .= '?>' . PHP_EOL;
+            }
         }
 
         $result .= $this->getPostfix();

@@ -104,8 +104,7 @@ class Language extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
-            $buffer .= 'require_once(\''. Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
+            $buffer .= 'include "' . Yii::$app->cacheEngine->getCommonCacheFile() . '";' . PHP_EOL;
 
             $buffer .= '$tempObject = ';
 

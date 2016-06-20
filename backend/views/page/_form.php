@@ -15,17 +15,13 @@ use kartik\switchinput\SwitchInput;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $headerSections \backend\models\Section */
-/* @var $footerSections \backend\models\Section */
-/* @var $contentSections \backend\models\Section */
-/* @var $sidebarSections \backend\models\Section */
 ?>
 
 <div class="page-form">
 
     <?php $form = ActiveForm::begin([
         'id' => 'form',
-        'enableAjaxValidation' => true,
+        //'enableAjaxValidation' => true, //TODO: think about it :)
     ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
@@ -83,14 +79,14 @@ use kartik\switchinput\SwitchInput;
     <h3 class="page-header">Hlavička stránky</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $headerSections
+            'sections' => $model->headerSections
         ]
     )?>
 
     <h3 class="page-header">Hlavný obsah</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $contentSections,
+            'sections' => array($model->contentSection),
             'type' => 'content',
             'controllerUrl' => Url::to(['/layout']),
         ]
@@ -107,7 +103,7 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
     <?= LayoutWidget::widget([
-            'sections' => $sidebarSections,
+            'sections' => array($model->sidebarSection),
             'type' => 'sidebar',
             'controllerUrl' => Url::to(['/layout']),
         ]
@@ -116,7 +112,7 @@ use kartik\switchinput\SwitchInput;
     <h3 class="page-header">Patička stránky</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $footerSections
+            'sections' => $model->footerSections
         ]
     )?>
 

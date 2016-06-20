@@ -63,3 +63,12 @@ class ObjectBridge extends ArrayObject
         return '' . $this->string;
     }
 }
+
+function executeScript($path)
+{
+    ob_start();
+    include $path;
+    $html = ob_get_contents();
+    ob_end_clean();
+    return $html;
+}

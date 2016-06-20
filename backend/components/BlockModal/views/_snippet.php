@@ -1,5 +1,6 @@
 <?php
 /* @var $block backend\models\Block */
+/* @var $productType backend\models\ProductType */
 
 ?>
 

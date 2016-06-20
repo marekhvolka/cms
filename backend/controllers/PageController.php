@@ -54,20 +54,11 @@ class PageController extends BaseController
     {
         $model = new Page();
 
-        $headerSections = [new Section()];
-        $footerSections = [new Section()];
-        $contentSections = [new Section()];
-        $sidebarSections = [new Section()];
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model'           => $model,
-                'headerSections'  => $headerSections,
-                'footerSections'  => $footerSections,
-                'contentSections' => $contentSections,
-                'sidebarSections' => $sidebarSections,
             ]);
         }
     }
@@ -82,35 +73,11 @@ class PageController extends BaseController
     {
         $model = $this->findModel($id);
 
-        $headerSections = Section::findAll([
-            'type'    => 'header',
-            'page_id' => $id
-        ]);
-
-        $footerSections = Section::findAll([
-            'type'    => 'footer',
-            'page_id' => $id
-        ]);
-
-        $contentSections = Section::findAll([
-            'type'    => 'content',
-            'page_id' => $id
-        ]);
-
-        $sidebarSections = Section::findAll([
-            'type'    => 'sidebar',
-            'page_id' => $id
-        ]);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model'           => $model,
-                'headerSections'  => $headerSections,
-                'footerSections'  => $footerSections,
-                'contentSections' => $contentSections,
-                'sidebarSections' => $sidebarSections,
             ]);
         }
     }

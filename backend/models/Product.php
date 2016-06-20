@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\components\CacheThread;
 use common\models\User;
 use backend\models\ICacheable;
 use Yii;
@@ -101,6 +102,8 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
 
     public function resetAfterUpdate()
     {
+        $thread = new CacheThread();
+
         $this->getProductVarsFile(true); //resetneme hlavny subor
 
         foreach($this->pages as $page)
@@ -108,9 +111,14 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
             $page->getMainCacheFile(true);
         }
 
+        /* @var $snipperVarValue SnippetVarValue */
+
         foreach($this->snippetVarValues as $snippetVarValue)
         {
-            //TODO: reset all blocks where product is used
+            $snipperVarValue->block->getMainCacheFile(true);
+
+
+
         }
     }
 
@@ -287,7 +295,7 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
 
             foreach($this->productSnippets as $productVarValue)
             {
-                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier . ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainFile() . '\');' . PHP_EOL;
+                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier . ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
             }
 
             $buffer .= '?>';

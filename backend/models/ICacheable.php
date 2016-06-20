@@ -12,4 +12,5 @@ interface ICacheable
 {
     public function getMainCacheFile($reload = false);
     public function getCacheDirectory();
+    public function resetAfterUpdate();
 }

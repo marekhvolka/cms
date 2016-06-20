@@ -19,10 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <?= $this->render('_form', [
         'model' => $model,
-        'headerSections' => $headerSections,
-        'footerSections' => $footerSections,
-        'contentSections' => $contentSections,
-        'sidebarSections' => $sidebarSections
     ]) ?>
 
 </div>

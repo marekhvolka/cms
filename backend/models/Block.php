@@ -34,7 +34,7 @@ use yii\helpers\ArrayHelper;
  * @property ProductValue $productVarValue
  * @property SnippetCode $snippetCodes
  */
-class Block extends \yii\db\ActiveRecord
+class Block extends \yii\db\ActiveRecord implements ICacheable
 {
 
     private $existing;  //Indicates if model allready exists.
@@ -256,7 +256,7 @@ class Block extends \yii\db\ActiveRecord
         return $name;
     }
 
-    public function getMainFile($reload = false)
+    public function getMainCacheFile($reload = false)
     {
         $path = '';
         $buffer = '';
@@ -373,4 +373,13 @@ class Block extends \yii\db\ActiveRecord
         return $buffer;
     }
 
+    public function getCacheDirectory()
+    {
+        // TODO: Implement getCacheDirectory() method.
+    }
+
+    public function resetAfterUpdate()
+    {
+        $this->getMainCacheFile(true);
+    }
 }

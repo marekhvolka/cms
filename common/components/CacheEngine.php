@@ -64,6 +64,27 @@ class CacheEngine extends Component
         return __DIR__ . '/ExceptionHandler.php';
     }
 
+    public function getCommonCacheFile($reload = false)
+    {
+        $path = $this->cacheDirectory . 'common.php';
+
+        if (!file_exists($path) || $reload) {
+            $buffer = '<?php' . PHP_EOL;
+
+            $buffer .= 'require_once(\'' . Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
+            $buffer .= 'require_once(\'' . Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
+
+            $buffer .= '$bootstrap_css = \'http://www.hyperfinance.cz/css/bootstrap.min.css\';' . PHP_EOL;
+            $buffer .= '$bootstrap_js = \'http://www.hyperfinance.cz/js/bootstrap.min.js\';' . PHP_EOL;
+            $buffer .= '$jquery = \'//code.jquery.com/jquery-1.10.2.min.js\';' . PHP_EOL;
+            $buffer .= '$font_awesome = \'http://www.hyperfinance.cz/fonts/font-awesome-4.3.0/css/font-awesome.min.css\';' . PHP_EOL;
+
+            $this->writeToFile($path, 'w+', $buffer);
+        }
+
+        return $path;
+    }
+
 
     //region ========================  GET SEKCIA  =================================*/
 
