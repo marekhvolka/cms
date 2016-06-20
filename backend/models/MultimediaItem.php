@@ -61,7 +61,7 @@ class MultimediaItem extends Model
      */
     public static function find($categoryName, $subcategory, $name)
     {
-        if (is_file(MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $categoryName . DIRECTORY_SEPARATOR . $subcategory . DIRECTORY_SEPARATOR . $name)) {
+        if (is_file(MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $categoryName . DIRECTORY_SEPARATOR . ($subcategory == 'global' ? $name : $subcategory . DIRECTORY_SEPARATOR . $name))) {
             $item = new MultimediaItem();
             $item->name = $name;
             $item->categoryName = $categoryName;
@@ -91,7 +91,7 @@ class MultimediaItem extends Model
      */
     public function getPath()
     {
-        $path = realpath(MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . $this->subcategory . DIRECTORY_SEPARATOR . $this->name);
+        $path = realpath(MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . ($this->subcategory == 'global' ? $this->name : $this->subcategory . DIRECTORY_SEPARATOR . $this->name));
 
         if (PathHelper::isInside($path, realpath(MultimediaCategory::GET_MULTIMEDIA_PATH()))) {
             return $path;
@@ -119,7 +119,7 @@ class MultimediaItem extends Model
     public function upload()
     {
         if ($this->validate(['file', 'categoryName', 'subcategory'])) {
-            $dir = MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . $this->subcategory;
+            $dir = MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->categoryName . ($this->subcategory == "global" ? '' : DIRECTORY_SEPARATOR . $this->subcategory);
             PathHelper::makePath($dir);
 
             return $this->file->saveAs($dir . DIRECTORY_SEPARATOR . $this->file->getBaseName() . '.' . $this->file->getExtension());

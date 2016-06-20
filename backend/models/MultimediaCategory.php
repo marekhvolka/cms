@@ -23,7 +23,8 @@ class MultimediaCategory extends Model
     /**
      * Get path containing all categories of files.
      */
-    public static function GET_MULTIMEDIA_PATH() {
+    public static function GET_MULTIMEDIA_PATH()
+    {
         return Yii::getAlias('@frontend') . '/web/multimedia'; // WITHOUT SLASH AT THE END!!
     }
 
@@ -82,16 +83,16 @@ class MultimediaCategory extends Model
     /**
      * Return all possible subcategories.
      *
-     * @param integer $portal subcategories for a portal
+     * @param string $portal subcategories for a portal
      * @return array
      */
     public static function getSubcategories($portal = null)
     {
         $query = Portal::find();
         if (!empty($portal)) {
-            $query = $query->where(['id' => $portal]);
+            $query = $query->where(['name' => $portal]);
         }
-        return ArrayHelper::map($query->asArray(true)->all(), 'id', 'name') + ['global' => 'Spoločné pre všetky portály'];
+        return ArrayHelper::map($query->asArray(true)->all(), 'name', 'name') + ['global' => 'Spoločné pre všetky portály'];
     }
 
     /**
@@ -117,17 +118,26 @@ class MultimediaCategory extends Model
      */
     public function getItems($subcategory = null, $only_images = false)
     {
-        return array_map(function ($file) {
-            $item = new MultimediaItem();
-            $split_path = explode("/", $file);
-            $item->name = end($split_path);
-            $item->categoryName = $this->name;
-            $item->subcategory = $split_path[count($split_path) - 2];
+        $process = function ($data, $only_images, $global, $category_name)
+        {
+            return array_map(function ($file) use ($global, $category_name) {
+                $item = new MultimediaItem();
+                $split_path = explode("/", $file);
+                $item->name = end($split_path);
+                $item->categoryName = $category_name;
+                $item->subcategory = $global === true ? 'global' : $split_path[count($split_path) - 2];
 
-            return $item;
-        }, array_filter(glob(self::GET_MULTIMEDIA_PATH(). DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), function ($item) use ($only_images) {
-            return is_file($item) && (!$only_images || PathHelper::isImageFile($item));
-        }));
+                return $item;
+            }, array_filter($data, function ($item) use ($only_images) {
+                return is_file($item) && (!$only_images || PathHelper::isImageFile($item));
+            }));
+        };
+
+        return
+            $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . '/*'), $only_images, true, $this->name)
+            +
+            $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), $only_images, false, $this->name);
+
     }
 
     /**
