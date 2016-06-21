@@ -54,74 +54,21 @@ class ProductController extends BaseController
     }
 
     /**
-     * Creates a new Product model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Product();
-        $productVarValues = [];
-
-        if ($model->load(Yii::$app->request->post())) {
-            $transaction = \Yii::$app->db->beginTransaction();
-
-            try {
-                $productVarValuesData = Yii::$app->request->post('ProductVarValue');
-                $productVarValues = []; // Array of ProductVarValue models used later for multiple validation.
-
-                // $productVarValues array appended with retrieved newly created ProductVarValue models.
-
-                if (isset($productValueData))
-                {
-                    foreach ($productVarValuesData as $i => $productValueData) {
-                        $productVarValues[$i] = new ProductVarValue();
-                    }
-                }
-
-                // Product model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
-                // ProductVarValue models multiple loading and validation.
-                $loaded = Model::loadMultiple($productVarValues, Yii::$app->request->post());
-                $valid = Model::validateMultiple($productVarValues);
-
-                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
-                    throw new Exception;
-                }
-
-                $this->saveProductVarValues($productVarValues, $model);// Save ProductVarValue models.
-
-                $transaction->commit();// There was no error, models was validated and saved correctly.
-                $model->resetAfterUpdate();
-                return $this->redirect(['index']);
-            } catch (Exception $e) {
-                // There was problem with validation or saving models or another exception was thrown.
-                $transaction->rollBack();
-                return $this->render('create', [
-                    'model' => $model,
-                    'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
-                    'allVariables' => ProductVar::find()->all(),
-                ]);
-            }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'productVarValues' => $productVarValues,
-                'allVariables' => ProductVar::find()->all(),
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing Product model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Edits an Product model.
+     * If edit is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id); // Product model retrieved by id.
-        $productVarValues = $model->productVarValues;
+        if ($id) {
+            $model = $this->findModel($id); // Product model retrieved by id.
+            $productVarValues = $model->productVarValues;
+        }
+        else {
+            $model = new Product();
+            $productVarValues = [];
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -163,14 +110,14 @@ class ProductController extends BaseController
             } catch (Exception $e) {
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
-                return $this->render('update', [
+                return $this->render('edit', [
                     'model' => $model,
                     'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
                     'allVariables' => ProductVar::find()->all(),
                 ]);
             }
         } else {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
                 'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
                 'allVariables' => ProductVar::find()->all(),

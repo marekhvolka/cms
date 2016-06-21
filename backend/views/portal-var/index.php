@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať portálovú premennú', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať portálovú premennú', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="portal-var-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Názov',
                 'format' => 'raw',
                 'value' => function ($dataProvider) {
-                    return Html::a($dataProvider->name, Url::to(['/portal-var/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name, Url::to(['/portal-var/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             'identifier',

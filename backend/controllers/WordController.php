@@ -46,81 +46,30 @@ class WordController extends BaseController
     }
 
     /**
-     * Creates a new Word model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Word();
-        $translations = [];
-
-        foreach(Language::find()->all() as $language)
-        {
-            $translation = new WordTranslation();
-            $translation->language_id = $language->id;
-
-            $translations[] = $translation;
-        }
-
-        if ($model->load(Yii::$app->request->post()))
-        {
-            Model::loadMultiple($translations, Yii::$app->request->post());
-
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($translations) && $valid;
-
-            if ($valid)
-            {
-                $model->save();
-
-                foreach($translations as $translation)
-                {
-                    $translation->word_id = $model->id;
-
-                    if ($translation->validate())
-                    {
-                        $translation->save();
-
-                        Yii::$app->session->setFlash('success', 'Uložené');
-                    }
-                    else
-                    {
-                        BaseVarDumper::dump($translation->errors);
-                        Yii::$app->session->setFlash('error', 'Nastala chyba');
-                    }
-                }
-            }
-            else
-                BaseVarDumper::dump($model->errors);
-
-            $continue = Yii::$app->request->post('continue');
-
-            if (isset($continue))
-                return $this->redirect(['update', 'id' => $model->id]);
-            else
-                return $this->redirect(['index']);
-        }
-        else
-        {
-            return $this->render('create', [
-                'model' => $model,
-                'translations' => $translations
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Word model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id);
-        $translations = $model->translations;
+        if ($id) {
+            $model = $this->findModel($id);
+            $translations = $model->translations;
+        }
+        else {
+            $model = new Word();
+            $translations = [];
+
+            foreach(Language::find()->all() as $language)
+            {
+                $translation = new WordTranslation();
+                $translation->language_id = $language->id;
+
+                $translations[] = $translation;
+            }
+        }
 
         //TODO: dokoncit funkcionalitu pri pridani noveho jazyka
 
@@ -150,15 +99,15 @@ class WordController extends BaseController
             $continue = Yii::$app->request->post('continue');
 
             if (isset($continue))
-                return $this->redirect(['update', 'id' => $model->id]);
+                return $this->redirect(['edit', 'id' => $model->id]);
             else
                 return $this->redirect(['index']);
         }
         else
         {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
-                'translations' => $model->translations,
+                'translations' => $translations,
             ]);
         }
     }

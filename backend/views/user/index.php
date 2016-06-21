@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať používateľa', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať používateľa', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="user-index">

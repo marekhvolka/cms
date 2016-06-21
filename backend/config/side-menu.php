@@ -6,8 +6,8 @@ return [
         'icon'     => 'globe',
         'title'    => 'Globálne nastavenia',
         'children' => [
-            ['title' => 'Globálna hlavička', 'controller' => 'portal', 'action' => 'layout-create?type=header'],
-            ['title' => 'Globálna pätička', 'controller' => 'portal', 'action' => 'layout-create?type=footer'],
+            ['title' => 'Globálna hlavička', 'controller' => 'portal', 'action' => 'layout-edit?type=header'],
+            ['title' => 'Globálna pätička', 'controller' => 'portal', 'action' => 'layout-edit?type=footer'],
             ['title' => 'Meracie kódy', 'controller' => 'tracking-code', 'action' => 'index'],
         ],
     ],

@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať jazyk', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať jazyk', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="language-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name,Url::to(['/language/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name,Url::to(['/language/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             'currency',

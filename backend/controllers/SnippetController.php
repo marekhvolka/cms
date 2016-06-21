@@ -48,85 +48,20 @@ class SnippetController extends BaseController
     }
 
     /**
-     * Creates a new Snippet model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Snippet();
-
-        if ($model->load(Yii::$app->request->post())) {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                // Snippet model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
-                
-                $snippetCodesData = Yii::$app->request->post('SnippetCode');
-                // Array of SnippetCode models used later for multiple validation.
-                $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
-                
-                // SnippetCode models multiple loading, validation and saving.
-                $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
-                $validCodes = Model::validateMultiple($snippetCodes);
-                $savedCodes = SnippetCode::saveMultiple($snippetCodes, $model);
-
-                $snippetVarData = Yii::$app->request->post('SnippetVar');
-                // Array of SnippetVar models used later for multiple validation.
-                $snippetVars = SnippetVar::createMultipleFromData($snippetVarData);
-
-                // SnippetCode models multiple loading validation and saving.
-                $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
-                $validVars = Model::validateMultiple($snippetVars);
-                $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
-
-                $valid = $loadedCodes && $validCodes && $savedCodes && $loadedVars &&
-                        $validVars && $savedVars && $modelValidatedAndSaved;
-
-                if (!$valid) {
-                    throw new Exception;
-                }
-
-                $transaction->commit();
-                Yii::$app->session->setFlash('success', 'Uložené');
-
-                $continue = Yii::$app->request->post('continue');
-
-                $model->resetAfterUpdate();
-
-                if (isset($continue))
-                    return $this->redirect(['update', 'id' => $model->id]);
-                else
-                    return $this->redirect(['index']);
-
-            } catch (Exception $e) {
-                $transaction->rollBack();
-                
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return $this->render('create', [
-                            'model' => $model,
-                            'snippetCodes' => $snippetCodes,
-                            'snippetVars' => $snippetVars,
-                ]);
-            }
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-                        'snippetCodes' => [new SnippetCode()],
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Snippet model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this-> findModel($id);
-        $snippetCodes = $model->snippetCodes;
+        if ($id) {
+            $model = $this->findModel($id);
+            $snippetCodes = $model->snippetCodes;
+        }
+        else {
+            $model = new Snippet();
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -171,22 +106,22 @@ class SnippetController extends BaseController
                 $continue = Yii::$app->request->post('continue');
 
                 if (isset($continue))
-                    return $this->redirect(['update', 'id' => $model->id]);
+                    return $this->redirect(['edit', 'id' => $model->id]);
                 else
                     return $this->redirect(['index']);
 
             } catch (Exception $e) {
                 $transaction->rollBack();
-                return $this->render('create', [
-                            'model' => $model,
-                            'snippetCodes' => $snippetCodes,
-                            'snippetVars' => $snippetVars,
+                return $this->render('edit', [
+                    'model' => $model,
+                    'snippetCodes' => $snippetCodes,
+                    'snippetVars' => $snippetVars,
                 ]);
             }
         } else {
-            return $this->render('update', [
-                        'model' => $model,
-                        'snippetCodes' => (empty($snippetCodes)) ? [new SnippetCode()] : $snippetCodes,
+            return $this->render('edit', [
+                'model' => $model,
+                'snippetCodes' => (empty($snippetCodes)) ? [new SnippetCode()] : $snippetCodes,
             ]);
         }
     }

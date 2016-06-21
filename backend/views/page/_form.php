@@ -15,6 +15,11 @@ use kartik\switchinput\SwitchInput;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
+
+/* @var $headerSections \backend\models\Section */
+/* @var $footerSections \backend\models\Section */
+/* @var $sidebarSections \backend\models\Section */
+/* @var $contentSections \backend\models\Section */
 ?>
 
 <div class="page-form">
@@ -79,14 +84,14 @@ use kartik\switchinput\SwitchInput;
     <h3 class="page-header">Hlavička stránky</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $model->headerSections
+            'sections' => $headerSections
         ]
     )?>
 
     <h3 class="page-header">Hlavný obsah</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => array($model->contentSection),
+            'sections' => $contentSections,
             'type' => 'content',
             'controllerUrl' => Url::to(['/layout']),
         ]
@@ -103,7 +108,7 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
     <?= LayoutWidget::widget([
-            'sections' => array($model->sidebarSection),
+            'sections' => $sidebarSections,
             'type' => 'sidebar',
             'controllerUrl' => Url::to(['/layout']),
         ]
@@ -112,7 +117,7 @@ use kartik\switchinput\SwitchInput;
     <h3 class="page-header">Patička stránky</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $model->footerSections
+            'sections' => $footerSections
         ]
     )?>
 

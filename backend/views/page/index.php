@@ -13,7 +13,7 @@
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať podstránku', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať podstránku', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 
@@ -29,7 +29,7 @@
             [
                 'label' => 'Podstránka',
                 'value' => function ($data) {
-                    return Html::a($data->name, Url::to(['update', 'id' => $data->id]));
+                    return Html::a($data->name, Url::to(['edit', 'id' => $data->id]));
                 },
                 'size'  => '4'
             ],

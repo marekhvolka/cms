@@ -43,36 +43,17 @@ class PortalVarController extends BaseController
     }
 
     /**
-     * Creates a new PortalVar model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new PortalVar();
-
-        if (Yii::$app->request->isPost) {
-            $loaded = $model->load(Yii::$app->request->post());
-
-            if ( $model->save()) {
-                return $this->redirect(['index']);
-            }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing PortalVar model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id);
+        if ($id)
+            $model = $this->findModel($id);
+        else
+            $model = new PortalVar();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
@@ -80,7 +61,7 @@ class PortalVarController extends BaseController
                 return $this->redirect(['index']);
             }
         } else {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
             ]);
         }

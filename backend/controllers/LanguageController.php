@@ -41,42 +41,22 @@ class LanguageController extends BaseController
     }
 
     /**
-     * Creates a new Language model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Language();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            $this->cacheEngine->createLanguageCacheDirectory($model); //vytvori sa adresar pre dany jazyk
-
-            return $this->redirect(['index']);
-        }
-        else
-        {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Language model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id);
+        if ($id)
+            $model = $this->findModel($id);
+        else
+            $model = new Language();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
             ]);
         }

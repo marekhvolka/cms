@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať slovo', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať slovo', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="dictionary-index">
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Identifikátor',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->identifier,Url::to(['/word/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->identifier,Url::to(['/word/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             [
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
 
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{edit} {delete}'],
         ],
     ]); ?>
     <?php Pjax::end() ?>

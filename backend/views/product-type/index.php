@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať typ produktov', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať typ produktov', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="product-type-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name, Url::to(['/product-type/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name, Url::to(['/product-type/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             'active:boolean',

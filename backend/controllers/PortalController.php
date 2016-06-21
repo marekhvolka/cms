@@ -56,75 +56,21 @@ class PortalController extends BaseController
     }
 
     /**
-     * Creates a new Portal model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Portal();
-        $portalVarValues = [];
-
-        if ($model->load(Yii::$app->request->post())) {
-            $transaction = \Yii::$app->db->beginTransaction();
-
-            try {
-                $portalVarValuesData = Yii::$app->request->post('PortalVarValue');
-                $portalVarValues = []; // Array of PortalVarValue models used later for multiple validation.
-
-                // $portalVarValues array appended with retrieved newly created PortalVarValue models.
-
-                if (isset($portalValueData))
-                {
-                    foreach ($portalVarValuesData as $i => $portalValueData) {
-                        $portalVarValues[$i] = new PortalVarValue();
-                    }
-                }
-
-                // Portal model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
-                // PortalVarValue models multiple loading and validation.
-                $loaded = Model::loadMultiple($portalVarValues, Yii::$app->request->post());
-                $valid = Model::validateMultiple($portalVarValues);
-
-                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
-                    throw new Exception;
-                }
-
-                $this->savePortalVarValues($portalVarValues, $model);// Save PortalVarValue models.
-
-                $transaction->commit();// There was no error, models was validated and saved correctly.
-                $model->resetAfterUpdate();
-                return $this->redirect(['index']);
-            } catch (Exception $e) {
-                // There was problem with validation or saving models or another exception was thrown.
-                $transaction->rollBack();
-                return $this->render('create', [
-                    'model' => $model,
-                    'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
-                    'allVariables' => PortalVar::find()->all(),
-                ]);
-            }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'portalVarValues' => $portalVarValues,
-                'allVariables' => PortalVar::find()->all(),
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing Portal model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Edit an Portal model.
+     * If edit is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id); // Portal model retrieved by id.
-        $portalVarValues = $model->portalVarValues;
-
+        if ($id) {
+            $model = $this->findModel($id); // Portal model retrieved by id.
+            $portalVarValues = $model->portalVarValues;
+        }
+        else {
+            $model = new Portal();
+            $portalVarValues = [];
+        }
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
 
@@ -162,17 +108,18 @@ class PortalController extends BaseController
 
                 $model->resetAfterUpdate();
                 return $this->redirect(['index']);
+
             } catch (Exception $e) {
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
-                return $this->render('update', [
+                return $this->render('edit', [
                     'model' => $model,
                     'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
                     'allVariables' => PortalVar::find()->all(),
                 ]);
             }
         } else {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
                 'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
                 'allVariables' => PortalVar::find()->all(),
@@ -239,7 +186,7 @@ class PortalController extends BaseController
         return $this->redirect(['index']);
     }
 
-    public function actionLayoutCreate($type)
+    public function actionLayoutEdit($type)
     {
         if (Yii::$app->request->isPost) {
             $existingSections = Section::findAll([
@@ -301,7 +248,7 @@ class PortalController extends BaseController
             } catch (Exception $exc) {
                 $transaction->rollBack();
 
-                return $this->render('layout-create', [
+                return $this->render('layout-edit', [
                     'sections' => $sections
                 ]);
             }
@@ -312,7 +259,7 @@ class PortalController extends BaseController
             'portal_id' => Yii::$app->session->get('portal_id')
         ]);
 
-        return $this->render('layout-create', [
+        return $this->render('layout-edit', [
             'sections' => $sections
         ]);
     }

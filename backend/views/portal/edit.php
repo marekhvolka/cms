@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
 
-$this->title = 'Úprava portálu: ' . ' ' . $model->name;
+$this->title = 'Editácia portálu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Portály', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Úprava';

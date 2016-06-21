@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať merací kód', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať merací kód', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="tracking-code-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name, Url::to(['/tracking-code/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name, Url::to(['/tracking-code/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             [

@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať produkt', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať produkt', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="product-index">
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Produkt',
                 'value' => function ($data) {
-                    return Html::a($data->name, Url::to(['update', 'id' => $data->id]));
+                    return Html::a($data->name, Url::to(['edit', 'id' => $data->id]));
                 },
                 'size'  => '4'
             ],

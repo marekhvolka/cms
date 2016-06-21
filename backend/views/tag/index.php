@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Pridať tag', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Pridať tag', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="tag-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Systémový názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->name, Url::to(['/tag/update/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->name, Url::to(['/tag/edit/', 'id' => $dataProvider->id]));
                 },
             ],
             'label',

@@ -46,38 +46,49 @@ class PageController extends BaseController
     }
 
     /**
-     * Creates a new Page model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Page();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        } else {
-            return $this->render('create', [
-                'model'           => $model,
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Page model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionEdit($id = null)
     {
-        $model = $this->findModel($id);
+        $headerSections = Section::findAll([
+            'type' => 'header',
+            'page_id' => $id ? $id : -1
+        ]);
+
+        $footerSections = Section::findAll([
+            'type' => 'footer',
+            'page_id' => $id ? $id : -1
+        ]);
+
+        $contentSections = Section::findAll([
+            'type' => 'content',
+            'page_id' => $id ? $id : -1
+        ]);
+
+        $sidebarSections = Section::findAll([
+            'type' => 'sidebar',
+            'page_id' => $id ? $id : -1
+        ]);
+
+        if ($id) {
+            $model = $this->findModel($id);
+        }
+        else {
+            $model = new Page();
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
-            return $this->render('update', [
-                'model'           => $model,
+            return $this->render('edit', [
+                'model' => $model,
+                'headerSections' => $headerSections,
+                'footerSections' => $footerSections,
+                'sidebarSections' => $sidebarSections,
+                'contentSections' => $contentSections,
             ]);
         }
     }
