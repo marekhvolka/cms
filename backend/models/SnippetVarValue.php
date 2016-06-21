@@ -122,7 +122,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      */
     public function getValueListVar()
     {
-        return $this->hasOne(ListVar::className(), ['id' => 'value_list_id']);
+        return $this->hasOne(ListVar::className(), ['snippet_var_value_id' => 'id']);
     }
 
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
@@ -215,7 +215,7 @@ class SnippetVarValue extends \yii\db\ActiveRecord
      */
     public function getTypeName()
     {
-        return $this->getVar()->one()->type->identifier;
+        return $this->var->type->identifier;
     }
 
 }

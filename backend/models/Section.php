@@ -116,9 +116,12 @@ class Section extends \yii\db\ActiveRecord
 
     /** Returns array of newly created models from given data.
      * @param $data
+     * @param $type
+     * @param $portalId
+     * @param $pageId
      * @return array
      */
-    public static function createMultipleFromData($data)
+    public static function createMultipleFromData($data, $type, $portalId, $pageId)
     {
         $sections = [];
 
@@ -130,6 +133,9 @@ class Section extends \yii\db\ActiveRecord
             }
 
             $section->existing = $dataItem['existing'];
+            $section->type = $type;
+            $section->portal_id = $portalId;
+            $section->page_id = $pageId;
             $sections[$i] = $section;
         }
 

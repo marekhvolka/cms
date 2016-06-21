@@ -92,6 +92,8 @@ class SnippetController extends BaseController
 
                 $continue = Yii::$app->request->post('continue');
 
+                $model->resetAfterUpdate();
+
                 if (isset($continue))
                     return $this->redirect(['update', 'id' => $model->id]);
                 else
@@ -163,6 +165,8 @@ class SnippetController extends BaseController
                 }
 
                 $transaction->commit();
+
+                $model->resetAfterUpdate();
 
                 $continue = Yii::$app->request->post('continue');
 

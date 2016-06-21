@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use backend\components\VarManager2\VarManagerWidget;
+use backend\components\VarManager\VarManagerWidget;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -67,7 +67,6 @@ class ProductController extends BaseController
             $transaction = \Yii::$app->db->beginTransaction();
 
             try {
-
                 $productVarValuesData = Yii::$app->request->post('ProductVarValue');
                 $productVarValues = []; // Array of ProductVarValue models used later for multiple validation.
 
@@ -76,8 +75,7 @@ class ProductController extends BaseController
                 if (isset($productValueData))
                 {
                     foreach ($productVarValuesData as $i => $productValueData) {
-                        $productVarValue = new ProductVarValue();
-                        $productVarValues[$i] = $productVarValue;
+                        $productVarValues[$i] = new ProductVarValue();
                     }
                 }
 
@@ -100,17 +98,16 @@ class ProductController extends BaseController
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
                 return $this->render('create', [
-                            'model' => $model,
-                            'productVarValues' => (empty($productVarValues)) ?
-                                    [] : $productVarValues,
-                            'allVariables' => ProductVar::find()->all(),
+                    'model' => $model,
+                    'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
+                    'allVariables' => ProductVar::find()->all(),
                 ]);
             }
         } else {
             return $this->render('create', [
-                        'model' => $model,
-                        'productVarValues' => $productVarValues,
-                        'allVariables' => ProductVar::find()->all(),
+                'model' => $model,
+                'productVarValues' => $productVarValues,
+                'allVariables' => ProductVar::find()->all(),
             ]);
         }
     }
@@ -167,17 +164,16 @@ class ProductController extends BaseController
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
                 return $this->render('update', [
-                            'model' => $model,
-                            'productVarValues' => (empty($productVarValues)) ?
-                                    [] : $productVarValues,
-                            'allVariables' => ProductVar::find()->all(),
+                    'model' => $model,
+                    'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
+                    'allVariables' => ProductVar::find()->all(),
                 ]);
             }
         } else {
             return $this->render('update', [
-                        'model' => $model,
-                        'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
-                        'allVariables' => ProductVar::find()->all(),
+                'model' => $model,
+                'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
+                'allVariables' => ProductVar::find()->all(),
             ]);
         }
     }
@@ -256,5 +252,4 @@ class ProductController extends BaseController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
 }

@@ -6,7 +6,7 @@
  * Time: 1:13
  */
 
-namespace backend\components\VarManager2;
+namespace backend\components\VarManager;
 
 
 class AssetBundle extends \yii\web\AssetBundle

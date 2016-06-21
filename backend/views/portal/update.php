@@ -15,7 +15,8 @@ $this->params['breadcrumbs'][] = 'Úprava';
     
     <?= $this->render('_form', [
         'model' => $model,
-        'modelsPortalVarValue' => $modelsPortalVarValue,
+        'allVariables' => $allVariables,
+        'portalVarValues' => $portalVarValues,
     ]) ?>
 
 </div>

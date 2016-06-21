@@ -759,7 +759,7 @@ class ParseEngine
 
             if ($snippetVar == null )
             {
-                if ($key != 'button_text' && $key != 'button_url') //z tabulky splatok vyhodeny button
+                if ($key != 'button_text' && $key != 'button_url' && $key != 'init' && $key != 'active') //z tabulky splatok vyhodeny button
                 {
                     VarDumper::dump('ERROR');
                 }
@@ -772,7 +772,9 @@ class ParseEngine
             switch($snippetVar->type->identifier)
             {
                 case 'list' :
-                    $snippetVarValue->value_list_id = $this->parseSnippetList($value, $pageBlock, $snippetVar->id);
+
+                    $snippetVarValue->save(); //Needed to save to get ID
+                    $this->parseSnippetList($value, $pageBlock, $snippetVar->id, $snippetVarValue);
 
                     break;
                 case 'page' :
@@ -836,9 +838,10 @@ class ParseEngine
      * @param $pageBlock Block - blok, ktoreho sa zoznamy tykaju
      * @return int
      */
-    private function parseSnippetList($value, Block $pageBlock, $listVarId)
+    private function parseSnippetList($value, Block $pageBlock, $listVarId, $snippetVarValue)
     {
         $list = new ListVar();
+        $list->snippet_var_value_id = $snippetVarValue->id;
         $list->save();
 
         $order = 0;
@@ -884,7 +887,9 @@ class ParseEngine
                 switch($snippetListVar->type->identifier)
                 {
                     case 'list' :
-                        $snippetListVarValue->value_list_id = $this->parseSnippetList($itemVarValue, $pageBlock, $snippetListVar->id);
+
+                        $snippetListVarValue->save();
+                        $this->parseSnippetList($itemVarValue, $pageBlock, $snippetListVar->id, $snippetListVarValue);
 
                         break;
                     case 'page' :

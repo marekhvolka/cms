@@ -16,8 +16,8 @@ use yii\helpers\Url;
  * @property string $portal
  * @property integer $snippet_id
  *
+ * @property Block[] $blocks
  * @property string $url
- * @property Snippet[] $snippets
  * @property Snippet $snippet
  */
 class SnippetCode extends \yii\db\ActiveRecord
@@ -59,6 +59,7 @@ class SnippetCode extends \yii\db\ActiveRecord
             'description' => 'Popis',
             'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'Snippet ID',
+            'blocks' => 'Bloky'
         ];
     }
 
@@ -87,7 +88,7 @@ class SnippetCode extends \yii\db\ActiveRecord
 
     /**
      * Setter for $existing property.
-     * @param type $newExisting new property value.
+     * @param bool $newExisting new property value.
      */
     public function setExisting($newExisting)
     {
@@ -97,17 +98,17 @@ class SnippetCode extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippets()
+    public function getSnippet()
     {
-        return $this->hasMany(Snippet::className(), ['default_code_id' => 'id']);
+        return $this->hasOne(Snippet::className(), ['id' => 'snippet_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippet()
+    public function getBlocks()
     {
-        return $this->hasOne(Snippet::className(), ['id' => 'snippet_id']);
+        return $this->hasMany(Block::className(), ['snippet_code_id' => 'id']);
     }
 
     /**

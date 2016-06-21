@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Exception;
 use Yii;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -31,7 +32,7 @@ use yii\helpers\ArrayHelper;
  * @property SnippetCode $snippetCode
  * @property SnippetVarValue[] $snippetVarValues
  * @property PortalVarValue $portalVarValue
- * @property ProductValue $productVarValue
+ * @property ProductVarValue $productVarValue
  * @property SnippetCode $snippetCodes
  */
 class Block extends \yii\db\ActiveRecord implements ICacheable
@@ -381,5 +382,29 @@ class Block extends \yii\db\ActiveRecord implements ICacheable
     public function resetAfterUpdate()
     {
         $this->getMainCacheFile(true);
+
+        if (isset($this->column))
+        {
+            $section = $this->column->row->section;
+
+            if (isset($section->page))
+            {
+                $section->page->addToCacheBuffer();
+            }
+            else if (isset($section->portal))
+            {
+                foreach($section->portal->pages as $page)
+                {
+                    $page->addToCacheBuffer();
+                }
+            }
+        }
+        if (!isset($this->column))
+        {
+            foreach($this->childBlocks as $childBlock)
+            {
+                $childBlock->resetAfterUpdate();
+            }
+        }
     }
 }

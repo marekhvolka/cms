@@ -2,12 +2,27 @@
 
 namespace backend\components\VarManager;
 
+use backend\models\SnippetVarValue;
 use yii\base\Widget;
 
 class VarManagerWidget extends Widget
 {
-    public $type;
-    public $model;
+    /** All variables assigned before.
+     * @var
+     */
+    public $assignedVariableValues;
+
+    /** List of all variables.
+     * @var
+     */
+    public $allVariables;
+    
+    /**
+     * Url of controller, which is using whis widget for dynamic
+     * append of new row (variable).
+     * @var string 
+     */
+    public $appendVarValueUrl;
 
     public function init()
     {
@@ -16,10 +31,22 @@ class VarManagerWidget extends Widget
 
     public function run()
     {
+        AssetBundle::register($this->getView());
+
         return $this->render('variableWidget', [
-            'type' => $this->type,
-            'model' => $this->model
+            'assignedVariableValues' => $this->assignedVariableValues,
+            'allVariables' => $this->allVariables,
+            'appendVarValueUrl' => $this->appendVarValueUrl,
         ]);
+    }
+
+    /** Renders view for one appended variable.
+     * @param $varValue
+     * @return string
+     */
+    public function appendVariableValue($varValue)
+    {
+        return $this->render('_variableValue', ['varValue' => $varValue]);
     }
 
 }

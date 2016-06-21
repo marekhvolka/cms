@@ -18,7 +18,7 @@ use Yii;
  * @property Product $product
  * @property ProductVar $var
  */
-class ProductVarValue extends \yii\db\ActiveRecord
+class ProductVarValue extends Variable
 {
     public $existing;
     
@@ -56,17 +56,6 @@ class ProductVarValue extends \yii\db\ActiveRecord
             'value_text' => 'Value',
         ];
     }
-
-    
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-     
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
-    }
     
     /**
      * @return \yii\db\ActiveQuery
@@ -83,57 +72,4 @@ class ProductVarValue extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ProductVar::className(), ['id' => 'var_id']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueBlock()
-    {
-        return $this->hasOne(Block::className(), ['id' => 'value_block_id']);
-    }
-
-    /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
-     * @return mixed|string
-     */
-    public function getValue()
-    {
-        $value = null;
-
-        switch ($this->var->type->identifier)
-        {
-            case 'list' :
-
-                $value = $this->valueListVar->value;
-
-                break;
-
-            case 'page' :
-
-                if (isset($this->valuePage))
-                    $value = '$portal->pages->page' . $this->valuePage->id;
-                else
-                    $value = 'NULL';
-
-                break;
-
-            case 'product' :
-                if (isset($this->valueProduct))
-                    $value = '$' . $this->valueProduct->identifier;
-                else
-                    $value = 'NULL';
-
-                break;
-
-            case 'product_snippet' :
-
-                $value = $this->valueBlock->compileBlock();
-                break;
-            default:
-
-                $value = '\''. addslashes(html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text)))) . '\'';
-        }
-
-        return $value;
-    }
-    
 }

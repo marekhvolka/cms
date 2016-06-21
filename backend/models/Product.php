@@ -102,23 +102,18 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $thread = new CacheThread();
-
         $this->getProductVarsFile(true); //resetneme hlavny subor
 
         foreach($this->pages as $page)
         {
-            $page->getMainCacheFile(true);
+            $page->addToCacheBuffer();
         }
 
         /* @var $snipperVarValue SnippetVarValue */
 
         foreach($this->snippetVarValues as $snippetVarValue)
         {
-            $snipperVarValue->block->getMainCacheFile(true);
-
-
-
+            $snippetVarValue->block->resetAfterUpdate();
         }
     }
 

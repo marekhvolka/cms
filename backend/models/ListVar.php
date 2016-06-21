@@ -8,10 +8,11 @@ use Yii;
  * This is the model class for table "list".
  *
  * @property integer $id
+ * @property integer $snippet_var_value_id
  *
  * @property string $value
  * @property ListItem[] $listItems
- * @property SnippetVarValue[] $snippetVarValues
+ * @property SnippetVarValue $snippetVarValue
  */
 class ListVar extends \yii\db\ActiveRecord
 {
@@ -40,6 +41,7 @@ class ListVar extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'snippet_var_value_id' => 'Snippet Var Value ID'
         ];
     }
 
@@ -54,9 +56,9 @@ class ListVar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSnippetVarValues()
+    public function getSnippetVarValue()
     {
-        return $this->hasMany(SnippetVarValue::className(), ['value_list_id' => 'id']);
+        return $this->hasOne(SnippetVarValue::className(), ['id' => 'snippet_var_value_id']);
     }
 
     public function getValue($productType = null)

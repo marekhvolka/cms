@@ -554,4 +554,19 @@ class Page extends \yii\db\ActiveRecord implements ICacheable
 
         $a = $this->dirtyAttributes;
     }
+
+    /** Metoda na pridanie stranky do buffra na reset cache
+     * @param int $priority - priorita resetnutia, defaultne rovna 0 (radi sa podla casu poziadavky)
+     * @throws \yii\db\Exception
+     */
+    public function addToCacheBuffer($priority = 0)
+    {
+        $sql = 'INSERT INTO cache_page (page_id, priority) VALUES (:page_id, :priority)';
+
+        $command = Yii::$app->db->createCommand($sql);
+        $command->bindValue(':page_id', $this->id);
+        $command->bindValue(':priority', $priority);
+
+        $command->execute();
+    }
 }

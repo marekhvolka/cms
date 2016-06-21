@@ -8,6 +8,7 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections backend\models\Section */
+/* @var $type string layout type - either header or footer */
 ?>
  
 <?php $form = ActiveForm::begin([
@@ -16,9 +17,7 @@ use yii\helpers\Url;
         ]); ?>
 
 <?= LayoutWidget::widget([
-        'type' => 'footer', // TODO set type of layout.
         'sections' => $sections,
-        'portalId' => Yii::$app->session->get('portal_id'),
         'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
     ]

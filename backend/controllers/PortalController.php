@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\VarManager\VarManagerWidget;
 use common\components\ParseEngine;
 use Exception;
 use Yii;
@@ -49,8 +50,8 @@ class PortalController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -62,55 +63,53 @@ class PortalController extends BaseController
     public function actionCreate()
     {
         $model = new Portal();
-        $modelsPortalVarValue = [new PortalVarValue()];
+        $portalVarValues = [];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $modelsPortalVarValue = Model::createMultiple(PortalVarValue::classname());
-            Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
+        if ($model->load(Yii::$app->request->post())) {
+            $transaction = \Yii::$app->db->beginTransaction();
 
-            // TODO - refactor this - same code in ProductController
-            $vars = Yii::$app->request->post('var');
-            foreach ($vars as $id_var => $value) {
-                $productVarValue = new PortalVarValue();
-                $productVarValue->portal_id = $model->id;
-                $productVarValue->var_id = $id_var;
-                $productVarValue->value = $value[0];
-                $productVarValue->save();
-            }
+            try {
+                $portalVarValuesData = Yii::$app->request->post('PortalVarValue');
+                $portalVarValues = []; // Array of PortalVarValue models used later for multiple validation.
 
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($modelsPortalVarValue), ActiveForm::validate($model)
-                );
-            }
+                // $portalVarValues array appended with retrieved newly created PortalVarValue models.
 
-            if (Model::validateMultiple($modelsPortalVarValue) && $model->validate()) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsPortalVarValue as $modelPortalVarValue) {
-                            $modelPortalVarValue->portal_id = $model->id;
-                            if (!($flag = $modelPortalVarValue->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
+                if (isset($portalValueData))
+                {
+                    foreach ($portalVarValuesData as $i => $portalValueData) {
+                        $portalVarValues[$i] = new PortalVarValue();
                     }
-                    if ($flag) {
-                        $transaction->commit();
-                        $this->cacheEngine->cachePortal($model);
-                        return $this->redirect(['index']);
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
                 }
+
+                // Portal model validated and saved.
+                $modelValidatedAndSaved = $model->validate() && $model->save();
+                // PortalVarValue models multiple loading and validation.
+                $loaded = Model::loadMultiple($portalVarValues, Yii::$app->request->post());
+                $valid = Model::validateMultiple($portalVarValues);
+
+                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
+                    throw new Exception;
+                }
+
+                $this->savePortalVarValues($portalVarValues, $model);// Save PortalVarValue models.
+
+                $transaction->commit();// There was no error, models was validated and saved correctly.
+                $model->resetAfterUpdate();
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                // There was problem with validation or saving models or another exception was thrown.
+                $transaction->rollBack();
+                return $this->render('create', [
+                    'model' => $model,
+                    'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
+                    'allVariables' => PortalVar::find()->all(),
+                ]);
             }
         } else {
             return $this->render('create', [
-                        'model' => $model,
-                        'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new PortalVarValue()] : $modelsPortalVarValue,
+                'model' => $model,
+                'portalVarValues' => $portalVarValues,
+                'allVariables' => PortalVar::find()->all(),
             ]);
         }
     }
@@ -123,66 +122,108 @@ class PortalController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $modelsPortalVarValue = $model->portalVarValues;
+        $model = $this->findModel($id); // Portal model retrieved by id.
+        $portalVarValues = $model->portalVarValues;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $oldIDs = ArrayHelper::map($modelsPortalVarValue, 'id', 'id');
-            $modelsPortalVarValue = Model::createMultiple(PortalVar::classname(), $modelsPortalVarValue);
-            Model::loadMultiple($modelsPortalVarValue, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPortalVarValue, 'id', 'id')));
+        if ($model->load(Yii::$app->request->post())) {
+            $transaction = \Yii::$app->db->beginTransaction();
 
-            $vars = Yii::$app->request->post('var');
-            foreach ($model->portalVarValues as $var_value) {
-                $var_value->delete();
-            }
-
-            foreach ($vars as $id_var => $value) {
-                $productVarValue = new PortalVarValue();
-                $productVarValue->portal_id = $model->id;
-                $productVarValue->var_id = $id_var;
-                $productVarValue->value = $value[0];
-                $productVarValue->save();
-            }
-
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                                ActiveForm::validateMultiple($modelsPortalVarValue), ActiveForm::validate($model)
-                );
-            };
-
-            if (Model::validateMultiple($modelsPortalVarValue) && $valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-                        if (!empty($deletedIDs)) {
-                            PortalVar::deleteAll(['id' => $deletedIDs]);
-                        }
-                        foreach ($modelsPortalVarValue as $modelPortalVarValue) {
-                            $modelPortalVarValue->portal_id = $model->id;
-                            if (!($flag = $modelPortalVarValue->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-                        }
+            try {
+                $portalVarValuesData = Yii::$app->request->post('PortalVarValue');
+                $portalVarValues = []; // Array of PortalVarValue models used later for multiple validation.
+                // $portalVarValues array appended with retrieved existing PortalVarValue
+                // models or with newly created ones.
+                foreach ($portalVarValuesData as $i => $portalValueData) {
+                    // If 'existing' flag is true, PortalVarValue model is retrieved.
+                    if ($portalValueData['existing'] == 'true') {
+                        $portalVarValue = PortalVarValue::find()
+                            ->where(['id' => $portalValueData['id']])
+                            ->one();
+                    } else {
+                        $portalVarValue = new PortalVarValue();
                     }
-                    if ($flag) {
-                        $transaction->commit();
-                        $this->cacheEngine->cachePortal($model);
-                        return $this->redirect(['index']);
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
+                    $portalVarValues[$i] = $portalVarValue;
                 }
+
+                // Portal model validated and saved.
+                $modelValidatedAndSaved = $model->validate() && $model->save();
+                // PortalVarValue models multiple loading and validation.
+                $loaded = Model::loadMultiple($portalVarValues, Yii::$app->request->post());
+                $valid = Model::validateMultiple($portalVarValues);
+
+                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
+                    throw new Exception;
+                }
+
+                $this->savePortalVarValues($portalVarValues, $model);// Save PortalVarValue models.
+                $this->deletePortalVarValues($portalVarValues, $model);// Delete PortalVarValue models.
+
+                $transaction->commit(); // There was no error, models was validated and saved correctly.
+
+                $model->resetAfterUpdate();
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                // There was problem with validation or saving models or another exception was thrown.
+                $transaction->rollBack();
+                return $this->render('update', [
+                    'model' => $model,
+                    'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
+                    'allVariables' => PortalVar::find()->all(),
+                ]);
             }
         } else {
             return $this->render('update', [
-                        'model' => $model,
-                        'modelsPortalVarValue' => (empty($modelsPortalVarValue)) ? [new PortalVarValue()] : $modelsPortalVarValue,
+                'model' => $model,
+                'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
+                'allVariables' => PortalVar::find()->all(),
             ]);
         }
+    }
+
+    private function savePortalVarValues($portalVarValues, $model)
+    {
+        // Each PortalVarValue model saved individually.
+        foreach ($portalVarValues as $portalVarValue) {
+            $portalVarValue->portal_id = $model->id;
+            if (!$portalVarValue->save()) {
+                throw new Exception;
+            }
+        }
+    }
+
+    private function deletePortalVarValues($portalVarValues, $model)
+    {
+        // IDs of newly created or updated PortalVarValues.
+        $newIDs = ArrayHelper::map($portalVarValues, 'id', 'id');
+        // IDs of all PortalVarValues with PortalVarValues which user deleted.
+        $allPortalVarValues = PortalVarValue::find()
+            ->where(['portal_id' => $model->id])
+            ->all();
+        $oldIDs = ArrayHelper::map($allPortalVarValues, 'id', 'id');
+
+        $deletedIDs = array_diff($oldIDs, $newIDs); // IDs of PortalVarValues to be deleted.
+        $portalVarValuesToDelete = PortalVarValue::find()->where(['id' => $deletedIDs])->all();
+
+        // Deleting PortalVarValues.
+        foreach ($portalVarValuesToDelete as $varValueToDelete) {
+            $deleted = $varValueToDelete->delete();
+            if (!$deleted) {
+                throw new Exception();
+            }
+        }
+    }
+
+    /**
+     * Action neccessary for VarManagerWidget - appending one variable value at the end of the list.
+     * @param Model $id - id of Var
+     * @return string - call of VarManagerWidget method for rendering view of VarValue.
+     */
+    public function actionAppendVarValue($id)
+    {
+        $varValue = new PortalVarValue();
+        $varValue->var_id = $id;
+
+        return (new VarManagerWidget())->appendVariableValue($varValue);
     }
 
     /**
@@ -198,29 +239,12 @@ class PortalController extends BaseController
         return $this->redirect(['index']);
     }
 
-    public function actionHeaderCreate()
-    {
-        if (Yii::$app->request->isPost) {
-            $test = 0;
-        }
-
-        $sections = Section::findAll([
-                    'type' => 'header',
-                    'portal_id' => Yii::$app->session->get('portal_id')
-        ]);
-
-        return $this->render('header-create', [
-                    'sections' => $sections
-        ]);
-    }
-
-    // TODO - move this action to LayoutController
-    public function actionFooterCreate()
+    public function actionLayoutCreate($type)
     {
         if (Yii::$app->request->isPost) {
             $existingSections = Section::findAll([
-                        'type' => 'footer',
-                        'portal_id' => Yii::$app->session->get('portal_id')
+                'type' => $type,
+                'portal_id' => Yii::$app->session->get('portal_id')
             ]);
 
             $transaction = Yii::$app->db->beginTransaction();
@@ -232,7 +256,7 @@ class PortalController extends BaseController
                 $blocksData = Yii::$app->request->post('Block');
 
                 // Creating sections, rows, columns and blocks from given data.
-                $sections = Section::createMultipleFromData($sectionsData);
+                $sections = Section::createMultipleFromData($sectionsData, $type, Yii::$app->session->get('portal_id'), null);
                 $rows = Row::createMultipleFromData($rowsData);
                 $columns = Column::createMultipleFromData($columnsData);
                 $blocks = Block::createMultipleFromData($blocksData);
@@ -277,19 +301,19 @@ class PortalController extends BaseController
             } catch (Exception $exc) {
                 $transaction->rollBack();
 
-                return $this->render('header-create', [
-                            'sections' => $sections
+                return $this->render('layout-create', [
+                    'sections' => $sections
                 ]);
             }
         }
 
         $sections = Section::findAll([
-                    'type' => 'footer',
-                    'portal_id' => Yii::$app->session->get('portal_id')
+            'type' => $type,
+            'portal_id' => Yii::$app->session->get('portal_id')
         ]);
 
-        return $this->render('header-create', [
-                    'sections' => $sections
+        return $this->render('layout-create', [
+            'sections' => $sections
         ]);
     }
 
@@ -308,21 +332,4 @@ class PortalController extends BaseController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
-    public function actionParse($portalId)
-    {
-        $parseEngine = new ParseEngine();
-
-        $rows = (new Query())
-                ->select('*')
-                ->from('portal_global')
-                ->where(['portal_id' => $portalId])
-                ->createCommand()
-                ->queryAll();
-
-        foreach ($rows as $row) {
-            $parseEngine->parsePageGlobalSection('portal', $row);
-        }
-    }
-
 }

@@ -12,8 +12,6 @@ use common\models\User;
  * @property integer $id
  * @property string $name
  * @property string $description
- * @property integer $default_code_id
- * @property integer $snippet_type
  * @property string $section_id
  * @property string $section_class
  * @property string $section_style
@@ -23,7 +21,6 @@ use common\models\User;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
- * @property SnippetCode $defaultCode
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes
  * @property SnippetVar[] $snippetVariables
@@ -45,7 +42,7 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
     {
         return [
             [['name', 'snippet_type'], 'required'],
-            [['default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
+            [['last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['description'], 'string'],
@@ -63,8 +60,6 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
             'id' => 'ID',
             'name' => 'Názov',
             'description' => 'Popis snippetu',
-            'default_code_id' => 'Default Code ID',
-            'snippet_type' => 'Typ',
             'section_id' => 'Sekcia ID',
             'section_class' => 'Sekcia Class',
             'section_style' => 'Sekcia Style',
@@ -78,7 +73,7 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
 
     /**
      * Event fired before save model. User id is set as last user who edits model.
-     * @param type $insert true if save is insert type, false if update.
+     * @param bool $insert true if save is insert type, false if update.
      * @return bool
      */
     public function beforeSave($insert)
@@ -97,14 +92,6 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
         $this->unlinkAll('snippetVariables', true);
         $this->unlinkAll('snippetCodes', true);
         return parent::beforeDelete();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDefaultCode()
-    {
-        return $this->hasOne(SnippetCode::className(), ['id' => 'default_code_id']);
     }
 
     /**
@@ -191,6 +178,16 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
 
     public function resetAfterUpdate()
     {
-        // TODO: Implement resetAfterUpdate() method.
+        $this->getMainCacheFile(true);
+
+        /* @var $snippetCode \backend\models\SnippetCode */
+        foreach($this->snippetCodes as $snippetCode)
+        {
+            /* @var $block \backend\models\Block */
+            foreach($snippetCode->blocks as $block)
+            {
+                $block->resetAfterUpdate();
+            }
+        }
     }
 }

@@ -22,9 +22,6 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             <?= Html::activeHiddenInput($varValue, 'var_id', [
                 'name' => $varValueModelName . '[' . $postIndex . '][var_id]'
                 ]);?>
-            <?= Html::activeHiddenInput($varValue, 'product_id', [
-                'name' => $varValueModelName . '[' . $postIndex . '][product_id]'
-                ]);?>
             
             <?= Html::hiddenInput($varValueModelName . '[' . $postIndex . '][existing]',
                 $varValue->id ? 'true' : 'false'); ?>

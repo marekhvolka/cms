@@ -2,6 +2,7 @@
 
 use backend\models\PortalVar;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use backend\models\Template;
 use yii\helpers\ArrayHelper;
@@ -13,6 +14,8 @@ use backend\components\VarManager\VarManagerWidget;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $portalVarValues backend\models\PortalVarValue */
+/* @var $allVariables backend\models\PortalVar */
 ?>
 
 <div class="portal-form">
@@ -50,12 +53,11 @@ use backend\components\VarManager\VarManagerWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?=VarManagerWidget::widget(['type' => PortalVar::className(), 'model' => $model])?>
-
-    <?php
-    //TODO: Variable Widget nema mat save button
-
-    ?>
+    <?= VarManagerWidget::widget([
+        'allVariables' => $allVariables,
+        'assignedVariableValues' => $portalVarValues,
+        'appendVarValueUrl' => Url::to(['portal/append-var-value']),
+    ])?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">
@@ -67,3 +69,5 @@ use backend\components\VarManager\VarManagerWidget;
             </div>
         </div>
     </div>
+
+    <?php ActiveForm::end(); ?>

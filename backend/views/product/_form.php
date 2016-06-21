@@ -1,22 +1,19 @@
 <?php
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
-use backend\models\ProductVarValue;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use backend\models\Product;
 use backend\models\Language;
-use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use backend\models\ProductType;
-use backend\components\VarManager2\VarManagerWidget;
+use backend\components\VarManager\VarManagerWidget;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
 /* @var $productVarValues backend\models\ProductVarValue */
-/* @var $allVariablesl backend\models\ProductVar */
+/* @var $allVariables backend\models\ProductVar */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
