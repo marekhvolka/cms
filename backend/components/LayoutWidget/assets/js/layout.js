@@ -1,7 +1,3 @@
-var optionsElement;
-var portalIdUrlParam = portalId ? '&portalId=' + portalId : '';
-var pageIdUrlParam = pageId ? '&pageId=' + pageId : '';
-
 var appendUrl = {
     section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',

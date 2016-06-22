@@ -143,12 +143,10 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
-        $allSections = Section::find([
+        $allSections = Section::findAll([
             'type' => $type,
             'portal_id' => Yii::$app->session->get('portal_id')
-        ])->asArray()->all();
-
-
+        ]);
 
         if (Yii::$app->request->isPost) {
 
