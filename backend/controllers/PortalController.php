@@ -161,9 +161,6 @@ class PortalController extends BaseController
                 foreach($sectionsData as $indexSection => $itemSection) {
                     Section::loadFromData($sections, $itemSection, $indexSection, Section::className());
 
-                    if (!($sections[$indexSection]->validate() && $sections[$indexSection]->save()))
-                        throw new \yii\base\Exception;
-
                     $rowsData = $sectionsData[$indexSection];
 
                     if (!key_exists('Row', $rowsData))
@@ -174,11 +171,6 @@ class PortalController extends BaseController
                     foreach($rowsData['Row'] as $indexRow => $itemRow) {
 
                         Row::loadFromData($rows, $itemRow, $indexRow, Row::className());
-
-                        $rows[$indexRow]->section_id = $sections[$indexSection]->id;
-
-                        if (!($rows[$indexRow]->validate() && $rows[$indexRow]->save()))
-                            throw new \yii\base\Exception;
 
                         $columnsData = $sectionsData[$indexSection]['Row'][$indexRow];
 
@@ -191,11 +183,6 @@ class PortalController extends BaseController
 
                             Column::loadFromData($columns, $itemColumn, $indexColumn, Column::className());
 
-                            $columns[$indexColumn]->row_id = $rows[$indexRow]->id;
-
-                            if (!($columns[$indexColumn]->validate() && $columns[$indexColumn]->save()))
-                                throw new \yii\base\Exception;
-
                             $blocksData = $sectionsData[$indexSection]['Row'][$indexRow]['Column'][$indexColumn];
 
                             if (!key_exists('Block', $blocksData))
@@ -205,10 +192,29 @@ class PortalController extends BaseController
 
                             foreach($blocksData['Block'] as $indexBlock => $itemBlock) {
                                 Block::loadFromData($blocks, $itemBlock, $indexBlock, Block::className());
+                            }
+                        }
+                    }
+                }
 
-                                $blocks[$indexBlock]->column_id = $columns[$indexColumn]->id;
+                foreach($sections as $section) {
+                    if (!($section->validate() && $section->save()))
+                        throw new \yii\base\Exception;
 
-                                if (!($blocks[$indexBlock]->validate() && $blocks[$indexBlock]->save()))
+                    foreach($section->rows as $row) {
+                        $row->section_id = $section->id;
+
+                        if (!($row->validate() && $row->save()))
+                            throw new \yii\base\Exception;
+                        foreach ($row->columns as $column) {
+                            $column->row_id = $row->id;
+
+                            if (!($column->validate() && $column->save()))
+                                throw new \yii\base\Exception;
+                            foreach($column->blocks as $block) {
+                                $block->column_id = $column->id;
+
+                                if (!($block->validate() && $block->save()))
                                     throw new \yii\base\Exception;
                             }
                         }
