@@ -152,44 +152,6 @@ class Block extends CustomModel implements ICacheable
      * @param $data
      * @return array
      */
-    public static function createMultipleFromData($data)
-    {
-        $blocks = [];
-
-        foreach ($data as $i => $dataItem) {
-            if ($dataItem['existing'] == 'true') {
-                $block = Block::findOne($dataItem['id']);
-            } else {
-                $block = new Block();
-                $block->column_id = $dataItem['column_id'];
-            }
-
-            $block->existing = $dataItem['existing'];
-            $blocks[$i] = $block;
-        }
-
-        return $blocks;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param Block $blocks
-     * @return bool
-     * @throws Exception
-     */
-    public static function saveMultiple($blocks)
-    {
-        foreach ($blocks as $block) {
-            if ($block->existing == 'false') {
-                $block->id = null;
-            }
-            if (!$block->save()) {
-                throw new Exception;
-            }
-        }
-
-        return true;
-    }
 
     /**
      * @return string

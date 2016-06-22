@@ -41,51 +41,58 @@ class LayoutWidget extends Widget
     }
 
     /** Renders view for one appended section.
+     * @param Section $section
+     * @param int $indexSection
      * @return string
      */
-    public function appendSection($type, $portalId= null, $pageId = null)
+    public function appendSection(Section $section)
     {
-        $section = new Section();
-        $section->type = $type;
-        $section->portal_id = $portalId;
-        $section->page_id = $pageId;
-        return $this->render('_section', ['section' => $section]);
+        return $this->render('_section', [
+            'model' => $section,
+        ]);
     }
 
-    /** Renders view for one appended rpw.
+    /** Renders view for one appended row.
+     * @param Row $row
+     * @param $indexSection
+     * @return string
+     * @internal param $indexRow
+     */
+    public function appendRow(Row $row, $indexSection)
+    {
+        return $this->render('_row', [
+            'model' => $row,
+            'indexSection' => $indexSection,
+        ]);
+    }
+
+    /** Renders view for one appended column.
+     * @param Column $column
+     * @param $indexSection
+     * @param $indexRow
      * @return string
      */
-    public function appendRow($sectionId, $order, $columnsWidth)
+    public function appendColumn(Column $column, $indexSection, $indexRow)
     {
-        if (!$columnsWidth) {
-            return false;
-        }
-        
-        $row = new Row();
-        $row->section_id = $sectionId;
-        $columns = [];
-
-        foreach ($columnsWidth as $i => $width) {
-            $column = new Column();
-            $column->width = $width;
-            $column->row_id = $row->id;
-            $column->order = $i;
-            $columns[] = $column;
-        }
-        
-        return $this->render('_row', ['row' => $row, 'columns' => $columns]);
+        return $this->render('_column', [
+            'model' => $column,
+            'indexSection' => $indexSection,
+            'indexRow' => $indexRow,
+        ]);
     }
 
     /** Renders view for one appended section.
+     * @param Block $block
      * @return string
      */
-    public function appendBlock($columnId)
+    public function appendBlock(Block $block, $indexSection, $indexRow, $indexColumn)
     {
-        $block = new Block();
-        $block->column_id = $columnId;
-        $block->data = 'test'; // TODO test data.
-        $block->type = 'text'; // TODO test data.
-        return $this->render('_block', ['block' => $block]);
+        return $this->render('_block', [
+            'block' => $block,
+            'indexSection' => $indexSection,
+            'indexRow' => $indexRow,
+            'indexColumn' => $indexColumn
+        ]);
     }
 
 }

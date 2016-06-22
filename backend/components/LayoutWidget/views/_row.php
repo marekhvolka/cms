@@ -2,18 +2,25 @@
 use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Row */
+/* @var $indexSection int */
+/* @var $indexRow int */
 
-$postIndex = $model->id ? $model->id : rand(0, 10000000); // Index for correctly indexing Post request variable.
+if (!isset($indexRow))
+    $indexRow = rand(100, 1000000);
 ?>
 
 <!--ROW TO ADD-->
 <div class="row layout-row">
-    <?php $model->id = $model->id ? : $postIndex ?>
-    <?= BaseHtml::hiddenInput("Row[$postIndex][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput("Row[$postIndex][id]", $postIndex, ['class' => 'id']); ?>
-    <?= BaseHtml::hiddenInput("Row[$postIndex][section_id]", $model->section_id, ['class' => 'section_id']); ?>
-    <?= BaseHtml::hiddenInput("Row[$postIndex][order]", $model->order, ['class' => 'order']); ?>
-    <?php foreach ($model->columns as $column) : ?>
-        <?= $this->render('_column', ['model' => $column]); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][id]", $model->id, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][section_id]", $model->section_id, ['class' => 'section_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][order]", $model->order, ['class' => 'order']); ?>
+    <?php foreach ($model->columns as $indexColumn => $column) : ?>
+        <?= $this->render('_column', [
+            'model' => $column,
+            'indexSection' => $indexSection,
+            'indexRow' => $indexRow,
+            'indexColumn' => $indexColumn
+        ]); ?>
     <?php endforeach; ?>
 </div>

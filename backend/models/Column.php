@@ -81,60 +81,6 @@ class Column extends CustomModel
             ->orderBy(['order' => SORT_ASC]);
     }
 
-    /** Returns array of newly created models from given data.
-     * @param $data
-     * @return array
-     */
-    public static function createMultipleFromData($data)
-    {
-        $columns = [];
-
-        foreach ($data as $i => $dataItem) {
-            if ($dataItem['existing'] == 'true') {
-                $column = Column::findOne($dataItem['id']);
-            } else {
-                $column = new Column();
-                $column->id = $dataItem['id'];
-                $column->row_id = $dataItem['row_id'];
-            }
-
-            $column->existing = $dataItem['existing'];
-            $columns[$i] = $column;
-        }
-
-        return $columns;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param Column $columns
-     * @param Block $blocks
-     * @return bool
-     * @throws Exception
-     */
-    public static function saveMultiple($columns, $blocks)
-    {
-        foreach ($columns as $column) {
-            $formerId = $column->id;
-            if ($column->existing == 'false') {
-                $column->id = null;
-                if (!$column->save()) {
-                    throw new Exception;
-                }
-
-                // column_id of every block with id set to former id of column 
-                // (newly created column with random generated id) is set to current
-                // id of saved column
-                foreach ($blocks as $block) {
-                    if ($block->column_id == $formerId) {
-                        $block->column_id = $column->id;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     public function getPrefix()
     {
         $settings = $this->getChildCssSettings();
@@ -205,5 +151,4 @@ class Column extends CustomModel
 
         return $result;
     }
-
 }

@@ -5,8 +5,11 @@ namespace backend\controllers;
 use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
+use backend\models\Column;
 use backend\models\Portal;
+use backend\models\Row;
 use backend\models\search\GlobalSearch;
+use backend\models\Section;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -56,7 +59,7 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Action neccessary for LayoutWidget - appending one section at the end of the list.
+     * Action necessary for LayoutWidget - appending one section at the end of the list.
      * @return string - call of LayoutWidget method for rendering view.
      * @internal param string $type
      */
@@ -65,31 +68,65 @@ abstract class BaseController extends Controller
         $type = Yii::$app->request->post('type');
         $portalId = Yii::$app->request->post('portalId');
         $pageId = Yii::$app->request->post('pageId');
+
+        $section = new Section();
+        $section->type = $type;
+        $section->portal_id = $portalId;
+        $section->page_id = $pageId;
         
-        return (new LayoutWidget())->appendSection($type, $portalId, $pageId);
+        return (new LayoutWidget())->appendSection($section);
     }
 
     /**
-     * Action neccessary for LayoutWidget - appending one row at the end of the list.
+     * Action necessary for LayoutWidget - appending one row at the end of the list.
      * @return string - call of LayoutWidget method for rendering view.
      */
     public function actionAppendRow()
     {
-        $columnsWidth = Yii::$app->request->post('columns');
-        $order = Yii::$app->request->post('order');
+        //$order = Yii::$app->request->post('order');
         $sectionId = Yii::$app->request->post('sectionId');
 
-        return (new LayoutWidget())->appendRow($sectionId, $order, $columnsWidth);
+        $indexSection = Yii::$app->request->post('indexSection');
+
+        $row = new Row();
+        $row->section_id = $sectionId;
+
+        return (new LayoutWidget())->appendRow($row, $indexSection);
+    }
+
+    public function actionAppendColumn()
+    {
+        $rowId = Yii::$app->request->post('rowId');
+        $width = Yii::$app->request->post('width');
+
+        $indexSection = Yii::$app->request->post('indexSection');
+        $indexRow = Yii::$app->request->post('indexRow');
+
+        $column = new Column();
+        $column->row_id = $rowId;
+        $column->width = $width;
+
+        return (new LayoutWidget())->appendColumn($column, $indexSection, $indexRow);
     }
 
     /**
-     * Action neccessary for LayoutWidget - appending one block at the end of the list.
-     * @param type $id id of column.
+     * Action necessary for LayoutWidget - appending one block at the end of the list.
      * @return string - call of LayoutWidget method for rendering view.
      */
-    public function actionAppendBlock($id)
+    public function actionAppendBlock()
     {
-        return (new LayoutWidget())->appendBlock($id);
+        $columnId = Yii::$app->request->post('columnId');
+
+        $indexSection = Yii::$app->request->post('indexSection');
+        $indexRow = Yii::$app->request->post('indexRow');
+        $indexColumn = Yii::$app->request->post('indexColumn');
+
+        $block = new Block();
+        $block->column_id = $columnId;
+        $block->data = 'test'; // TODO test data.
+        $block->type = 'text'; // TODO test data.
+
+        return (new LayoutWidget())->appendBlock($block, $indexSection, $indexRow, $indexColumn);
     }
 
     public function actionBlock($id)

@@ -5,6 +5,7 @@ var pageIdUrlParam = pageId ? '&pageId=' + pageId : '';
 var appendUrl = {
     section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
+    column: controllerUrl + '/' + 'append-column',
     block: controllerUrl + '/' + 'append-block'
 };
 
@@ -12,7 +13,7 @@ var appendUrl = {
 $('.btn-add-section').click(function () {
     var layouts = $(this).parents('.layouts');
     var postData = {
-        type : layoutType,
+        type : layoutType
     };
     
     if (pageId) {
@@ -52,9 +53,28 @@ function attachAddRowEvent(button) {
         var section = $(this).parents('.section').first();
         var sectionId = section.find('.id').first().val();
 
-        $.post(appendUrl.row, {columns: columnsByWidth, sectionId: sectionId}, function (data) {
+        var postData = {
+            sectionId : sectionId,
+            indexSection : $(this).data('index-section')
+        };
+
+        $.post(appendUrl.row, postData, function (data) {
             var row = appendElement(section, data);
             attachRemoveRowEvent(row.find('.btn-remove-row'));
+
+            for(i = 0; i < columnsByWidth.length; i++) {
+
+                var postColumnData = {
+                    rowId : row.find('.id').first().val(),
+                    width : columnsByWidth[i],
+                    indexSection : $(this).data('index-section')
+                };
+
+                $.post(appendUrl.column, postColumnData, function (columnData) {
+                    var column = appendElement(row, columnData);
+                })
+            }
+
             attachAddBlockEvent(row.find('.column-option'));
         });
     });
@@ -67,7 +87,14 @@ function attachAddBlockEvent(button) {
         var column = $(this).parents('.column').first();
         var columnId = column.find('.id').first().val();
 
-        $.get(appendUrl.block + '?id=' + columnId, function (data) {
+        var postData = {
+            columnId : columnId,
+            indexSection : $(this).data('index-section'),
+            indexRow : $(this).data('index-row'),
+            indexColumn : $(this).data('index-column')
+        };
+
+        $.post(appendUrl.block, postData, function (data) {
             var row = appendElement(column, data);
             attachRemoveBlockEvent(row.find('.btn-remove-block'));
         });
@@ -78,8 +105,7 @@ function appendElement(parentElement, dataToAppend) {
     var row = $('<li></li>');
     var list = parentElement.find('.children-list').first();
     row = row.appendTo(list);
-    var appendedDiv = dataToAppend;
-    $(row).append(appendedDiv);
+    $(row).append(dataToAppend);
     return row;
 }
 

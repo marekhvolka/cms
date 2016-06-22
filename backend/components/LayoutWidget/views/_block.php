@@ -4,17 +4,23 @@ use yii\helpers\Html;
 use backend\components\BlockModal\BlockModalWidget;
 
 /* @var $model \backend\models\Block */
+/* @var $indexSection int */
+/* @var $indexRow int */
+/* @var $indexColumn int */
+/* @var $indexBlock int */
 
-$postIndex = $model->id ? $model->id : rand(0, 10000000); // Index for correctly indexing Post request variable.
+if (!isset($indexBlock))
+    $indexBlock = rand(100, 1000000);
+
 ?>
 
 <div class="btn-group layout-block block-<?= $model->id ?>"
      data-content="" role="group">
-         <?= Html::hiddenInput("Block[$postIndex][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-         <?= Html::hiddenInput("Block[$postIndex][id]", $postIndex, ['class' => 'id']); ?>
-         <?= Html::hiddenInput("Block[$postIndex][column_id]", $model->column_id, ['class' => 'column_id']); ?>
-         <?= Html::hiddenInput("Block[$postIndex][type]", $model->type, ['class' => 'type']); ?>
-         <?= Html::hiddenInput("Block[$postIndex][order]", $model->order, ['class' => 'order']); ?>
+         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][id]", $model->id, ['class' => 'id']); ?>
+         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][column_id]", $model->column_id, ['class' => 'column_id']); ?>
+         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][type]", $model->type, ['class' => 'type']); ?>
+         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][order]", $model->order, ['class' => 'order']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">
         <span class="glyphicon glyphicon-globe"></span>
     </button>

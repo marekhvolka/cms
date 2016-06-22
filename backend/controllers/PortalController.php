@@ -198,90 +198,88 @@ class PortalController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $sections = array();
-                $rows = array();
-                $columns = array();
-                $blocks = array();
 
-                foreach($allSections as $section) {
-                    $sections[$section->id] = $section;
-                    foreach($section->rows as $row) {
-                        $rows[$row->id] = $row;
+                $sections = $allSections;
 
-                        foreach ($row->columns as $column) {
-                            $columns[$column->id] = $column;
+                // Getting all data for creating/updating sections, rows, columns and blocks.
 
-                            foreach ($column->blocks as $block) {
-                                $blocks[$block->id] = $block;
+                $sectionsData = Yii::$app->request->post('Section');
+                foreach($sectionsData as $indexSection => $itemSection) {
+                    Section::loadFromData($sections, $itemSection, $indexSection, Section::className());
+
+                    $rowsData = $sectionsData[$indexSection];
+
+                    if (!key_exists('Row', $rowsData))
+                        continue;
+
+                    $rows = $sections[$indexSection]->rows;
+
+                    foreach($rowsData['Row'] as $indexRow => $itemRow) {
+
+                        Row::loadFromData($rows, $itemRow, $indexRow, Row::className());
+
+                        $columnsData = $sectionsData[$indexSection]['Row'][$indexRow];
+
+                        if (!key_exists('Column', $columnsData))
+                            continue;
+
+                        $columns = $rows[$indexRow]->columns;
+
+                        foreach($columnsData['Column'] as $indexColumn => $itemColumn) {
+
+                            Column::loadFromData($columns, $itemColumn, $indexColumn, Column::className());
+
+                            $blocksData = $sectionsData[$indexSection]['Row'][$indexRow]['Column'][$indexColumn];
+
+                            if (!key_exists('Block', $blocksData))
+                                continue;
+
+                            $blocks = $columns[$indexColumn]->blocks;
+
+                            foreach($blocksData['Block'] as $indexBlock => $itemBlock) {
+                                Block::loadFromData($blocks, $itemBlock, $indexBlock, Block::className());
                             }
                         }
                     }
                 }
 
-                // Getting all data for creating/updating sections, rows, columns and blocks.
-                $sectionsData = Yii::$app->request->post('Section');
-                foreach($sectionsData as $index => $item) {
-                    Section::loadFromData($sections, $item, $index, Section::className());
-                }
-
-                $rowsData = Yii::$app->request->post('Row');
-                foreach($rowsData as $index => $item) {
-                    Row::loadFromData($rows, $item, $index, Row::className());
-                }
-
-                $columnsData = Yii::$app->request->post('Column');
-                foreach($columnsData as $index => $item) {
-                    Column::loadFromData($columns, $item, $index, Column::className());
-                }
-
-                $blocksData = Yii::$app->request->post('Block');
-                foreach($blocksData as $index => $item) {
-                    Block::loadFromData($blocks, $item, $index, Block::className());
-                }
-
-                $validSections = Model::validateMultiple($sections);
-                $validRows = Model::validateMultiple($rows);
-                $validColumns = Model::validateMultiple($columns);
-                $validBlocks = Model::validateMultiple($blocks);
-
-                if (!($validSections && $validRows && $validColumns && $validBlocks))
-                    throw new \yii\base\Exception;
-
-                /* @var $section Section */
-                foreach($sections as $section) {
-                    if ($section->removed)
+                foreach($sections as $sectionIndex => $section) {
+                    if ($section->removed) {
                         $section->delete();
-                    else
-                        $section->save();
-                }
-
-                foreach($rows as $row) {
-                    if ($row->removed)
-                        $row->delete();
-                    else {
-                        if (!$row->existing)
-                            $row->section_id = $sections[$row->section_id]->id;
-                        $row->save();
+                        continue;
                     }
-                }
 
-                foreach($columns as $column) {
-                    if ($column->removed)
-                        $column->delete();
-                    else {
-                        if (!$column->existing)
-                            $column->row_id = $rows[$column->row_id]->id;
-                        $column->save();
-                    }
-                }
+                    if (!($section->validate() && $section->save()))
+                        throw new \yii\base\Exception;
 
-                foreach($blocks as $block) {
-                    if ($block->removed)
-                        $block->delete();
-                    else {
-                        if (!$block->existing)
-                            $block->column_id = $columns[$block->column_id]->id;
-                        $block->save();
+                    foreach($section->rows as $rowIndex => $row) {
+                        if ($row->removed) {
+                            $row->delete();
+                            continue;
+                        }
+
+                        if (!($row->validate() && $row->save()))
+                            throw new \yii\base\Exception;
+
+                        foreach($row->columns as $columnIndex => $column) {
+                            if ($column->removed) {
+                                $column->delete();
+                                continue;
+                            }
+
+                            if (!($column->validate() && $column->save()))
+                                throw new \yii\base\Exception;
+
+                            foreach($column->blocks as $blockIndex => $block) {
+                                if ($block->removed) {
+                                    $block->delete();
+                                    continue;
+                                }
+
+                                if (!($block->validate() && $block->save()))
+                                    throw new \yii\base\Exception;
+                            }
+                        }
                     }
                 }
 
@@ -294,6 +292,11 @@ class PortalController extends BaseController
                 ]);
             }
         }
+
+        $allSections = Section::findAll([
+            'type' => $type,
+            'portal_id' => Yii::$app->session->get('portal_id')
+        ]);
 
         return $this->render('layout-edit', [
             'sections' => $allSections

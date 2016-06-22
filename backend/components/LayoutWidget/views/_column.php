@@ -8,17 +8,22 @@
 use yii\helpers\BaseHtml;
 
 /* @var $model \backend\models\Column */
+/* @var $itemId int */
+/* @var $indexSection int */
+/* @var $indexRow int */
+/* @var $indexColumn int */
 
-$postIndex = $model->id ? $model->id : rand(0, 10000000); // Index for correctly indexing Post request variable.
+if (!isset($indexColumn))
+    $indexColumn = rand(100, 1000000);
 
 ?>
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput("Column[$postIndex][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput("Column[$postIndex][id]", $postIndex, ['class' => 'id']); ?>
-    <?= BaseHtml::hiddenInput("Column[$postIndex][row_id]", $model->row_id, ['class' => 'row_id']); ?>
-    <?= BaseHtml::hiddenInput("Column[$postIndex][width]", $model->width, ['class' => 'width']); ?>
-    <?= BaseHtml::hiddenInput("Column[$postIndex][order]", $model->order, ['class' => 'order']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][id]", $model->id, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][row_id]", $model->row_id, ['class' => 'row_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][width]", $model->width, ['class' => 'width']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][order]", $model->order, ['class' => 'order']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -27,7 +32,8 @@ $postIndex = $model->id ? $model->id : rand(0, 10000000); // Index for correctly
         </div>
         <div class="dropdown dropdown-column-content section-button">
             <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
-                    title="Vložiť nový blok" data-toggle="dropdown">
+                    title="Vložiť nový blok" data-toggle="dropdown" data-index-section="<?= $indexSection ?>"
+                    data-index-row="<?= $indexRow ?>" data-index-column="<?= $indexColumn ?>" >
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
@@ -48,9 +54,15 @@ $postIndex = $model->id ? $model->id : rand(0, 10000000); // Index for correctly
     <div class="panel-heading"><?php echo $model->order; ?>. stĺpec</div>
     <div class="panel-body">
         <ul class="children-list">
-            <?php foreach ($model->blocks as $block) : ?>
+            <?php foreach ($model->blocks as $indexBlock => $block) : ?>
                 <li>
-                    <?= $this->render('_block', ['model' => $block]); ?>
+                    <?= $this->render('_block', [
+                        'model' => $block,
+                        'indexSection' => $indexSection,
+                        'indexRow' => $indexRow,
+                        'indexColumn' => $indexColumn,
+                        'indexBlock' => $indexBlock
+                    ]); ?>
                 </li>
             <?php endforeach; ?>
         </ul>

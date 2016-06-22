@@ -23,11 +23,9 @@ use yii\helpers\ArrayHelper;
  */
 class Section extends CustomModel
 {
-
     /**
      * @inheritdoc
      */
-
     public static function tableName()
     {
         return 'section';
@@ -67,6 +65,8 @@ class Section extends CustomModel
         foreach ($this->rows as $row) {
             $row->delete();
         }
+        //TODO: is this necessary?
+
         return parent::beforeDelete();
     }
 
@@ -76,7 +76,7 @@ class Section extends CustomModel
     public function getRows()
     {
         return $this->hasMany(Row::className(), ['section_id' => 'id'])
-                        ->orderBy('order');
+            ->orderBy('order');
     }
 
     /**
@@ -93,75 +93,6 @@ class Section extends CustomModel
     public function getPortal()
     {
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
-    }
-
-    /** Returns array of newly created models from given data.
-     * @param $data
-     * @param $type
-     * @param $portalId
-     * @param $pageId
-     * @return array
-     */
-    public static function createMultipleFromData($data, $type, $portalId, $pageId)
-    {
-        $sections = [];
-
-        foreach ($data as $i => $dataItem) {
-            if ($dataItem['existing'] == 'true') {
-                $section = Section::findOne($dataItem['id']);
-            } else {
-                $section = new Section();
-            }
-
-            $section->existing = $dataItem['existing'];
-            $section->type = $type;
-            $section->portal_id = $portalId;
-            $section->page_id = $pageId;
-            $sections[$i] = $section;
-        }
-
-        return $sections;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param Section $sections
-     * @param Row $rows
-     * @return bool
-     * @throws Exception
-     */
-    public static function saveMultiple($sections, $rows)
-    {
-        foreach ($sections as $section) {
-            $formerId = $section->id;
-
-            if ($section->existing == 'false') {
-                $section->id = null;
-                if (!$section->save()) {
-                    throw new Exception;
-                }
-
-                // section_id of every row with id set to former id of section 
-                // (newly created section with random generated id) is set to current
-                // id of saved section
-                foreach ($rows as $row) {
-                    $sectionId = $row->section_id;
-
-                    if ($sectionId == $formerId) {
-                        $row->section_id = $section->id;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public static function getSectionsRows()
-    {
-        $existingRows = [];
-        foreach ($sections as $section) {
-            $existingRows = array_merge($existingRows, $section->rows);
-        }
     }
 
     public function getPrefix()

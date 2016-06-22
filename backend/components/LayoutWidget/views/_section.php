@@ -2,16 +2,19 @@
 use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
+/* @var $indexSection int */
 
-$postIndex = $model->id ? : rand(0, 10000000); // Index for correctly indexing Post request variable.
+if (!isset($indexSection))
+    $indexSection = rand(100, 1000000);
+
 ?>
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
-    <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $postIndex, ['class' => 'id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][type]", $model->type, ['class' => 'type']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][portal_id]", $model->portal_id, ['class' => 'portal_id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][page_id]", $model->page_id, ['class' => 'page_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][id]", $model->id, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][type]", $model->type, ['class' => 'type']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][portal_id]", $model->portal_id, ['class' => 'portal_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$indexSection][page_id]", $model->page_id, ['class' => 'page_id']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -20,16 +23,16 @@ $postIndex = $model->id ? : rand(0, 10000000); // Index for correctly indexing P
         </div>
         <div class="dropdown dropdown-blocks section-button">
             <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
-                    title="Vložiť nový blok" data-toggle="dropdown">
+                    title="Vložiť nový riadok" data-toggle="dropdown" data-index-section="<?= $indexSection ?>">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><div></div><a class="add-row" data-row-type-width="1">Fullwidth blok</a></li>
-                <li><a class="add-row" data-row-type-width="2">2 stĺpcový blok</a></li>
-                <li><a class="add-row" data-row-type-width="3">3 stĺpcový blok</a></li>
-                <li><a class="add-row" data-row-type-width="4">4 stĺpcový blok</a></li>
-                <li><a class="add-row" data-row-type-width="2/1">2/1 blok</a></li>
-                <li><a class="add-row" data-row-type-width="1/2">1/2 blok</a></li>
+                <li><div></div><a class="add-row" data-row-type-width="1">Fullwidth riadok</a></li>
+                <li><a class="add-row" data-row-type-width="2">2 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="3">3 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="4">4 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="2/1">2/1 riadok</a></li>
+                <li><a class="add-row" data-row-type-width="1/2">1/2 riadok</a></li>
             </ul>
         </div>
         <div class="section-button">
@@ -43,9 +46,13 @@ $postIndex = $model->id ? : rand(0, 10000000); // Index for correctly indexing P
     <div class="panel-body">
         <div class="col-sm-12">
             <ul class="children-list">
-                <?php foreach ($model->rows as $row) : ?>
+                <?php foreach ($model->rows as $indexRow => $row) : ?>
                     <li>
-                        <?= $this->render('_row', ['model' => $row]); ?>
+                        <?= $this->render('_row', [
+                            'model' => $row,
+                            'indexSection' => $indexSection,
+                            'indexRow' => $indexRow
+                        ]); ?>
                     </li>
                 <?php endforeach;?>
             </ul>

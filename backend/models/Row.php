@@ -19,11 +19,9 @@ use yii\helpers\ArrayHelper;
  */
 class Row extends CustomModel
 {
-
     /**
      * @inheritdoc
      */
-
     public static function tableName()
     {
         return 'row';
@@ -66,7 +64,7 @@ class Row extends CustomModel
     public function getColumns()
     {
         return $this->hasMany(Column::className(), ['row_id' => 'id'])
-                        ->orderBy('order');
+            ->orderBy('order');
     }
 
     /**
@@ -87,61 +85,6 @@ class Row extends CustomModel
         return '</div> <!-- row end -->' . PHP_EOL;
     }
 
-    /** Returns array of newly created models from given data.
-     * @param $data
-     * @return array
-     */
-    public static function createMultipleFromData($data)
-    {
-        $rows = [];
-
-        foreach ($data as $i => $dataItem) {
-            if ($dataItem['existing'] == 'true') {
-                $row = Row::findOne($dataItem['id']);
-            } else {
-                $row = new Row();
-                $row->section_id = $dataItem['section_id'];
-                $row->id = $dataItem['id'];
-            }
-
-            $row->existing = $dataItem['existing'];
-            $rows[$i] = $row;
-        }
-
-        return $rows;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param Row $rows
-     * @param Column $columns
-     * @return bool
-     * @throws Exception
-     */
-    public static function saveMultiple($rows, $columns)
-    {
-        foreach ($rows as $row) {
-            $formerId = $row->id;
-
-            if ($row->existing == 'false') {
-                $row->id = null;
-                if (!$row->save()) {
-                    throw new Exception;    // If error occurred, exception is thrown
-                }
-
-                // row_id of every column with id set to former id of row 
-                // (newly created row with random generated id) is set to current
-                // id of saved row
-                foreach ($columns as $column) {
-                    if ($column->row_id == $formerId) {
-                        $column->row_id = $row->id;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     public function getContent($reload = false)
     {
         $result = $this->getPrefix();
@@ -154,5 +97,4 @@ class Row extends CustomModel
 
         return $result;
     }
-
 }

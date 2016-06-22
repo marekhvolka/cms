@@ -9,9 +9,12 @@
     $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
     ?>
     <ul class="children-list" id="<?= $idHash ?>">
-        <?php foreach ($sections as $section) : ?>
+        <?php foreach ($sections as $indexSection => $section) : ?>
             <li>
-                <?= $this->render('_section', ['model' => $section]); ?>
+                <?= $this->render('_section', [
+                    'model' => $section,
+                    'indexSection' => $indexSection
+                ]); ?>
             </li>
         <?php endforeach; ?>
     </ul>
