@@ -50,7 +50,7 @@ use yii\helpers\Url;
     <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
         'assignedVariableValues' => $productVarValues,
-        'appendVarValueUrl' => Url::to(['product/append-var-value']),
+        'appendVarValueUrl' => Url::to(['product/append-var-value'])
     ])?>
 
     <div class="navbar-fixed-bottom">

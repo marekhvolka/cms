@@ -6,11 +6,13 @@ use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
 use backend\models\Column;
+use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
 use Yii;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -148,5 +150,28 @@ abstract class BaseController extends Controller
         $block = Block::findOne(['id' => $id]);
 
         return (new BlockModalWidget())->appendModal($block);
+    }
+
+    public function actionCacheFromBuffer($limit = 20)
+    {
+        $query = 'SELECT * FROM cache_page ORDER BY priority DESC, added_at ASC LIMIT :limit';
+
+        $command = Yii::$app->db->createCommand($query);
+        $command->bindValue(':limit', $limit);
+
+        $results = $command->queryAll();
+
+        foreach($results as $row) {
+            $page = Page::find()->where(['id' => $row['page_id']])->one();
+
+            $page->getMainCacheFile(true);
+
+            $removeQuery = 'DELETE FROM cache_page WHERE id = :id';
+
+            $removeCommand = Yii::$app->db->createCommand($removeQuery);
+            $removeCommand->bindValue(':id', $row['id']);
+
+            $removeCommand->execute();
+        }
     }
 }

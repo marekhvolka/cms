@@ -106,8 +106,8 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
         return $this->hasOne(Template::className(), ['id' => 'template_id']);
     }
 
-    /** Vrati zoznam blokov - portalovych snippetov
-     * @return array
+    /** Vrati zoznam hodnot premennych - portalovych snippetov
+     * @return \yii\db\ActiveQuery
      */
     public function getPortalSnippets()
     {
@@ -117,6 +117,22 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
         {
             if ($portalVarValue->var->isSnippet())
                 $array[] = $portalVarValue;
+        }
+
+        return $array;
+    }
+
+    /** Vrati zoznam hodnot premennych - portalovych vlastnosti
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPortalProperties()
+    {
+        $array = array();
+
+        foreach($this->portalVarValues as $index => $portalVarValue)
+        {
+            if (!$portalVarValue->var->isSnippet())
+                $array[$index] = $portalVarValue;
         }
 
         return $array;
@@ -431,6 +447,11 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
         foreach($this->pages as $page)
         {
             $page->addToCacheBuffer();
+        }
+
+        foreach($this->portalSnippets as $portalSnippet)
+        {
+            $portalSnippet->block->resetAfterUpdate();
         }
     }
 }

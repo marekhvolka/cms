@@ -57,7 +57,7 @@ class PortalController extends BaseController
     }
 
     /**
-     * Edit an Portal model.
+     * Edits an Portal model.
      * If edit is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -66,110 +66,64 @@ class PortalController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id); // Portal model retrieved by id.
-            $portalVarValues = $model->portalVarValues;
+            $portalVarValues = $model->getPortalProperties();
         }
         else {
             $model = new Portal();
             $portalVarValues = [];
         }
+
         if ($model->load(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
 
             try {
-                $portalVarValuesData = Yii::$app->request->post('PortalVarValue');
-                $portalVarValues = []; // Array of PortalVarValue models used later for multiple validation.
-                // $portalVarValues array appended with retrieved existing PortalVarValue
-                // models or with newly created ones.
-                foreach ($portalVarValuesData as $i => $portalValueData) {
-                    // If 'existing' flag is true, PortalVarValue model is retrieved.
-                    if ($portalValueData['existing'] == 'true') {
-                        $portalVarValue = PortalVarValue::find()
-                            ->where(['id' => $portalValueData['id']])
-                            ->one();
-                    } else {
-                        $portalVarValue = new PortalVarValue();
-                    }
-                    $portalVarValues[$i] = $portalVarValue;
-                }
+                $portalVarValuesData = Yii::$app->request->post('Var');
 
-                // Portal model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
-                // PortalVarValue models multiple loading and validation.
-                $loaded = Model::loadMultiple($portalVarValues, Yii::$app->request->post());
-                $valid = Model::validateMultiple($portalVarValues);
-
-                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
+                if (!($model->validate() && $model->save()))
                     throw new Exception;
+
+                foreach ($portalVarValuesData as $index => $portalValueData) {
+                    PortalVarValue::loadFromData($portalVarValues, $portalValueData, $index, PortalVarValue::className());
+                    $portalVarValues[$index]->portal_id = $model->id;
                 }
 
-                $this->savePortalVarValues($portalVarValues, $model);// Save PortalVarValue models.
-                $this->deletePortalVarValues($portalVarValues, $model);// Delete PortalVarValue models.
+                foreach($portalVarValues as $portalVarValue) {
+                    if (!($portalVarValue->validate() && $portalVarValue->save()))
+                        throw new Exception;
+                }
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 
                 $model->resetAfterUpdate();
-                return $this->redirect(['index']);
 
+                return $this->redirect(['index']);
             } catch (Exception $e) {
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
-                    'allVariables' => PortalVar::find()->all(),
+                    'portalVarValues' => $portalVarValues,
+                    'allVariables' => PortalVar::getPortalVarProperties(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'portalVarValues' => (empty($portalVarValues)) ? [] : $portalVarValues,
-                'allVariables' => PortalVar::find()->all(),
+                'portalVarValues' => $portalVarValues,
+                'allVariables' => PortalVar::getPortalVarProperties()
             ]);
-        }
-    }
-
-    private function savePortalVarValues($portalVarValues, $model)
-    {
-        // Each PortalVarValue model saved individually.
-        foreach ($portalVarValues as $portalVarValue) {
-            $portalVarValue->portal_id = $model->id;
-            if (!$portalVarValue->save()) {
-                throw new Exception;
-            }
-        }
-    }
-
-    private function deletePortalVarValues($portalVarValues, $model)
-    {
-        // IDs of newly created or updated PortalVarValues.
-        $newIDs = ArrayHelper::map($portalVarValues, 'id', 'id');
-        // IDs of all PortalVarValues with PortalVarValues which user deleted.
-        $allPortalVarValues = PortalVarValue::find()
-            ->where(['portal_id' => $model->id])
-            ->all();
-        $oldIDs = ArrayHelper::map($allPortalVarValues, 'id', 'id');
-
-        $deletedIDs = array_diff($oldIDs, $newIDs); // IDs of PortalVarValues to be deleted.
-        $portalVarValuesToDelete = PortalVarValue::find()->where(['id' => $deletedIDs])->all();
-
-        // Deleting PortalVarValues.
-        foreach ($portalVarValuesToDelete as $varValueToDelete) {
-            $deleted = $varValueToDelete->delete();
-            if (!$deleted) {
-                throw new Exception();
-            }
         }
     }
 
     /**
      * Action neccessary for VarManagerWidget - appending one variable value at the end of the list.
-     * @param Model $id - id of Var
+     * @param Model $varId - id of Var
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
-    public function actionAppendVarValue($id)
+    public function actionAppendVarValue($varId)
     {
         $varValue = new PortalVarValue();
-        $varValue->var_id = $id;
+        $varValue->var_id = $varId;
 
         return (new VarManagerWidget())->appendVariableValue($varValue);
     }
@@ -189,10 +143,12 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
-        $allSections = Section::findAll([
+        $allSections = Section::find([
             'type' => $type,
             'portal_id' => Yii::$app->session->get('portal_id')
-        ]);
+        ])->asArray()->all();
+
+
 
         if (Yii::$app->request->isPost) {
 
@@ -207,6 +163,9 @@ class PortalController extends BaseController
                 foreach($sectionsData as $indexSection => $itemSection) {
                     Section::loadFromData($sections, $itemSection, $indexSection, Section::className());
 
+                    if (!($sections[$indexSection]->validate() && $sections[$indexSection]->save()))
+                        throw new \yii\base\Exception;
+
                     $rowsData = $sectionsData[$indexSection];
 
                     if (!key_exists('Row', $rowsData))
@@ -217,6 +176,11 @@ class PortalController extends BaseController
                     foreach($rowsData['Row'] as $indexRow => $itemRow) {
 
                         Row::loadFromData($rows, $itemRow, $indexRow, Row::className());
+
+                        $rows[$indexRow]->section_id = $sections[$indexSection]->id;
+
+                        if (!($rows[$indexRow]->validate() && $rows[$indexRow]->save()))
+                            throw new \yii\base\Exception;
 
                         $columnsData = $sectionsData[$indexSection]['Row'][$indexRow];
 
@@ -229,6 +193,11 @@ class PortalController extends BaseController
 
                             Column::loadFromData($columns, $itemColumn, $indexColumn, Column::className());
 
+                            $columns[$indexColumn]->row_id = $rows[$indexRow]->id;
+
+                            if (!($columns[$indexColumn]->validate() && $columns[$indexColumn]->save()))
+                                throw new \yii\base\Exception;
+
                             $blocksData = $sectionsData[$indexSection]['Row'][$indexRow]['Column'][$indexColumn];
 
                             if (!key_exists('Block', $blocksData))
@@ -238,45 +207,10 @@ class PortalController extends BaseController
 
                             foreach($blocksData['Block'] as $indexBlock => $itemBlock) {
                                 Block::loadFromData($blocks, $itemBlock, $indexBlock, Block::className());
-                            }
-                        }
-                    }
-                }
 
-                foreach($sections as $sectionIndex => $section) {
-                    if ($section->removed) {
-                        $section->delete();
-                        continue;
-                    }
+                                $blocks[$indexBlock]->column_id = $columns[$indexColumn]->id;
 
-                    if (!($section->validate() && $section->save()))
-                        throw new \yii\base\Exception;
-
-                    foreach($section->rows as $rowIndex => $row) {
-                        if ($row->removed) {
-                            $row->delete();
-                            continue;
-                        }
-
-                        if (!($row->validate() && $row->save()))
-                            throw new \yii\base\Exception;
-
-                        foreach($row->columns as $columnIndex => $column) {
-                            if ($column->removed) {
-                                $column->delete();
-                                continue;
-                            }
-
-                            if (!($column->validate() && $column->save()))
-                                throw new \yii\base\Exception;
-
-                            foreach($column->blocks as $blockIndex => $block) {
-                                if ($block->removed) {
-                                    $block->delete();
-                                    continue;
-                                }
-
-                                if (!($block->validate() && $block->save()))
+                                if (!($blocks[$indexBlock]->validate() && $blocks[$indexBlock]->save()))
                                     throw new \yii\base\Exception;
                             }
                         }

@@ -18,7 +18,7 @@ use Yii;
  * @property Page $valuePage
  * @property Portal $portal
  */
-class PortalVarValue extends \yii\db\ActiveRecord
+class PortalVarValue extends CustomModel
 {
     /**
      * @inheritdoc

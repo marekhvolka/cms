@@ -42,21 +42,13 @@ class ProductVar extends Variable
         ]);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public static function getAllThatDoesntBelongToProduct($product_id)
+    public static function getProductVarProperties()
     {
-        $query = "variable.id not in (select variable_id from product_var_value where product_id = $product_id)";
-        return ProductVar::find()->where($query);
+        return ProductVar::find()->andWhere('type_id <> 16')->all();
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public static function getAllThatBelongToProduct($product_id)
+    public static function getProductVarSnippets()
     {
-        $query = "variable.id in (select variable_id from product_var_value where product_id = $product_id)";
-        return ProductVar::find()->where($query);
+        return ProductVar::find()->andWhere('type_id = 16')->all();
     }
 }

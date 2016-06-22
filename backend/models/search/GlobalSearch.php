@@ -35,7 +35,7 @@ class GlobalSearch
             ->limit(3)->all();
 
         foreach ($snippets as $snippet) {
-            $results['snippet'][] = ['link' => Url::to(['/snippet/update', 'id' => $snippet['id']])] + $snippet;
+            $results['snippet'][] = ['link' => Url::to(['/snippet/edit', 'id' => $snippet['id']])] + $snippet;
         }
 
         // SNIPPET CODES / ALTERNATIVES
@@ -48,7 +48,7 @@ class GlobalSearch
 
         foreach ($snippet_codes as $snippet_code) {
             $results['snippet_code'][] = ['link' => Url::to([
-                    '/snippet/update',
+                    '/snippet/edit',
                     'id' => $snippet_code['snippet_id'],
                     '#' => 'code' . $snippet_code['id'],
                 ])] + $snippet_code;
@@ -65,7 +65,7 @@ class GlobalSearch
             ->limit(10)->all();
 
         foreach ($pages as $page) {
-            $results['page'][] = ['link' => Url::to(['/page/update', 'id' => $page['id']])] + $page;
+            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + $page;
         }
 
         // PRODUCTS
@@ -74,7 +74,7 @@ class GlobalSearch
             ->limit(8)->all();
 
         foreach ($products as $product) {
-            $results['product'][] = ['link' => Url::to(['/product/update', 'id' => $product['id']])] + $product;
+            $results['product'][] = ['link' => Url::to(['/product/edit', 'id' => $product['id']])] + $product;
         }
         
         return $results;

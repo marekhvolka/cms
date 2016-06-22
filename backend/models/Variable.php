@@ -20,7 +20,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property User $lastEditUser
  */
-abstract class Variable extends \yii\db\ActiveRecord
+abstract class Variable extends CustomModel
 {
     /**
      * @inheritdoc
@@ -113,16 +113,6 @@ abstract class Variable extends \yii\db\ActiveRecord
         }
 
         return $value;
-    }
-
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
     }
 
     /**

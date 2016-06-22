@@ -2,7 +2,7 @@ for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true); //skryjeme uz pridane premenne
 }
 
-$('#types-dropdown').select2();
+//$('#types-dropdown').select2();
 
 $('#types-dropdown').change(function () {
     var fieldId = $(this).val();

@@ -20,6 +20,7 @@ use yii\helpers\Url;
         'sections' => $sections,
         'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
+        'type' => Yii::$app->request->get('type')
     ]
 )?>
 

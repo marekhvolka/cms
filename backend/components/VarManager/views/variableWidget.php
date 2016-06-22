@@ -14,8 +14,11 @@ use kartik\select2\Select2;
 
 <div id="dynamic-fields" class="row">
     <?php
-    foreach ($assignedVariableValues as $variableValue) {
-        echo $this->render('_variableValue', ['varValue' => $variableValue]);
+    foreach ($assignedVariableValues as $variableIndex => $variableValue) {
+        echo $this->render('_variableValue', [
+            'varValue' => $variableValue,
+            'index' => $variableIndex
+        ]);
     }
     ?>
 </div>
@@ -41,9 +44,9 @@ use kartik\select2\Select2;
 // for removing this variables from dropdown.
 $assignedVariableIds = '[';
 
-if (!empty($assignedVariableValue)) {
-    for ($index = 0; $index < sizeof($assignedVariableValue - 1); $index++) {
-        $assignedVariableIds .= $assignedVariableValue->var->id . ', ';
+if (!empty($assignedVariableValues)) {
+    for ($index = 0; $index < sizeof($assignedVariableValues) - 1; $index++) {
+        $assignedVariableIds .= $assignedVariableValues[$index]->var->id . ', ';
     }
 }
 
@@ -52,7 +55,7 @@ $assignedVariableIds .= ']';
 $js = <<<JS
 
 var selectedVarIds = $assignedVariableIds;
-var appendUrl = '$appendVarValueUrl?id=';
+var appendUrl = '$appendVarValueUrl?varId=';
         
 JS;
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

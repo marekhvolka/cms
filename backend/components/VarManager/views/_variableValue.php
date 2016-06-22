@@ -3,13 +3,14 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $varValue */
+/* @var $index int */
 ?>
 
 <?php
 // Name of model class without path for creating name attributes for inputs 
 // used in post request parameters in form and eventually in controller.
-$varValueModelName = \yii\helpers\StringHelper::basename($varValue->className());
-$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
+if (!isset($index))
+    $index = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <div class="form-group variable-value active-field">
@@ -17,13 +18,13 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <div class="col-sm-10 var-value">
         <div class="input-group">
             <?= Html::activeHiddenInput($varValue, 'id', [
-                'name' => $varValueModelName . '[' . $postIndex . '][id]'
+                'name' => 'Var[' . $index . '][id]'
                 ]);?>
             <?= Html::activeHiddenInput($varValue, 'var_id', [
-                'name' => $varValueModelName . '[' . $postIndex . '][var_id]'
+                'name' => 'Var[' . $index . '][var_id]'
                 ]);?>
             
-            <?= Html::hiddenInput($varValueModelName . '[' . $postIndex . '][existing]',
+            <?= Html::hiddenInput('Var[' . $index . '][existing]',
                 $varValue->id ? 'true' : 'false'); ?>
             
             <?php if($varValue->var->description): ?>
@@ -42,13 +43,13 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                             'class' => 'form-control',
                             'rows' => 5,
                             'placeholder' => $varValue->var->name,
-                            'name' => $varValueModelName . '[' . $postIndex . '][value_text]',
+                            'name' => 'Var[' . $index . '][value_text]',
                         ]);
                         break;
                     default:
                         echo Html::activeTextInput($varValue, 'value_text', [
                             'class' => 'form-control',
-                            'name' => $varValueModelName . '[' . $postIndex . '][value_text]',
+                            'name' => 'Var[' . $index . '][value_text]',
                         ]);
                         break;
                 }

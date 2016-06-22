@@ -36,7 +36,7 @@ class VarManagerWidget extends Widget
         return $this->render('variableWidget', [
             'assignedVariableValues' => $this->assignedVariableValues,
             'allVariables' => $this->allVariables,
-            'appendVarValueUrl' => $this->appendVarValueUrl,
+            'appendVarValueUrl' => $this->appendVarValueUrl
         ]);
     }
 

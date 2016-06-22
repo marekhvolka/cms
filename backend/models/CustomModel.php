@@ -19,7 +19,7 @@ class CustomModel extends \yii\db\ActiveRecord
     public $existing;
     public $removed = true;
 
-    public static function loadFromData($models, $item, $index, $modelClassName)
+    public static function loadFromData(&$models, $item, $index, $modelClassName)
     {
         if (!empty($models[$index])) {
             $models[$index]->load($item, '');
@@ -35,7 +35,7 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        if (!$this->existing) {
+        if ((!$this->existing) && (isset($this->id))) {
             unset($this->id);
         }
 

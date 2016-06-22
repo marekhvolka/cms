@@ -63,7 +63,7 @@ class ProductController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id); // Product model retrieved by id.
-            $productVarValues = $model->productVarValues;
+            $productVarValues = $model->getProductProperties();
         }
         else {
             $model = new Product();
@@ -74,34 +74,20 @@ class ProductController extends BaseController
             $transaction = \Yii::$app->db->beginTransaction();
 
             try {
-                $productVarValuesData = Yii::$app->request->post('ProductVarValue');
-                $productVarValues = []; // Array of ProductVarValue models used later for multiple validation.
-                // $productVarValues array appended with retrieved existing ProductVarValue 
-                // models or with newly created ones.
-                foreach ($productVarValuesData as $i => $productValueData) {
-                    // If 'existing' flag is true, ProductVarValue model is retrieved.
-                    if ($productValueData['existing'] == 'true') {
-                        $productVarValue = ProductVarValue::find()
-                                ->where(['id' => $productValueData['id']])
-                                ->one();
-                    } else {
-                        $productVarValue = new ProductVarValue();
-                    }
-                    $productVarValues[$i] = $productVarValue;
-                }
+                $productVarValuesData = Yii::$app->request->post('Var');
 
-                // Product model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
-                // ProductVarValue models multiple loading and validation.
-                $loaded = Model::loadMultiple($productVarValues, Yii::$app->request->post());
-                $valid = Model::validateMultiple($productVarValues);
-
-                if (!$loaded || !$valid || !$modelValidatedAndSaved) {
+                if (!($model->validate() && $model->save()))
                     throw new Exception;
+
+                foreach ($productVarValuesData as $index => $productValueData) {
+                    ProductVarValue::loadFromData($productVarValues, $productValueData, $index, ProductVarValue::className());
+                    $productVarValues[$index]->product_id = $model->id;
                 }
-                
-                $this->saveProductVarValues($productVarValues, $model);// Save ProductVarValue models.
-                $this->deleteProductVarValues($productVarValues, $model);// Delete ProductVarValue models.
+
+                foreach($productVarValues as $productVarValue) {
+                    if (!($productVarValue->validate() && $productVarValue->save()))
+                        throw new Exception;
+                }
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 
@@ -113,61 +99,28 @@ class ProductController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
-                    'allVariables' => ProductVar::find()->all(),
+                    'productVarValues' => $productVarValues,
+                    'allVariables' => ProductVar::getProductVarProperties(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'productVarValues' => (empty($productVarValues)) ? [] : $productVarValues,
-                'allVariables' => ProductVar::find()->all(),
+                'productVarValues' => $productVarValues,
+                'allVariables' => ProductVar::getProductVarProperties(),
             ]);
         }
     }
 
-    private function saveProductVarValues($productVarValues, $model)
-    {
-        // Each ProductVarValue model saved individually.
-        foreach ($productVarValues as $productVarValue) {
-            $productVarValue->product_id = $model->id;
-            if (!$productVarValue->save()) {
-                throw new Exception;
-            }
-        }
-    }
-
-    private function deleteProductVarValues($productVarValues, $model)
-    {
-        // IDs of newly created or updated ProductVarValues.
-        $newIDs = ArrayHelper::map($productVarValues, 'id', 'id');
-        // IDs of all ProductVarValues with ProductVarValues which user deleted.
-        $allProductVarValues = ProductVarValue::find()
-                ->where(['product_id' => $model->id])
-                ->all();
-        $oldIDs = ArrayHelper::map($allProductVarValues, 'id', 'id');
-
-        $deletedIDs = array_diff($oldIDs, $newIDs); // IDs of ProductVarValues to be delted.
-        $productVarValuesToDelete = ProductVarValue::find()->where(['id' => $deletedIDs])->all();
-
-        // Deleting ProductVarValues.
-        foreach ($productVarValuesToDelete as $varValueToDelete) {
-            $deleted = $varValueToDelete->delete();
-            if (!$deleted) {
-                throw new Exception();
-            }
-        }
-    }
-
     /**
-     * Action neccessary for VarManagerWidget - appending one variable value at the end of the list.
-     * @param Model $id - id of Var
+     * Action necessary for VarManagerWidget - appending one variable value at the end of the list.
+     * @param Model $varId - id of Var
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
-    public function actionAppendVarValue($id)
+    public function actionAppendVarValue($varId)
     {
         $varValue = new ProductVarValue();
-        $varValue->var_id = $id;
+        $varValue->var_id = $varId;
 
         return (new VarManagerWidget())->appendVariableValue($varValue);
     }

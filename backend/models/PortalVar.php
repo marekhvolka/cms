@@ -40,23 +40,13 @@ class PortalVar extends Variable
         ]);
     }
 
-    /**
-     * @param $portal_id
-     * @return \yii\db\ActiveQuery
-     */
-    public static function getAllThatDoesntBelongToPortal($portal_id)
+    public static function getPortalVarProperties()
     {
-        $query = "variable.id NOT IN (SELECT var_id FROM portal_var_value WHERE portal_id = $portal_id)";
-        return PortalVar::find()->where($query);
+        return PortalVar::find()->andWhere('type_id <> 15')->all();
     }
 
-    /**
-     * @param $portal_id
-     * @return \yii\db\ActiveQuery
-     */
-    public static function getAllThatBelongToPortal($portal_id)
+    public static function getPortalVarSnippets()
     {
-        $query = "variable.id IN (SELECT var_id FROM portal_var_value WHERE portal_id = $portal_id)";
-        return PortalVar::find()->where($query);
+        return PortalVar::find()->andWhere('type_id = 15')->all();
     }
 }

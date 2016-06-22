@@ -31,6 +31,7 @@ use yii\helpers\ArrayHelper;
  * @property Product $parent
  * @property Product[] $products
  * @property ProductVarValue[] $productSnippets
+ * @property ProductVarValue[] $productProperties
  * @property Tag[] $tags
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
@@ -104,16 +105,13 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
     {
         $this->getProductVarsFile(true); //resetneme hlavny subor
 
-        foreach($this->pages as $page)
-        {
+        foreach($this->pages as $page) {
             $page->addToCacheBuffer();
         }
 
-        /* @var $snipperVarValue SnippetVarValue */
-
-        foreach($this->snippetVarValues as $snippetVarValue)
-        {
-            $snippetVarValue->block->resetAfterUpdate();
+        /* @var $productSnippet SnippetVarValue */
+        foreach($this->productSnippets as $productSnippet) {
+            $productSnippet->valueBlock->resetAfterUpdate();
         }
     }
 
@@ -197,6 +195,22 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
         return $array;
     }
 
+    /** Vrati zoznam hodnot premennych - produktovych vlastnosti
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductProperties()
+    {
+        $array = array();
+
+        foreach($this->productVarValues as $index => $productVarValue)
+        {
+            if (!$productVarValue->var->isSnippet())
+                $array[$index] = $productVarValue;
+        }
+
+        return $array;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -210,7 +224,9 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
      */
     public function getProductVarValues()
     {
-        return $this->hasMany(ProductVarValue::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductVarValue::className(), [
+            'product_id' => 'id',
+        ]);
     }
 
     public function relations()
