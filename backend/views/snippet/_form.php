@@ -12,6 +12,9 @@ use yii\web\View;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
 /* @var $form yii\widgets\ActiveForm */
+
+/* @var $snippetCodes backend\models\SnippetCode */
+/* @var $snippetVars backend\models\SnippetVar */
 ?>
 
 <div class="snippet-form">
@@ -63,10 +66,6 @@ use yii\web\View;
                 Select2::widget([
                    'name' => "test",
                 ]);
-                ?>
-                <?php
-                $snippetVars = $model->snippetFirstLevelVars;
-                $snippetVars = (empty($snippetVars)) ? [new SnippetVar()] : $snippetVars;
                 ?>
                 <ul class="snippet-vars">
                     <?php foreach ($snippetVars as $y => $snippetVar): ?>

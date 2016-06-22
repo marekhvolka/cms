@@ -17,10 +17,8 @@ use yii\helpers\ArrayHelper;
  * @property Column[] $columns
  * @property Section $section
  */
-class Row extends \yii\db\ActiveRecord
+class Row extends CustomModel
 {
-
-    private $existing;  //Indicates if model allready exists.
 
     /**
      * @inheritdoc
@@ -60,24 +58,6 @@ class Row extends \yii\db\ActiveRecord
     {
         $this->unlinkAll('columns', true);
         return parent::beforeDelete();
-    }
-
-    /*
-     * Getter for $existing property which indicates if model allready exists.
-     */
-
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-
-    /**
-     * Setter for $existing property which indicates if model allready exists.
-     * @param string $newExisting new property value.
-     */
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
     }
 
     /**
@@ -135,7 +115,8 @@ class Row extends \yii\db\ActiveRecord
      * Saves multiple models to database.
      * @param Row $rows
      * @param Column $columns
-     * @return boolean
+     * @return bool
+     * @throws Exception
      */
     public static function saveMultiple($rows, $columns)
     {
@@ -159,20 +140,6 @@ class Row extends \yii\db\ActiveRecord
             }
         }
         return true;
-    }
-
-    public static function deleteMultiple($existingModels, $models)
-    {
-        $oldIDs = ArrayHelper::map($existingModels, 'id', 'id');
-        $newIDs = ArrayHelper::map($models, 'id', 'id');
-        $IDsToDelete = array_diff($oldIDs, $newIDs);
-
-        foreach ($IDsToDelete as $id) {
-            $modelsToDelete = Row::findOne($id);
-            if ($modelsToDelete) {
-                $modelsToDelete->delete();
-            }
-        }
     }
 
     public function getContent($reload = false)

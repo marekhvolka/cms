@@ -24,10 +24,8 @@ use yii\helpers\ArrayHelper;
  * @property SnippetVar[] $children
  * @property Snippet $snippet
  */
-class SnippetVar extends \yii\db\ActiveRecord
+class SnippetVar extends CustomModel
 {
-    private $existing;  //Indicates if model allready exists.
-
     /**
      * @inheritdoc
      */
@@ -82,23 +80,6 @@ class SnippetVar extends \yii\db\ActiveRecord
         $this->unlinkAll('children', true);
 
         return parent::beforeDelete();
-    }
-
-    /*
-     * Getter for $existing property which indicates if model allready exists.
-     */
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-
-    /**
-     * Setter for $existing property which indicates if model allready exists.
-     * @param string $newExisting new property value.
-     */
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
     }
 
     /**

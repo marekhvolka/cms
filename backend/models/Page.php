@@ -561,7 +561,8 @@ class Page extends \yii\db\ActiveRecord implements ICacheable
      */
     public function addToCacheBuffer($priority = 0)
     {
-        $sql = 'INSERT INTO cache_page (page_id, priority) VALUES (:page_id, :priority)';
+        $sql = 'INSERT INTO cache_page (page_id, priority) VALUES (:page_id, :priority)
+                  ON DUPLICATE KEY UPDATE added_at = CURRENT_TIMESTAMP ';
 
         $command = Yii::$app->db->createCommand($sql);
         $command->bindValue(':page_id', $this->id);

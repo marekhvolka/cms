@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\VarManager\VarManagerWidget;
+use backend\models\CustomModel;
 use common\components\ParseEngine;
 use Exception;
 use Yii;
@@ -188,61 +189,101 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
+        $allSections = Section::findAll([
+            'type' => $type,
+            'portal_id' => Yii::$app->session->get('portal_id')
+        ]);
+
         if (Yii::$app->request->isPost) {
-            $existingSections = Section::findAll([
-                'type' => $type,
-                'portal_id' => Yii::$app->session->get('portal_id')
-            ]);
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
+                $sections = array();
+                $rows = array();
+                $columns = array();
+                $blocks = array();
+
+                foreach($allSections as $section) {
+                    $sections[$section->id] = $section;
+                    foreach($section->rows as $row) {
+                        $rows[$row->id] = $row;
+
+                        foreach ($row->columns as $column) {
+                            $columns[$column->id] = $column;
+
+                            foreach ($column->blocks as $block) {
+                                $blocks[$block->id] = $block;
+                            }
+                        }
+                    }
+                }
+
                 // Getting all data for creating/updating sections, rows, columns and blocks.
                 $sectionsData = Yii::$app->request->post('Section');
+                foreach($sectionsData as $index => $item) {
+                    Section::loadFromData($sections, $item, $index, Section::className());
+                }
+
                 $rowsData = Yii::$app->request->post('Row');
+                foreach($rowsData as $index => $item) {
+                    Row::loadFromData($rows, $item, $index, Row::className());
+                }
+
                 $columnsData = Yii::$app->request->post('Column');
+                foreach($columnsData as $index => $item) {
+                    Column::loadFromData($columns, $item, $index, Column::className());
+                }
+
                 $blocksData = Yii::$app->request->post('Block');
+                foreach($blocksData as $index => $item) {
+                    Block::loadFromData($blocks, $item, $index, Block::className());
+                }
 
-                // Creating sections, rows, columns and blocks from given data.
-                $sections = Section::createMultipleFromData($sectionsData, $type, Yii::$app->session->get('portal_id'), null);
-                $rows = Row::createMultipleFromData($rowsData);
-                $columns = Column::createMultipleFromData($columnsData);
-                $blocks = Block::createMultipleFromData($blocksData);
-
-                $loadedSections = Model::loadMultiple($sections, Yii::$app->request->post());
                 $validSections = Model::validateMultiple($sections);
-                $loadedRows = Model::loadMultiple($rows, Yii::$app->request->post());
-
-                Section::saveMultiple($sections, $rows);
-
                 $validRows = Model::validateMultiple($rows);
-                $loadedColumns = Model::loadMultiple($columns, Yii::$app->request->post());
-
-                Row::saveMultiple($rows, $columns);
-
                 $validColumns = Model::validateMultiple($columns);
-                $loadedBlocks = Model::loadMultiple($blocks, Yii::$app->request->post());
-
-                Column::saveMultiple($columns, $blocks);
-
                 $validBlocks = Model::validateMultiple($blocks);
 
-                Block::saveMultiple($blocks);
+                if (!($validSections && $validRows && $validColumns && $validBlocks))
+                    throw new \yii\base\Exception;
 
-                Section::deleteMultiple($existingSections, $sections);
-                
-                $test = ArrayHelper::getColumn($sections, 'rows');
-                
-                $existingRows = [];
-                foreach ($sections as $section) {
-                    $existingRows = array_merge($existingRows, $section->rows);
+                /* @var $section Section */
+                foreach($sections as $section) {
+                    if ($section->removed)
+                        $section->delete();
+                    else
+                        $section->save();
                 }
-                Row::deleteMultiple($existingRows, $rows);
-                
-                $existingBlocks = [];
-                foreach ($columns as $column) {
-                    $existingBlocks = array_merge($existingBlocks, $column->blocks);
+
+                foreach($rows as $row) {
+                    if ($row->removed)
+                        $row->delete();
+                    else {
+                        if (!$row->existing)
+                            $row->section_id = $sections[$row->section_id]->id;
+                        $row->save();
+                    }
                 }
-                Block::deleteMultiple($existingBlocks, $blocks);
+
+                foreach($columns as $column) {
+                    if ($column->removed)
+                        $column->delete();
+                    else {
+                        if (!$column->existing)
+                            $column->row_id = $rows[$column->row_id]->id;
+                        $column->save();
+                    }
+                }
+
+                foreach($blocks as $block) {
+                    if ($block->removed)
+                        $block->delete();
+                    else {
+                        if (!$block->existing)
+                            $block->column_id = $columns[$block->column_id]->id;
+                        $block->save();
+                    }
+                }
 
                 $transaction->commit();
             } catch (Exception $exc) {
@@ -254,13 +295,8 @@ class PortalController extends BaseController
             }
         }
 
-        $sections = Section::findAll([
-            'type' => $type,
-            'portal_id' => Yii::$app->session->get('portal_id')
-        ]);
-
         return $this->render('layout-edit', [
-            'sections' => $sections
+            'sections' => $allSections
         ]);
     }
 

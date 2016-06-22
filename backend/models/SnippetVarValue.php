@@ -27,9 +27,8 @@ use Yii;
  * @property Block $block
  * @property SnippetVar $var
  */
-class SnippetVarValue extends \yii\db\ActiveRecord
+class SnippetVarValue extends CustomModel
 {
-
     /**
      * @inheritdoc
      */

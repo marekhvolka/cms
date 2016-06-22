@@ -19,15 +19,12 @@ use Yii;
  * @property Row $row
  * @property Block[] $blocks
  */
-class Column extends \yii\db\ActiveRecord
+class Column extends CustomModel
 {
-
-    private $existing;  //Indicates if model allready exists.
 
     /**
      * @inheritdoc
      */
-
     public static function tableName()
     {
         return 'column';
@@ -67,24 +64,6 @@ class Column extends \yii\db\ActiveRecord
         return parent::beforeDelete();
     }
 
-    /*
-     * Getter for $existing property which indicates if model allready exists.
-     */
-
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-
-    /**
-     * Setter for $existing property which indicates if model allready exists.
-     * @param string $newExisting new property value.
-     */
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -99,7 +78,7 @@ class Column extends \yii\db\ActiveRecord
     public function getBlocks()
     {
         return $this->hasMany(Block::className(), ['column_id' => 'id'])
-                        ->orderBy(['order' => SORT_ASC]);
+            ->orderBy(['order' => SORT_ASC]);
     }
 
     /** Returns array of newly created models from given data.

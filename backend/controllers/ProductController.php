@@ -106,6 +106,7 @@ class ProductController extends BaseController
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 
                 $model->resetAfterUpdate();
+
                 return $this->redirect(['index']);
             } catch (Exception $e) {
                 // There was problem with validation or saving models or another exception was thrown.

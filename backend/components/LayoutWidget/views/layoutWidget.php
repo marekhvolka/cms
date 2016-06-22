@@ -11,7 +11,7 @@
     <ul class="children-list" id="<?= $idHash ?>">
         <?php foreach ($sections as $section) : ?>
             <li>
-                <?= $this->render('_section', ['section' => $section]); ?>
+                <?= $this->render('_section', ['model' => $section]); ?>
             </li>
         <?php endforeach; ?>
     </ul>

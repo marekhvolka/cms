@@ -4,6 +4,8 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
+/* @var $snippetCodes backend\models\SnippetCode */
+/* @var $snippetVars backend\models\SnippetVar */
 
 $this->title = 'Update Snippet: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Snippets', 'url' => ['index']];
@@ -16,6 +18,7 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $this->render('_form', [
         'model' => $model,
         'snippetCodes' => $snippetCodes,
+        'snippetVars' => $snippetVars,
     ]) ?>
 
 </div>

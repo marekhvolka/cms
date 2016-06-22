@@ -1,17 +1,17 @@
 <?php
 use yii\helpers\BaseHtml;
 
-/* @var $section backend\models\Section */
+/* @var $model backend\models\Section */
 
-$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
+$postIndex = $model->id ? : rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
-    <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $section->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $section->id ? : $postIndex, ['class' => 'id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][type]", $section->type, ['class' => 'type']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][portal_id]", $section->portal_id, ['class' => 'portal_id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$postIndex][page_id]", $section->page_id, ['class' => 'page_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][id]", $postIndex, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][type]", $model->type, ['class' => 'type']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][portal_id]", $model->portal_id, ['class' => 'portal_id']); ?>
+    <?= BaseHtml::hiddenInput("Section[$postIndex][page_id]", $model->page_id, ['class' => 'page_id']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -43,9 +43,9 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
     <div class="panel-body">
         <div class="col-sm-12">
             <ul class="children-list">
-                <?php foreach ($section->rows as $row) : ?>
+                <?php foreach ($model->rows as $row) : ?>
                     <li>
-                        <?= $this->render('_row', ['row' => $row]); ?>
+                        <?= $this->render('_row', ['model' => $row]); ?>
                     </li>
                 <?php endforeach;?>
             </ul>

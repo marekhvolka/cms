@@ -156,7 +156,7 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
      * @param string $placeName - mozne hodnoty head, head_end, body, body_end
      * @return string
      */
-    public function getTrackingCodesString($placeName)
+    public function getTrackingCodesAsString($placeName)
     {
         $command = (new Query())
             ->select('id')
@@ -325,10 +325,10 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
                     $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
             }
 
-            $buffer .= '$include_head = stripcslashes(\'' . $this->getTrackingCodesString('head') . '\');' . PHP_EOL;
-            $buffer .= '$include_head_end = stripcslashes(\'' . $this->getTrackingCodesString('head_end') . '\');' . PHP_EOL;
-            $buffer .= '$include_body = stripcslashes(\'' . $this->getTrackingCodesString('body') . '\');' . PHP_EOL;
-            $buffer .= '$include_body_end = stripcslashes(\'' . $this->getTrackingCodesString('body_end') . '\');' . PHP_EOL;
+            $buffer .= '$include_head = stripcslashes(\'' . $this->getTrackingCodesAsString('head') . '\');' . PHP_EOL;
+            $buffer .= '$include_head_end = stripcslashes(\'' . $this->getTrackingCodesAsString('head_end') . '\');' . PHP_EOL;
+            $buffer .= '$include_body = stripcslashes(\'' . $this->getTrackingCodesAsString('body') . '\');' . PHP_EOL;
+            $buffer .= '$include_body_end = stripcslashes(\'' . $this->getTrackingCodesAsString('body_end') . '\');' . PHP_EOL;
 
             $buffer .= '?>';
 

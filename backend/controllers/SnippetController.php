@@ -58,13 +58,16 @@ class SnippetController extends BaseController
         if ($id) {
             $model = $this->findModel($id);
             $snippetCodes = $model->snippetCodes;
+            $snippetVars = $model->snippetFirstLevelVars;
         }
         else {
             $model = new Snippet();
+            $snippetCodes = [new SnippetCode()];
+            $snippetVars = [];
         }
 
         if ($model->load(Yii::$app->request->post())) {
-            $transaction = \Yii::$app->db->beginTransaction();
+            $transaction = Yii::$app->db->beginTransaction();
             try {
                 // Snippet model validated and saved.
                 $modelValidatedAndSaved = $model->validate() && $model->save();
@@ -121,7 +124,8 @@ class SnippetController extends BaseController
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'snippetCodes' => (empty($snippetCodes)) ? [new SnippetCode()] : $snippetCodes,
+                'snippetCodes' => $snippetCodes,
+                'snippetVars' => $snippetVars,
             ]);
         }
     }

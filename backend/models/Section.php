@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use Exception;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -20,10 +21,8 @@ use yii\helpers\ArrayHelper;
  * @property Page $page
  * @property Portal $portal
  */
-class Section extends \yii\db\ActiveRecord
+class Section extends CustomModel
 {
-
-    private $existing;  //Indicates if model allready exists.
 
     /**
      * @inheritdoc
@@ -69,24 +68,6 @@ class Section extends \yii\db\ActiveRecord
             $row->delete();
         }
         return parent::beforeDelete();
-    }
-
-    /*
-     * Getter for $existing property which indicates if model allready exists.
-     */
-
-    public function getExisting()
-    {
-        return $this->existing;
-    }
-
-    /**
-     * Setter for $existing property which indicates if model allready exists.
-     * @param string $newExisting new property value.
-     */
-    public function setExisting($newExisting)
-    {
-        $this->existing = $newExisting;
     }
 
     /**
@@ -144,9 +125,10 @@ class Section extends \yii\db\ActiveRecord
 
     /**
      * Saves multiple models to database.
-     * @param backend\models\Section $sections
-     * @param backend\models\Row $rows
-     * @return boolean
+     * @param Section $sections
+     * @param Row $rows
+     * @return bool
+     * @throws Exception
      */
     public static function saveMultiple($sections, $rows)
     {
@@ -172,21 +154,6 @@ class Section extends \yii\db\ActiveRecord
             }
         }
         return true;
-    }
-
-    // TODO - this is also in column, block, row, .... should be put into behavior or baseclass
-    public static function deleteMultiple($existingModels, $models)
-    {
-        $oldIDs = ArrayHelper::map($existingModels, 'id', 'id');
-        $newIDs = ArrayHelper::map($models, 'id', 'id');
-        $IDsToDelete = array_diff($oldIDs, $newIDs);
-
-        foreach ($IDsToDelete as $id) {
-            $modelsToDelete = self::findOne($id);
-            if ($modelsToDelete) {
-                $modelsToDelete->delete();
-            }
-        }
     }
 
     public static function getSectionsRows()
