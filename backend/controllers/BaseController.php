@@ -70,6 +70,8 @@ abstract class BaseController extends Controller
         $pageId = Yii::$app->request->post('pageId');
 
         $section = new Section();
+        $section->id = rand(1000, 10000000);
+
         $section->type = $type;
         $section->portal_id = $portalId;
         $section->page_id = $pageId;
@@ -89,12 +91,14 @@ abstract class BaseController extends Controller
         $indexSection = Yii::$app->request->post('indexSection');
 
         $row = new Row();
+        $row->id = rand(1000, 10000000);
+
         $row->section_id = $sectionId;
 
         return (new LayoutWidget())->appendRow($row, $indexSection);
     }
 
-    public function actionAppendColumn()
+    public function actionAppendColumns()
     {
         $rowId = Yii::$app->request->post('rowId');
         $width = Yii::$app->request->post('width');
@@ -102,11 +106,21 @@ abstract class BaseController extends Controller
         $indexSection = Yii::$app->request->post('indexSection');
         $indexRow = Yii::$app->request->post('indexRow');
 
-        $column = new Column();
-        $column->row_id = $rowId;
-        $column->width = $width;
+        $columnsData = array();
 
-        return (new LayoutWidget())->appendColumn($column, $indexSection, $indexRow);
+        for($i = 0; $i < sizeof($width); $i++) {
+
+            $column = new Column();
+            $column->id = rand(1000, 10000000);
+
+            $column->order = $i+1;
+            $column->row_id = $rowId;
+            $column->width = $width[$i];
+
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $indexSection, $indexRow);
+        }
+
+        return json_encode($columnsData);
     }
 
     /**

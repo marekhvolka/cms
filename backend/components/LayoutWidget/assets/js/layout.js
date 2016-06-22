@@ -5,7 +5,7 @@ var pageIdUrlParam = pageId ? '&pageId=' + pageId : '';
 var appendUrl = {
     section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
-    column: controllerUrl + '/' + 'append-column',
+    column: controllerUrl + '/' + 'append-columns',
     block: controllerUrl + '/' + 'append-block'
 };
 
@@ -62,18 +62,19 @@ function attachAddRowEvent(button) {
             var row = appendElement(section, data);
             attachRemoveRowEvent(row.find('.btn-remove-row'));
 
-            for(i = 0; i < columnsByWidth.length; i++) {
+            var postColumnData = {
+                rowId : row.find('.id').first().val(),
+                width : columnsByWidth,
+                indexSection : $(this).data('index-section')
+            };
 
-                var postColumnData = {
-                    rowId : row.find('.id').first().val(),
-                    width : columnsByWidth[i],
-                    indexSection : $(this).data('index-section')
-                };
+            $.post(appendUrl.column, postColumnData, function (columnsData) {
 
-                $.post(appendUrl.column, postColumnData, function (columnData) {
-                    var column = appendElement(row, columnData);
-                })
-            }
+                var columnsArray = JSON.parse(columnsData);
+
+                for(var i = 0; i < columnsArray.length; i++)
+                    var column = row.append(columnsArray[i]);
+            });
 
             attachAddBlockEvent(row.find('.column-option'));
         });

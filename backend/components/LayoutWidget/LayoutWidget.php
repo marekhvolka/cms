@@ -56,7 +56,6 @@ class LayoutWidget extends Widget
      * @param Row $row
      * @param $indexSection
      * @return string
-     * @internal param $indexRow
      */
     public function appendRow(Row $row, $indexSection)
     {
@@ -88,7 +87,7 @@ class LayoutWidget extends Widget
     public function appendBlock(Block $block, $indexSection, $indexRow, $indexColumn)
     {
         return $this->render('_block', [
-            'block' => $block,
+            'model' => $block,
             'indexSection' => $indexSection,
             'indexRow' => $indexRow,
             'indexColumn' => $indexColumn
