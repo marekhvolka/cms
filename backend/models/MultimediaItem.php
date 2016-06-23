@@ -11,7 +11,7 @@ use yii\web\UploadedFile;
  *
  * @package backend\models
  */
-class MultimediaItem extends Model
+class MultimediaItem
 {
     /**
      * Uploading a new file scenario.

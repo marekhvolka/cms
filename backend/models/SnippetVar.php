@@ -111,7 +111,15 @@ class SnippetVar extends CustomModel
      */
     public function getChildren()
     {
-        return $this->hasMany(SnippetVar::className(), ['parent_id' => 'id']);
+        if (!isset($this->children))
+            $this->children = $this->hasMany(SnippetVar::className(), ['parent_id' => 'id'])->all();
+
+        return $this->children;
+    }
+
+    public function setChildren($value)
+    {
+        $this->children = $value;
     }
 
     /**
@@ -136,97 +144,6 @@ class SnippetVar extends CustomModel
     public function getLastEditUser()
     {
         return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
-    }
-
-    /**
-     * Returns array of newly created Variables from given data.
-     * @return Variable []
-     */
-    public static function createMultipleFromData($snippetVarData)  // TODO - may be used only load() method instead of this
-    {
-        $modelSnippetVars = [];      // Array of created SnippetVars.
-
-        if (!$snippetVarData) {
-            return $modelSnippetVars;
-        }
-
-        foreach ($snippetVarData as $index => $varData) {
-            if (isset($varData['identifier']) && $varData['identifier']) {
-                if ($varData['existing'] == 'true') {
-                    $snippetVar = SnippetVar::find()->where(['id' => $varData['id']])->one();
-                } else {
-                    $snippetVar = new SnippetVar();
-                    $snippetVar->id = $varData['id'];
-                }
-
-                $modelSnippetVars[$index] = $snippetVar;
-            }
-        }
-
-        return $modelSnippetVars;
-    }
-
-
-    // TODO - this may be extracted to behavior or helper.
-    private function handleChild($snippetVars, Snippet $snippet)
-    {
-        $previousId = $this->id;
-
-        $this->snippet_id = $snippet->id;
-        if (!$this->save(false)) {
-            return false;
-        }
-
-        foreach ($snippetVars as $potentialChild) {
-            if ($potentialChild->parent_id == $previousId) {
-                $potentialChild->parent_id = $this->id;
-                $saved = $potentialChild->handleChild($snippetVars, $snippet);
-                if (!$saved) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param Variable [] $modelSnippetVars snippetVars to be saved.
-     * @return boolean whether saving of models was unsuccessful
-     */
-    public static function saveMultiple($snippetVars, Snippet $snippet)
-    {
-        foreach ($snippetVars as $var) {
-            $saved = $var->handleChild($snippetVars, $snippet);
-            if (!$saved) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Multiple delete of SnippetVar models by given Snippet model (SnippetVar deleted by user).
-     * @param \backend\models\SnippetVar $snippetVars
-     * @param \backend\models\Snippet $snippet
-     * @return boolean if deleting was successfull.
-     */
-    public static function deleteMultiple($snippetVars, Snippet $snippet)
-    {
-        $oldVarsIDs = ArrayHelper::map($snippet->snippetVariables, 'id', 'id');
-        $newVarsIDs = ArrayHelper::map($snippetVars, 'id', 'id');
-        $varsIDsToDelete = array_diff($oldVarsIDs, $newVarsIDs);
-
-        foreach ($varsIDsToDelete as $varID) {
-            $snippetVarToDelete = Variable::findOne($varID);
-            if ($snippetVarToDelete) {
-                $snippetVarToDelete->delete();
-            }
-        }
-
-        return true;
     }
 
     /** Metoda, ktora vrati vseobecnu defaultnu hodnotu (nie pre konkretny typ produktov)

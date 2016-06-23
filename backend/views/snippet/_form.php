@@ -12,17 +12,14 @@ use yii\web\View;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
 /* @var $form yii\widgets\ActiveForm */
-
-/* @var $snippetCodes backend\models\SnippetCode */
-/* @var $snippetVars backend\models\SnippetVar */
 ?>
 
 <div class="snippet-form">
 
     <?php $form = ActiveForm::begin([
         'id' => 'dynamic-form', 
-        'enableAjaxValidation' => true,
-        ]); ?>
+        //'enableAjaxValidation' => true,
+    ]); ?>
     
     <h3 class="page-header">Všeobecné <small>nastavenia</small></h3>
 
@@ -41,11 +38,12 @@ use yii\web\View;
             <div class="panel-heading"><h4>Alternatívy</h4></div>
             <div class="panel-body">
                 <ul class="snippet-codes">
-                <?php foreach ($snippetCodes as $snippetCode): ?>
+                <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
                 <li>
                     <?= $this->render('_code', [
-                        'snippetCode' => $snippetCode,
-                        'form' => $form
+                        'model' => $snippetCode,
+                        'form' => $form,
+                        'indexCode' => $indexCode
                     ]) ;?>
                 </li>
                 <?php endforeach;?>
@@ -68,14 +66,17 @@ use yii\web\View;
                 ]);
                 ?>
                 <ul class="snippet-vars">
-                    <?php foreach ($snippetVars as $y => $snippetVar): ?>
+                    <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
                     <li>
-                    <?= $this->render('_variable', ['snippetVar' => $snippetVar]); ?>
+                        <?= $this->render('_variable', [
+                            'model' => $snippetVar,
+                            'prefix' => "SnippetVar[$indexVar]"
+                        ]); ?>
                     </li>
                     <?php endforeach; ?>
                 </ul>
                 <div class="col-sm-offset-2">
-                    <button type="button" class="btn-add-snippet-var btn btn-success">
+                    <button type="button" class="btn-add-snippet-var btn btn-success" data-prefix="SnippetVar">
                         Pridať premennú
                     </button>
                 </div>

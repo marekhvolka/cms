@@ -33,12 +33,16 @@ function attachAddVarEvent(addButton, varWrapper, parent) {
         var url = snippetVarParams.appendVarUrl;
         if (parent) {
             var parentId = parent.find('.variable-id').val();
-            url += '?id=' + parentId;
         }
 
-        $.get(url, function (data) {
+        var postData = {
+            id : parentId,
+            prefix : $(this).data('prefix')
+        };
+
+        $.post(url, postData, function (data) {
             var row = $('<li></li>');
-            var row = row.appendTo(varWrapper);
+            row = row.appendTo(varWrapper);
             var appendedDiv = $(data);
             $(row).append(appendedDiv);
             attachRemoveVarEvent(appendedDiv.find('.btn-remove-snippet-var'));
@@ -64,7 +68,12 @@ function attachSelectToListChangeEvent(variable) {
 
     select.change(function () {
         if ($(this).val() == snippetVarParams.listId) {        // If selected type is List.
-            $.get(snippetVarParams.appendChildVarBox, function (data) {
+
+            var postData = {
+                prefix : $(this).data('prefix')
+            };
+
+            $.post(snippetVarParams.appendChildVarBox, postData, function (data) {
                 var varBodyWrapper = variable.find('.var-body');
                 var appended = $(data).appendTo(varBodyWrapper);
                 attachAddVarEvent(appended.find('.btn-add-list-item-var'), varBodyWrapper.find('.snippet-vars'), variable);

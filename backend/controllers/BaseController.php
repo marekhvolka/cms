@@ -71,14 +71,16 @@ abstract class BaseController extends Controller
         $portalId = Yii::$app->request->post('portalId');
         $pageId = Yii::$app->request->post('pageId');
 
-        $section = new Section();
-        $section->id = rand(1000, 10000000);
+        $prefix = Yii::$app->request->post('prefix');
 
+        $section = new Section();
         $section->type = $type;
         $section->portal_id = $portalId;
         $section->page_id = $pageId;
+
+        $indexSection = rand(1000, 10000000);
         
-        return (new LayoutWidget())->appendSection($section);
+        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection);
     }
 
     /**
@@ -87,39 +89,32 @@ abstract class BaseController extends Controller
      */
     public function actionAppendRow()
     {
-        //$order = Yii::$app->request->post('order');
-        $sectionId = Yii::$app->request->post('sectionId');
-
-        $indexSection = Yii::$app->request->post('indexSection');
+        $prefix = Yii::$app->request->post('prefix');
 
         $row = new Row();
-        $row->id = rand(1000, 10000000);
 
-        $row->section_id = $sectionId;
+        $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $indexSection);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow);
     }
 
     public function actionAppendColumns()
     {
-        $rowId = Yii::$app->request->post('rowId');
         $width = Yii::$app->request->post('width');
 
-        $indexSection = Yii::$app->request->post('indexSection');
-        $indexRow = Yii::$app->request->post('indexRow');
+        $prefix = Yii::$app->request->post('prefix');
 
         $columnsData = array();
 
         for($i = 0; $i < sizeof($width); $i++) {
 
             $column = new Column();
-            $column->id = rand(1000, 10000000);
-
             $column->order = $i+1;
-            $column->row_id = $rowId;
             $column->width = $width[$i];
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $indexSection, $indexRow);
+            $indexColumn = rand(1000, 10000000);
+
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn);
         }
 
         return json_encode($columnsData);

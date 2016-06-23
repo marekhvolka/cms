@@ -75,8 +75,17 @@ class Section extends CustomModel
      */
     public function getRows()
     {
-        return $this->hasMany(Row::className(), ['section_id' => 'id'])
-            ->orderBy('order');
+        if (!isset($this->rows))
+            $this->rows = $this->hasMany(Row::className(), ['section_id' => 'id'])
+                ->orderBy('order')
+                ->all();
+
+        return $this->rows;
+    }
+
+    public function setRows($value)
+    {
+        $this->rows = $value;
     }
 
     /**

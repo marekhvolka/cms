@@ -4,23 +4,17 @@ use yii\helpers\Html;
 use backend\components\BlockModal\BlockModalWidget;
 
 /* @var $model \backend\models\Block */
-/* @var $indexSection int */
-/* @var $indexRow int */
-/* @var $indexColumn int */
-/* @var $indexBlock int */
-
-if (!isset($indexBlock))
-    $indexBlock = rand(100, 1000000);
+/* @var $prefix string */
 
 ?>
 
 <div class="btn-group layout-block block-<?= $model->id ?>"
      data-content="" role="group">
-         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][id]", $model->id, ['class' => 'id']); ?>
-         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][column_id]", $model->column_id, ['class' => 'column_id']); ?>
-         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][type]", $model->type, ['class' => 'type']); ?>
-         <?= Html::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][Block][$indexBlock][order]", $model->order, ['class' => 'order']); ?>
+         <?= Html::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+         <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
+         <?= Html::hiddenInput($prefix . "[column_id]", $model->column_id, ['class' => 'column_id']); ?>
+         <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
+         <?= Html::hiddenInput($prefix . "[order]", $model->order, ['class' => 'order']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">
         <span class="glyphicon glyphicon-globe"></span>
     </button>

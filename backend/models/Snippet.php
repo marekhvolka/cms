@@ -23,9 +23,10 @@ use common\models\User;
  *
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes
+ * @property SnippetVar[] $snippetFirstLevelVars
  * @property SnippetVar[] $snippetVariables
  */
-class Snippet extends \yii\db\ActiveRecord implements ICacheable
+class Snippet extends CustomModel implements ICacheable
 {
     /**
      * @inheritdoc
@@ -124,7 +125,15 @@ class Snippet extends \yii\db\ActiveRecord implements ICacheable
      */
     public function getSnippetFirstLevelVars()
     {
-        return $this->getSnippetVariables()->where(['parent_id' => null]);
+        if (!isset($this->snippetFirstLevelVars))
+            $this->snippetFirstLevelVars = $this->getSnippetVariables()->where(['parent_id' => null])->all();
+
+        return $this->snippetFirstLevelVars;
+    }
+
+    public function setSnippetFirstLevelVars($value)
+    {
+        $this->snippetFirstLevelVars = $value;
     }
 
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu

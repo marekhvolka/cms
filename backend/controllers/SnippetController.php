@@ -70,36 +70,50 @@ class SnippetController extends BaseController
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 // Snippet model validated and saved.
-                $modelValidatedAndSaved = $model->validate() && $model->save();
+
+                if (!($model->validate() && $model->save()))
+                    throw new \yii\base\Exception;
                 
-                $snippetCodesData = Yii::$app->request->post('SnippetCode');     
-                // Array of SnippetCode models used later for multiple validation.
-                $snippetCodes = SnippetCode::createMultipleFromData($snippetCodesData);
+                $snippetCodesData = Yii::$app->request->post('SnippetCode');
 
-                // SnippetCode models multiple loading, validation and saving.
-                $loadedCodes = Model::loadMultiple($snippetCodes, Yii::$app->request->post());
-                $validCodes = Model::validateMultiple($snippetCodes);
-                $savedCodes = SnippetCode::saveMultiple($snippetCodes, $model);
+                foreach($snippetCodesData as $index => $snippetCodeData) {
+                    SnippetCode::loadFromData($snippetCodes, $snippetCodeData, $index, SnippetCode::className());
+                }
 
-                $snippetVarData = Yii::$app->request->post('SnippetVar');
-                // Array of SnippetVar models used later for multiple validation.
-                $snippetVars = SnippetVar::createMultipleFromData($snippetVarData);
+                foreach($snippetCodes as $snippetCode) {
+                    $snippetCode->snippet_id = $model->id;
 
-                // SnippetCode models multiple loading, validation and saving.
-                $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
-                $validVars = Model::validateMultiple($snippetVars);
-                $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
+                    if (!($snippetCode->validate() && $snippetCode->save()))
+                        throw new \yii\base\Exception;
+                }
 
-                // Deleting and saving multiple SnippetCodes and SnippetVars in database.
-                $codesDeletedSuccesfully = SnippetCode::deleteMultiple($snippetCodes, $model);
-                $varsDeletedSuccesfully = SnippetVar::deleteMultiple($snippetVars, $model);
-                
+                $snippetVarsData = Yii::$app->request->post('SnippetVar');
 
-                $valid = $loadedCodes && $validCodes && $savedCodes && $codesDeletedSuccesfully && $loadedVars &&
-                        $validVars && $savedVars && $varsDeletedSuccesfully && $modelValidatedAndSaved;
+                if ($snippetVarsData != null) {
 
-                if (!$valid) {
-                    throw new Exception;
+                    $this->loadChildren('snippetFirstLevelVars', $model, $snippetVarsData);
+
+                    foreach($model->snippetFirstLevelVars as $snippetVar) {
+                        $snippetVar->snippet_id = $model->id;
+                        if (!($snippetVar->validate() && $snippetVar->save()))
+                            throw new \yii\base\Exception;
+
+                        $this->saveChildren('children', $snippetVar);
+                    }
+                    /*
+                    // SnippetCode models multiple loading, validation and saving.
+                    $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
+                    $validVars = Model::validateMultiple($snippetVars);
+                    $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
+
+                    $varsDeletedSuccesfully = SnippetVar::deleteMultiple($snippetVars, $model);
+
+
+                    $valid = $loadedCodes && $validCodes && $savedCodes && $codesDeletedSuccesfully && $loadedVars &&
+                            $validVars && $savedVars && $varsDeletedSuccesfully && $modelValidatedAndSaved;
+
+                    */
+
                 }
 
                 $transaction->commit();
@@ -117,16 +131,34 @@ class SnippetController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'snippetCodes' => $snippetCodes,
-                    'snippetVars' => $snippetVars,
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'snippetCodes' => $snippetCodes,
-                'snippetVars' => $snippetVars,
             ]);
+        }
+    }
+
+    private function loadChildren($propertyIdentifier, $model, $snippetVarsData)
+    {
+        foreach ($snippetVarsData as $index => $snippetVarData) {
+            $model->loadFromData2($propertyIdentifier, $snippetVarData, $index,
+                SnippetVar::className());
+
+            if (isset($snippetVarData['Children']))
+                $this->loadChildren('children', $model->{$propertyIdentifier}[$index], $snippetVarData['Children']);
+        }
+    }
+
+    private function saveChildren($propertyIdentifier, $model)
+    {
+        foreach($model->{$propertyIdentifier} as $snippetVar) {
+            $snippetVar->parent_id = $model->id;
+            if (!($snippetVar->validate() && $snippetVar->save()))
+                throw new \yii\base\Exception;
+
+            $this->saveChildren('children', $snippetVar);
         }
     }
 
@@ -137,7 +169,7 @@ class SnippetController extends BaseController
      */
     public function actionAppendCode()
     {
-        return $this->renderAjax('_code', ['snippetCode' => new SnippetCode()]);
+        return $this->renderAjax('_code', ['model' => new SnippetCode()]);
     }
 
     /**
@@ -148,7 +180,17 @@ class SnippetController extends BaseController
      */
     public function actionAppendVar($id = null)
     {
-        return $this->renderAjax('_variable', ['snippetVar' => new SnippetVar(), 'parentId' => $id]);
+        $snippetVar = new SnippetVar();
+        $snippetVar->parent_id = $id;
+
+        $prefix = Yii::$app->request->post('prefix');
+
+        $indexVar = rand(1000, 1000000);
+
+        return $this->renderAjax('_variable', [
+            'model' => $snippetVar,
+            'prefix' => $prefix . "[$indexVar]"
+        ]);
     }
 
     /**
@@ -161,7 +203,13 @@ class SnippetController extends BaseController
     public function actionAppendChildVarBox($id = null)
     {
         $snippetVar = $id == null ? new SnippetVar() : SnippetVar::find()->where(['id' => $id])->one();
-        return $this->renderAjax('_child-var-box', ['snippetVar' => $snippetVar]);
+
+        $prefix = Yii::$app->request->post('prefix');
+
+        return $this->renderAjax('_child-var-box', [
+            'model' => $snippetVar,
+            'prefix' => $prefix
+        ]);
     }
 
     /**

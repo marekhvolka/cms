@@ -6,26 +6,26 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
 /* @var $this yii\web\View */
-/* @var $snippetVar backend\models\SnippetVar */
+/* @var $model backend\models\SnippetVar */
+/* @var $prefix string */
 
-$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <div class="item panel panel-default snippet-var"><!-- widgetBody -->
 
     <div class="panel-heading form-inline">
         <label class="control-label" for="snippetvar-identifier">
-            <?= $snippetVar->getAttributeLabel('identifier'); ?>
+            <?= $model->getAttributeLabel('identifier'); ?>
         </label>
-        <?= BaseHtml::activeTextInput($snippetVar, "identifier", [
+        <?= BaseHtml::activeTextInput($model, "identifier", [
             'maxlength' => true,
             'class'     => 'form-control',
-            'name'      => "SnippetVar[$postIndex][identifier]",
+            'name'      => $prefix . "[identifier]",
         ]);
         ?>
 
         <button type="button" class="btn-remove-snippet-var btn btn-danger btn-xs pull-right"
-                data-var-id="<?= $snippetVar->id; ?>">
+                data-var-id="<?= $model->id; ?>">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
@@ -46,10 +46,11 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                 $allVars = VarType::find()->where(['show_snippet' => 1])->all();
                 $data = ArrayHelper::map($allVars, 'id', 'name');
 
-                echo BaseHtml::activeDropDownList($snippetVar, 'type_id', $data, [
+                echo BaseHtml::activeDropDownList($model, 'type_id', $data, [
                     'class'  => 'form-control select-var-type',
                     'prompt' => 'Vyber typ premennej',
-                    'name'   => "SnippetVar[$postIndex][type_id]",
+                    'name'   => $prefix . "[type_id]",
+                    'data-prefix' => $prefix
                 ]);
                 ?>
             </div>
@@ -57,7 +58,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
 
 
         <?php
-        $defaultValue = $snippetVar->getDefaultValues()->where("product_type_id IS NULL")->one();
+        $defaultValue = $model->getDefaultValues()->where("product_type_id IS NULL")->one();
         if (!$defaultValue) {
             $defaultValue = new SnippetVarDefaultValue();
         }
@@ -73,7 +74,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                 ?>
             </li>
             <?php
-            foreach ($snippetVar->getDefaultValues()->where("product_type_id IS NOT NULL")->all() as $defaultValue) {
+            foreach ($model->getDefaultValues()->where("product_type_id IS NOT NULL")->all() as $defaultValue) {
                 echo '<li>';
                 echo $this->render("_variable-default-val", [
                     'defaultValue' => $defaultValue
@@ -82,28 +83,31 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             } ?>
         </ul>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][parent_id]",
-            isset($snippetVar->parent_id) ? $snippetVar->parent_id : ''); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[parent_id]",
+            isset($model->parent_id) ? $model->parent_id : ''); ?>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][id]", $snippetVar->id ? $snippetVar->id : $postIndex, ['class' => 'variable-id']); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'variable-id']); ?>
 
-        <?= BaseHtml::hiddenInput("SnippetVar[$postIndex][existing]", $snippetVar->id ? 'true' : 'false'); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true'); ?>
 
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-default_value">
-                    <?= $snippetVar->getAttributeLabel('description'); ?>
+                    <?= $model->getAttributeLabel('description'); ?>
                 </label>
-                <?= BaseHtml::activeTextarea($snippetVar, "description", [
+                <?= BaseHtml::activeTextarea($model, "description", [
                     'rows'  => '4',
                     'class' => 'form-control',
-                    'name'  => "SnippetVar[$postIndex][description]",
+                    'name'  => $prefix . "[description]",
                 ]); ?>
             </div>
         </div>
 
-        <?php if (isset($snippetVar->type) && $snippetVar->type->identifier == 'list'): ?>
-            <?= $this->render('_child-var-box', ['snippetVar' => $snippetVar]); ?>
+        <?php if (isset($model->type) && $model->type->identifier == 'list'): ?>
+            <?= $this->render('_child-var-box', [
+                'model' => $model,
+                'prefix' => $prefix
+            ]); ?>
         <?php endif; ?>
 
     </div>

@@ -36,7 +36,7 @@ class SnippetCode extends CustomModel
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'snippet_id'], 'required'],
             [['code', 'description'], 'string'],
             [['snippet_id'], 'integer'],
             [['name', 'portal'], 'string', 'max' => 50],
@@ -58,13 +58,6 @@ class SnippetCode extends CustomModel
             'snippet_id' => 'Snippet ID',
             'blocks' => 'Bloky'
         ];
-    }
-
-    public function beforeDelete()
-    {
-        $this->unlinkAll('snippets', false);
-
-        return parent::beforeDelete();
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -101,63 +94,6 @@ class SnippetCode extends CustomModel
             'id' => $this->snippet_id,
             '#' => 'code' . $this->id
         ]);
-    }
-
-    /** Returns array of newly created SnippetCodes from given data.
-     * @param $data
-     * @return array
-     */
-    public static function createMultipleFromData($data)
-    {
-        $snippetCodes = [];
-        foreach ($data as $i => $dataItem) {
-            $snippetCode = new SnippetCode();
-            if ($dataItem['existing'] == 'true') {
-                $snippetCode = SnippetCode::find()->where(['id' => $dataItem['id']])->one();
-            }
-            $snippetCode->existing = $dataItem['existing'];
-            $snippetCodes[$i] = $snippetCode;
-        }
-        return $snippetCodes;
-    }
-
-    /**
-     * Saves multiple models to database.
-     * @param SnippetCode [] $snippetCodes snippetCodes to be saved.
-     * @return boolean whether saving of models was unsuccessful
-     */
-    public static function saveMultiple($snippetCodes, $snippet)
-    {
-        foreach ($snippetCodes as $snippetCode) {
-            $snippetCode->snippet_id = $snippet->id;
-            if (!$snippetCode->save()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Multiple delete of SnippetCode models by given Snippet model (SnippetCode deleted by user).
-     * @param SnippetCode [] $snippetCodes
-     * @param Snippet $snippet
-     * @return boolean if deleting was successfull.
-     */
-    public static function deleteMultiple($snippetCodes, $snippet)
-    {
-        $oldCodesIDs = ArrayHelper::map($snippet->snippetCodes, 'id', 'id');// Former IDs.
-        $newCodesIDs = ArrayHelper::map($snippetCodes, 'id', 'id'); // Newly updated IDs.
-        $codesIDsToDelete = array_diff($oldCodesIDs, $newCodesIDs);  // SnippetVar models to be deleted.
-
-        foreach ($codesIDsToDelete as $codeID) {
-            if ($code = SnippetCode::findOne($codeID)) {   // Delete existing SnippetVar with given ID.
-                if (!$code->delete()) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     /** Vrati cestu k nacachovanemu suboru, kde su ulozene informacie o kode snippetu a jeho premennych

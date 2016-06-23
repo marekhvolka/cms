@@ -12,18 +12,16 @@ use yii\helpers\BaseHtml;
 /* @var $indexSection int */
 /* @var $indexRow int */
 /* @var $indexColumn int */
-
-if (!isset($indexColumn))
-    $indexColumn = rand(100, 1000000);
+/* @var $prefix string */
 
 ?>
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][id]", $model->id, ['class' => 'id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][row_id]", $model->row_id, ['class' => 'row_id']); ?>
-    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][width]", $model->width, ['class' => 'width']); ?>
-    <?= BaseHtml::hiddenInput("Section[$indexSection][Row][$indexRow][Column][$indexColumn][order]", $model->order, ['class' => 'order']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[order]", $model->order, ['class' => 'order']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -32,8 +30,7 @@ if (!isset($indexColumn))
         </div>
         <div class="dropdown dropdown-column-content section-button">
             <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
-                    title="Vložiť nový blok" data-toggle="dropdown" data-index-section="<?= $indexSection ?>"
-                    data-index-row="<?= $indexRow ?>" data-index-column="<?= $indexColumn ?>" >
+                    title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
@@ -52,19 +49,12 @@ if (!isset($indexColumn))
     </div>
 
     <div class="panel-heading"><?php echo $model->order; ?>. stĺpec</div>
-    <div class="panel-body">
-        <ul class="children-list">
-            <?php foreach ($model->blocks as $indexBlock => $block) : ?>
-                <li>
-                    <?= $this->render('_block', [
-                        'model' => $block,
-                        'indexSection' => $indexSection,
-                        'indexRow' => $indexRow,
-                        'indexColumn' => $indexColumn,
-                        'indexBlock' => $indexBlock
-                    ]); ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+    <div class="panel-body children-list">
+        <?php foreach ($model->blocks as $indexBlock => $block) : ?>
+            <?= $this->render('_block', [
+                'model' => $block,
+                'prefix' => $prefix . "[Block][$indexBlock]"
+            ]); ?>
+        <?php endforeach; ?>
     </div>
 </div>

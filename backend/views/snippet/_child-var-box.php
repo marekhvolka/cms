@@ -1,6 +1,7 @@
 <?php 
 /* @var $this yii\web\View */
-/* @var $snippetVar backend\models\SnippetVar */
+/* @var $model backend\models\SnippetVar */
+/* @var $prefix string */
 ?>
 
 <div class="row child-var-box">
@@ -10,16 +11,19 @@
                 Premenné pre položku zoznamu
 
                 <button type="button" class="btn btn-success btn-xs btn-add-list-item-var pull-right"
-                        data-toggle="dropdown" title="Pridať premennú"
+                        data-toggle="dropdown" title="Pridať premennú" data-prefix="<?= $prefix . "[Children]" ?>"
                         onclick="">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </button>
             </div>
             <div class="panel-body">
                 <ul style="list-style: none;" class="snippet-vars">
-                    <?php foreach ($snippetVar->children as $child) : ?>
+                    <?php foreach ($model->children as $indexChild => $child) : ?>
                         <li>
-                            <?= $this->render('_variable', ['snippetVar' => $child]); ?>
+                            <?= $this->render('_variable', [
+                                'model' => $child,
+                                'prefix' => $prefix . "[Children][$indexChild]",
+                            ]); ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>

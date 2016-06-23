@@ -77,8 +77,17 @@ class Column extends CustomModel
      */
     public function getBlocks()
     {
-        return $this->hasMany(Block::className(), ['column_id' => 'id'])
-            ->orderBy(['order' => SORT_ASC]);
+        if (!isset($this->blocks))
+            $this->blocks = $this->hasMany(Block::className(), ['column_id' => 'id'])
+                ->orderBy(['order' => SORT_ASC])
+                ->all();
+
+        return $this->blocks;
+    }
+
+    public function setBlocks($value)
+    {
+        $this->blocks = $value;
     }
 
     public function getPrefix()

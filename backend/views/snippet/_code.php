@@ -7,22 +7,24 @@ use yii\helpers\ArrayHelper;
 use backend\models\Portal;
 
 /* @var $this yii\web\View */
-/* @var $snippetCode backend\models\SnippetCode */
+/* @var $model backend\models\SnippetCode */
 /* @var $form yii\widgets\ActiveForm */
 
 ?>
 <?php
-$postIndex = rand(0, 10000000); // Index for correctly indexing Post request variable.
+
+if (!isset($indexCode))
+    $indexCode = rand(1000, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <div class="item panel panel-default snippet-code"><!-- widgetBody -->
-    <a class="anchor" id="code<?= $snippetCode->id?>"></a>
+    <a class="anchor" id="code<?= $model->id?>"></a>
     <div class="panel-heading"> 
         <div class="input-group">
-            <?= BaseHtml::activeTextInput($snippetCode, "name", [
+            <?= BaseHtml::activeTextInput($model, "name", [
                     'class' => 'form-control snippetcode-name',
-                    'name' => "SnippetCode[$postIndex][name]",
-                    'id' => "snippetcode-$postIndex-name",
+                    'name' => "SnippetCode[$indexCode][name]",
+                    'id' => "snippetcode-$indexCode-name",
                 ]); ?>
             <div class="help-block"></div>
         </div>
@@ -39,8 +41,8 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
             <div class="col-sm-12">
                 <?php
                 echo CodemirrorWidget::widget([
-                        'name' => "SnippetCode[$postIndex][code]",
-                        'value' => $snippetCode->code,
+                        'name' => "SnippetCode[$indexCode][code]",
+                        'value' => $model->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
                             CodemirrorAsset::KEYMAP_EMACS,
@@ -61,7 +63,7 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
                             'autofocus' => 'true',
-                            'name' => "SnippetCode[$postIndex][code]",
+                            'name' => "SnippetCode[$indexCode][code]",
                             'rows' => 40
                         ]
                     ]
@@ -72,12 +74,12 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <div class="row">
             <div class="col-sm-12">                
                 <label class="control-label" for="snippetcode-popis">
-                    <?= $snippetCode->getAttributeLabel('description'); ?>
+                    <?= $model->getAttributeLabel('description'); ?>
                 </label>
                 <?php
-                echo BaseHtml::activeTextarea($snippetCode, "description", [
+                echo BaseHtml::activeTextarea($model, "description", [
                     'class' => 'form-control',
-                    'name' => "SnippetCode[$postIndex][description]",
+                    'name' => "SnippetCode[$indexCode][description]",
                 ]);
                 ?>
             </div>
@@ -85,22 +87,20 @@ $postIndex = rand(0, 10000000); // Index for correctly indexing Post request var
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetcode-portal">
-                    <?= $snippetCode->getAttributeLabel('portal'); ?>
+                    <?= $model->getAttributeLabel('portal'); ?>
                 </label>
                 
                 <?php
                 $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
-                echo BaseHtml::activeDropDownList($snippetCode, "portal", $data, [
+                echo BaseHtml::activeDropDownList($model, "portal", $data, [
                     'maxlength' => true, 
                     'class' => 'form-control',
-                    'name' => "SnippetCode[$postIndex][portal]",
+                    'name' => "SnippetCode[$indexCode][portal]",
                 ]);
                 ?>
             </div>
         </div>
-        
-        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][existing]", $snippetCode->id ? 'true' : 'false'); ?>
-        
-        <?= BaseHtml::hiddenInput("SnippetCode[$postIndex][id]", $snippetCode->id); ?>
+        <?= BaseHtml::hiddenInput("SnippetCode[$indexCode][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+        <?= BaseHtml::hiddenInput("SnippetCode[$indexCode][id]", $model->id); ?>
     </div>
 </div>

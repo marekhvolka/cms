@@ -9,7 +9,8 @@ var appendUrl = {
 $('.btn-add-section').click(function () {
     var layouts = $(this).parents('.layouts');
     var postData = {
-        type : layoutType
+        type : layoutType,
+        prefix : $(this).data('prefix')
     };
     
     if (pageId) {
@@ -20,7 +21,7 @@ $('.btn-add-section').click(function () {
         postData.portalId = portalId;
     }
     $.post(appendUrl.section, postData, function (data) {
-        var row = appendElement(layouts, data);
+        var row = appendElement(layouts, $(data));
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
         attachAddRowEvent(row.find('.add-row'));
     });
@@ -51,17 +52,17 @@ function attachAddRowEvent(button) {
 
         var postData = {
             sectionId : sectionId,
-            indexSection : $(this).data('index-section')
+            prefix : $(this).data('prefix')
         };
 
         $.post(appendUrl.row, postData, function (data) {
-            var row = appendElement(section, data);
+            var row = appendElement(section, $(data));
             attachRemoveRowEvent(row.find('.btn-remove-row'));
 
             var postColumnData = {
                 rowId : row.find('.id').first().val(),
                 width : columnsByWidth,
-                indexSection : $(this).data('index-section')
+                prefix : row.data('prefix')
             };
 
             $.post(appendUrl.column, postColumnData, function (columnsData) {
@@ -69,7 +70,7 @@ function attachAddRowEvent(button) {
                 var columnsArray = JSON.parse(columnsData);
 
                 for(var i = 0; i < columnsArray.length; i++)
-                    var column = row.append(columnsArray[i]);
+                    var column = appendElement(row, $(columnsArray[i]));
             });
 
             attachAddBlockEvent(row.find('.column-option'));
@@ -86,31 +87,27 @@ function attachAddBlockEvent(button) {
 
         var postData = {
             columnId : columnId,
-            indexSection : $(this).data('index-section'),
-            indexRow : $(this).data('index-row'),
-            indexColumn : $(this).data('index-column')
+            prefix : $(this).data('prefix')
         };
 
         $.post(appendUrl.block, postData, function (data) {
-            var row = appendElement(column, data);
-            attachRemoveBlockEvent(row.find('.btn-remove-block'));
+            var block = appendElement(column, $(data));
+            attachRemoveBlockEvent(block.find('.btn-remove-block'));
         });
     });
 }
 
 function appendElement(parentElement, dataToAppend) {
-    var row = $('<li></li>');
     var list = parentElement.find('.children-list').first();
-    row = row.appendTo(list);
-    $(row).append(dataToAppend);
-    return row;
+    list.append(dataToAppend);
+    return dataToAppend;
 }
 
 attachAddBlockEvent($('.column-option'));
 
 function attachRemoveBlockEvent(removeButton) {
     removeButton.click(function () {
-        $(this).parents('.layout-block').parents('li').first().remove();
+        $(this).parents('.layout-block').first().remove();
     });
 }
 

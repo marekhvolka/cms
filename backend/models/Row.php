@@ -63,8 +63,17 @@ class Row extends CustomModel
      */
     public function getColumns()
     {
-        return $this->hasMany(Column::className(), ['row_id' => 'id'])
-            ->orderBy('order');
+        if (!isset($this->columns))
+            $this->columns = $this->hasMany(Column::className(), ['row_id' => 'id'])
+                ->orderBy('order')
+                ->all();
+
+        return $this->columns;
+    }
+
+    public function setColumns($value)
+    {
+        $this->columns = $value;
     }
 
     /**

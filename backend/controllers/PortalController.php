@@ -152,10 +152,7 @@ class PortalController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-
                 $sections = $allSections;
-
-                // Getting all data for creating/updating sections, rows, columns and blocks.
 
                 $sectionsData = Yii::$app->request->post('Section');
                 foreach($sectionsData as $indexSection => $itemSection) {
@@ -166,32 +163,26 @@ class PortalController extends BaseController
                     if (!key_exists('Row', $rowsData))
                         continue;
 
-                    $rows = $sections[$indexSection]->rows;
-
                     foreach($rowsData['Row'] as $indexRow => $itemRow) {
 
-                        Row::loadFromData($rows, $itemRow, $indexRow, Row::className());
+                        $sections[$indexSection]->loadFromData2('rows', $itemRow, $indexRow, Row::className());
 
                         $columnsData = $sectionsData[$indexSection]['Row'][$indexRow];
 
                         if (!key_exists('Column', $columnsData))
                             continue;
 
-                        $columns = $rows[$indexRow]->columns;
-
                         foreach($columnsData['Column'] as $indexColumn => $itemColumn) {
 
-                            Column::loadFromData($columns, $itemColumn, $indexColumn, Column::className());
+                            $sections[$indexSection]->rows[$indexRow]->loadFromData2('columns', $itemColumn, $indexColumn, Column::className());
 
                             $blocksData = $sectionsData[$indexSection]['Row'][$indexRow]['Column'][$indexColumn];
 
                             if (!key_exists('Block', $blocksData))
                                 continue;
 
-                            $blocks = $columns[$indexColumn]->blocks;
-
                             foreach($blocksData['Block'] as $indexBlock => $itemBlock) {
-                                Block::loadFromData($blocks, $itemBlock, $indexBlock, Block::className());
+                                Block::loadFromData($sections[$indexSection]->rows[$indexRow]->columns[$indexColumn]->blocks, $itemBlock, $indexBlock, Block::className());
                             }
                         }
                     }
