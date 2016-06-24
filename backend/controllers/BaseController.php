@@ -6,6 +6,7 @@ use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\models\Block;
 use backend\models\Column;
+use backend\models\CustomModel;
 use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Row;
@@ -36,7 +37,6 @@ abstract class BaseController extends Controller
             ]
         ];
     }
-
 
     public function init()
     {
@@ -107,7 +107,6 @@ abstract class BaseController extends Controller
         $columnsData = array();
 
         for($i = 0; $i < sizeof($width); $i++) {
-
             $column = new Column();
             $column->order = $i+1;
             $column->width = $width[$i];
@@ -116,7 +115,6 @@ abstract class BaseController extends Controller
 
             $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn);
         }
-
         return json_encode($columnsData);
     }
 
@@ -134,17 +132,19 @@ abstract class BaseController extends Controller
 
         $block = new Block();
         $block->column_id = $columnId;
-        $block->data = 'test'; // TODO test data.
         $block->type = 'text'; // TODO test data.
 
         return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock);
     }
 
-    public function actionBlock($id)
+    public function actionAppendBlockModal($id, $prefix)
     {
+        //$blockId = Yii::$app->request->post('id');
+        //$prefix = Yii::$app->request->post('prefix');
+
         $block = Block::findOne(['id' => $id]);
 
-        return (new BlockModalWidget())->appendModal($block);
+        return (new BlockModalWidget())->appendModal($block, $prefix);
     }
 
     public function actionCacheFromBuffer($limit = 20)
@@ -167,6 +167,78 @@ abstract class BaseController extends Controller
             $removeCommand->bindValue(':id', $row['id']);
 
             $removeCommand->execute();
+        }
+    }
+
+    /** Metoda na nacitanie a ulozenie dat pre layout
+     * @param CustomModel $model
+     * @param $sectionsData
+     * @param $propertyIdentifier
+     * @throws \yii\base\Exception
+     */
+    public function loadAndSaveLayout(CustomModel $model, $sectionsData, $propertyIdentifier, $type)
+    {
+        foreach($sectionsData as $indexSection => $itemSection) {
+            $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
+
+            if (!key_exists('row', $itemSection))
+                continue;
+
+            foreach($itemSection['row'] as $indexRow => $itemRow) {
+
+                $model->{$propertyIdentifier}[$indexSection]->loadFromData('rows', $itemRow, $indexRow, Row::className());
+
+                if (!key_exists('column', $itemRow))
+                    continue;
+
+                foreach($itemRow['column'] as $indexColumn => $itemColumn) {
+
+                    $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
+
+                    if (!key_exists('block', $itemColumn))
+                        continue;
+
+                    foreach($itemColumn['block'] as $indexBlock => $itemBlock) {
+                        $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->columns[$indexColumn]->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
+
+                        if (!key_exists('snippetVarValue', $itemBlock))
+                            continue;
+
+                        foreach($itemBlock['snippetVarValue'] as $indexVar => $snippetVarValue) {
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach($model->{$propertyIdentifier} as $section) {
+            if ($type == 'page')
+                $section->page_id = $model->id;
+            else if ($type == 'portal')
+                $section->portal_id = $model->id;
+
+            if (!($section->validate() && $section->save()))
+                throw new \yii\base\Exception;
+
+            foreach($section->rows as $row) {
+                $row->section_id = $section->id;
+
+                if (!($row->validate() && $row->save()))
+                    throw new \yii\base\Exception;
+                foreach ($row->columns as $column) {
+                    $column->row_id = $row->id;
+
+                    if (!($column->validate() && $column->save()))
+                        throw new \yii\base\Exception;
+                    foreach($column->blocks as $block) {
+                        $block->column_id = $column->id;
+
+                        if (!($block->validate() && $block->save()))
+                            throw new \yii\base\Exception;
+                    }
+                }
+            }
         }
     }
 }

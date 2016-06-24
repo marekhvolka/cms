@@ -20,7 +20,7 @@ use backend\components\BlockModal\BlockModalWidget;
     </button>
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" 
-            data-id="<?= $model->id ?>"
+            data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
             data-target="#modal-<?= $model->id ?>"
             data-toggle="modal">
                 <?php echo $model->name; ?>
@@ -34,16 +34,14 @@ use backend\components\BlockModal\BlockModalWidget;
             'title' => 'Upraviť snippet',
             'target' => '_blank'
                 ]
-        )
-        ?>
+        ) ?>
     <?php endif; ?>
 
     <button type="button" class="btn btn-danger btn-sm btn-remove-block" title="Zmazať element">
         <span class="glyphicon glyphicon-remove"></span>
     </button>
-</div>
 
-<?= BlockModalWidget::widget([
-    'block' => $model,
-    'productType' => null,
-    ])?>
+    <div class="modal-container">
+
+    </div>
+</div>

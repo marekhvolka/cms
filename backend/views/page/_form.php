@@ -15,11 +15,6 @@ use kartik\switchinput\SwitchInput;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
-
-/* @var $headerSections \backend\models\Section */
-/* @var $footerSections \backend\models\Section */
-/* @var $sidebarSections \backend\models\Section */
-/* @var $contentSections \backend\models\Section */
 ?>
 
 <div class="page-form">
@@ -29,32 +24,41 @@ use kartik\switchinput\SwitchInput;
         //'enableAjaxValidation' => true, //TODO: think about it :)
     ]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <div class="panel panel-default">
 
-    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+        <div class="panel-heading">
+            <h3>Základné nastavenia stránky</h3>
+        </div>
 
-    <?=IdentifierGenerator::widget([
-        'idTextFrom' => 'page-name',
-        'idTextTo' => 'page-identifier',
-        'delimiter' => '-',
-    ])?>
+        <div class="panel-body">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
-    'type' => SwitchInput::CHECKBOX
-    ]) ?>
+            <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'in_menu')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
+            <?=IdentifierGenerator::widget([
+                'idTextFrom' => 'page-name',
+                'idTextTo' => 'page-identifier',
+                'delimiter' => '-',
+            ])?>
 
-    <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Page::find()->all(), 'id', 'name'),
-        'language' => 'en',
-        'options' => ['placeholder' => 'Výber rodiča ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
+            <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(Page::find()->all(), 'id', 'name'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber rodiča ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
+            <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
+            'type' => SwitchInput::CHECKBOX
+            ]) ?>
+
+            <?= $form->field($model, 'in_menu')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+        </div>
+    </div>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
@@ -65,42 +69,59 @@ use kartik\switchinput\SwitchInput;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>SEO nastavenia</h3>
+        </div>
 
-    <?= $form->field($model, 'description')->textarea() ?>
+        <div class="panel-body">
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'keywords')->textarea() ?>
+            <?= $form->field($model, 'description')->textarea() ?>
+
+            <?= $form->field($model, 'keywords')->textarea() ?>
+        </div>
+    </div>
 
     <?= $form->field($model, 'color_scheme')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'footer_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
-
     <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
+        'type' => SwitchInput::CHECKBOX,
+        'pluginOptions' => [
+            'onText' => 'Aktívny',
+            'offText' => 'Neaktívny',
+        ]
     ]) ?>
 
     <h3 class="page-header">Hlavička stránky</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $headerSections
+            'sections' => $model->headerSections,
+            'prefix' => 'headerSection',
+            'type' => 'header',
+            'controllerUrl' => Url::to(['/page'])
         ]
     )?>
 
     <h3 class="page-header">Hlavný obsah</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $contentSections,
+            'sections' => $model->contentSections,
             'type' => 'content',
-            'controllerUrl' => Url::to(['/layout']),
+            'prefix' => 'contentSection',
+            'controllerUrl' => Url::to(['/page']),
+            'allowAddingSection' => false
         ]
     )?>
 
     <h3 class="page-header">Sidebar</h3>
 
     <?= $form->field($model, 'sidebar_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
+        'type' => SwitchInput::CHECKBOX,
+        'pluginOptions' => [
+            'onText' => 'Aktívny',
+            'offText' => 'Neaktívny',
+        ]
     ]) ?>
 
     <?= $form->field($model, 'sidebar_side')->textInput(['maxlength' => true]) ?>
@@ -108,16 +129,25 @@ use kartik\switchinput\SwitchInput;
     <?= $form->field($model, 'sidebar_size')->textInput() ?>
 
     <?= LayoutWidget::widget([
-            'sections' => $sidebarSections,
+            'sections' => $model->sidebarSections,
             'type' => 'sidebar',
-            'controllerUrl' => Url::to(['/layout']),
+            'prefix' => 'sidebarSection',
+            'controllerUrl' => Url::to(['/page']),
+            'allowAddingSection' => false
         ]
     )?>
 
     <h3 class="page-header">Patička stránky</h3>
 
+    <?= $form->field($model, 'footer_active')->widget(SwitchInput::classname(), [
+        'type' => SwitchInput::CHECKBOX
+    ]) ?>
+
     <?= LayoutWidget::widget([
-            'sections' => $footerSections
+            'sections' => $model->footerSections,
+            'prefix' => 'footerSection',
+            'type' => 'footer',
+            'controllerUrl' => Url::to(['/page'])
         ]
     )?>
 

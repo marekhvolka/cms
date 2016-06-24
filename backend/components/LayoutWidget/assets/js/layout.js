@@ -2,7 +2,8 @@ var appendUrl = {
     section: controllerUrl + '/' + 'append-section',
     row: controllerUrl + '/' + 'append-row',
     column: controllerUrl + '/' + 'append-columns',
-    block: controllerUrl + '/' + 'append-block'
+    block: controllerUrl + '/' + 'append-block',
+    blockModal: controllerUrl + '/' + 'append-block-modal'
 };
 
 // Event for appending new section.
@@ -12,14 +13,7 @@ $('.btn-add-section').click(function () {
         type : layoutType,
         prefix : $(this).data('prefix')
     };
-    
-    if (pageId) {
-        postData.pageId = pageId;
-    }
-    
-    if (portalId) {
-        postData.portalId = portalId;
-    }
+
     $.post(appendUrl.section, postData, function (data) {
         var row = appendElement(layouts, $(data));
         attachRemoveSectionEvent(row.find('.btn-remove-section'));
@@ -30,7 +24,7 @@ $('.btn-add-section').click(function () {
 // Event for removing section under remove button clicked.
 function attachRemoveSectionEvent(removeButton) {
     removeButton.click(function () {
-        $(this).parents('li').remove();
+        $(this).parents('.section').remove();
     });
 }
 
@@ -51,7 +45,6 @@ function attachAddRowEvent(button) {
         var sectionId = section.find('.id').first().val();
 
         var postData = {
-            sectionId : sectionId,
             prefix : $(this).data('prefix')
         };
 
@@ -60,7 +53,6 @@ function attachAddRowEvent(button) {
             attachRemoveRowEvent(row.find('.btn-remove-row'));
 
             var postColumnData = {
-                rowId : row.find('.id').first().val(),
                 width : columnsByWidth,
                 prefix : row.data('prefix')
             };
@@ -86,7 +78,6 @@ function attachAddBlockEvent(button) {
         var columnId = column.find('.id').first().val();
 
         var postData = {
-            columnId : columnId,
             prefix : $(this).data('prefix')
         };
 
@@ -156,6 +147,24 @@ $('#' + formId).submit(function () {
 });
 
 $('.btn-block-modal').click(function() {
+
+    var blockId = $(this).data('id');
+
+    var postData = {
+        id : blockId,
+        prefix : $(this).data('prefix')
+    };
+
+    var self = this;
+
+    $.get(appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
+        var block = $(data);
+
+        $(self).parent().find('.modal-container').first().append(block);
+
+        $('#modal-' + blockId).modal();
+        attachRemoveBlockEvent(block.find('.btn-remove-block'));
+    });
     
     return true;
 });

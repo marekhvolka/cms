@@ -16,6 +16,8 @@ class BlockModalWidget extends Widget
 
     public $productType;
 
+    public $prefix;
+
     public function init()
     {
         parent::init();
@@ -25,8 +27,8 @@ class BlockModalWidget extends Widget
     {
         AssetBundle::register($this->getView());
 
-        return $this->render('blockModalWidget', [
-            'block' => $this->block,
+        return $this->render('view', [
+            'model' => $this->block,
             'productType' => $this->productType,
         ]);
     }
@@ -35,12 +37,13 @@ class BlockModalWidget extends Widget
      * @param $block Block
      * @return string
      */
-    public function appendModal($block)
+    public function appendModal($block, $prefix)
     {
         return $this->render('view', [
             'model' => $block,
             'productType' => $this->productType,
-            'htmlBody' => true
+            'htmlBody' => true,
+            'prefix' => $prefix
         ]);
     }
 }

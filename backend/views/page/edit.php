@@ -19,10 +19,6 @@ $this->params['breadcrumbs'][] = 'Úprava';
     
     <?= $this->render('_form', [
         'model' => $model,
-        'headerSections' => $headerSections,
-        'footerSections' => $footerSections,
-        'sidebarSections' => $sidebarSections,
-        'contentSections' => $contentSections,
     ]) ?>
 
 </div>

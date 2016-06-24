@@ -20,6 +20,7 @@ use Yii;
  * @property string $value
  * @property Tag[] $products
  * @property User $lastEditUser
+ * @property SnippetVarValue[] $snippetVarValues
  */
 class Tag extends \yii\db\ActiveRecord
 {
@@ -75,6 +76,11 @@ class Tag extends \yii\db\ActiveRecord
     {
         //TODO: fix
         return $this->hasMany(Product::className(), ['tag_id' => 'id']);
+    }
+
+    public function getSnippetVarValues()
+    {
+        return $this->hasMany(SnippetVarValue::className(), ['value_tag_id' => 'id']);
     }
 
     /**

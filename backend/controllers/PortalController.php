@@ -152,62 +152,8 @@ class PortalController extends BaseController
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $sectionsData = Yii::$app->request->post('section');
-                foreach($sectionsData as $indexSection => $itemSection) {
-                    $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
 
-                    $rowsData = $sectionsData[$indexSection];
-
-                    if (!key_exists('row', $rowsData))
-                        continue;
-
-                    foreach($rowsData['row'] as $indexRow => $itemRow) {
-
-                        $model->{$propertyIdentifier}[$indexSection]->loadFromData('rows', $itemRow, $indexRow, Row::className());
-
-                        $columnsData = $sectionsData[$indexSection]['row'][$indexRow];
-
-                        if (!key_exists('column', $columnsData))
-                            continue;
-
-                        foreach($columnsData['column'] as $indexColumn => $itemColumn) {
-
-                            $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
-
-                            $blocksData = $sectionsData[$indexSection]['row'][$indexRow]['column'][$indexColumn];
-
-                            if (!key_exists('block', $blocksData))
-                                continue;
-
-                            foreach($blocksData['block'] as $indexBlock => $itemBlock) {
-                                $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->columns[$indexColumn]->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
-                            }
-                        }
-                    }
-                }
-
-                foreach($model->{$propertyIdentifier} as $section) {
-                    if (!($section->validate() && $section->save()))
-                        throw new \yii\base\Exception;
-
-                    foreach($section->rows as $row) {
-                        $row->section_id = $section->id;
-
-                        if (!($row->validate() && $row->save()))
-                            throw new \yii\base\Exception;
-                        foreach ($row->columns as $column) {
-                            $column->row_id = $row->id;
-
-                            if (!($column->validate() && $column->save()))
-                                throw new \yii\base\Exception;
-                            foreach($column->blocks as $block) {
-                                $block->column_id = $column->id;
-
-                                if (!($block->validate() && $block->save()))
-                                    throw new \yii\base\Exception;
-                            }
-                        }
-                    }
-                }
+                $this->loadAndSaveLayout($model, $sectionsData, $propertyIdentifier, 'portal');
 
                 $transaction->commit();
             } catch (Exception $exc) {

@@ -78,7 +78,7 @@ class TrackingCode extends ActiveRecord
 
         foreach($this->portal->pages as $page)
         {
-            $page->getMainCacheFile(true);
+            $page->addToCacheBuffer();
         }
     }
 

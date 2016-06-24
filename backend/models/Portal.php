@@ -184,7 +184,8 @@ class Portal extends CustomModel implements ICacheable
     public function getPortalVarValues()
     {
         if (!isset($this->portalVarValues))
-            $this->portalVarValues = $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id'])->all();
+            $this->portalVarValues = $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id'])
+                ->all();
 
         return $this->portalVarValues;
     }

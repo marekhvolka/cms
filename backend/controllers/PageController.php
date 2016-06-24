@@ -7,6 +7,7 @@ use backend\models\search\PageSearch;
 use backend\models\Section;
 use common\components\CacheEngine;
 use Yii;
+use yii\base\Exception;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
@@ -53,26 +54,6 @@ class PageController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        $headerSections = Section::findAll([
-            'type' => 'header',
-            'page_id' => $id ? $id : -1
-        ]);
-
-        $footerSections = Section::findAll([
-            'type' => 'footer',
-            'page_id' => $id ? $id : -1
-        ]);
-
-        $contentSections = Section::findAll([
-            'type' => 'content',
-            'page_id' => $id ? $id : -1
-        ]);
-
-        $sidebarSections = Section::findAll([
-            'type' => 'sidebar',
-            'page_id' => $id ? $id : -1
-        ]);
-
         if ($id) {
             $model = $this->findModel($id);
         }
@@ -80,17 +61,50 @@ class PageController extends BaseController
             $model = new Page();
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if (Yii::$app->request->isPost) {
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+
+                if (!($model->load(Yii::$app->request->post()) && $model->save())) {
+                    throw new Exception;
+                }
+
+                $headerData = Yii::$app->request->post('headerSection');
+
+                if ($headerData != null)
+                    $this->loadAndSaveLayout($model, $headerData, 'headerSections', 'page');
+
+                $footerData = Yii::$app->request->post('footerSection');
+
+                if ($footerData != null)
+                    $this->loadAndSaveLayout($model, $footerData, 'footerSections', 'page');
+
+                $contentData = Yii::$app->request->post('contentSection');
+
+                if ($contentData != null)
+                    $this->loadAndSaveLayout($model, $contentData, 'contentSections', 'page');
+
+                $sidebarData = Yii::$app->request->post('sidebarSection');
+
+                if ($sidebarData != null)
+                    $this->loadAndSaveLayout($model, $sidebarData, 'sidebarSections', 'page');
+
+                $transaction->commit();
+            } catch (Exception $exc) {
+                $transaction->rollBack();
+
+                return $this->render('edit', [
+                    'model' => $model
+                ]);
+            }
+
             return $this->redirect(['index']);
-        } else {
-            return $this->render('edit', [
-                'model' => $model,
-                'headerSections' => $headerSections,
-                'footerSections' => $footerSections,
-                'sidebarSections' => $sidebarSections,
-                'contentSections' => $contentSections,
-            ]);
         }
+
+        return $this->render('edit', [
+            'model' => $model
+        ]);
     }
 
     /**

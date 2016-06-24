@@ -13,13 +13,13 @@ use backend\models\Block;
  */
 class LayoutWidget extends Widget
 {
-
     public $controllerUrl;
     public $sections;
     public $type;
-    public $portalId;
-    public $pageId;
     public $formId;
+    public $prefix;
+
+    public $allowAddingSection = true;
 
     public function init()
     {
@@ -34,10 +34,9 @@ class LayoutWidget extends Widget
             'sections' => $this->sections,
             'controllerUrl' => $this->controllerUrl,
             'type' => $this->type,
-            'portalId' => $this->portalId,
-            'pageId' => $this->pageId,
             'formId' => $this->formId,
-            'prefix' => ''
+            'prefix' => $this->prefix,
+            'allowAddingSection' => $this->allowAddingSection
         ]);
     }
 
@@ -51,7 +50,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_section', [
             'model' => $section,
-            'prefix' => $prefix . "section[$indexSection]"
+            'prefix' => $prefix . "[$indexSection]"
         ]);
     }
 

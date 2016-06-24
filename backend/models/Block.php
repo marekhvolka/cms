@@ -145,7 +145,15 @@ class Block extends CustomModel implements ICacheable
      */
     public function getSnippetVarValues()
     {
-        return $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id']);
+        if (!isset($this->snippetVarValues))
+            $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id']);
+
+        return $this->snippetVarValues;
+    }
+
+    public function setSnippetVarValues($value)
+    {
+        $this->snippetVarValues = $value;
     }
 
     /** Returns array of newly created models from given data.

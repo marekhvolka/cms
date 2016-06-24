@@ -3,6 +3,8 @@
 /* @var $form yii\widgets\ActiveForm */
 /* @var $sections \backend\models\Section */
 
+/* @var $allowAddingSection bool */
+
 /* @var $prefix string */
 ?>
 
@@ -14,28 +16,26 @@
         <?php foreach ($sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,
-                'prefix' => $prefix . "section[$indexSection]"
+                'prefix' => $prefix . "[$indexSection]"
             ]); ?>
         <?php endforeach; ?>
     </div>
     <div class="col-sm-10 col-sm-offset-2">
+        <?php if ($allowAddingSection) : ?>
         <button type="button" class="btn btn-success btn-sm btn-add-section" data-sections-id="<?= $idHash ?>"
                 data-prefix="<?= $prefix ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
+        <?php endif; ?>
     </div>
 </div> 
 
 <?php
-$portalIdJs = $portalId ? : 'null';
-$pageIdJs = $pageId ? : 'null';
 
 $js = <<<JS
 
 var controllerUrl = '$controllerUrl';
 var layoutType = '$type';
-var portalId = $portalIdJs;
-var pageId = $pageIdJs;
 var formId = '$formId';
         
 JS;

@@ -77,7 +77,7 @@ class CustomModel extends \yii\db\ActiveRecord
         }
     }
 
-    private function saveChildren($propertyIdentifier)
+    public function saveChildren($propertyIdentifier)
     {
         foreach($this->{$propertyIdentifier} as $snippetVar) {
             $snippetVar->parent_id = $this->id;

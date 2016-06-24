@@ -22,7 +22,7 @@ use yii\helpers\Url;
         'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
         'type' => Yii::$app->request->get('type'),
-        'portalId' => Yii::$app->session->get('portal_id')
+        'prefix' => 'section'
     ]
 )?>
 

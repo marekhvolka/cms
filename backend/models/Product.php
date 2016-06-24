@@ -113,6 +113,10 @@ class Product extends CustomModel implements ICacheable
         foreach($this->productSnippets as $productSnippet) {
             $productSnippet->valueBlock->resetAfterUpdate();
         }
+
+        foreach($this->snippedVarValues as $snippetVarValue) {
+            $snippetVarValue->block->resetAfterUpdate();
+        }
     }
 
     /**
