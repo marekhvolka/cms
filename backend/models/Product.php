@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
  */
-class Product extends \yii\db\ActiveRecord implements ICacheable
+class Product extends CustomModel implements ICacheable
 {
     /**
      * @inheritdoc
@@ -184,15 +184,18 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
      */
     public function getProductSnippets()
     {
-        $array = array();
-
-        foreach($this->productVarValues as $productVarValue)
-        {
-            if ($productVarValue->var->isSnippet())
-                $array[] = $productVarValue;
+        if (!isset($this->productSnippets)) {
+            $this->productSnippets = array();
+            foreach ($this->productVarValues as $index => $productVarValue)
+                if ($productVarValue->var->isSnippet())
+                    $this->productSnippets[$index] = $productVarValue;
         }
+        return $this->productSnippets;
+    }
 
-        return $array;
+    public function setProductSnippets($value)
+    {
+        $this->productSnippets = $value;
     }
 
     /** Vrati zoznam hodnot premennych - produktovych vlastnosti
@@ -200,15 +203,20 @@ class Product extends \yii\db\ActiveRecord implements ICacheable
      */
     public function getProductProperties()
     {
-        $array = array();
-
-        foreach($this->productVarValues as $index => $productVarValue)
-        {
-            if (!$productVarValue->var->isSnippet())
-                $array[$index] = $productVarValue;
+        if (!isset($this->productProperties)) {
+            $this->productProperties = array();
+            foreach ($this->productVarValues as $index => $productVarValue) {
+                if (!$productVarValue->var->isSnippet()) {
+                    $this->productProperties[$index] = $productVarValue;
+                }
+            }
         }
+        return $this->productProperties;
+    }
 
-        return $array;
+    public function setProductProperties($value)
+    {
+        $this->productProperties = $value;
     }
 
     /**

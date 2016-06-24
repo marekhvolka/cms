@@ -53,7 +53,7 @@ use yii\helpers\BaseHtml;
         <?php foreach ($model->blocks as $indexBlock => $block) : ?>
             <?= $this->render('_block', [
                 'model' => $block,
-                'prefix' => $prefix . "[Block][$indexBlock]"
+                'prefix' => $prefix . "[block][$indexBlock]"
             ]); ?>
         <?php endforeach; ?>
     </div>

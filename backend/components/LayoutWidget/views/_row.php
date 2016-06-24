@@ -15,7 +15,7 @@ use yii\helpers\BaseHtml;
         <?php foreach ($model->columns as $indexColumn => $column) : ?>
             <?= $this->render('_column', [
                 'model' => $column,
-                'prefix' => $prefix . "[Column][$indexColumn]"
+                'prefix' => $prefix . "[column][$indexColumn]"
             ]); ?>
         <?php endforeach; ?>
     </div>

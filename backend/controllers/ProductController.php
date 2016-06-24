@@ -63,11 +63,9 @@ class ProductController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id); // Product model retrieved by id.
-            $productVarValues = $model->getProductProperties();
         }
         else {
             $model = new Product();
-            $productVarValues = [];
         }
 
         if ($model->load(Yii::$app->request->post())) {
@@ -80,11 +78,11 @@ class ProductController extends BaseController
                     throw new Exception;
 
                 foreach ($productVarValuesData as $index => $productValueData) {
-                    ProductVarValue::loadFromData($productVarValues, $productValueData, $index, ProductVarValue::className());
-                    $productVarValues[$index]->product_id = $model->id;
+                    $model->loadFromData('productProperties', $productValueData, $index, ProductVarValue::className());
                 }
 
-                foreach($productVarValues as $productVarValue) {
+                foreach($model->productProperties as $productVarValue) {
+                    $productVarValue->product_id = $model->id;
                     if (!($productVarValue->validate() && $productVarValue->save()))
                         throw new Exception;
                 }
@@ -99,14 +97,12 @@ class ProductController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'productVarValues' => $productVarValues,
                     'allVariables' => ProductVar::getProductVarProperties(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'productVarValues' => $productVarValues,
                 'allVariables' => ProductVar::getProductVarProperties(),
             ]);
         }

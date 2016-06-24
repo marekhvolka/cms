@@ -29,7 +29,7 @@ use yii\db\Query;
  * @property Section[] $footerSections
  * @property PortalVarValue[] $portalVarValues
  */
-class Portal extends \yii\db\ActiveRecord implements ICacheable
+class Portal extends CustomModel implements ICacheable
 {
     /**
      * @inheritdoc
@@ -107,7 +107,7 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
     }
 
     /** Vrati zoznam hodnot premennych - portalovych snippetov
-     * @return \yii\db\ActiveQuery
+     * @return PortalVarValue[]
      */
     public function getPortalSnippets()
     {
@@ -139,25 +139,43 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
     }
 
     /**
-     * @return Section
+     * @return Section[]
      */
     public function getHeaderSections()
     {
-        return Section::findAll([
-            'portal_id' => $this->id,
-            'type' => 'header'
-        ]);
+        if (!isset($this->headerSections))
+            $this->headerSections = $this->hasMany(Section::className(), [
+                'portal_id' => 'id'
+            ])
+                ->where(['type' => 'header'])
+                ->all();
+
+        return $this->headerSections;
+    }
+
+    public function setHeaderSections($value)
+    {
+        $this->headerSections = $value;
     }
 
     /**
-     * @return Section
+     * @return Section[]
      */
     public function getFooterSections()
     {
-        return Section::findAll([
-            'portal_id' => $this->id,
-            'type' => 'footer'
-        ]);
+        if (!isset($this->footerSections))
+            $this->footerSections = $this->hasMany(Section::className(), [
+                'portal_id' => 'id'
+            ])
+                ->where(['type' => 'footer'])
+                ->all();
+
+        return $this->footerSections;
+    }
+
+    public function setFooterSections($value)
+    {
+        $this->footerSections = $value;
     }
 
     /**
@@ -165,7 +183,15 @@ class Portal extends \yii\db\ActiveRecord implements ICacheable
      */
     public function getPortalVarValues()
     {
-        return $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id']);
+        if (!isset($this->portalVarValues))
+            $this->portalVarValues = $this->hasMany(PortalVarValue::className(), ['portal_id' => 'id'])->all();
+
+        return $this->portalVarValues;
+    }
+
+    public function setPortalVarValues($value)
+    {
+        $this->portalVarValues = $value;
     }
 
     /** Vrati retazec, v ktorom su kody z daneho umiestnenia

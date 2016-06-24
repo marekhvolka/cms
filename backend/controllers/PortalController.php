@@ -65,12 +65,10 @@ class PortalController extends BaseController
     public function actionEdit($id = null)
     {
         if ($id) {
-            $model = $this->findModel($id); // Portal model retrieved by id.
-            $portalVarValues = $model->getPortalProperties();
+            $model = $this->findModel($id); // Portal model retrieved by id
         }
         else {
             $model = new Portal();
-            $portalVarValues = [];
         }
 
         if ($model->load(Yii::$app->request->post())) {
@@ -83,11 +81,11 @@ class PortalController extends BaseController
                     throw new Exception;
 
                 foreach ($portalVarValuesData as $index => $portalValueData) {
-                    PortalVarValue::loadFromData($portalVarValues, $portalValueData, $index, PortalVarValue::className());
-                    $portalVarValues[$index]->portal_id = $model->id;
+                    $model->loadFromData('portalVarValues', $portalValueData, $index, PortalVarValue::className());
                 }
 
-                foreach($portalVarValues as $portalVarValue) {
+                foreach($model->portalVarValues as $portalVarValue) {
+                    $portalVarValue->portal_id = $model->id;
                     if (!($portalVarValue->validate() && $portalVarValue->save()))
                         throw new Exception;
                 }
@@ -102,22 +100,20 @@ class PortalController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'portalVarValues' => $portalVarValues,
                     'allVariables' => PortalVar::getPortalVarProperties(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'portalVarValues' => $portalVarValues,
                 'allVariables' => PortalVar::getPortalVarProperties()
             ]);
         }
     }
 
     /**
-     * Action neccessary for VarManagerWidget - appending one variable value at the end of the list.
-     * @param Model $varId - id of Var
+     * Action necessary for VarManagerWidget - appending one variable value at the end of the list.
+     * @param int $varId - id of Var
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
     public function actionAppendVarValue($varId)
@@ -143,52 +139,53 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
-        $allSections = Section::findAll([
-            'type' => $type,
-            'portal_id' => Yii::$app->session->get('portal_id')
-        ]);
+        $model = $this->findModel(Yii::$app->session->get('portal_id'));
+
+        if ($type == 'header')
+            $propertyIdentifier = 'headerSections';
+        else if ($type == 'footer')
+            $propertyIdentifier = 'footerSections';
+        else return '';
 
         if (Yii::$app->request->isPost) {
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $sections = $allSections;
-
-                $sectionsData = Yii::$app->request->post('Section');
+                $sectionsData = Yii::$app->request->post('section');
                 foreach($sectionsData as $indexSection => $itemSection) {
-                    Section::loadFromData($sections, $itemSection, $indexSection, Section::className());
+                    $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
 
                     $rowsData = $sectionsData[$indexSection];
 
-                    if (!key_exists('Row', $rowsData))
+                    if (!key_exists('row', $rowsData))
                         continue;
 
-                    foreach($rowsData['Row'] as $indexRow => $itemRow) {
+                    foreach($rowsData['row'] as $indexRow => $itemRow) {
 
-                        $sections[$indexSection]->loadFromData2('rows', $itemRow, $indexRow, Row::className());
+                        $model->{$propertyIdentifier}[$indexSection]->loadFromData('rows', $itemRow, $indexRow, Row::className());
 
-                        $columnsData = $sectionsData[$indexSection]['Row'][$indexRow];
+                        $columnsData = $sectionsData[$indexSection]['row'][$indexRow];
 
-                        if (!key_exists('Column', $columnsData))
+                        if (!key_exists('column', $columnsData))
                             continue;
 
-                        foreach($columnsData['Column'] as $indexColumn => $itemColumn) {
+                        foreach($columnsData['column'] as $indexColumn => $itemColumn) {
 
-                            $sections[$indexSection]->rows[$indexRow]->loadFromData2('columns', $itemColumn, $indexColumn, Column::className());
+                            $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
 
-                            $blocksData = $sectionsData[$indexSection]['Row'][$indexRow]['Column'][$indexColumn];
+                            $blocksData = $sectionsData[$indexSection]['row'][$indexRow]['column'][$indexColumn];
 
-                            if (!key_exists('Block', $blocksData))
+                            if (!key_exists('block', $blocksData))
                                 continue;
 
-                            foreach($blocksData['Block'] as $indexBlock => $itemBlock) {
-                                Block::loadFromData($sections[$indexSection]->rows[$indexRow]->columns[$indexColumn]->blocks, $itemBlock, $indexBlock, Block::className());
+                            foreach($blocksData['block'] as $indexBlock => $itemBlock) {
+                                $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->columns[$indexColumn]->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
                             }
                         }
                     }
                 }
 
-                foreach($sections as $section) {
+                foreach($model->{$propertyIdentifier} as $section) {
                     if (!($section->validate() && $section->save()))
                         throw new \yii\base\Exception;
 
@@ -217,18 +214,15 @@ class PortalController extends BaseController
                 $transaction->rollBack();
 
                 return $this->render('layout-edit', [
-                    'sections' => $sections
+                    'model' => $model,
+                    'propertyIdentifier' => $propertyIdentifier
                 ]);
             }
         }
 
-        $allSections = Section::findAll([
-            'type' => $type,
-            'portal_id' => Yii::$app->session->get('portal_id')
-        ]);
-
         return $this->render('layout-edit', [
-            'sections' => $allSections
+            'model' => $model,
+            'propertyIdentifier' => $propertyIdentifier
         ]);
     }
 

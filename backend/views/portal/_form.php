@@ -14,7 +14,6 @@ use backend\components\VarManager\VarManagerWidget;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $portalVarValues backend\models\PortalVarValue */
 /* @var $allVariables backend\models\PortalVar */
 ?>
 
@@ -55,7 +54,7 @@ use backend\components\VarManager\VarManagerWidget;
 
     <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
-        'assignedVariableValues' => $portalVarValues,
+        'assignedVariableValues' => $model->portalVarValues,
         'appendVarValueUrl' => Url::to(['portal/append-var-value'])
     ])?>
 

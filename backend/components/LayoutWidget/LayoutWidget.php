@@ -51,7 +51,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_section', [
             'model' => $section,
-            'prefix' => $prefix . "Section[$indexSection]"
+            'prefix' => $prefix . "section[$indexSection]"
         ]);
     }
 
@@ -60,13 +60,12 @@ class LayoutWidget extends Widget
      * @param $prefix
      * @param $indexRow
      * @return string
-     * @internal param $indexSection
      */
     public function appendRow(Row $row, $prefix, $indexRow)
     {
         return $this->render('_row', [
             'model' => $row,
-            'prefix' => $prefix . "[Row][$indexRow]",
+            'prefix' => $prefix . "[row][$indexRow]",
         ]);
     }
 
@@ -80,7 +79,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_column', [
             'model' => $column,
-            'prefix' => $prefix . "[Column][$indexColumn]",
+            'prefix' => $prefix . "[column][$indexColumn]",
         ]);
     }
 
@@ -94,7 +93,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_block', [
             'model' => $block,
-            'prefix' => $prefix . "[Block][$indexBlock]",
+            'prefix' => $prefix . "[block][$indexBlock]",
         ]);
     }
 

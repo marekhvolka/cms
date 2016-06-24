@@ -128,16 +128,16 @@ abstract class BaseController extends Controller
     {
         $columnId = Yii::$app->request->post('columnId');
 
-        $indexSection = Yii::$app->request->post('indexSection');
-        $indexRow = Yii::$app->request->post('indexRow');
-        $indexColumn = Yii::$app->request->post('indexColumn');
+        $prefix = Yii::$app->request->post('prefix');
+
+        $indexBlock = rand(1000, 1000000);
 
         $block = new Block();
         $block->column_id = $columnId;
         $block->data = 'test'; // TODO test data.
         $block->type = 'text'; // TODO test data.
 
-        return (new LayoutWidget())->appendBlock($block, $indexSection, $indexRow, $indexColumn);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock);
     }
 
     public function actionBlock($id)

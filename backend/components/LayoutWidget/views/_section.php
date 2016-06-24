@@ -44,7 +44,7 @@ use yii\helpers\BaseHtml;
             <?php foreach ($model->rows as $indexRow => $row) : ?>
                 <?= $this->render('_row', [
                     'model' => $row,
-                    'prefix' => $prefix . "[Row][$indexRow]"
+                    'prefix' => $prefix . "[row][$indexRow]"
                 ]); ?>
             <?php endforeach;?>
         </div>

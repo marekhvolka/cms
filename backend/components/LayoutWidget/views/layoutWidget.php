@@ -14,7 +14,7 @@
         <?php foreach ($sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,
-                'prefix' => $prefix . "Section[$indexSection]"
+                'prefix' => $prefix . "section[$indexSection]"
             ]); ?>
         <?php endforeach; ?>
     </div>

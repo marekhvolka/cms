@@ -108,7 +108,15 @@ class Snippet extends CustomModel implements ICacheable
      */
     public function getSnippetCodes()
     {
-        return $this->hasMany(SnippetCode::className(), ['snippet_id' => 'id']);
+        if (!isset($this->snippetCodes))
+            $this->snippetCodes = $this->hasMany(SnippetCode::className(), ['snippet_id' => 'id'])->all();
+
+        return $this->snippetCodes;
+    }
+
+    public function setSnippetCodes($value)
+    {
+        $this->snippetCodes = $value;
     }
 
     /**

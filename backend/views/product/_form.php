@@ -12,7 +12,6 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
-/* @var $productVarValues backend\models\ProductVarValue */
 /* @var $allVariables backend\models\ProductVar */
 /* @var $form yii\widgets\ActiveForm */
 ?>
@@ -49,7 +48,7 @@ use yii\helpers\Url;
     
     <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
-        'assignedVariableValues' => $productVarValues,
+        'assignedVariableValues' => $model->productProperties,
         'appendVarValueUrl' => Url::to(['product/append-var-value'])
     ])?>
 

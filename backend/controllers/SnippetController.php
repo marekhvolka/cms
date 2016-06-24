@@ -57,13 +57,9 @@ class SnippetController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id);
-            $snippetCodes = $model->snippetCodes;
-            $snippetVars = $model->snippetFirstLevelVars;
         }
         else {
             $model = new Snippet();
-            $snippetCodes = [new SnippetCode()];
-            $snippetVars = [];
         }
 
         if ($model->load(Yii::$app->request->post())) {
@@ -74,46 +70,39 @@ class SnippetController extends BaseController
                 if (!($model->validate() && $model->save()))
                     throw new \yii\base\Exception;
                 
-                $snippetCodesData = Yii::$app->request->post('SnippetCode');
+                $snippetCodesData = Yii::$app->request->post('snippetCode');
 
-                foreach($snippetCodesData as $index => $snippetCodeData) {
-                    SnippetCode::loadFromData($snippetCodes, $snippetCodeData, $index, SnippetCode::className());
+                if ($snippetCodesData != null) {
+                    foreach ($snippetCodesData as $index => $snippetCodeData) {
+                        $model->loadFromData('snippetCodes', $snippetCodeData, $index, SnippetCode::className());
+                    }
+
+                    foreach ($model->snippetCodes as $snippetCode) {
+                        $snippetCode->snippet_id = $model->id;
+
+                        if (!($snippetCode->validate() && $snippetCode->save())) {
+                            throw new \yii\base\Exception;
+                        }
+                    }
                 }
 
-                foreach($snippetCodes as $snippetCode) {
-                    $snippetCode->snippet_id = $model->id;
-
-                    if (!($snippetCode->validate() && $snippetCode->save()))
-                        throw new \yii\base\Exception;
-                }
-
-                $snippetVarsData = Yii::$app->request->post('SnippetVar');
+                $snippetVarsData = Yii::$app->request->post('snippetVar');
 
                 if ($snippetVarsData != null) {
 
-                    $this->loadChildren('snippetFirstLevelVars', $model, $snippetVarsData);
+                    foreach($snippetVarsData as $index => $snippetVarData) {
+                        $model->loadFromData('snippetFirstLevelVars', $snippetVarsData, $index, SnippetVar::className());
 
+                        if ($snippetVarData['children'] != null)
+                            $model->loadChildren('children', $snippetVarData);
+                    }
                     foreach($model->snippetFirstLevelVars as $snippetVar) {
                         $snippetVar->snippet_id = $model->id;
                         if (!($snippetVar->validate() && $snippetVar->save()))
                             throw new \yii\base\Exception;
 
-                        $this->saveChildren('children', $snippetVar);
+                        $snippetVar->saveChildren('children');
                     }
-                    /*
-                    // SnippetCode models multiple loading, validation and saving.
-                    $loadedVars = Model::loadMultiple($snippetVars, Yii::$app->request->post());
-                    $validVars = Model::validateMultiple($snippetVars);
-                    $savedVars = SnippetVar::saveMultiple($snippetVars, $model);
-
-                    $varsDeletedSuccesfully = SnippetVar::deleteMultiple($snippetVars, $model);
-
-
-                    $valid = $loadedCodes && $validCodes && $savedCodes && $codesDeletedSuccesfully && $loadedVars &&
-                            $validVars && $savedVars && $varsDeletedSuccesfully && $modelValidatedAndSaved;
-
-                    */
-
                 }
 
                 $transaction->commit();
@@ -137,28 +126,6 @@ class SnippetController extends BaseController
             return $this->render('edit', [
                 'model' => $model,
             ]);
-        }
-    }
-
-    private function loadChildren($propertyIdentifier, $model, $snippetVarsData)
-    {
-        foreach ($snippetVarsData as $index => $snippetVarData) {
-            $model->loadFromData2($propertyIdentifier, $snippetVarData, $index,
-                SnippetVar::className());
-
-            if (isset($snippetVarData['Children']))
-                $this->loadChildren('children', $model->{$propertyIdentifier}[$index], $snippetVarData['Children']);
-        }
-    }
-
-    private function saveChildren($propertyIdentifier, $model)
-    {
-        foreach($model->{$propertyIdentifier} as $snippetVar) {
-            $snippetVar->parent_id = $model->id;
-            if (!($snippetVar->validate() && $snippetVar->save()))
-                throw new \yii\base\Exception;
-
-            $this->saveChildren('children', $snippetVar);
         }
     }
 
