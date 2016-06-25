@@ -33,10 +33,143 @@ use yii\helpers\VarDumper;
 
 class ParseEngine
 {
+    public function parseProduct($product)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $this->parseProductSnippet($product);
+
+        $product->parsed = 1;
+
+        $product->save();
+
+        $transaction->commit();
+    }
+
+    public function parsePortal($portal)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $rows = $command = (new Query())
+            ->select('*')
+            ->from('portal_global')
+            ->where(['portal_id' => $portal->id])
+            ->createCommand()
+            ->queryAll();
+
+        foreach ($rows as $row) {
+            $this->parsePageGlobalSection('portal', $row);
+        }
+
+        foreach ($portal->headerSections as $section) {
+            foreach ($section->rows as $row) {
+                foreach ($row->columns as $column) {
+                    foreach ($column->blocks as $block) {
+                        $block->data = $this->convertMacrosToLatteStyle($block->data);
+                        $block->save();
+
+                        $this->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        foreach ($portal->footerSections as $section) {
+            foreach ($section->rows as $row) {
+                foreach ($row->columns as $column) {
+                    foreach ($column->blocks as $block) {
+                        $block->data = $this->convertMacrosToLatteStyle($block->data);
+                        $block->save();
+
+                        $this->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        $this->parsePortalSnippet($portal);
+
+        $portal->parsed = 1;
+
+        $portal->save();
+
+        $transaction->commit();
+    }
+
+    public function parsePage($page)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $query = 'DELETE FROM section WHERE page_id = :page_id';
+
+        $command = Yii::$app->db->createCommand($query);
+        $command->bindValue(':page_id', $page->id);
+
+        $command->execute();
+
+        $row = (new Query())
+            ->select('*')
+            ->from('page_sidebar')
+            ->where(['page_id' => $page->id])
+            ->createCommand()
+            ->queryOne();
+
+        $this->parseSidebar($row);
+
+        $row = (new Query())
+            ->select('*')
+            ->from('page_footer')
+            ->where(['page_id' => $page->id])
+            ->createCommand()
+            ->queryOne();
+
+        $this->parsePageGlobalSection('page', $row);
+
+        $row = (new Query())
+            ->select('*')
+            ->from('page_header')
+            ->where(['page_id' => $page->id])
+            ->createCommand()
+            ->queryOne();
+
+        $this->parsePageGlobalSection('page', $row);
+
+        $row = $command = (new Query())
+            ->select('*')
+            ->from('page')
+            ->where(['id' => $page->id])
+            ->createCommand()
+            ->queryOne();
+
+        $this->parseMasterContent($row);
+
+        $page->description = $this->convertMacrosToLatteStyle($page->description);
+
+        foreach ($page->sections as $section) {
+            foreach ($section->rows as $row) {
+                foreach ($row->columns as $column) {
+                    foreach ($column->blocks as $block) {
+                        $block->data = $this->convertMacrosToLatteStyle($block->data);
+                        $block->save();
+                        $this->parseSnippetVarValues($block);
+                    }
+                }
+            }
+        }
+
+        $page->parsed = 1;
+
+        if ($page->validate())
+            $page->save();
+        else
+            VarDumper::dump($page->errors);
+        $transaction->commit();
+    }
+
     /** Metoda na presun dat z tabuliek product_snippet a portal_snippet do tabulky block
      * @param $portal
      */
-    public function parsePortalSnippet(Portal $portal)
+    private function parsePortalSnippet(Portal $portal)
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -77,7 +210,7 @@ class ParseEngine
         $transaction->commit();
     }
 
-    public function parseProductSnippet(Product $product)
+    private function parseProductSnippet(Product $product)
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -123,7 +256,7 @@ class ParseEngine
      * section, row, column, pageblock
      * @param $pageDbRow - riadok tabulky
      */
-    public function parseMasterContent($pageDbRow)
+    private function parseMasterContent($pageDbRow)
     {
         $rowIds = explode(',', $pageDbRow['layout_poradie_id']);
 
@@ -314,7 +447,7 @@ class ParseEngine
         }
     }
 
-    public function parseSidebar($pageDbRow)
+    private function parseSidebar($pageDbRow)
     {
         $rowIds = explode(',', $pageDbRow['block_poradie']);
 
@@ -467,9 +600,9 @@ class ParseEngine
 
     /** Parsovanie dat z glob. hlavicky a paticky portalu ale aj podstranky
      * @param $dataType string typ - page, portal,
-     * @param $dbRow - riadok tabulky, ktory parsujeme
+     * @param $tableRow
      */
-    public function parsePageGlobalSection($dataType, $tableRow)
+    private function parsePageGlobalSection($dataType, $tableRow)
     {
         if ($tableRow['sekcia_settings'] == '' || $tableRow['layout_element'] == '') {
             return;
@@ -690,7 +823,7 @@ class ParseEngine
     /** Parsovanie dat vyplneneho snippetu z JSONU do tabulky snippet_var_value
      * @param $pageBlock - blok, z ktorych budeme parsovat data
      */
-    public function parseSnippetVarValues($pageBlock)
+    private function parseSnippetVarValues($pageBlock)
     {
         $data = json_decode($pageBlock->data);
 
@@ -945,7 +1078,7 @@ class ParseEngine
      * @param string $string
      * @return mixed|string
      */
-    public function convertMacrosToLatteStyle($string)
+    private function convertMacrosToLatteStyle($string)
     {
         $string = str_replace('{dolna_hranica_pozicky}', '{$product->dolna_hranica_pozicky}', $string);
         $string = str_replace('{horna_hranica_pozicky}', '{$product->horna_hranica_pozicky}', $string);
@@ -969,5 +1102,4 @@ class ParseEngine
 
         return $string;
     }
-
 }

@@ -90,7 +90,7 @@ class SnippetCode extends CustomModel
     {
         return Url::to(
         [
-            '/snippet/update/',
+            '/snippet/edit/',
             'id' => $this->snippet_id,
             '#' => 'code' . $this->id
         ]);

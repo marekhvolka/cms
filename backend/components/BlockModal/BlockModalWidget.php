@@ -46,4 +46,13 @@ class BlockModalWidget extends Widget
             'prefix' => $prefix
         ]);
     }
+
+    public function appendListItem($listItem, $prefix)
+    {
+        return $this->render('_list-item', [
+            'model' => $listItem,
+            'prefix' => $prefix,
+            'productType' => $this->productType
+        ]);
+    }
 }

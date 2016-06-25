@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
  * @property SnippetVarDefaultValue[] $defaultValues
  * @property SnippetVar $parent
  * @property SnippetVar[] $children
+ * @property SnippetVarDropdown[] $dropdownValues
  * @property Snippet $snippet
  */
 class SnippetVar extends CustomModel
@@ -88,6 +89,14 @@ class SnippetVar extends CustomModel
     public function getDefaultValues()
     {
         return $this->hasMany(SnippetVarDefaultValue::className(), ['snippet_var_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDropdownValues()
+    {
+        return $this->hasMany(SnippetVarDropdown::className(), ['var_id' => 'id']);
     }
 
     /**
