@@ -10,7 +10,7 @@ use backend\components\BlockModal\BlockModalWidget;
 
 <div class="btn-group layout-block block-<?= $model->id ?>"
      data-content="" role="group">
-         <?= Html::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+         <?= Html::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
          <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
          <?= Html::hiddenInput($prefix . "[column_id]", $model->column_id, ['class' => 'column_id']); ?>
          <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>

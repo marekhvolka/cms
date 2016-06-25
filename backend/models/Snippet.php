@@ -84,16 +84,6 @@ class Snippet extends CustomModel implements ICacheable
         
         return parent::beforeSave($insert);
     }
-    
-    /**
-     * Event fired before deleting model. All models relations are unlinked.
-     */
-    public function beforeDelete()
-    {
-        $this->unlinkAll('snippetVariables', true);
-        $this->unlinkAll('snippetCodes', true);
-        return parent::beforeDelete();
-    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -152,9 +142,7 @@ class Snippet extends CustomModel implements ICacheable
         $path = Yii::$app->cacheEngine->getSnippetsMainDirectory() . 'snippet' . $this->id . '/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -168,8 +156,7 @@ class Snippet extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'snippet.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $cacheEngine = Yii::$app->cacheEngine;
 
             $buffer = '<?php ' . PHP_EOL;
@@ -177,9 +164,7 @@ class Snippet extends CustomModel implements ICacheable
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
             foreach($this->snippetVariables as $snippetVar)
-            {
                 $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValue() . ',' . PHP_EOL;
-            }
 
             $buffer .= ');' . PHP_EOL;
 
@@ -198,13 +183,10 @@ class Snippet extends CustomModel implements ICacheable
         $this->getMainCacheFile(true);
 
         /* @var $snippetCode \backend\models\SnippetCode */
-        foreach($this->snippetCodes as $snippetCode)
-        {
+        foreach($this->snippetCodes as $snippetCode) {
             /* @var $block \backend\models\Block */
             foreach($snippetCode->blocks as $block)
-            {
                 $block->resetAfterUpdate();
-            }
         }
     }
 }

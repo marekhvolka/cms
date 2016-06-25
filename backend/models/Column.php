@@ -58,12 +58,6 @@ class Column extends CustomModel
         ];
     }
 
-    public function beforeDelete()
-    {
-        $this->unlinkAll('blocks', true);
-        return parent::beforeDelete();
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */

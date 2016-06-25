@@ -104,9 +104,8 @@ class SnippetCode extends CustomModel
     {
         $path = $this->snippet->getCacheDirectory() . 'code' . $this->id . '.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $reload)
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->code);
-        }
 
         return $path;
     }

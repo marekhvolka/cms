@@ -64,7 +64,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_row', [
             'model' => $row,
-            'prefix' => $prefix . "[row][$indexRow]",
+            'prefix' => $prefix . "[Row][$indexRow]",
         ]);
     }
 
@@ -78,7 +78,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_column', [
             'model' => $column,
-            'prefix' => $prefix . "[column][$indexColumn]",
+            'prefix' => $prefix . "[Column][$indexColumn]",
         ]);
     }
 
@@ -92,7 +92,7 @@ class LayoutWidget extends Widget
     {
         return $this->render('_block', [
             'model' => $block,
-            'prefix' => $prefix . "[block][$indexBlock]",
+            'prefix' => $prefix . "[Block][$indexBlock]",
         ]);
     }
 

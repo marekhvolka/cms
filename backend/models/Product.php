@@ -2,11 +2,8 @@
 
 namespace backend\models;
 
-use common\components\CacheThread;
 use common\models\User;
-use backend\models\ICacheable;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "product".
@@ -94,29 +91,75 @@ class Product extends CustomModel implements ICacheable
 
         return parent::beforeSave($insert);
     }
-    
-    public function beforeDelete()
-    {
-        $this->unlinkAll('productVarValues', true);
-        return parent::beforeDelete();
-    }
 
     public function resetAfterUpdate()
     {
         $this->getProductVarsFile(true); //resetneme hlavny subor
 
-        foreach($this->pages as $page) {
+        foreach($this->pages as $page)
             $page->addToCacheBuffer();
-        }
 
         /* @var $productSnippet SnippetVarValue */
-        foreach($this->productSnippets as $productSnippet) {
+        foreach($this->productSnippets as $productSnippet)
             $productSnippet->valueBlock->resetAfterUpdate();
+
+        foreach($this->snippedVarValues as $snippetVarValue)
+            $snippetVarValue->block->resetAfterUpdate();
+    }
+
+    /** Vrati cestu k suboru, v ktorom je nacachovany produkt
+     * @param bool $reload - ak je true, subor sa nanovo vytvori (aj ak existuje)
+     * @return string
+     */
+    public function getProductVarsFile($reload = false)
+    {
+        $path = $this->getCacheDirectory() . 'product_var.php';
+
+        if (!file_exists($path) || $reload) {
+            $buffer = '<?php ' . PHP_EOL;
+
+            $buffer .= '$tempObject = (object) ';
+
+            if (isset($this->parent)) // ak ma produkt rodica
+                $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
+
+            $buffer .= 'array(' . PHP_EOL;
+
+            foreach($this->getProductVarValues()->all() as $productVarValue)
+                if (!$productVarValue->var->isSnippet())
+                    $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
+
+            if (isset($this->parent)) // ak ma produkt rodica
+                $buffer .= ')';
+
+            $buffer .= ');' . PHP_EOL;
+
+            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \''. $this->identifier . '\'); ' . PHP_EOL;
+
+            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }
 
-        foreach($this->snippedVarValues as $snippetVarValue) {
-            $snippetVarValue->block->resetAfterUpdate();
-        }
+        return $path;
+    }
+
+    public function getCacheDirectory()
+    {
+        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '/';
+
+        if (!file_exists($path))
+            mkdir($path, 0777, true);
+
+        return $path;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductVarValues()
+    {
+        return $this->hasMany(ProductVarValue::className(), [
+            'product_id' => 'id',
+        ]);
     }
 
     /**
@@ -128,8 +171,7 @@ class Product extends CustomModel implements ICacheable
 
         $directPages = $this->hasMany(Page::className(), ['product_id' => 'id'])->all();
 
-        foreach($directPages as $page)
-        {
+        foreach($directPages as $page) {
             $allPages[] =  $page;
 
             $childPages = Page::find()->where([
@@ -209,11 +251,9 @@ class Product extends CustomModel implements ICacheable
     {
         if (!isset($this->productProperties)) {
             $this->productProperties = array();
-            foreach ($this->productVarValues as $index => $productVarValue) {
-                if (!$productVarValue->var->isSnippet()) {
+            foreach ($this->productVarValues as $index => $productVarValue)
+                if (!$productVarValue->var->isSnippet())
                     $this->productProperties[$index] = $productVarValue;
-                }
-            }
         }
         return $this->productProperties;
     }
@@ -229,16 +269,6 @@ class Product extends CustomModel implements ICacheable
     public function getTags()
     {
         return $this->hasMany(Tag::className(), ['product_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductVarValues()
-    {
-        return $this->hasMany(ProductVarValue::className(), [
-            'product_id' => 'id',
-        ]);
     }
 
     public function relations()
@@ -265,77 +295,22 @@ class Product extends CustomModel implements ICacheable
         return $this->productType->name;
     }
 
-    /** Vrati cestu k suboru, v ktorom je nacachovany produkt
-     * @param bool $reload - ak je true, subor sa nanovo vytvori (aj ak existuje)
-     * @return string
-     */
-    public function getProductVarsFile($reload = false)
-    {
-        $path = $this->getCacheDirectory() . 'product_var.php';
-
-        if (!file_exists($path) || $reload)
-        {
-            $buffer = '<?php ' . PHP_EOL;
-
-            $buffer .= '$tempObject = (object) ';
-
-
-            if (isset($this->parent)) // ak ma produkt rodica
-            {
-                $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
-            }
-
-            $buffer .= 'array(' . PHP_EOL;
-
-            foreach($this->getProductVarValues()->all() as $productVarValue)
-            {
-                if (!$productVarValue->var->isSnippet())
-                    $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
-            }
-
-            if (isset($this->parent)) // ak ma produkt rodica
-                $buffer .= ')';
-
-            $buffer .= ');' . PHP_EOL;
-
-            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \''. $this->identifier . '\'); ' . PHP_EOL;
-
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
-        }
-
-        return $path;
-    }
-
     public function getMainCacheFile($reload = false)
     {
         $path = $this->getCacheDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
 
             $buffer .= 'include \'' . $this->getProductVarsFile() . '\';' . PHP_EOL;
 
             foreach($this->productSnippets as $productVarValue)
-            {
-                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier . ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
-            }
+                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier .
+                    ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
 
             $buffer .= '?>';
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
-        }
-
-        return $path;
-    }
-
-    public function getCacheDirectory()
-    {
-        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '/';
-
-        if (!file_exists($path))
-        {
-            mkdir($path, 0777, true);
         }
 
         return $path;

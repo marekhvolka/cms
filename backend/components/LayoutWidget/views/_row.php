@@ -7,7 +7,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="row layout-row" data-prefix="<?= $prefix ?>">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[section_id]", $model->section_id, ['class' => 'section_id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[order]", $model->order, ['class' => 'order']); ?>
@@ -15,7 +15,7 @@ use yii\helpers\BaseHtml;
         <?php foreach ($model->columns as $indexColumn => $column) : ?>
             <?= $this->render('_column', [
                 'model' => $column,
-                'prefix' => $prefix . "[column][$indexColumn]"
+                'prefix' => $prefix . "[Column][$indexColumn]"
             ]); ?>
         <?php endforeach; ?>
     </div>

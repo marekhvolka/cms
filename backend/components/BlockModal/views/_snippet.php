@@ -39,7 +39,7 @@ use yii\helpers\ArrayHelper;
             echo $this->render('_snippet-var-value', [
                 'model' => $snippetVarValue,
                 'productType' => $productType,
-                'prefix' => $prefix . "[snippetVarValue][$indexVar]"
+                'prefix' => $prefix . "[SnippetVarValue][$indexVar]"
             ]);
         }
         ?>

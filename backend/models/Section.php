@@ -60,16 +60,6 @@ class Section extends CustomModel
         ];
     }
 
-    public function beforeDelete()
-    {
-        foreach ($this->rows as $row) {
-            $row->delete();
-        }
-        //TODO: is this necessary?
-
-        return parent::beforeDelete();
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -135,17 +125,14 @@ class Section extends CustomModel
         $settings['ids'] = ''; //'section' . $this->id . ' ';
         $settings['styles'] = '';
 
-        foreach ($this->rows as $row) {
-            foreach ($row->columns as $column) {
-                foreach ($column->blocks as $block) {
+        foreach ($this->rows as $row)
+            foreach ($row->columns as $column)
+                foreach ($column->blocks as $block)
                     if (isset($block->snippetCode)) {
                         $settings['classes'] .= $block->snippetCode->snippet->section_class . ' ';
                         $settings['ids'] .= $block->snippetCode->snippet->section_id . ' ';
                         $settings['styles'] .= $block->snippetCode->snippet->section_style . ' ';
                     }
-                }
-            }
-        }
 
         return $settings;
     }
@@ -160,13 +147,11 @@ class Section extends CustomModel
     {
         $result = $this->getPrefix();
 
-        foreach ($this->rows as $row) {
+        foreach ($this->rows as $row)
             $result .= $row->getContent($reload);
-        }
 
         $result .= $this->getPostfix();
 
         return $result;
     }
-
 }

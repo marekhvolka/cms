@@ -30,6 +30,7 @@ use common\models\User;
  * @property string $last_edit
  * @property integer $last_edit_user
  * @property integer $parsed
+ * @property string $breadcrumbs
  *
  * @property Portal $portal
  * @property User $lastEditUser
@@ -138,6 +139,19 @@ class Page extends CustomModel implements ICacheable
             $url = '/';
 
         return  $url . $this->identifier . '/';
+    }
+
+    /** Metoda na vyskladanie URL pre podstranku
+     * @return string
+     */
+    public function getBreadcrumbs()
+    {
+        $url = '';
+
+        if (isset($this->parent))
+            $url = $this->parent->name;
+
+        return  $url . ' -> ' . $this->name;
     }
 
     /**
@@ -275,16 +289,12 @@ class Page extends CustomModel implements ICacheable
     public function getColorSchemePath()
     {
         if ($this->color_scheme == 'inherit')
-        {
             if (isset($this->parent))
                 return $this->parent->getColorSchemePath();
             else
                 return $this->portal->getColorSchemePath();
-        }
         else if ($this->color_scheme == '')
-        {
             return $this->portal->getColorSchemePath();
-        }
         else
             return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
     }
@@ -294,12 +304,8 @@ class Page extends CustomModel implements ICacheable
         $result = '<div id="page-header">';
 
         if ($this->header_active)
-        {
             foreach($this->headerSections as $section)
-            {
                 $result .= $section->getContent($reload);
-            }
-        }
 
         $result .= '</div> <!-- PageHeader end -->';
 
@@ -311,12 +317,8 @@ class Page extends CustomModel implements ICacheable
         $result = '<div id="page-footer">';
 
         if ($this->footer_active)
-        {
             foreach($this->footerSections as $section)
-            {
                 $result .= $section->getContent($reload);
-            }
-        }
 
         $result .= '</div> <!-- PageFooter end -->';
 
@@ -326,22 +328,17 @@ class Page extends CustomModel implements ICacheable
     public function getMainContent($reload = false)
     {
         if (!$this->sidebar_active)
-        {
             $width = 12;
-        }
         else
-        {
             $width = 12 - $this->sidebar_size;
-        }
 
         $result = '<div id="content" class="col-md-' . $width . '">';
 
-        if (isset($this->contentSection))
+        if (isset($this->contentSections))
         {
-            foreach ($this->contentSection->rows as $row)
-            {
-                $result .= $row->getContent($reload);
-            }
+            foreach($this->contentSections as $section)
+                foreach ($section->rows as $row)
+                    $result .= $row->getContent($reload);
         }
 
         $result .= '</div> <!-- Content End -->';
@@ -353,14 +350,12 @@ class Page extends CustomModel implements ICacheable
     {
         $result = '';
 
-        if ($this->sidebar_active && isset($this->sidebarSection))
-        {
+        if ($this->sidebar_active) {
             $result = '<div id="sidebar" class="col-md-' . $this->sidebar_size . '">';
 
-            foreach($this->sidebarSection->rows as $row)
-            {
-                $result .= $row->getContent($reload);
-            }
+            foreach($this->sidebarSections as $section)
+                foreach ($section->rows as $row)
+                    $result .= $row->getContent($reload);
 
             $result .= '</div> <!-- Sidebar End -->';
         }
@@ -376,9 +371,7 @@ class Page extends CustomModel implements ICacheable
         $path = $this->portal->getPagesMainCacheDirectory() . 'page' . $this->id . '/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -391,8 +384,7 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'page_var.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $cacheEngine = Yii::$app->cacheEngine;
 
             $buffer = '<?php ' . PHP_EOL;
@@ -425,9 +417,7 @@ class Page extends CustomModel implements ICacheable
             $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
             if (isset($this->color_scheme))
-            {
                 $buffer .= '$color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
-            }
 
             $buffer .= '/* Product Variables */' . PHP_EOL;
 
@@ -448,12 +438,10 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'page_' . $type . '.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $buffer = '';
 
-            switch($type)
-            {
+            switch($type) {
                 case 'header':
                     $buffer = $this->getHeaderContent($reload);
 
@@ -486,9 +474,7 @@ class Page extends CustomModel implements ICacheable
         $path = $this->getCacheDirectory() . 'blocks/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -501,8 +487,7 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $prefix = $this->getIncludePrefix();
 
             $prefix .= '<?php' . PHP_EOL;
@@ -544,8 +529,7 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'page_compiled.html';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
 
             $result = html_entity_decode($result, ENT_QUOTES);

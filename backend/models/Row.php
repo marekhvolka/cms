@@ -52,12 +52,6 @@ class Row extends CustomModel
         ];
     }
 
-    public function beforeDelete()
-    {
-        $this->unlinkAll('columns', true);
-        return parent::beforeDelete();
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -98,9 +92,8 @@ class Row extends CustomModel
     {
         $result = $this->getPrefix();
 
-        foreach ($this->columns as $column) {
+        foreach ($this->columns as $column)
             $result .= $column->getContent($reload);
-        }
 
         $result .= $this->getPostfix();
 

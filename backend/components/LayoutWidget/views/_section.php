@@ -6,7 +6,7 @@ use yii\helpers\BaseHtml;
 ?>
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
     <div class="btn-group section-buttons">
@@ -42,7 +42,7 @@ use yii\helpers\BaseHtml;
             <?php foreach ($model->rows as $indexRow => $row) : ?>
                 <?= $this->render('_row', [
                     'model' => $row,
-                    'prefix' => $prefix . "[row][$indexRow]"
+                    'prefix' => $prefix . "[Row][$indexRow]"
                 ]); ?>
             <?php endforeach;?>
         </div>

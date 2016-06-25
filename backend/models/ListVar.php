@@ -14,7 +14,7 @@ use Yii;
  * @property ListItem[] $listItems
  * @property SnippetVarValue $snippetVarValue
  */
-class ListVar extends \yii\db\ActiveRecord
+class ListVar extends CustomModel
 {
     /**
      * @inheritdoc
@@ -50,7 +50,15 @@ class ListVar extends \yii\db\ActiveRecord
      */
     public function getListItems()
     {
-        return $this->hasMany(ListItem::className(), ['list_id' => 'id']);
+        if (!isset($this->listItems))
+            $this->listItems = $this->hasMany(ListItem::className(), ['list_id' => 'id'])->all();
+
+        return $this->listItems;
+    }
+
+    public function setListItems($value)
+    {
+        $this->listItems = $value;
     }
 
     /**

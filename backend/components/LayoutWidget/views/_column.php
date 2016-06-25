@@ -17,7 +17,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
@@ -53,7 +53,7 @@ use yii\helpers\BaseHtml;
         <?php foreach ($model->blocks as $indexBlock => $block) : ?>
             <?= $this->render('_block', [
                 'model' => $block,
-                'prefix' => $prefix . "[block][$indexBlock]"
+                'prefix' => $prefix . "[Block][$indexBlock]"
             ]); ?>
         <?php endforeach; ?>
     </div>

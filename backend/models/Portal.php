@@ -114,10 +114,8 @@ class Portal extends CustomModel implements ICacheable
         $array = array();
 
         foreach($this->portalVarValues as $portalVarValue)
-        {
             if ($portalVarValue->var->isSnippet())
                 $array[] = $portalVarValue;
-        }
 
         return $array;
     }
@@ -130,10 +128,8 @@ class Portal extends CustomModel implements ICacheable
         $array = array();
 
         foreach($this->portalVarValues as $index => $portalVarValue)
-        {
             if (!$portalVarValue->var->isSnippet())
                 $array[$index] = $portalVarValue;
-        }
 
         return $array;
     }
@@ -218,8 +214,7 @@ class Portal extends CustomModel implements ICacheable
 
         $result = '';
 
-        foreach($codes as $code)
-        {
+        foreach($codes as $code) {
             $result .= '<!-- ' . $code->name . '-->' . PHP_EOL;
             $result .= $code->code . PHP_EOL;
             $result .= '<!-- ' . $code->name . 'END -->' . PHP_EOL;
@@ -253,9 +248,7 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->getCacheDirectory() . 'portal_' . $type . '.php';
 
         if (!file_exists($path))
-        {
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->getLayoutString($type));
-        }
 
         return $path;
     }
@@ -264,16 +257,13 @@ class Portal extends CustomModel implements ICacheable
     {
         $result = '';
 
-        switch($type)
-        {
+        switch($type) {
             case 'header' :
 
                 $result .= '<header>';
 
                 foreach($this->getHeaderSections() as $section)
-                {
                     $result .= $section->getContent();
-                }
 
                 $result .= '</header>';
 
@@ -284,9 +274,7 @@ class Portal extends CustomModel implements ICacheable
                 $result .= '<footer>';
 
                 foreach($this->getFooterSections() as $section)
-                {
                     $result .= $section->getContent();
-                }
 
                 $result .= '</footer>';
 
@@ -304,9 +292,7 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->language->getCacheDirectory() . 'portals/' . $this->domain . '/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -319,16 +305,13 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'portal_var.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $cacheEngine = Yii::$app->cacheEngine;
 
             $buffer = '<?php ' . PHP_EOL;
 
             foreach($this->pages as $page)
-            {
                 $buffer .= $page->getHead();
-            }
 
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
@@ -345,9 +328,7 @@ class Portal extends CustomModel implements ICacheable
             $buffer .= '\'pages\' => (object) array(' . PHP_EOL;
 
             foreach($this->pages as $page)
-            {
                 $buffer .= '\'page' . $page->id . '\' => new ObjectBridge($tempPage' . $page->id . ', \'page' . $page->id . '\'),' . PHP_EOL;
-            }
 
             $buffer .= '),' . PHP_EOL;
 
@@ -363,10 +344,8 @@ class Portal extends CustomModel implements ICacheable
             $buffer .= '/* Portal vars */' . PHP_EOL;
 
             foreach ($this->portalVarValues as $portalVarValue)
-            {
                 if (!$portalVarValue->var->isSnippet())
                     $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
-            }
 
             $buffer .= '$include_head = stripcslashes(\'' . $this->getTrackingCodesAsString('head') . '\');' . PHP_EOL;
             $buffer .= '$include_head_end = stripcslashes(\'' . $this->getTrackingCodesAsString('head_end') . '\');' . PHP_EOL;
@@ -385,16 +364,13 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $reload)
-        {
+        if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
 
             $buffer .= 'include \'' . $this->getPortalVarsFile() . '\';' . PHP_EOL;
 
             foreach($this->portalSnippets as $portalSnippet)
-            {
                 $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents(\'' . $portalSnippet->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
-            }
 
             $buffer .= '?>';
 
@@ -412,9 +388,7 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->getCacheDirectory() . 'blocks/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -435,9 +409,7 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->getCacheDirectory() . 'snippets/';
 
         if (!file_exists($path))
-        {
             mkdir($path, 0777, true);
-        }
 
         return $path;
     }
@@ -472,13 +444,9 @@ class Portal extends CustomModel implements ICacheable
         $this->getPortalVarsFile(true);
 
         foreach($this->pages as $page)
-        {
             $page->addToCacheBuffer();
-        }
 
         foreach($this->portalSnippets as $portalSnippet)
-        {
             $portalSnippet->block->resetAfterUpdate();
-        }
     }
 }

@@ -11,10 +11,10 @@ use Yii;
  * @property integer $list_id
  * @property integer $active
  *
- * @property SnippetVarValue[] $values
+ * @property SnippetVarValue[] $snippetVarValues
  * @property ListVar $list
  */
-class ListItem extends \yii\db\ActiveRecord
+class ListItem extends CustomModel
 {
     /**
      * @inheritdoc
@@ -56,18 +56,23 @@ class ListItem extends \yii\db\ActiveRecord
         return $this->hasOne(ListVar::className(), ['id' => 'list_id']);
     }
 
-    public function getValues()
+    public function getSnippetVarValues()
     {
-        return SnippetVarValue::findAll([
-            'list_item_id' => $this->id,
-        ]);
+        if (!isset($this->snippetVarValues))
+            $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['list_item_id' => 'id'])->all();
+        return $this->snippetVarValues;
+    }
+
+    public function setSnippetVarValues($value)
+    {
+        $this->snippetVarValues = $value;
     }
 
     public function getValue($productType = null)
     {
         $buffer = '(object) array(' . PHP_EOL;
 
-        foreach($this->values as $snippetVarValue)
+        foreach($this->snippetVarValues as $snippetVarValue)
         {
             $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->getValue($productType) . ', ';
         }
