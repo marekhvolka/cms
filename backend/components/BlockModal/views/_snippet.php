@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="col-md-12" id="appendSmartSnippetInfo">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">
+        <button type="button" class="btn modal close" data-dismiss="modal">
             <span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title snippet_edit_h4">
             <span title="Rozbaliť / zbaliť všetko" style="margin-right: 5px; cursor: pointer;">

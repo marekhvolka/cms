@@ -147,51 +147,56 @@ $('#' + formId).submit(function () {
 });
 
 $('.btn-block-modal').click(function() {
-
     var blockId = $(this).data('id');
 
-    var postData = {
-        id : blockId,
-        prefix : $(this).data('prefix')
-    };
+    if ($('#modal-' + blockId).length > 0)
+        $('#modal-' + blockId).modal('show');
+    else {
+        var postData = {
+            id: blockId,
+            prefix: $(this).data('prefix')
+        };
 
-    var self = this;
+        var self = this;
 
-    $.get(appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
-        var block = $(data);
+        $.get(
+            appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data)
+            {
+                var modalWindow = $(data);
 
-        $(self).parent().find('.modal-container').first().append(block);
+                $(self).parent().find('.modal-container').first().append(modalWindow);
 
-        $('#modal-' + blockId).modal();
-        attachRemoveBlockEvent(block.find('.btn-remove-block'));
-    });
+                $('#modal-' + blockId).modal();
+                attachRemoveBlockEvent(modalWindow.find('.btn-remove-block'));
+                attachHideModalEvent(modalWindow.find('.btn-modal-close'));
+                attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
+            }
+        );
+    }
     
     return true;
 });
 
+function attachHideModalEvent(hideButton) {
+    hideButton.click(function () {
+        var modalWindow = $(this).parents('.modal').first();
 
+        modalWindow.modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
 
-// Clearing modal window.
-//$(function () {
-//    $('#modal-options').on('hidden.bs.modal', function () {
-//        clearOptions();
-//    });
-//});
-//
-//$(function () {
-//    $('#modal-text').on('hidden.bs.modal', function () {
-//        $('.text-textarea').val('');
-//    });
-//});
-//
-//$('.btn-block-modal').click(function () {
-//    var id = $(this).data('id');
-//
-//    $.get('/cms/backend/web/page/block?id=' + id, function (data) {
-//        var appendedDiv = $(data);
-//        $('#modal-content').append(appendedDiv);
-//        $('#modal-content').html = 'dasdasdasd';
-//    });
-//});
+        modalWindow.parent().empty();
+    });
+}
+
+function attachSaveModalEvent(saveButton) {
+    saveButton.click(function () {
+        var modalWindow = $(this).parents('.modal').first();
+
+        modalWindow.modal('hide');
+        //$('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+}
 
 

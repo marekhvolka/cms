@@ -12,6 +12,7 @@ use backend\models\Portal;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
+use backend\models\SnippetVarValue;
 use Yii;
 use yii\db\Query;
 use yii\filters\AccessControl;
@@ -186,26 +187,41 @@ abstract class BaseController extends Controller
 
             foreach($itemSection['row'] as $indexRow => $itemRow) {
 
-                $model->{$propertyIdentifier}[$indexSection]->loadFromData('rows', $itemRow, $indexRow, Row::className());
+                $section = $model->{$propertyIdentifier}[$indexSection];
+
+                $section->loadFromData('rows', $itemRow, $indexRow, Row::className());
 
                 if (!key_exists('column', $itemRow))
                     continue;
 
                 foreach($itemRow['column'] as $indexColumn => $itemColumn) {
 
-                    $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
+                    $row = $section->rows[$indexRow];
+
+                    $row->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
 
                     if (!key_exists('block', $itemColumn))
                         continue;
 
                     foreach($itemColumn['block'] as $indexBlock => $itemBlock) {
-                        $model->{$propertyIdentifier}[$indexSection]->rows[$indexRow]->columns[$indexColumn]->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
+
+                        $column = $row->columns[$indexColumn];
+
+                        $column->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
 
                         if (!key_exists('snippetVarValue', $itemBlock))
                             continue;
 
-                        foreach($itemBlock['snippetVarValue'] as $indexVar => $snippetVarValue) {
-                            
+                        foreach($itemBlock['snippetVarValue'] as $indexVar => $itemVarValue) {
+                            $block = $column->blocks[$indexBlock];
+
+                            if (!key_exists('list', $itemVarValue))
+                                $block->{'snippetVarValues'}[$indexVar]->load($itemVarValue);
+                            else {
+                                foreach($itemVarValue['list'] as $indexListItem => $itemList) {
+
+                                }
+                            }
                         }
                     }
                 }

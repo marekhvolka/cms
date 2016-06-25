@@ -12,12 +12,10 @@ use yii\bootstrap\Html;
 
 ?>
 <style>
-    .modal-dialog {
-        width: 1000px !important;
-    }
+.modal-dialog {
+    width: 1000px !important;
+}
 </style>
-
-<!-- Modal -->
 <div class="modal fade" id="modal-<?= $model->id ?>" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-xlg">
         <div class="modal-content">
