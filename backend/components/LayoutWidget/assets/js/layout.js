@@ -1,108 +1,83 @@
 var appendUrl = {
-    section: controllerUrl + '/' + 'append-section',
-    row: controllerUrl + '/' + 'append-row',
-    column: controllerUrl + '/' + 'append-columns',
-    block: controllerUrl + '/' + 'append-block',
-    blockModal: controllerUrl + '/' + 'append-block-modal'
-};
+        section: controllerUrl + '/' + 'append-section',
+        row: controllerUrl + '/' + 'append-row',
+        column: controllerUrl + '/' + 'append-columns',
+        block: controllerUrl + '/' + 'append-block',
+        blockModal: controllerUrl + '/' + 'append-block-modal'
+    },
+    body = $("body");
+
 
 // Event for appending new section.
 $('.btn-add-section').click(function () {
-    var layouts = $(this).parents('.layouts');
-    var postData = {
-        type: layoutType,
-        prefix: $(this).data('prefix')
-    };
+    var $this = $(this),
+        layouts = $this.parents('.layouts'),
+        postData = {
+            type: layoutType,
+            prefix: $this.data('prefix')
+        };
 
     $.post(appendUrl.section, postData, function (data) {
-        var row = appendElement(layouts, $(data));
-        attachRemoveSectionEvent(row.find('.btn-remove-section'));
-        attachAddRowEvent(row.find('.add-row'));
+        appendElement(layouts, $(data));
     });
 });
 
-// Event for removing section under remove button clicked.
-function attachRemoveSectionEvent(removeButton) {
-    removeButton.click(function () {
-        $(this).parents('.section').remove();
-    });
-}
+body.on("click", ".btn-remove-section", function () {
+    $(this).parents('.section').remove();
+});
 
-attachRemoveSectionEvent($('.btn-remove-section')); // Remove section event attached.
+body.on("click", ".btn-remove-row", function () {
+    $(this).parents('.layout-row').first().remove();
+});
 
-function attachRemoveRowEvent(removeButton) {
-    removeButton.click(function () {
-        $(this).parents('.layout-row').parents('li').first().remove();
-    });
-}
-
-attachRemoveRowEvent($('.btn-remove-row'));
-
-function attachAddRowEvent(button) {
-    button.click(function () {
-        var columnsByWidth = getColumnsWidths($(this).data('row-type-width'));
-        var section = $(this).parents('.section').first();
-        var sectionId = section.find('.id').first().val();
-
-        var postData = {
-            prefix: $(this).data('prefix')
+body.on("click", ".add-row", function () {
+    var $this = $(this),
+        columnsByWidth = getColumnsWidths($this.data('row-type-width')),
+        section = $this.parents('.section').first(),
+        postData = {
+            prefix: $this.data('prefix')
         };
 
-        $.post(appendUrl.row, postData, function (data) {
-            var row = appendElement(section, $(data));
-            attachRemoveRowEvent(row.find('.btn-remove-row'));
-
-            var postColumnData = {
+    $.post(appendUrl.row, postData, function (data) {
+        var row = appendElement(section, $(data)),
+            postColumnData = {
                 width: columnsByWidth,
                 prefix: row.data('prefix')
             };
 
-            $.post(appendUrl.column, postColumnData, function (columnsData) {
-
-                var columnsArray = JSON.parse(columnsData);
-
-                for (var i = 0; i < columnsArray.length; i++)
-                     var column = appendElement(row, $(columnsArray[i]));
+        $.post(appendUrl.column, postColumnData, function (columnsData) {
+            $.each(JSON.parse(columnsData), function () {
+                appendElement(row, this);
             });
-
-            attachAddBlockEvent(row.find('.column-option'));
         });
     });
-}
+});
 
-attachAddRowEvent($('.add-row'));
+body.on("click", ".column-option", function () {
+    var column = $(this).parents('.column').first();
 
-function attachAddBlockEvent(button) {
-    button.click(function () {
-        var column = $(this).parents('.column').first();
-        var columnId = column.find('.id').first().val();
+    var postData = {
+        prefix: $(this).data('prefix')
+    };
 
-        var postData = {
-            prefix: $(this).data('prefix')
-        };
-
-        $.post(appendUrl.block, postData, function (data) {
-            var block = appendElement(column, $(data));
-            attachRemoveBlockEvent(block.find('.btn-remove-block'));
-        });
+    $.post(appendUrl.block, postData, function (data) {
+        appendElement(column, $(data));
     });
-}
+});
+
+body.on("click", ".btn-remove-block", function () {
+    $(this).parents('.layout-block').first().remove();
+});
+
 
 function appendElement(parentElement, dataToAppend) {
-    var list = parentElement.find('.children-list').first();
-    list.append(dataToAppend);
+    parentElement
+        .find('.children-list:first')
+        .append(dataToAppend);
+
     return dataToAppend;
 }
 
-attachAddBlockEvent($('.column-option'));
-
-function attachRemoveBlockEvent(removeButton) {
-    removeButton.click(function () {
-        $(this).parents('.layout-block').first().remove();
-    });
-}
-
-attachRemoveBlockEvent($('.btn-remove-block'));
 
 function getColumnsWidths(rowType) {
     switch (rowType) {
@@ -154,9 +129,8 @@ $('.btn-block-modal').click(function () {
         var postData = {
             id: blockId,
             prefix: $(this).data('prefix')
-        };
-
-        var self = this;
+        },
+            self = this;
 
         $.get(
             appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
@@ -165,7 +139,6 @@ $('.btn-block-modal').click(function () {
                 $(self).parent().find('.modal-container').first().append(modalWindow);
 
                 $('#modal-' + blockId).modal();
-                attachRemoveBlockEvent(modalWindow.find('.btn-remove-block'));
                 attachHideModalEvent(modalWindow.find('.btn-modal-close'));
                 attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
             }
