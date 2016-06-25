@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use backend\components\PathHelper;
+use yii\base\Model;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
@@ -11,7 +12,7 @@ use yii\web\UploadedFile;
  *
  * @package backend\models
  */
-class MultimediaItem
+class MultimediaItem extends Model
 {
     /**
      * Uploading a new file scenario.

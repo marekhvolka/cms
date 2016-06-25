@@ -4,6 +4,7 @@ namespace backend\models;
 
 use backend\components\PathHelper;
 use Yii;
+use yii\base\Model;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -12,7 +13,7 @@ use yii\helpers\ArrayHelper;
  *
  * @package backend\models
  */
-class MultimediaCategory
+class MultimediaCategory extends Model
 {
     /**
      * A name of the category.
