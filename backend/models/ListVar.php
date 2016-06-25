@@ -51,7 +51,9 @@ class ListVar extends CustomModel
     public function getListItems()
     {
         if (!isset($this->listItems))
-            $this->listItems = $this->hasMany(ListItem::className(), ['list_id' => 'id'])->all();
+            $this->listItems = $this->hasMany(ListItem::className(), ['list_id' => 'id'])
+                ->orderBy(['order' => SORT_ASC])
+                ->all();
 
         return $this->listItems;
     }

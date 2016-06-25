@@ -181,7 +181,9 @@ abstract class BaseController extends Controller
      */
     public function loadAndSaveLayout(CustomModel $model, $sectionsData, $propertyIdentifier, $type)
     {
+        $sectionOrderIndex = 1;
         foreach($sectionsData as $indexSection => $itemSection) {
+            $itemSection['order'] = $sectionOrderIndex++;
             $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
 
             if (!key_exists('Row', $itemSection))
@@ -189,26 +191,27 @@ abstract class BaseController extends Controller
 
             $section = $model->{$propertyIdentifier}[$indexSection];
 
+            $rowOrderIndex = 1;
             foreach($itemSection['Row'] as $indexRow => $itemRow) {
-
+                $itemRow['order'] = $rowOrderIndex++;
                 $section->loadFromData('rows', $itemRow, $indexRow, Row::className());
 
                 if (!key_exists('Column', $itemRow))
                     continue;
 
                 $row = $section->rows[$indexRow];
-
+                $columnOrderIndex = 1;
                 foreach($itemRow['Column'] as $indexColumn => $itemColumn) {
-
+                    $itemColumn['order'] = $columnOrderIndex++;
                     $row->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
 
                     if (!key_exists('Block', $itemColumn))
                         continue;
 
                     $column = $row->columns[$indexColumn];
-
+                    $blockOrderIndex = 1;
                     foreach($itemColumn['Block'] as $indexBlock => $itemBlock) {
-
+                        $itemBlock['order'] = $blockOrderIndex++;
                         $column->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
 
                         if (!key_exists('SnippetVarValue', $itemBlock))
@@ -280,7 +283,9 @@ abstract class BaseController extends Controller
             if (key_exists('ListItem', $itemVarValue)) {
                 $list = $model->snippetVarValues[$indexVar]->valueListVar;
 
+                $listItemOrderIndex = 1;
                 foreach ($itemVarValue['ListItem'] as $indexListItem => $itemList) {
+                    $itemList['order'] = $listItemOrderIndex++;
                     $list->loadFromData('listItems', $itemList, $indexListItem, ListItem::className());
 
                     if (key_exists('SnippetVarValue', $itemList)) {

@@ -36,8 +36,7 @@ class CacheEngine extends Component
     {
         $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
 
-        if (!file_exists($this->cacheDirectory))
-        {
+        if (!file_exists($this->cacheDirectory)) {
             mkdir($this->cacheDirectory, 0777, true);
         }
 
@@ -45,7 +44,7 @@ class CacheEngine extends Component
 
         $this->latteRenderer->setLoader(new FileLoader());
 
-        $this->latteRenderer->setTempDirectory(__DIR__.'/tmp');
+        $this->latteRenderer->setTempDirectory(__DIR__ . '/tmp');
     }
 
     /** Vrati cestu k triede ObjectBridge.php
@@ -95,8 +94,7 @@ class CacheEngine extends Component
     {
         $path = $this->cacheDirectory . 'snippets/';
 
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
