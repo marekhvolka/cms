@@ -10,8 +10,8 @@ var appendUrl = {
 $('.btn-add-section').click(function () {
     var layouts = $(this).parents('.layouts');
     var postData = {
-        type : layoutType,
-        prefix : $(this).data('prefix')
+        type: layoutType,
+        prefix: $(this).data('prefix')
     };
 
     $.post(appendUrl.section, postData, function (data) {
@@ -45,7 +45,7 @@ function attachAddRowEvent(button) {
         var sectionId = section.find('.id').first().val();
 
         var postData = {
-            prefix : $(this).data('prefix')
+            prefix: $(this).data('prefix')
         };
 
         $.post(appendUrl.row, postData, function (data) {
@@ -53,16 +53,16 @@ function attachAddRowEvent(button) {
             attachRemoveRowEvent(row.find('.btn-remove-row'));
 
             var postColumnData = {
-                width : columnsByWidth,
-                prefix : row.data('prefix')
+                width: columnsByWidth,
+                prefix: row.data('prefix')
             };
 
             $.post(appendUrl.column, postColumnData, function (columnsData) {
 
                 var columnsArray = JSON.parse(columnsData);
 
-                for(var i = 0; i < columnsArray.length; i++)
-                    var column = appendElement(row, $(columnsArray[i]));
+                for (var i = 0; i < columnsArray.length; i++)
+                     var column = appendElement(row, $(columnsArray[i]));
             });
 
             attachAddBlockEvent(row.find('.column-option'));
@@ -78,7 +78,7 @@ function attachAddBlockEvent(button) {
         var columnId = column.find('.id').first().val();
 
         var postData = {
-            prefix : $(this).data('prefix')
+            prefix: $(this).data('prefix')
         };
 
         $.post(appendUrl.block, postData, function (data) {
@@ -146,12 +146,11 @@ $('#' + formId).submit(function () {
     return true;
 });
 
-$('.btn-block-modal').click(function() {
+$('.btn-block-modal').click(function () {
     var blockId = $(this).data('id');
 
-    if ($('#modal-' + blockId).length > 0)
-        $('#modal-' + blockId).modal('show');
-    else {
+    // if it exists, it will get shown automatically... otherwise, load it
+    if (!$('#modal-' + blockId).length > 0) {
         var postData = {
             id: blockId,
             prefix: $(this).data('prefix')
@@ -160,8 +159,7 @@ $('.btn-block-modal').click(function() {
         var self = this;
 
         $.get(
-            appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data)
-            {
+            appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
                 var modalWindow = $(data);
 
                 $(self).parent().find('.modal-container').first().append(modalWindow);
@@ -173,7 +171,7 @@ $('.btn-block-modal').click(function() {
             }
         );
     }
-    
+
     return true;
 });
 
