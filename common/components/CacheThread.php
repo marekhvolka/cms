@@ -24,8 +24,7 @@ class CacheThread extends Thread
     public function run()
     {
         /* @var $page Page */
-        foreach($this->pages as $page)
-        {
+        foreach ($this->pages as $page) {
             $page->getMainCacheFile();
         }
     }

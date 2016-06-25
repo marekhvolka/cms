@@ -66,8 +66,7 @@ class PortalController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id); // Portal model retrieved by id
-        }
-        else {
+        } else {
             $model = new Portal();
         }
 
@@ -77,17 +76,19 @@ class PortalController extends BaseController
             try {
                 $portalVarValuesData = Yii::$app->request->post('Var');
 
-                if (!($model->validate() && $model->save()))
+                if (!($model->validate() && $model->save())) {
                     throw new Exception;
+                }
 
                 foreach ($portalVarValuesData as $index => $portalValueData) {
                     $model->loadFromData('portalVarValues', $portalValueData, $index, PortalVarValue::className());
                 }
 
-                foreach($model->portalVarValues as $portalVarValue) {
+                foreach ($model->portalVarValues as $portalVarValue) {
                     $portalVarValue->portal_id = $model->id;
-                    if (!($portalVarValue->validate() && $portalVarValue->save()))
+                    if (!($portalVarValue->validate() && $portalVarValue->save())) {
                         throw new Exception;
+                    }
                 }
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
@@ -141,11 +142,13 @@ class PortalController extends BaseController
     {
         $model = $this->findModel(Yii::$app->session->get('portal_id'));
 
-        if ($type == 'header')
+        if ($type == 'header') {
             $propertyIdentifier = 'headerSections';
-        else if ($type == 'footer')
+        } else if ($type == 'footer') {
             $propertyIdentifier = 'footerSections';
-        else return '';
+        } else {
+            return '';
+        }
 
         if (Yii::$app->request->isPost) {
 
