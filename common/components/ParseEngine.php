@@ -155,8 +155,7 @@ class ParseEngine
 
             if ($row->validate()) {
                 $row->save();
-            }
-            else {
+            } else {
                 BaseVarDumper::dump($row->errors);
             }
 
@@ -180,18 +179,15 @@ class ParseEngine
 
                 if ($rowWidth[$i] === '2_1') {
                     $column->width = 12 - $columnIndex * 4;
-                }
-                else if ($rowWidth[$i] === '1_2') {
+                } else if ($rowWidth[$i] === '1_2') {
                     $column->width = $columnIndex * 4;
-                }
-                else {
+                } else {
                     $column->width = 12 / $columnsCount;
                 }
 
                 if ($column->validate()) {
                     $column->save();
-                }
-                else {
+                } else {
                     BaseVarDumper::dump($column->errors);
                 }
 
@@ -206,8 +202,6 @@ class ParseEngine
                 foreach ($data[$columnIndex . $rowIds[$i]] as $tempId => $snippetCodeId) {
                     $pageBlockType = json_decode($pageDbRow['layout_element_type'],
                         true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
-
-                    //VarDumper::dump('Page Block ' . $pageBlockType . PHP_EOL);
 
                     $pageBlock = new Block();
 
@@ -229,13 +223,12 @@ class ParseEngine
                                 ->createCommand()
                                 ->queryOne();
 
-                            $pageBlock->data = json_decode($result['json'],
-                                true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
+                            $pageBlock->data = json_decode($result['json'], true)['content']['master']
+                            [$columnIndex . $rowIds[$i]][$tempId];
 
                             if (isset(json_decode($pageBlock->data)->code_select)) {
                                 $pageBlock->snippet_code_id = json_decode($pageBlock->data)->code_select;
-                            }
-                            else {
+                            } else {
                                 $pageBlock->snippet_code_id = json_decode(json_decode($pageBlock->data)->result)->code_select;
                             }
 
@@ -312,8 +305,7 @@ class ParseEngine
 
                     if ($pageBlock->validate()) {
                         $pageBlock->save();
-                    }
-                    else {
+                    } else {
                         BaseVarDumper::dump($pageBlock->errors);
                     }
                 }
@@ -341,8 +333,7 @@ class ParseEngine
             $section->save();
         }
 
-        for ($i = 0; $i < sizeof($rowIds); $i++) //loop through rows
-        {
+        for ($i = 0; $i < sizeof($rowIds); $i++) {
             $row = new Row();
 
             $row->section_id = $section->id;
@@ -350,8 +341,7 @@ class ParseEngine
 
             if ($row->validate()) {
                 $row->save();
-            }
-            else {
+            } else {
                 BaseVarDumper::dump($row->errors);
             }
 
@@ -372,8 +362,7 @@ class ParseEngine
 
                 if ($column->validate()) {
                     $column->save();
-                }
-                else {
+                } else {
                     BaseVarDumper::dump($column->errors);
                 }
 
@@ -467,8 +456,7 @@ class ParseEngine
 
                     if ($pageBlock->validate()) {
                         $pageBlock->save();
-                    }
-                    else {
+                    } else {
                         BaseVarDumper::dump($pageBlock->errors);
                     }
                 }
@@ -489,8 +477,7 @@ class ParseEngine
 
         if (isset(json_decode($tableRow['layout_element'], true)['header'])) {
             $type = 'header';
-        }
-        else if (isset(json_decode($tableRow['layout_element'], true)['footer'])) {
+        } else if (isset(json_decode($tableRow['layout_element'], true)['footer'])) {
             $type = 'footer';
         }
 
@@ -509,8 +496,7 @@ class ParseEngine
                 if ($dataType == 'page') {
                     $section->page_id = $tableRow['page_id'];
                     $section->portal_id = null;
-                }
-                else if ($dataType == 'portal') {
+                } else if ($dataType == 'portal') {
                     $section->portal_id = $tableRow['portal_id'];
                     $section->page_id = null;
                 }
@@ -522,8 +508,7 @@ class ParseEngine
 
                 if ($section->validate()) {
                     $section->save();
-                }
-                else {
+                } else {
                     BaseVarDumper::dump($section->errors);
                 }
 
@@ -557,8 +542,7 @@ class ParseEngine
 
                     if ($row->validate()) {
                         $row->save();
-                    }
-                    else {
+                    } else {
                         BaseVarDumper::dump($row->errors);
                     }
 
@@ -573,23 +557,21 @@ class ParseEngine
                         if (!empty($settings)) {
                             $column->css_style = $settings['style_sett'];
                         }
+
                         $column->css_class = $settings['class_sett'];
                         $column->css_id = $settings['id_sett'];
 
                         if ($rowType === '2_1') {
                             $column->width = 12 - $index * 4;
-                        }
-                        else if ($rowType === '1_2') {
+                        } else if ($rowType === '1_2') {
                             $column->width = $index * 4;
-                        }
-                        else {
+                        } else {
                             $column->width = 12 / $columnsCount;
                         }
 
                         if ($column->validate()) {
                             $column->save();
-                        }
-                        else {
+                        } else {
                             BaseVarDumper::dump($column->errors);
                         }
 
@@ -632,8 +614,7 @@ class ParseEngine
 
                                     if ($snippetCode == null) {
                                         $pageBlock->snippet_code_id = null;
-                                    }
-                                    else {
+                                    } else {
                                         $pageBlock->snippet_code_id = $json['code_select'];
                                     }
 
@@ -694,8 +675,7 @@ class ParseEngine
 
                             if ($pageBlock->validate()) {
                                 $pageBlock->save();
-                            }
-                            else {
+                            } else {
                                 BaseVarDumper::dump($pageBlock->errors);
                             }
                         }
@@ -705,8 +685,6 @@ class ParseEngine
                 VarDumper::dump($e);
             }
         }
-        //die();
-
     }
 
     /** Parsovanie dat vyplneneho snippetu z JSONU do tabulky snippet_var_value
@@ -723,15 +701,14 @@ class ParseEngine
         if (!isset($data->snippet)) {
             return;
         }
+
         $json = $data->snippet;
 
         if (isset($pageBlock->snippetCode)) {
             $snippetId = $pageBlock->snippetCode->snippet_id;
-        }
-        else if (isset($pageBlock->parent)) {
+        } else if (isset($pageBlock->parent)) {
             $snippetId = $pageBlock->parent->snippetCode->snippet_id;
-        }
-        else {
+        } else {
             return;
         }
 
@@ -807,8 +784,7 @@ class ParseEngine
 
                     if (!isset($value) || ($value == '') || $value + 1 > sizeof($dropdowns)) {
                         $snippetVarValue->value_dropdown_id = $snippetVar->defaultValue;
-                    }
-                    else {
+                    } else {
                         $snippetVarValue->value_dropdown_id = $dropdowns[$value]->id;
                     }
 
@@ -819,12 +795,10 @@ class ParseEngine
 
             if ($snippetVarValue->validate()) {
                 $snippetVarValue->save();
-            }
-            else {
+            } else {
                 BaseVarDumper::dump($snippetVarValue->errors);
             }
         }
-
     }
 
     /** Pomocna metoda pre parsovanie zoznamov - rekurzivne sa vola pre zoznamy nizsich urovni
@@ -927,8 +901,7 @@ class ParseEngine
                                 ->one();
 
                             $snippetListVarValue->value_dropdown_id = $productTypeDefaultValue->value_dropdown_id;
-                        }
-                        else {
+                        } else {
                             $dropdowns = SnippetVarDropdown::find()
                                 ->where([
                                     'var_id' => $snippetListVarValue->var_id,
@@ -939,8 +912,7 @@ class ParseEngine
 
                             if (array_key_exists($itemVarValue, $dropdowns)) {
                                 $snippetListVarValue->value_dropdown_id = $dropdowns[$itemVarValue]->id;
-                            }
-                            else {
+                            } else {
                                 $dropdown = SnippetVarDropdown::find()
                                     ->where([
                                         'var_id' => $snippetListVarValue->var_id,
@@ -960,8 +932,7 @@ class ParseEngine
 
                 if ($snippetListVarValue->validate()) {
                     $snippetListVarValue->save();
-                }
-                else {
+                } else {
                     BaseVarDumper::dump($snippetListVarValue->getErrors());
                 }
             }

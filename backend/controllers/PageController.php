@@ -20,7 +20,7 @@ class PageController extends BaseController
     {
         return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -41,7 +41,7 @@ class PageController extends BaseController
             ->all();
 
         return $this->render('index', [
-            'pages'       => $pages,
+            'pages' => $pages,
             'searchModel' => $searchModel
         ]);
     }
@@ -56,8 +56,7 @@ class PageController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id);
-        }
-        else {
+        } else {
             $model = new Page();
         }
 
@@ -72,23 +71,27 @@ class PageController extends BaseController
 
                 $headerData = Yii::$app->request->post('headerSection');
 
-                if ($headerData != null)
+                if ($headerData != null) {
                     $this->loadAndSaveLayout($model, $headerData, 'headerSections', 'page');
+                }
 
                 $footerData = Yii::$app->request->post('footerSection');
 
-                if ($footerData != null)
+                if ($footerData != null) {
                     $this->loadAndSaveLayout($model, $footerData, 'footerSections', 'page');
+                }
 
                 $contentData = Yii::$app->request->post('contentSection');
 
-                if ($contentData != null)
+                if ($contentData != null) {
                     $this->loadAndSaveLayout($model, $contentData, 'contentSections', 'page');
+                }
 
                 $sidebarData = Yii::$app->request->post('sidebarSection');
 
-                if ($sidebarData != null)
+                if ($sidebarData != null) {
                     $this->loadAndSaveLayout($model, $sidebarData, 'sidebarSections', 'page');
+                }
 
                 $transaction->commit();
             } catch (Exception $exc) {

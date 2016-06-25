@@ -47,18 +47,19 @@ abstract class BaseController extends Controller
 
         $change_portal = Yii::$app->request->get('change-portal');
 
-        if(!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1){
+        if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
             Yii::$app->session->set('portal_id', $change_portal);
         }
     }
 
     /**
      * Returns the result of the global search as JSON.
-     * 
+     *
      * @param $q string the query to search by
      * @return array
      */
-    public function actionGlobalSearchResults($q){
+    public function actionGlobalSearchResults($q)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return (new GlobalSearch)->search($q);
     }
@@ -82,7 +83,7 @@ abstract class BaseController extends Controller
         $section->page_id = $pageId;
 
         $indexSection = rand(1000, 10000000);
-        
+
         return (new LayoutWidget())->appendSection($section, $prefix, $indexSection);
     }
 
@@ -109,9 +110,9 @@ abstract class BaseController extends Controller
 
         $columnsData = array();
 
-        for($i = 0; $i < sizeof($width); $i++) {
+        for ($i = 0; $i < sizeof($width); $i++) {
             $column = new Column();
-            $column->order = $i+1;
+            $column->order = $i + 1;
             $column->width = $width[$i];
 
             $indexColumn = rand(1000, 10000000);
@@ -159,7 +160,7 @@ abstract class BaseController extends Controller
 
         $results = $command->queryAll();
 
-        foreach($results as $row) {
+        foreach ($results as $row) {
             $page = Page::find()->where(['id' => $row['page_id']])->one();
 
             $page->getMainCacheFile(true);
@@ -182,40 +183,44 @@ abstract class BaseController extends Controller
     public function loadAndSaveLayout(CustomModel $model, $sectionsData, $propertyIdentifier, $type)
     {
         $sectionOrderIndex = 1;
-        foreach($sectionsData as $indexSection => $itemSection) {
+        foreach ($sectionsData as $indexSection => $itemSection) {
             $itemSection['order'] = $sectionOrderIndex++;
             $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
 
-            if (!key_exists('Row', $itemSection))
+            if (!key_exists('Row', $itemSection)) {
                 continue;
+            }
 
             $section = $model->{$propertyIdentifier}[$indexSection];
 
             $rowOrderIndex = 1;
-            foreach($itemSection['Row'] as $indexRow => $itemRow) {
+            foreach ($itemSection['Row'] as $indexRow => $itemRow) {
                 $itemRow['order'] = $rowOrderIndex++;
                 $section->loadFromData('rows', $itemRow, $indexRow, Row::className());
 
-                if (!key_exists('Column', $itemRow))
+                if (!key_exists('Column', $itemRow)) {
                     continue;
+                }
 
                 $row = $section->rows[$indexRow];
                 $columnOrderIndex = 1;
-                foreach($itemRow['Column'] as $indexColumn => $itemColumn) {
+                foreach ($itemRow['Column'] as $indexColumn => $itemColumn) {
                     $itemColumn['order'] = $columnOrderIndex++;
                     $row->loadFromData('columns', $itemColumn, $indexColumn, Column::className());
 
-                    if (!key_exists('Block', $itemColumn))
+                    if (!key_exists('Block', $itemColumn)) {
                         continue;
+                    }
 
                     $column = $row->columns[$indexColumn];
                     $blockOrderIndex = 1;
-                    foreach($itemColumn['Block'] as $indexBlock => $itemBlock) {
+                    foreach ($itemColumn['Block'] as $indexBlock => $itemBlock) {
                         $itemBlock['order'] = $blockOrderIndex++;
                         $column->loadFromData('blocks', $itemBlock, $indexBlock, Block::className());
 
-                        if (!key_exists('SnippetVarValue', $itemBlock))
+                        if (!key_exists('SnippetVarValue', $itemBlock)) {
                             continue;
+                        }
 
                         $block = $column->blocks[$indexBlock];
 
@@ -225,28 +230,30 @@ abstract class BaseController extends Controller
             }
         }
 
-        foreach($model->{$propertyIdentifier} as $section) {
-            if ($type == 'page')
+        foreach ($model->{$propertyIdentifier} as $section) {
+            if ($type == 'page') {
                 $section->page_id = $model->id;
-            else if ($type == 'portal')
+            } else if ($type == 'portal') {
                 $section->portal_id = $model->id;
+            }
 
             if ($section->removed) {
                 $section->delete();
                 continue;
-            }
-            else if (!($section->validate() && $section->save()))
+            } else if (!($section->validate() && $section->save())) {
                 throw new Exception;
+            }
 
-            foreach($section->rows as $row) {
+            foreach ($section->rows as $row) {
                 $row->section_id = $section->id;
 
                 if ($row->removed) {
                     $row->delete();
                     continue;
                 }
-                if (!($row->validate() && $row->save()))
+                if (!($row->validate() && $row->save())) {
                     throw new Exception;
+                }
 
                 foreach ($row->columns as $column) {
                     $column->row_id = $row->id;
@@ -255,18 +262,20 @@ abstract class BaseController extends Controller
                         $column->delete();
                         continue;
                     }
-                    if (!($column->validate() && $column->save()))
+                    if (!($column->validate() && $column->save())) {
                         throw new Exception;
+                    }
 
-                    foreach($column->blocks as $block) {
+                    foreach ($column->blocks as $block) {
                         $block->column_id = $column->id;
 
                         if ($block->removed) {
                             $block->delete();
                             continue;
                         }
-                        if (!($block->validate() && $block->save()))
+                        if (!($block->validate() && $block->save())) {
                             throw new Exception;
+                        }
 
                         $this->saveSnippetVarValues($block);
                     }
@@ -277,7 +286,7 @@ abstract class BaseController extends Controller
 
     private function loadSnippetVarValues($data, $model)
     {
-        foreach($data['SnippetVarValue'] as $indexVar => $itemVarValue) {
+        foreach ($data['SnippetVarValue'] as $indexVar => $itemVarValue) {
             $model->snippetVarValues[$indexVar]->load($itemVarValue, '');
 
             if (key_exists('ListItem', $itemVarValue)) {
@@ -298,21 +307,24 @@ abstract class BaseController extends Controller
 
     private function saveSnippetVarValues($model)
     {
-        foreach($model->snippetVarValues as $snippetVarValue) {
-            if (!($snippetVarValue->validate() && $snippetVarValue->save()))
+        foreach ($model->snippetVarValues as $snippetVarValue) {
+            if (!($snippetVarValue->validate() && $snippetVarValue->save())) {
                 throw new Exception;
+            }
 
             if (isset($snippetVarValue->valueList)) {
-                if (!($snippetVarValue->valueList->validate() && $snippetVarValue->valueList->save()))
+                if (!($snippetVarValue->valueList->validate() && $snippetVarValue->valueList->save())) {
                     throw new Exception;
+                }
 
-                foreach($snippetVarValue->valueList->listItems as $listItem) {
+                foreach ($snippetVarValue->valueList->listItems as $listItem) {
                     if ($listItem->removed) {
                         $listItem->delete();
                         continue;
                     }
-                    if (!($listItem->validate() && $listItem->save()))
+                    if (!($listItem->validate() && $listItem->save())) {
                         throw new Exception;
+                    }
 
                     $this->saveSnippetVarValues($listItem);
                 }
