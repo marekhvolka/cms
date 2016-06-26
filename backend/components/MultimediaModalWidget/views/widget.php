@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\PathHelper;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -32,12 +33,18 @@ use yii\web\View;
                         <?php foreach ($item['items'] as $file) { ?>
                             <tr>
                                 <td>
-                                    <a href="<?= Url::to([
+                                    <?php $url = Url::to([
                                             '/multimedia/file/',
                                             'subcategory' => $file->subcategory,
                                             'categoryName' => $file->categoryName,
                                             'name' => $file->name]
-                                    ) ?>" class="select-link"><?= $file->name ?></a>
+                                    ) ?>
+                                    <a href="<?= $url ?>" class="select-link">
+                                        <?= $file->name ?>
+                                    </a>
+                                    <?php if (PathHelper::isImageFile($file->name)) { ?>
+                                        <img src="<?= $url ?>" class="thumbnail">
+                                    <?php } ?>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -57,9 +64,19 @@ use yii\web\View;
         </div>
     </div>
 </div>
+<style>
+    #selectFileFromMultimedia .thumbnail {
+        display: none;
+        position: absolute;
+        max-width: 300px;
+        max-height: 300px;
+    }
 
+    #selectFileFromMultimedia a:hover + .thumbnail {
+        display: block;
+    }
+</style>
 <script type="text/javascript">
-
     $(function () {
         $(".select-link").click(function (e) {
             e.preventDefault();
@@ -77,8 +94,8 @@ use yii\web\View;
         modal.find(".search").on("input", function () {
             var val = $(this).val();
             modal.find(".modal-body td.hidden").removeClass("hidden");
-            modal.find(".modal-body td").each(function(){
-                if($(this).text().toLowerCase().indexOf(val.toLowerCase().trim()) == -1){
+            modal.find(".modal-body td").each(function () {
+                if ($(this).text().toLowerCase().indexOf(val.toLowerCase().trim()) == -1) {
                     $(this).addClass("hidden");
                 }
             });
