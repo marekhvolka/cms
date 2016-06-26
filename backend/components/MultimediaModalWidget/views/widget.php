@@ -78,7 +78,7 @@ use yii\web\View;
             var val = $(this).val();
             modal.find(".modal-body td.hidden").removeClass("hidden");
             modal.find(".modal-body td").each(function(){
-                if($(this).text().indexOf(val) == -1){
+                if($(this).text().toLowerCase().indexOf(val.toLowerCase().trim()) == -1){
                     $(this).addClass("hidden");
                 }
             });
