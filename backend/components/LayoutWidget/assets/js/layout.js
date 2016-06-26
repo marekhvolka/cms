@@ -122,10 +122,11 @@ $('#' + formId).submit(function () {
 });
 
 $('.btn-block-modal').click(function () {
-    var blockId = $(this).data('id');
+    var blockId = $(this).data('id'),
+        modal = $('#modal-' + blockId);
 
     // if it exists, it will get shown automatically... otherwise, load it
-    if (!$('#modal-' + blockId).length > 0) {
+    if (modal.length == 0) {
         var postData = {
             id: blockId,
             prefix: $(this).data('prefix')
@@ -143,6 +144,8 @@ $('.btn-block-modal').click(function () {
                 attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
             }
         );
+    } else {
+        modal.modal('show');
     }
 
     return true;

@@ -21,8 +21,7 @@ use backend\components\BlockModal\BlockModalWidget;
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal" 
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
-            data-target="#modal-<?= $model->id ?>"
-            data-toggle="modal">
+            data-target="#modal-<?= $model->id ?>">
                 <?php echo $model->name; ?>
     </button>
 
