@@ -67,7 +67,6 @@ class PageController extends BaseController
         }
 
         if (Yii::$app->request->isPost) {
-
             $transaction = Yii::$app->db->beginTransaction();
             try {
 

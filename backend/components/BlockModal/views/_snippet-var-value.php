@@ -32,8 +32,6 @@ if ($model->typeName != 'list') : ?>
                            name="<?= $prefix . '[value_text]' ?>"
                            placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"
                            value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
-
-
                     <?php
                     break;
                 case 'textarea' : ?>
@@ -133,7 +131,7 @@ if ($model->typeName != 'list') : ?>
         <div class="clearfix"></div>
     </div>
 <?php else  : ?>
-    <div class="panel panel-default">
+    <div class="panel panel-default list-panel">
         <div class="panel-heading">
                 <span>
                     <a data-toggle="collapse" href="#panel<?= $model->id ?>">
@@ -145,23 +143,20 @@ if ($model->typeName != 'list') : ?>
                 <span>
                     Počet položiek: <?= sizeof($model->valueListVar->listItems) ?>
                 </span>
-            <button class="btn btn-success btn-xs pull-right">
+            <a class="btn btn-success btn-xs pull-right btn-add-list-item"
+                    data-prefix="<?= $prefix ?>" data-list-id="<?= $model->valueListVar->id ?>">
                 <span class="glyphicon glyphicon-plus"></span>
-            </button>
+            </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in" id="panel<?= $model->id ?>">
-            <ul class="list-unstyled">
-                <?php foreach ($model->valueListVar->listItems as $indexItem => $listItem) : ?>
-                    <li>
-                        <?= $this->render('_list-item', [
-                            'model' => $listItem,
-                            'productType' => $productType,
-                            'prefix' => $prefix . "[ListItem][$indexItem]"
-                        ]); ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+        <div class="panel-body panel-collapse collapse in children-list" id="panel<?= $model->id ?>">
+            <?php foreach ($model->valueListVar->listItems as $indexItem => $listItem) : ?>
+                    <?= $this->render('_list-item', [
+                        'model' => $listItem,
+                        'productType' => $productType,
+                        'prefix' => $prefix . "[ListItem][$indexItem]"
+                    ]); ?>
+            <?php endforeach; ?>
         </div>
     </div>
 <?php endif;

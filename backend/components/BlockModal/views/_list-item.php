@@ -19,7 +19,7 @@ use yii\helpers\BaseHtml;
             <i class="fa fa-bars"></i>
         </span>
         <span>
-            <?= $model->id ?>
+            <?= $model->order ?>
         </span>
         položka
         <button class="btn btn-danger btn-xs pull-right">
