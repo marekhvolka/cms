@@ -54,9 +54,27 @@ class Block extends CustomModel implements ICacheable
             [['snippet_code_id', 'column_id', 'parent_id', 'order'], 'integer'],
             [['data', 'type', 'compiled_data'], 'string'],
             [['type'], 'required'],
-            [['column_id'], 'exist', 'skipOnError' => true, 'targetClass' => Column::className(), 'targetAttribute' => ['column_id' => 'id']],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Block::className(), 'targetAttribute' => ['parent_id' => 'id']],
-            [['snippet_code_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetCode::className(), 'targetAttribute' => ['snippet_code_id' => 'id']],
+            [
+                ['column_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Column::className(),
+                'targetAttribute' => ['column_id' => 'id']
+            ],
+            [
+                ['parent_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Block::className(),
+                'targetAttribute' => ['parent_id' => 'id']
+            ],
+            [
+                ['snippet_code_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => SnippetCode::className(),
+                'targetAttribute' => ['snippet_code_id' => 'id']
+            ],
         ];
     }
 
@@ -115,7 +133,7 @@ class Block extends CustomModel implements ICacheable
     {
         return $this->hasOne(SnippetCode::className(), ['id' => 'snippet_code_id']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -145,8 +163,9 @@ class Block extends CustomModel implements ICacheable
      */
     public function getSnippetVarValues()
     {
-        if (!isset($this->snippetVarValues))
+        if (!isset($this->snippetVarValues)) {
             $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id'])->all();
+        }
 
         return $this->snippetVarValues;
     }
@@ -170,14 +189,15 @@ class Block extends CustomModel implements ICacheable
             case 'html':
                 $name = 'HTML';
                 break;
+            case 'portal_snippet':
+            case 'product_snippet':
             case 'snippet':
-                //TODO: fix with valid database
-                if ($this->snippetCode)
-                {
+                if ($this->snippetCode) {
                     $name = $this->snippetCode->snippet->name;
+                } else if ($this->parent->snippetCode) {
+                    $name = $this->parent->snippetCode->snippet->name;
                 }
-                else
-                {
+                else {
                     $name = 'Zmazaný kód snippetu';
                 }
                 break;
@@ -245,7 +265,8 @@ class Block extends CustomModel implements ICacheable
 
         if (!file_exists($path . '.php') || $reload) {
             Yii::$app->cacheEngine->writeToFile($path . '.latte', 'w+', $buffer);
-            $result = stripcslashes(html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte', array())));
+            $result = stripcslashes(html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte',
+                array())));
 
             Yii::$app->cacheEngine->writeToFile($path . '.php', 'w+', $result);
         }
@@ -278,8 +299,9 @@ class Block extends CustomModel implements ICacheable
             foreach ($this->snippetVarValues as $snippetVarValue) {
                 $defaultValue = '\'' . $snippetVarValue->getDefaultValue($productType) . '\'';
 
-                if (isset($defaultValue))
+                if (isset($defaultValue)) {
                     $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
+                }
             }
         }
 
@@ -317,26 +339,19 @@ class Block extends CustomModel implements ICacheable
     {
         $this->getMainCacheFile(true);
 
-        if (isset($this->column))
-        {
+        if (isset($this->column)) {
             $section = $this->column->row->section;
 
-            if (isset($section->page))
-            {
+            if (isset($section->page)) {
                 $section->page->addToCacheBuffer();
-            }
-            else if (isset($section->portal))
-            {
-                foreach($section->portal->pages as $page)
-                {
+            } else if (isset($section->portal)) {
+                foreach ($section->portal->pages as $page) {
                     $page->addToCacheBuffer();
                 }
             }
         }
-        if (!isset($this->column))
-        {
-            foreach($this->childBlocks as $childBlock)
-            {
+        if (!isset($this->column)) {
+            foreach ($this->childBlocks as $childBlock) {
                 $childBlock->resetAfterUpdate();
             }
         }

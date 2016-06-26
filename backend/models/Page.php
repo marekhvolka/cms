@@ -66,13 +66,47 @@ class Page extends CustomModel implements ICacheable
     public function rules()
     {
         return [
-            [['name', 'identifier', 'portal_id', 'active', 'in_menu', 'color_scheme', 'sidebar_active', 'sidebar_side', 'footer_active', 'header_active'], 'required'],
-            [['portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_active', 'sidebar_size', 'footer_active', 'header_active', 'last_edit_user'], 'integer'],
+            [
+                [
+                    'name',
+                    'identifier',
+                    'portal_id',
+                    'active',
+                    'in_menu',
+                    'color_scheme',
+                    'sidebar_active',
+                    'sidebar_side',
+                    'footer_active',
+                    'header_active'
+                ],
+                'required'
+            ],
+            [
+                [
+                    'portal_id',
+                    'active',
+                    'in_menu',
+                    'parent_id',
+                    'order',
+                    'product_id',
+                    'sidebar_active',
+                    'sidebar_size',
+                    'footer_active',
+                    'header_active',
+                    'last_edit_user'
+                ],
+                'integer'
+            ],
             [['description'], 'string'],
             [['last_edit'], 'safe'],
             [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
             [['title'], 'string', 'max' => 150],
-            [['identifier', 'portal_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'portal_id', 'parent_id'], 'message' => 'The combination of Identifier, Portal ID and Parent ID has already been taken.']
+            [
+                ['identifier', 'portal_id', 'parent_id'],
+                'unique',
+                'targetAttribute' => ['identifier', 'portal_id', 'parent_id'],
+                'message' => 'The combination of Identifier, Portal ID and Parent ID has already been taken.'
+            ]
         ];
     }
 
@@ -133,12 +167,13 @@ class Page extends CustomModel implements ICacheable
      */
     public function getUrl()
     {
-        if (isset($this->parent))
+        if (isset($this->parent)) {
             $url = $this->parent->url;
-        else
+        } else {
             $url = '/';
+        }
 
-        return  $url . $this->identifier . '/';
+        return $url . $this->identifier . '/';
     }
 
     /** Metoda na vyskladanie URL pre podstranku
@@ -146,12 +181,13 @@ class Page extends CustomModel implements ICacheable
      */
     public function getBreadcrumbs()
     {
-        $url = '';
+        $breadcrumbs = '';
 
-        if (isset($this->parent))
-            $url = $this->parent->name;
+        if (isset($this->parent)) {
+            $breadcrumbs = $this->parent->breadcrumbs . ' -> ';
+        }
 
-        return  $url . ' -> ' . $this->name;
+        return $breadcrumbs . $this->name;
     }
 
     /**
@@ -201,8 +237,9 @@ class Page extends CustomModel implements ICacheable
     {
         $product = $this->hasOne(Product::className(), ['id' => 'product_id']);
 
-        if (!$product->exists() && (isset($this->parent)))
+        if (!$product->exists() && (isset($this->parent))) {
             return $this->parent->product;
+        }
         return $product;
     }
 
@@ -288,24 +325,28 @@ class Page extends CustomModel implements ICacheable
      */
     public function getColorSchemePath()
     {
-        if ($this->color_scheme == 'inherit')
-            if (isset($this->parent))
+        if ($this->color_scheme == 'inherit') {
+            if (isset($this->parent)) {
                 return $this->parent->getColorSchemePath();
-            else
+            } else {
                 return $this->portal->getColorSchemePath();
-        else if ($this->color_scheme == '')
+            }
+        } else if ($this->color_scheme == '') {
             return $this->portal->getColorSchemePath();
-        else
+        } else {
             return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
+        }
     }
 
     public function getHeaderContent($reload = false)
     {
         $result = '<div id="page-header">';
 
-        if ($this->header_active)
-            foreach($this->headerSections as $section)
+        if ($this->header_active) {
+            foreach ($this->headerSections as $section) {
                 $result .= $section->getContent($reload);
+            }
+        }
 
         $result .= '</div> <!-- PageHeader end -->';
 
@@ -316,9 +357,11 @@ class Page extends CustomModel implements ICacheable
     {
         $result = '<div id="page-footer">';
 
-        if ($this->footer_active)
-            foreach($this->footerSections as $section)
+        if ($this->footer_active) {
+            foreach ($this->footerSections as $section) {
                 $result .= $section->getContent($reload);
+            }
+        }
 
         $result .= '</div> <!-- PageFooter end -->';
 
@@ -327,18 +370,20 @@ class Page extends CustomModel implements ICacheable
 
     public function getMainContent($reload = false)
     {
-        if (!$this->sidebar_active)
+        if (!$this->sidebar_active) {
             $width = 12;
-        else
+        } else {
             $width = 12 - $this->sidebar_size;
+        }
 
         $result = '<div id="content" class="col-md-' . $width . '">';
 
-        if (isset($this->contentSections))
-        {
-            foreach($this->contentSections as $section)
-                foreach ($section->rows as $row)
+        if (isset($this->contentSections)) {
+            foreach ($this->contentSections as $section) {
+                foreach ($section->rows as $row) {
                     $result .= $row->getContent($reload);
+                }
+            }
         }
 
         $result .= '</div> <!-- Content End -->';
@@ -353,9 +398,11 @@ class Page extends CustomModel implements ICacheable
         if ($this->sidebar_active) {
             $result = '<div id="sidebar" class="col-md-' . $this->sidebar_size . '">';
 
-            foreach($this->sidebarSections as $section)
-                foreach ($section->rows as $row)
+            foreach ($this->sidebarSections as $section) {
+                foreach ($section->rows as $row) {
                     $result .= $row->getContent($reload);
+                }
+            }
 
             $result .= '</div> <!-- Sidebar End -->';
         }
@@ -370,8 +417,9 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->portal->getPagesMainCacheDirectory() . 'page' . $this->id . '/';
 
-        if (!file_exists($path))
+        if (!file_exists($path)) {
             mkdir($path, 0777, true);
+        }
 
         return $path;
     }
@@ -389,11 +437,11 @@ class Page extends CustomModel implements ICacheable
 
             $buffer = '<?php ' . PHP_EOL;
 
-            if (isset($this->product))
+            if (isset($this->product)) {
                 $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
-            else if (isset($this->parent))
+            } else if (isset($this->parent)) {
                 $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
-            else {
+            } else {
                 $buffer .= '$emptyProduct = (object) array();' . PHP_EOL;
                 $buffer .= '$product = new ObjectBridge($emptyProduct, \'\');' . PHP_EOL;
             }
@@ -406,18 +454,21 @@ class Page extends CustomModel implements ICacheable
             $buffer .= '\'keywords\' => \'' . $cacheEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
             $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
 
-            if (isset($this->parent))
+            if (isset($this->parent)) {
                 $buffer .= '\'parent\' => $portal->pages->page' . $this->parent->id . ',' . PHP_EOL;
+            }
 
-            if (isset($this->product))
+            if (isset($this->product)) {
                 $buffer .= '\'product\' => $product,' . PHP_EOL;
+            }
 
             $buffer .= ');' . PHP_EOL;
 
             $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
-            if (isset($this->color_scheme))
+            if (isset($this->color_scheme)) {
                 $buffer .= '$color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
+            }
 
             $buffer .= '/* Product Variables */' . PHP_EOL;
 
@@ -441,7 +492,7 @@ class Page extends CustomModel implements ICacheable
         if (!file_exists($path) || $reload) {
             $buffer = '';
 
-            switch($type) {
+            switch ($type) {
                 case 'header':
                     $buffer = $this->getHeaderContent($reload);
 
@@ -473,8 +524,9 @@ class Page extends CustomModel implements ICacheable
     {
         $path = $this->getCacheDirectory() . 'blocks/';
 
-        if (!file_exists($path))
+        if (!file_exists($path)) {
             mkdir($path, 0777, true);
+        }
 
         return $path;
     }
@@ -501,10 +553,11 @@ class Page extends CustomModel implements ICacheable
             $prefix .= '$page_sidebar = executeScript(\'' . $this->getLayoutCacheFile('sidebar') . '\');' . PHP_EOL;
             $prefix .= '$page_content = executeScript(\'' . $this->getLayoutCacheFile('content') . '\');' . PHP_EOL;
 
-            if ($this->sidebar_side == 'left')
+            if ($this->sidebar_side == 'left') {
                 $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
-            else
+            } else {
                 $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
+            }
 
             $prefix .= '?>' . PHP_EOL;
 

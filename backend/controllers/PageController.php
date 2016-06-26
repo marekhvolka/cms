@@ -6,6 +6,7 @@ use backend\models\Page;
 use backend\models\search\PageSearch;
 use backend\models\Section;
 use common\components\CacheEngine;
+use common\components\ParseEngine;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -56,6 +57,11 @@ class PageController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id);
+
+            if ($model->parsed == 0) {
+                $parseEngine = new ParseEngine();
+                $parseEngine->parsePage($model);
+            }
         } else {
             $model = new Page();
         }

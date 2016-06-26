@@ -26,7 +26,7 @@ use backend\components\BlockModal\BlockModalWidget;
                 <?php echo $model->name; ?>
     </button>
 
-    <?php if (($model->type == 'snippet') && isset($model->snippetCode)) : ?>
+    <?php if (($model->type == 'snippet')) : ?>
         <?=
         Html::a(
                 '<span class="glyphicon glyphicon-link"></span>', $model->snippetCode->url, [
@@ -34,6 +34,17 @@ use backend\components\BlockModal\BlockModalWidget;
             'title' => 'Upraviť snippet',
             'target' => '_blank'
                 ]
+        ) ?>
+    <?php endif; ?>
+
+    <?php if (($model->type == 'portal_snippet') || ($model->type == 'product_snippet')) : ?>
+        <?=
+        Html::a(
+            '<span class="glyphicon glyphicon-link"></span>', $model->parent->snippetCode->url, [
+                'class' => 'btn btn-info btn-sm',
+                'title' => 'Upraviť snippet',
+                'target' => '_blank'
+            ]
         ) ?>
     <?php endif; ?>
 
