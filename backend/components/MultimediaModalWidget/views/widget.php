@@ -8,23 +8,7 @@ use yii\web\View;
 /** @var $data array */
 /** @var $this View */
 /** @var string $nameOfFunction */
-$js = <<<JS
-if (window.multimediaWidgetLoaded !== true){
-    window.multimediaWidgetLoaded = true;
-    
-    $(function() {
-        $(".select-link").click(function(e) {
-            e.preventDefault();
-            
-            var funcName = $nameOfFunction;
-            
-            $nameOfFunction($(this).attr("href"));
-            
-            $("#selectFileFromMultimedia").modal("hide");
-        })
-    });
-}
-JS;
+
 ?>
 
 <div class="modal fade" id="selectFileFromMultimedia" tabindex="-1" role="dialog"
@@ -39,6 +23,7 @@ JS;
                 <h4 class="modal-title" id="selectFileFromMultimediaLabel">Vybrať súbor</h4>
             </div>
             <div class="modal-body">
+                <b>Hľadať:</b> <input type="text" placeholder="Hľadať" class="search">
                 <?php
                 foreach ($data as $item) {
                     echo "<h3>" . $item['category']->name . " <small>" . $item['subcategory'] . "</small></h3>";
@@ -62,7 +47,7 @@ JS;
                 ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
+                <button type="button" class="btn btn-default close-modal">Zavrieť</button>
                 <?= Html::submitButton('Vybrať', [
                     'class' => 'btn btn-primary',
                     'id' => 'submit-btn'
@@ -74,5 +59,29 @@ JS;
 </div>
 
 <script type="text/javascript">
-    <?= $js ?>
+
+    $(function () {
+        $(".select-link").click(function (e) {
+            e.preventDefault();
+
+            <?= $nameOfFunction ?>($(this).attr("href"));
+
+            $("#selectFileFromMultimedia").modal("hide");
+        });
+
+        var modal = $("#selectFileFromMultimedia");
+        modal.find(".close-modal").click(function () {
+            modal.modal("hide");
+        });
+
+        modal.find(".search").on("input", function () {
+            var val = $(this).val();
+            modal.find(".modal-body td.hidden").removeClass("hidden");
+            modal.find(".modal-body td").each(function(){
+                if($(this).text().indexOf(val) == -1){
+                    $(this).addClass("hidden");
+                }
+            });
+        });
+    });
 </script>
