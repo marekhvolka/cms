@@ -25,8 +25,6 @@ if (window.multimediaWidgetLoaded !== true){
     });
 }
 JS;
-
-$this->registerJs($js, View::POS_END);
 ?>
 
 <div class="modal fade" id="selectFileFromMultimedia" tabindex="-1" role="dialog"
@@ -74,3 +72,7 @@ $this->registerJs($js, View::POS_END);
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    <?= $js ?>
+</script>

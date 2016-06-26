@@ -3,13 +3,14 @@ var appendUrl = {
         row: controllerUrl + '/' + 'append-row',
         column: controllerUrl + '/' + 'append-columns',
         block: controllerUrl + '/' + 'append-block',
-        blockModal: controllerUrl + '/' + 'append-block-modal'
+        blockModal: controllerUrl + '/' + 'append-block-modal',
+        listItem: controllerUrl + '/' + 'append-list-item'
     },
     body = $("body");
 
 
 // Event for appending new section.
-$('.btn-add-section').click(function () {
+body.on("click", '.btn-add-section', function () {
     var $this = $(this),
         layouts = $this.parents('.layouts'),
         postData = {
@@ -128,9 +129,9 @@ $('.btn-block-modal').click(function () {
     // if it exists, it will get shown automatically... otherwise, load it
     if (modal.length == 0) {
         var postData = {
-            id: blockId,
-            prefix: $(this).data('prefix')
-        },
+                id: blockId,
+                prefix: $(this).data('prefix')
+            },
             self = this;
 
         $.get(
@@ -149,6 +150,21 @@ $('.btn-block-modal').click(function () {
     }
 
     return true;
+});
+
+body.on('click', '.btn-add-list-item', function () {
+    var listContainer = $(this).parents('.list-panel').first();
+
+    var postData = {
+        prefix: $(this).data('prefix'),
+        listId: $(this).data('list-id')
+    };
+
+    $.get(
+        appendUrl.listItem + '?prefix=' + postData.prefix + '&listId=' + postData.listId, function (data) {
+            appendElement(listContainer, $(data));
+        }
+    );
 });
 
 function attachHideModalEvent(hideButton) {
