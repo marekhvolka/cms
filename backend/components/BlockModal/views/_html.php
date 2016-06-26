@@ -4,7 +4,6 @@ use backend\components\MultimediaModalWidget\MultimediaModalWidget;
 
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
-
 ?>
 
 
@@ -17,3 +16,7 @@ use backend\components\MultimediaModalWidget\MultimediaModalWidget;
     <?= $model->data ?>
 </textarea>
 </div>
+
+<script type="text/javascript">
+    CKEDITOR.replace('textModal');
+</script>

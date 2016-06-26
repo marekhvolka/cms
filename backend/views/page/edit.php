@@ -1,5 +1,6 @@
 <?php
 
+use backend\assets\CKEditorAsset;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -13,10 +14,11 @@ $this->title = 'Úprava podstránky: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Podstránky', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Úprava';
+
+CKEditorAsset::register($this);
 ?>
 <div class="page-update">
 
-    
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

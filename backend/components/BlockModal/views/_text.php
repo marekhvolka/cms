@@ -5,7 +5,6 @@ use backend\components\MultimediaModalWidget\MultimediaModalWidget;
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
 
-CKEditorAsset::register($this);
 ?>
 
 
@@ -21,3 +20,7 @@ CKEditorAsset::register($this);
 
 
 <?= MultimediaModalWidget::widget(['successCallJSFunction' => "window.multimediaFileSelected", "onlyImages" => true]) ?>
+
+<script type="text/javascript">
+    CKEDITOR.replace('textModal');
+</script>
