@@ -26,14 +26,37 @@ $('#$idTextFrom').blur(function() {
 function generate(input, delimiter)
 {
     var output = input.trim(); //odstranenie medzier na zaciatku a konci
+    output = output.replace(/\.$/, "");
 
-    output = output.replace(/ /g, delimiter, output); //nahradenie medzier
+    output = output.replace(/[ .]/g, delimiter, output); //nahradenie medzier
 
     output = output.toLowerCase(); //na male pismena
+
+    output = cleanUpSpecialChars(output);
 
     output = output.replace('^[_\$a-zA-Z\xA0-\uFFFF][_\$a-zA-Z0-9\xA0-\uFFFF]*$', '')
 
     return output;
+}
+
+function cleanUpSpecialChars(str)
+{
+    str = str.replace(/[àáâãäå]/g,"a");
+    str = str.replace(/[čçć]/g,"c");
+    str = str.replace(/[ď]/g,"d");
+    str = str.replace(/[éěèêëęėē]/g,"e");
+    str = str.replace(/[íîïìįī]/g,"i");
+    str = str.replace(/[ľĺł]/g,"l");
+    str = str.replace(/[ňñń]/g,"n");
+    str = str.replace(/[ôóöòõœøō]/g,"o");
+    str = str.replace(/[ŕř]/g,"r");
+    str = str.replace(/[šßś]/g,"s");
+    str = str.replace(/[ť]/g,"t");
+    str = str.replace(/[úůûüùū]/g,"u");
+    str = str.replace(/[ýÿ]/g,"y");
+    str = str.replace(/[žźż]/g,"z");
+
+    return str;
 }
         
 JS;
