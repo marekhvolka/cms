@@ -8,6 +8,7 @@ use backend\models\Block;
 use backend\models\Column;
 use backend\models\CustomModel;
 use backend\models\ListItem;
+use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Row;
@@ -149,6 +150,18 @@ abstract class BaseController extends Controller
         $block = Block::findOne(['id' => $id]);
 
         return (new BlockModalWidget())->appendModal($block, $prefix);
+    }
+
+    public function actionAppendListItem($listId, $prefix)
+    {
+        //$listId = Yii::$app->request->post('listId');
+        //$prefix = Yii::$app->request->post('prefix');
+
+        $list = ListVar::find()->where(['id' => $listId])->one();
+
+        $listItem = $list->createNewListItem();
+
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix);
     }
 
     public function actionCacheFromBuffer($limit = 20)

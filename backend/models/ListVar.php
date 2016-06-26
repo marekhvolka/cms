@@ -45,6 +45,22 @@ class ListVar extends CustomModel
         ];
     }
 
+    public function createNewListItem()
+    {
+        $listItem = new ListItem();
+        $listItem->active = true;
+        $listItem->getSnippetVarValues();
+
+        foreach($this->snippetVarValue->var->children as $childVar) {
+            $childVarValue = new SnippetVarValue();
+            $childVarValue->var_id = $childVar->id;
+
+            $listItem->snippetVarValues[] = $childVarValue;
+        }
+
+        return $listItem;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
