@@ -73,6 +73,13 @@ class Template extends \yii\db\ActiveRecord
         return $this->hasMany(Portal::className(), ['template_id' => 'id']);
     }
 
+    public function getColorSchemes()
+    {
+        $colorSchemes = array();
+
+
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

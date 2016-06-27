@@ -21,8 +21,36 @@ class PageSearch extends Page
     public function rules()
     {
         return [
-            [['id', 'portal_id', 'active', 'in_menu', 'parent_id', 'order', 'product_id', 'sidebar_size', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'identifier', 'title', 'description', 'keywords', 'color_scheme', 'sidebar_side', 'last_edit'], 'safe'],
+            [
+                [
+                    'id',
+                    'portal_id',
+                    'active',
+                    'in_menu',
+                    'parent_id',
+                    'order',
+                    'product_id',
+                    'sidebar_size',
+                    'last_edit_user'
+                ],
+                'integer'
+            ],
+            [
+                [
+                    'globalSearch',
+                    'name',
+                    'identifier',
+                    'title',
+                    'description',
+                    'keywords',
+                    'color_scheme',
+                    'sidebar_side',
+                    'last_edit',
+                    'breadcrumbs',
+                    'url'
+                ],
+                'safe'
+            ],
         ];
     }
 

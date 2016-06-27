@@ -15,7 +15,9 @@ use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\Block;
 use backend\models\Portal;
+use backend\models\PortalVarValue;
 use backend\models\Product;
+use backend\models\ProductVarValue;
 use backend\models\Row;
 use backend\models\Section;
 use backend\models\SnippetCode;
@@ -173,24 +175,25 @@ class ParseEngine
     {
         $transaction = Yii::$app->db->beginTransaction();
 
-        $query = 'DELETE FROM portal_var_value WHERE value_block_id IS NOT NULL AND portal_id = :portal_id;';
+        $query = 'DELETE FROM portal_var_value WHERE old_id IS NOT NULL AND portal_id = :portal_id;';
 
         Yii::$app->db->createCommand($query, [
             'portal_id' => $portal->id
         ])
             ->execute();
 
-        $query = 'INSERT INTO block (type, snippet_code_id, data, old_id)
-              SELECT \'portal_snippet\', snippet_code_id, json, id FROM portal_snippet WHERE portal_id = :portal_id;';
+        $query = 'INSERT INTO portal_var_value (portal_id, var_id, old_id)
+            SELECT portal_id, portal_var_id, id FROM portal_snippet WHERE portal_id = :portal_id;';
 
         Yii::$app->db->createCommand($query, [
             'portal_id' => $portal->id
         ])
             ->execute();
 
-        $query = 'INSERT INTO portal_var_value (portal_id, var_id, value_block_id)
-            SELECT portal_snippet.portal_id, portal_snippet.portal_var_id, block.id FROM block JOIN portal_snippet ON (block.old_id = portal_snippet.id)
-            WHERE type = \'portal_snippet\' AND portal_snippet.portal_id = :portal_id;';
+        $query = 'INSERT INTO block (type, snippet_code_id, data, portal_var_value_id)
+              SELECT \'portal_snippet\', snippet_code_id, json, portal_var_value.id
+              FROM portal_snippet JOIN portal_var_value ON (portal_snippet.id = old_id)
+              WHERE portal_snippet.portal_id = :portal_id; AND ';
 
         Yii::$app->db->createCommand($query, [
             'portal_id' => $portal->id
@@ -214,24 +217,25 @@ class ParseEngine
     {
         $transaction = Yii::$app->db->beginTransaction();
 
-        $query = 'DELETE FROM product_var_value WHERE value_block_id IS NOT NULL AND product_id = :product_id;';
+        $query = 'DELETE FROM product_var_value WHERE old_id IS NOT NULL AND product_id = :product_id;';
 
         Yii::$app->db->createCommand($query, [
             'product_id' => $product->id
         ])
             ->execute();
 
-        $query = 'INSERT INTO block (type, snippet_code_id, data, old_id)
-            SELECT \'product_snippet\', snippet_code_id, json, id FROM product_snippet WHERE product_id = :product_id;';
+        $query = 'INSERT INTO product_var_value (product_id, var_id, old_id)
+            SELECT product_id, product_var_id, id FROM product_snippet WHERE product_id = :product_id;';
 
         Yii::$app->db->createCommand($query, [
             'product_id' => $product->id
         ])
             ->execute();
 
-        $query = 'INSERT INTO product_var_value (product_id, var_id, value_block_id)
-            SELECT product_snippet.product_id, product_snippet.product_var_id, block.id FROM block JOIN product_snippet ON (block.old_id = product_snippet.id)
-            WHERE type = \'product_snippet\' AND product_snippet.product_id = :product_id;';
+        $query = 'INSERT INTO block (type, snippet_code_id, data, product_var_value_id)
+              SELECT \'product_snippet\', snippet_code_id, json, product_var_value.id
+              FROM product_snippet JOIN product_var_value ON (product_snippet.id = old_id)
+              WHERE product_snippet.product_id = :product_id; AND ';
 
         Yii::$app->db->createCommand($query, [
             'product_id' => $product->id
@@ -381,10 +385,15 @@ class ParseEngine
                             $old_portal_snippet_id = json_decode($pageDbRow['layout_element'],
                                 true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
+                            $portalVarValue = PortalVarValue::find()
+                                ->andWhere([
+                                    'old_id' => $old_portal_snippet_id
+                                ])
+                                ->one();
+
                             $parentBlock = Block::find()
                                 ->andWhere([
-                                    'type' => 'portal_snippet',
-                                    'old_id' => $old_portal_snippet_id
+                                    'portal_var_value_id' => $portalVarValue->id
                                 ])
                                 ->one();
 
@@ -407,10 +416,15 @@ class ParseEngine
                             $old_product_snippet_id = json_decode($pageDbRow['layout_element'],
                                 true)['content']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
+                            $productVarValue = ProductVarValue::find()
+                                ->andWhere([
+                                    'old_id' => $old_product_snippet_id
+                                ])
+                                ->one();
+
                             $parentBlock = Block::find()
                                 ->andWhere([
-                                    'type' => 'product_snippet',
-                                    'old_id' => $old_product_snippet_id
+                                    'product_var_value_id' => $productVarValue->id
                                 ])
                                 ->one();
 
@@ -553,10 +567,15 @@ class ParseEngine
                             $old_portal_snippet_id = json_decode($pageDbRow['layout_element'],
                                 true)['sidebar']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
+                            $portalVarValue = PortalVarValue::find()
+                                ->andWhere([
+                                    'old_id' => $old_portal_snippet_id
+                                ])
+                                ->one();
+
                             $parentBlock = Block::find()
                                 ->andWhere([
-                                    'type' => 'portal_snippet',
-                                    'old_id' => $old_portal_snippet_id
+                                    'portal_var_value_id' => $portalVarValue->id
                                 ])
                                 ->one();
 
@@ -572,10 +591,15 @@ class ParseEngine
                             $old_product_snippet_id = json_decode($pageDbRow['layout_element'],
                                 true)['sidebar']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
+                            $productVarValue = ProductVarValue::find()
+                                ->andWhere([
+                                    'old_id' => $old_product_snippet_id
+                                ])
+                                ->one();
+
                             $parentBlock = Block::find()
                                 ->andWhere([
-                                    'type' => 'product_snippet',
-                                    'old_id' => $old_product_snippet_id
+                                    'product_var_value_id' => $productVarValue->id
                                 ])
                                 ->one();
 
@@ -761,10 +785,15 @@ class ParseEngine
                                     $old_portal_snippet_id = json_decode($tableRow['layout_element'],
                                         true)[$type][$sectionId][$index . $poradieID][$tempId];
 
+                                    $portalVarValue = PortalVarValue::find()
+                                        ->andWhere([
+                                            'old_id' => $old_portal_snippet_id
+                                        ])
+                                        ->one();
+
                                     $parentBlock = Block::find()
                                         ->andWhere([
-                                            'type' => 'portal_snippet',
-                                            'old_id' => $old_portal_snippet_id
+                                            'portal_var_value_id' => $portalVarValue->id
                                         ])
                                         ->one();
 
@@ -779,10 +808,15 @@ class ParseEngine
                                     $old_product_snippet_id = json_decode($tableRow['layout_element'],
                                         true)[$type][$sectionId][$index . $poradieID][$tempId];
 
+                                    $productVarValue = ProductVarValue::find()
+                                        ->andWhere([
+                                            'old_id' => $old_product_snippet_id
+                                        ])
+                                        ->one();
+
                                     $parentBlock = Block::find()
                                         ->andWhere([
-                                            'type' => 'product_snippet',
-                                            'old_id' => $old_product_snippet_id
+                                            'product_var_value_id' => $productVarValue->id
                                         ])
                                         ->one();
 

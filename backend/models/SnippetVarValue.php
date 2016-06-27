@@ -22,6 +22,7 @@ use Yii;
  * @property string $value
  * @property SnippetVarDropdown $valueDropdown
  * @property ListVar $valueListVar
+ * @property ListVar $list
  * @property Product $valueProduct
  * @property Page $valuePage
  * @property Block $block
@@ -44,11 +45,22 @@ class SnippetVarValue extends CustomModel
     {
         return [
             [['var_id'], 'required'],
-            [['block_id', 'var_id', 'value_page_id', 'value_tag_id',
-            'value_product_var_id', 'value_product_id', 'list_item_id'], 'integer'],
+            [
+                [
+                    'block_id',
+                    'var_id',
+                    'value_page_id',
+                    'value_tag_id',
+                    'value_product_var_id',
+                    'value_product_id',
+                    'list_item_id'
+                ],
+                'integer'
+            ],
             [['value_text'], 'string'],
             [
-                ['var_id', 'block_id', 'list_item_id'], 'unique',
+                ['var_id', 'block_id', 'list_item_id'],
+                'unique',
                 'targetAttribute' => ['var_id', 'block_id', 'list_item_id'],
                 'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.'
             ]
@@ -82,6 +94,11 @@ class SnippetVarValue extends CustomModel
     public function getVar()
     {
         return $this->hasOne(SnippetVar::className(), ['id' => 'var_id']);
+    }
+
+    public function getListItem()
+    {
+        return $this->hasOne(ListItem::className(),['id' => 'list_item_id']);
     }
 
     /**
@@ -121,7 +138,16 @@ class SnippetVarValue extends CustomModel
      */
     public function getValueListVar()
     {
-        return $this->hasOne(ListVar::className(), ['snippet_var_value_id' => 'id']);
+        if (!isset($this->valueListVar)) {
+            $this->valueListVar = $this->hasOne(ListVar::className(), ['snippet_var_value_id' => 'id'])->one();
+        }
+
+        return $this->valueListVar;
+    }
+
+    public function setValueListVar($value)
+    {
+        $this->valueListVar = $value;
     }
 
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
@@ -141,18 +167,20 @@ class SnippetVarValue extends CustomModel
 
             case 'page' :
 
-                if (isset($this->valuePage))
+                if (isset($this->valuePage)) {
                     $value = '$portal->pages->page' . $this->valuePage->id;
-                else
+                } else {
                     $value = 'NULL';
+                }
 
                 break;
 
             case 'product' :
-                if (isset($this->valueProduct))
+                if (isset($this->valueProduct)) {
                     $value = '$' . $this->valueProduct->identifier;
-                else
+                } else {
                     $value = 'NULL';
+                }
 
                 break;
 
@@ -169,44 +197,15 @@ class SnippetVarValue extends CustomModel
                 break;
             default:
 
-                if (isset($this->value_text) && $this->value_text != '')
-                    $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
-                else
-                {
-                    $value = '\''. html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->getDefaultValue($productType)))) . '\'';
+                if (isset($this->value_text) && $this->value_text != '') {
+                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
+                } else {
+                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->var->getDefaultValue($productType)))) . '\'';
                 }
+
         }
 
         return $value;
-    }
-
-    /** Vrati default hodnotu podla typu produktu
-     * @param $productType
-     * @return mixed|string
-     */
-    public function getDefaultValue($productType = null)
-    {
-        if ($productType) {
-            $defaultValue = SnippetVarDefaultValue::find()
-                    ->andWhere([
-                        'snippet_var_id' => $this->var->id,
-                        'product_type_id' => $productType->id
-                    ])
-                    ->one();
-        }
-        if (!isset($defaultValue)) {
-            $defaultValue = SnippetVarDefaultValue::find()
-                    ->andWhere([
-                        'snippet_var_id' => $this->var->id,
-                        'product_type_id' => null
-                    ])
-                    ->one();
-        }
-
-        if ($defaultValue != NULL)
-            return Yii::$app->cacheEngine->normalizeString($defaultValue->value);
-
-        return null;
     }
 
     /** Getter for $typeName property
@@ -217,4 +216,10 @@ class SnippetVarValue extends CustomModel
         return $this->var->type->identifier;
     }
 
+    public function resetAfterUpdate()
+    {
+        if ($this->block) {
+            $this->block->resetAfterUpdate();
+        }
+    }
 }

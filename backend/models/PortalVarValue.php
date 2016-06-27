@@ -12,7 +12,6 @@ use Yii;
  * @property integer $variable_id
  * @property string $value_text
  * @property int $value_page_id
- * @property int value_block_id
  *
  * @property Block $valueBlock
  * @property Page $valuePage
@@ -51,7 +50,6 @@ class PortalVarValue extends CustomModel
             'portal_id' => 'Portal ID',
             'var_id' => 'Var ID',
             'value_text' => 'Value',
-            'value_block' => 'Value Block',
         ];
     }
 
@@ -84,7 +82,7 @@ class PortalVarValue extends CustomModel
      */
     public function getValueBlock()
     {
-        return $this->hasOne(Block::className(), ['id' => 'value_block_id']);
+        return $this->hasOne(Block::className(), ['portal_var_value_id' => 'id']);
     }
 
     public function getValue()

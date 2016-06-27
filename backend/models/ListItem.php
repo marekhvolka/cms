@@ -32,7 +32,13 @@ class ListItem extends CustomModel
         return [
             [['list_id'], 'required'],
             [['id', 'list_id', 'active'], 'integer'],
-            [['list_id'], 'exist', 'skipOnError' => true, 'targetClass' => ListVar::className(), 'targetAttribute' => ['list_id' => 'id']],
+            [
+                ['list_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => ListVar::className(),
+                'targetAttribute' => ['list_id' => 'id']
+            ],
         ];
     }
 
@@ -58,8 +64,9 @@ class ListItem extends CustomModel
 
     public function getSnippetVarValues()
     {
-        if (!isset($this->snippetVarValues))
+        if (!isset($this->snippetVarValues)) {
             $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['list_item_id' => 'id'])->all();
+        }
         return $this->snippetVarValues;
     }
 
@@ -72,15 +79,19 @@ class ListItem extends CustomModel
     {
         $buffer = '(object) array(' . PHP_EOL;
 
-        foreach($this->snippetVarValues as $snippetVarValue)
-        {
+        foreach ($this->snippetVarValues as $snippetVarValue) {
             $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->getValue($productType) . ', ';
         }
 
-        $buffer = substr($buffer, 0, sizeof($buffer)-2);
+        $buffer = substr($buffer, 0, sizeof($buffer) - 2);
 
         $buffer .= ')';
 
         return $buffer;
-   }
+    }
+
+    public function resetAfterUpdate()
+    {
+        $this->list->resetAfterUpdate();
+    }
 }

@@ -58,6 +58,11 @@ class Page extends CustomModel implements ICacheable
     public function init()
     {
         $this->active = 1;
+        $this->sidebar_side = 'right';
+        $this->sidebar_size = 4;
+        $this->sidebar_active = 1;
+        $this->header_active = 1;
+        $this->footer_active = 1;
     }
 
     /**
@@ -98,7 +103,7 @@ class Page extends CustomModel implements ICacheable
                 'integer'
             ],
             [['description'], 'string'],
-            [['last_edit'], 'safe'],
+            [['last_edit', 'breadcrumbs', 'url'], 'safe'],
             [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
             [['title'], 'string', 'max' => 150],
             [
@@ -131,8 +136,8 @@ class Page extends CustomModel implements ICacheable
             'keywords' => 'Keywords',
             'color_scheme' => 'Farebná schéma',
             'sidebar_active' => 'Sidebar',
-            'sidebar_side' => 'Sidebar Side',
-            'sidebar_size' => 'Sidebar Size',
+            'sidebar_side' => 'Pozícia sidebaru',
+            'sidebar_size' => 'Veľkosť sidebaru',
             'footer_active' => 'Footer',
             'header_active' => 'Header',
             'last_edit' => 'Last Edit',

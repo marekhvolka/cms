@@ -78,10 +78,10 @@ class ProductController extends BaseController
                     throw new Exception;
 
                 foreach ($productVarValuesData as $index => $productValueData) {
-                    $model->loadFromData('productProperties', $productValueData, $index, ProductVarValue::className());
+                    $model->loadFromData('productVarValues', $productValueData, $index, ProductVarValue::className());
                 }
 
-                foreach($model->productProperties as $productVarValue) {
+                foreach($model->productVarValues as $productVarValue) {
                     $productVarValue->product_id = $model->id;
                     if (!($productVarValue->validate() && $productVarValue->save()))
                         throw new Exception;
@@ -97,28 +97,32 @@ class ProductController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'allVariables' => ProductVar::getProductVarProperties(),
+                    'allVariables' => ProductVar::find()->all(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'allVariables' => ProductVar::getProductVarProperties(),
+                'allVariables' => ProductVar::find()->all(),
             ]);
         }
     }
 
     /**
      * Action necessary for VarManagerWidget - appending one variable value at the end of the list.
-     * @param Model $varId - id of Var
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
-    public function actionAppendVarValue($varId)
+    public function actionAppendVarValue()
     {
         $varValue = new ProductVarValue();
-        $varValue->var_id = $varId;
+        $varValue->var_id = Yii::$app->request->post('varId');
 
-        return (new VarManagerWidget())->appendVariableValue($varValue);
+        $model = null;
+        $prefix = Yii::$app->request->post('prefix');
+
+        $indexVar = rand(1000, 100000);
+
+        return (new VarManagerWidget())->appendVariableValue($varValue, $prefix, $indexVar, $model);
     }
 
     /**

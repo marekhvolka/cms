@@ -11,7 +11,6 @@ use Yii;
  * @property integer $product_id
  * @property integer $var_id
  * @property string $value_text
- * @property int $value_block_id
  *
  * @property string $value
  * @property Block $valueBlock
@@ -71,5 +70,10 @@ class ProductVarValue extends Variable
     public function getVar()
     {
         return $this->hasOne(ProductVar::className(), ['id' => 'var_id']);
+    }
+
+    public function getValueBlock()
+    {
+        return $this->hasOne(Block::className(), ['product_var_value_id' => 'id']);
     }
 }

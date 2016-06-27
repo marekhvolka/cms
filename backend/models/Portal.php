@@ -5,6 +5,7 @@ namespace backend\models;
 use backend\models\ICacheable;
 use Yii;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "portal".
@@ -87,7 +88,18 @@ class Portal extends CustomModel implements ICacheable
      */
     public function getPages()
     {
-        return $this->hasMany(Page::className(), ['portal_id' => 'id']);
+        if (!isset($this->pages)) {
+            $this->pages = $this->hasMany(Page::className(), ['portal_id' => 'id'])->all();
+
+            ArrayHelper::multisort($this->pages, ['url'], [SORT_ASC]);
+        }
+
+        return $this->pages;
+    }
+
+    public function setPages($value)
+    {
+        $this->pages = $value;
     }
 
     /**
@@ -447,6 +459,6 @@ class Portal extends CustomModel implements ICacheable
             $page->addToCacheBuffer();
 
         foreach($this->portalSnippets as $portalSnippet)
-            $portalSnippet->block->resetAfterUpdate();
+            $portalSnippet->valueBlock->resetAfterUpdate();
     }
 }

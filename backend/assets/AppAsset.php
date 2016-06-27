@@ -24,7 +24,8 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/menu.js',
-        'js/global-search.js'
+        'js/global-search.js',
+        'js/common.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

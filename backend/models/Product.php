@@ -58,8 +58,18 @@ class Product extends CustomModel implements ICacheable
             [['parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name', 'identifier'], 'string', 'max' => 50],
-            [['name', 'language_id'], 'unique', 'targetAttribute' => ['name', 'language_id'], 'message' => 'The combination of Name and Language ID has already been taken.'],
-            [['identifier', 'language_id'], 'unique', 'targetAttribute' => ['identifier', 'language_id'], 'message' => 'The combination of Identifier and Language ID has already been taken.']
+            [
+                ['name', 'language_id'],
+                'unique',
+                'targetAttribute' => ['name', 'language_id'],
+                'message' => 'The combination of Name and Language ID has already been taken.'
+            ],
+            [
+                ['identifier', 'language_id'],
+                'unique',
+                'targetAttribute' => ['identifier', 'language_id'],
+                'message' => 'The combination of Identifier and Language ID has already been taken.'
+            ]
         ];
     }
 
@@ -81,13 +91,14 @@ class Product extends CustomModel implements ICacheable
             'last_edit_user' => 'Naposledy editoval',
         ];
     }
-    
+
     public function beforeSave($insert)
     {
         $userIdentity = Yii::$app->user->identity;
 
-        if (isset($userIdentity))
+        if (isset($userIdentity)) {
             $this->last_edit_user = $userIdentity->id;
+        }
 
         return parent::beforeSave($insert);
     }
@@ -96,15 +107,18 @@ class Product extends CustomModel implements ICacheable
     {
         $this->getProductVarsFile(true); //resetneme hlavny subor
 
-        foreach($this->pages as $page)
+        foreach ($this->pages as $page) {
             $page->addToCacheBuffer();
+        }
 
         /* @var $productSnippet SnippetVarValue */
-        foreach($this->productSnippets as $productSnippet)
+        foreach ($this->productSnippets as $productSnippet) {
             $productSnippet->valueBlock->resetAfterUpdate();
+        }
 
-        foreach($this->snippedVarValues as $snippetVarValue)
-            $snippetVarValue->block->resetAfterUpdate();
+        foreach ($this->snippetVarValues as $snippetVarValue) {
+            $snippetVarValue->resetAfterUpdate();
+        }
     }
 
     /** Vrati cestu k suboru, v ktorom je nacachovany produkt
@@ -121,20 +135,24 @@ class Product extends CustomModel implements ICacheable
             $buffer .= '$tempObject = (object) ';
 
             if (isset($this->parent)) // ak ma produkt rodica
+            {
                 $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
+            }
 
             $buffer .= 'array(' . PHP_EOL;
 
-            foreach($this->getProductVarValues()->all() as $productVarValue)
-                if (!$productVarValue->var->isSnippet())
-                    $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
+            foreach ($this->productProperties as $productVarValue) {
+                $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
+            }
 
             if (isset($this->parent)) // ak ma produkt rodica
+            {
                 $buffer .= ')';
+            }
 
             $buffer .= ');' . PHP_EOL;
 
-            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \''. $this->identifier . '\'); ' . PHP_EOL;
+            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \'' . $this->identifier . '\'); ' . PHP_EOL;
 
             Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
         }
@@ -146,8 +164,9 @@ class Product extends CustomModel implements ICacheable
     {
         $path = $this->language->getProductsCacheDirectory() . $this->identifier . '/';
 
-        if (!file_exists($path))
+        if (!file_exists($path)) {
             mkdir($path, 0777, true);
+        }
 
         return $path;
     }
@@ -157,9 +176,16 @@ class Product extends CustomModel implements ICacheable
      */
     public function getProductVarValues()
     {
-        return $this->hasMany(ProductVarValue::className(), [
-            'product_id' => 'id',
-        ]);
+        if (!isset($this->productVarValues)) {
+            $this->productVarValues = $this->hasMany(ProductVarValue::className(), ['product_id' => 'id'])->all();
+        }
+
+        return $this->productVarValues;
+    }
+
+    public function setProductVarValues($value)
+    {
+        $this->productVarValues = $value;
     }
 
     /**
@@ -171,8 +197,8 @@ class Product extends CustomModel implements ICacheable
 
         $directPages = $this->hasMany(Page::className(), ['product_id' => 'id'])->all();
 
-        foreach($directPages as $page) {
-            $allPages[] =  $page;
+        foreach ($directPages as $page) {
+            $allPages[] = $page;
 
             $childPages = Page::find()->where([
                 'product_id' => null,
@@ -232,9 +258,11 @@ class Product extends CustomModel implements ICacheable
     {
         if (!isset($this->productSnippets)) {
             $this->productSnippets = array();
-            foreach ($this->productVarValues as $index => $productVarValue)
-                if ($productVarValue->var->isSnippet())
+            foreach ($this->productVarValues as $index => $productVarValue) {
+                if ($productVarValue->var->isSnippet()) {
                     $this->productSnippets[$index] = $productVarValue;
+                }
+            }
         }
         return $this->productSnippets;
     }
@@ -251,9 +279,11 @@ class Product extends CustomModel implements ICacheable
     {
         if (!isset($this->productProperties)) {
             $this->productProperties = array();
-            foreach ($this->productVarValues as $index => $productVarValue)
-                if (!$productVarValue->var->isSnippet())
+            foreach ($this->productVarValues as $index => $productVarValue) {
+                if (!$productVarValue->var->isSnippet()) {
                     $this->productProperties[$index] = $productVarValue;
+                }
+            }
         }
         return $this->productProperties;
     }
@@ -304,9 +334,10 @@ class Product extends CustomModel implements ICacheable
 
             $buffer .= 'include \'' . $this->getProductVarsFile() . '\';' . PHP_EOL;
 
-            foreach($this->productSnippets as $productVarValue)
+            foreach ($this->productSnippets as $productVarValue) {
                 $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier .
                     ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
+            }
 
             $buffer .= '?>';
 

@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\PortalVar */
 
@@ -12,7 +10,6 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="portal-var-update">
 
-    
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

@@ -62,6 +62,9 @@ class GlobalSearch
             ['like', 'identifier', $searchTerm],
             ['like', 'title', $searchTerm],
             ])
+            ->andWhere([
+                'portal_id' => Yii::$app->session->get('portal_id')
+            ])
             ->limit(10)->all();
 
         foreach ($pages as $page) {

@@ -10,7 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $snippet_var_id
  * @property integer $product_type_id
- * @property string $value
+ * @property string $value_text
  * @property integer $value_dropdown_id
  *
  * @property SnippetVarDropdown $valueDropdown
@@ -35,10 +35,27 @@ class SnippetVarDefaultValue extends \yii\db\ActiveRecord
         return [
             [['snippet_var_id'], 'required'],
             [['snippet_var_id', 'product_type_id'], 'integer'],
-            [['value'], 'string', 'max' => 255],
-            [['snippet_var_id', 'product_type_id'], 'unique', 'targetAttribute' => ['snippet_var_id', 'product_type_id'], 'message' => 'The combination of Snippet Var ID and Product Type ID has already been taken.'],
-            [['product_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductType::className(), 'targetAttribute' => ['product_type_id' => 'id']],
-            [['snippet_var_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['snippet_var_id' => 'id']],
+            [['value_text'], 'string', 'max' => 255],
+            [
+                ['snippet_var_id', 'product_type_id'],
+                'unique',
+                'targetAttribute' => ['snippet_var_id', 'product_type_id'],
+                'message' => 'The combination of Snippet Var ID and Product Type ID has already been taken.'
+            ],
+            [
+                ['product_type_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => ProductType::className(),
+                'targetAttribute' => ['product_type_id' => 'id']
+            ],
+            [
+                ['snippet_var_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => SnippetVar::className(),
+                'targetAttribute' => ['snippet_var_id' => 'id']
+            ],
         ];
     }
 
@@ -48,10 +65,10 @@ class SnippetVarDefaultValue extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'              => 'ID',
-            'snippet_var_id'  => 'Snippet Var ID',
+            'id' => 'ID',
+            'snippet_var_id' => 'Snippet Var ID',
             'product_type_id' => 'Product Type ID',
-            'value'           => 'Predvolená hodnota',
+            'value_text' => 'Predvolená hodnota',
         ];
     }
 
@@ -77,5 +94,16 @@ class SnippetVarDefaultValue extends \yii\db\ActiveRecord
     public function getValueDropdown()
     {
         return $this->hasOne(SnippetVarDropdown::className(), ['id' => 'value_dropdown_id']);
+    }
+
+    public function getValue()
+    {
+        if ($this->snippetVar->type->identifier == 'dropdown') {
+            if ($this->valueDropdown != null)
+                return $this->valueDropdown->value;
+            else return '';
+        } else {
+            return $this->value_text;
+        }
     }
 }

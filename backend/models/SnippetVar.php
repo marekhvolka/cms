@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  * @property SnippetVarDropdown[] $dropdownValues
  * @property Snippet $snippet
  */
-class SnippetVar extends CustomModel
+class SnippetVar extends Variable
 {
     /**
      * @inheritdoc
@@ -156,9 +156,10 @@ class SnippetVar extends CustomModel
     }
 
     /** Metoda, ktora vrati vseobecnu defaultnu hodnotu (nie pre konkretny typ produktov)
+     * @param null $productType
      * @return string
      */
-    public function getDefaultValue()
+    public function getDefaultValueAsText($productType = null)
     {
         $cacheEngine = Yii::$app->cacheEngine;
 
@@ -182,12 +183,7 @@ class SnippetVar extends CustomModel
 
             case 'dropdown' :
 
-                $productTypeDefaultValue = SnippetVarDefaultValue::find()
-                    ->andWhere([
-                        'snippet_var_id'  => $this->id,
-                        'product_type_id' => null
-                    ])
-                    ->one();
+                $productTypeDefaultValue = $this->getDefaultValue($productType);
 
                 if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown))
                     $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
@@ -195,17 +191,37 @@ class SnippetVar extends CustomModel
                 break;
             default:
 
-                $productTypeDefaultValue = SnippetVarDefaultValue::find()
-                    ->andWhere([
-                        'snippet_var_id'  => $this->id,
-                        'product_type_id' => null
-                    ])
-                    ->one();
+                $productTypeDefaultValue = $this->getDefaultValue($productType);
 
-                if (isset($productTypeDefaultValue))
-                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value) . '\'';
+                $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue) . '\'';
         }
 
         return $value;
+    }
+
+    /** Vrati default hodnotu podla typu produktu
+     * @param $productType
+     * @return mixed|string
+     */
+    public function getDefaultValue($productType = null)
+    {
+        if ($productType) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->id,
+                    'product_type_id' => $productType->id
+                ])
+                ->one();
+        }
+        if (!isset($defaultValue)) {
+            $defaultValue = SnippetVarDefaultValue::find()
+                ->andWhere([
+                    'snippet_var_id' => $this->id,
+                    'product_type_id' => null
+                ])
+                ->one();
+        }
+
+        return $defaultValue->value;
     }
 }

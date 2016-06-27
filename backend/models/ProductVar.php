@@ -41,14 +41,4 @@ class ProductVar extends Variable
             ['name' => 'Názov premennej']
         ]);
     }
-
-    public static function getProductVarProperties()
-    {
-        return ProductVar::find()->andWhere('type_id <> 16')->all();
-    }
-
-    public static function getProductVarSnippets()
-    {
-        return ProductVar::find()->andWhere('type_id = 16')->all();
-    }
 }

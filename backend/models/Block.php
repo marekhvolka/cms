@@ -15,10 +15,11 @@ use yii\helpers\ArrayHelper;
  * @property string $product_id
  * @property integer $portal_id
  * @property integer $column_id
+ * @property integer $product_var_value_id
+ * @property integer $portal_var_value_id
  * @property integer $parent_id
  * @property integer $order
  * @property string $data
- * @property string $compiled_data
  * @property string $type
  * @property boolean $active
  *
@@ -51,8 +52,8 @@ class Block extends CustomModel implements ICacheable
     public function rules()
     {
         return [
-            [['snippet_code_id', 'column_id', 'parent_id', 'order'], 'integer'],
-            [['data', 'type', 'compiled_data'], 'string'],
+            [['snippet_code_id', 'column_id', 'parent_id', 'order', 'product_var_value_id', 'portal_var_value_id'], 'integer'],
+            [['data', 'type'], 'string'],
             [['type'], 'required'],
             [
                 ['column_id'],
@@ -147,7 +148,7 @@ class Block extends CustomModel implements ICacheable
      */
     public function getPortalVarValue()
     {
-        return $this->hasOne(PortalVarValue::className(), ['value_block_id' => 'id']);
+        return $this->hasOne(PortalVarValue::className(), ['id' => 'portal_var_value_id']);
     }
 
     /**
@@ -155,7 +156,7 @@ class Block extends CustomModel implements ICacheable
      */
     public function getProductVarValue()
     {
-        return $this->hasOne(ProductVarValue::className(), ['value_block_id' => 'id']);
+        return $this->hasOne(ProductVarValue::className(), ['id' => 'product_var_value_id']);
     }
 
     /**
@@ -297,7 +298,7 @@ class Block extends CustomModel implements ICacheable
             $productType = $this->column->row->section->page->product->productType;
 
             foreach ($this->snippetVarValues as $snippetVarValue) {
-                $defaultValue = '\'' . $snippetVarValue->getDefaultValue($productType) . '\'';
+                $defaultValue = $snippetVarValue->var->getDefaultValueAsText($productType);
 
                 if (isset($defaultValue)) {
                     $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;

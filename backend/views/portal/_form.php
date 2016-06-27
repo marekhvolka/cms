@@ -55,7 +55,8 @@ use backend\components\VarManager\VarManagerWidget;
     <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
         'assignedVariableValues' => $model->portalVarValues,
-        'appendVarValueUrl' => Url::to(['portal/append-var-value'])
+        'appendVarValueUrl' => Url::to(['portal/append-var-value']),
+        'model' => $model
     ])?>
 
     <div class="navbar-fixed-bottom">

@@ -114,12 +114,4 @@ abstract class Variable extends CustomModel
 
         return $value;
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueBlock()
-    {
-        return $this->hasOne(Block::className(), ['id' => 'value_block_id']);
-    }
 }

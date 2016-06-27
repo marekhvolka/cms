@@ -101,28 +101,38 @@ class PortalController extends BaseController
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
-                    'allVariables' => PortalVar::getPortalVarProperties(),
+                    'allVariables' => PortalVar::find()->all(),
                 ]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'allVariables' => PortalVar::getPortalVarProperties()
+                'allVariables' => PortalVar::find()->all()
             ]);
         }
     }
 
     /**
      * Action necessary for VarManagerWidget - appending one variable value at the end of the list.
-     * @param int $varId - id of Var
      * @return string - call of VarManagerWidget method for rendering view of VarValue.
      */
-    public function actionAppendVarValue($varId)
+    public function actionAppendVarValue()
     {
         $varValue = new PortalVarValue();
-        $varValue->var_id = $varId;
+        $varValue->var_id = Yii::$app->request->post('varId');
 
-        return (new VarManagerWidget())->appendVariableValue($varValue);
+        $modelId = Yii::$app->request->post('modelId');
+
+        $model = null;
+
+        if (isset($modelId))
+            $model = Portal::findOne($modelId);
+
+        $prefix = Yii::$app->request->post('prefix');
+
+        $indexVar = rand(1000, 100000);
+
+        return (new VarManagerWidget())->appendVariableValue($varValue, $prefix, $indexVar, $model);
     }
 
     /**

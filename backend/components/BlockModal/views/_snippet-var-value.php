@@ -1,5 +1,6 @@
 <?php
 use backend\models\Page;
+use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Tag;
 use kartik\select2\Select2;
@@ -13,11 +14,12 @@ use backend\models\SnippetVarValue;
 /* @var $model backend\models\SnippetVarValue */
 /* @var $productType backend\models\ProductType */
 /* @var $prefix string */
+/* @var $defaultValue \backend\models\SnippetVarDefaultValue */
 
 ?>
 
 <?php
-$defaultValue = $model->getDefaultValue($productType);
+$defaultValue = $model->var->getDefaultValue($productType);
 
 if ($model->typeName != 'list') : ?>
     <div class="form-group">
@@ -30,7 +32,7 @@ if ($model->typeName != 'list') : ?>
 
                     <input type="text" class="form-control" id="<?= $model->id ?>"
                            name="<?= $prefix . '[value_text]' ?>"
-                           placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"
+                           placeholder="<?= htmlentities($defaultValue->value_text) ?>"
                            value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
                     <?php
                     break;
@@ -38,7 +40,7 @@ if ($model->typeName != 'list') : ?>
 
                     <textarea class="form-control" id="<?= $model->id ?>" name="<?= $prefix . '[value_text]' ?>"
                               rows="3"
-                              placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text,
+                              placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
 
 
@@ -49,7 +51,7 @@ if ($model->typeName != 'list') : ?>
                     <div class="input-group">
                         <input type="color" class="form-control" id="<?= $model->id ?>" name=""
                                value="<?= $model->value_text ?>"
-                               placeholder="<?= $model->getDefaultValue($productType) ?>">
+                               placeholder="<?= $defaultValue->value_text ?>">
                         <span class="input-group-addon"><i></i></span>
                     </div>
 
@@ -59,7 +61,7 @@ if ($model->typeName != 'list') : ?>
                 case 'editor' : ?>
 
                     <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3"
-                              placeholder="<?= htmlentities($model->getDefaultValue($productType)) ?>"><?= htmlspecialchars($model->value_text,
+                              placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
 
 
@@ -68,7 +70,7 @@ if ($model->typeName != 'list') : ?>
                 case 'product' : ?>
 
                     <?= Html::activeDropDownList($model, 'value_product_id',
-                        ArrayHelper::map(Product::find()->all(), 'id', 'name'),
+                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id', 'name'),
                         [
                             'name' => $prefix . '[value_product_id]',
                             'class' => 'form-control',
@@ -80,7 +82,7 @@ if ($model->typeName != 'list') : ?>
                 case 'page' : ?>
 
                     <?= Html::activeDropDownList($model, 'value_page_id',
-                        ArrayHelper::map(Page::find()->all(), 'id', 'breadcrumbs'),
+                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',
                             'class' => 'form-control',
@@ -125,7 +127,7 @@ if ($model->typeName != 'list') : ?>
             } ?>
             <?php if (!empty($defaultValue)) : ?>
                 <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je
-                    <strong><?= htmlentities($model->getDefaultValue($productType)) ?></strong></p>
+                    <strong><?= htmlentities($defaultValue->value_text) ?></strong></p>
             <?php endif; ?>
         </div>
         <div class="clearfix"></div>

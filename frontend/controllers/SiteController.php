@@ -82,7 +82,7 @@ class SiteController extends Controller
             }
         }
 
-        $identifiers = explode("/", $url);
+        $identifiers = explode("/", strtolower($url));
 
         $pages = Page::find()
             ->where([

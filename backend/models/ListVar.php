@@ -51,9 +51,13 @@ class ListVar extends CustomModel
         $listItem->active = true;
         $listItem->getSnippetVarValues();
 
-        foreach($this->snippetVarValue->var->children as $childVar) {
+        foreach ($this->snippetVarValue->var->children as $childVar) {
             $childVarValue = new SnippetVarValue();
             $childVarValue->var_id = $childVar->id;
+
+            if ($childVar->isSnippet()) {
+                $childVarValue->valueListVar = new ListVar();
+            }
 
             $listItem->snippetVarValues[] = $childVarValue;
         }
@@ -66,10 +70,11 @@ class ListVar extends CustomModel
      */
     public function getListItems()
     {
-        if (!isset($this->listItems))
+        if (!isset($this->listItems)) {
             $this->listItems = $this->hasMany(ListItem::className(), ['list_id' => 'id'])
                 ->orderBy(['order' => SORT_ASC])
                 ->all();
+        }
 
         return $this->listItems;
     }
@@ -92,10 +97,8 @@ class ListVar extends CustomModel
         $buffer = ' array(' . PHP_EOL;
 
         $index = 0;
-        foreach($this->listItems as $listItem)
-        {
-            if ($listItem->active)
-            {
+        foreach ($this->listItems as $listItem) {
+            if ($listItem->active) {
                 $buffer .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
             }
         }
@@ -103,5 +106,12 @@ class ListVar extends CustomModel
         $buffer .= ')';
 
         return $buffer;
+    }
+
+    public function resetAfterUpdate()
+    {
+        if ($this->snippetVarValue) {
+            $this->snippetVarValue->resetAfterUpdate();
+        }
     }
 }

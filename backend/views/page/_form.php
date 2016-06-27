@@ -35,14 +35,14 @@ use kartik\switchinput\SwitchInput;
 
             <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
-            <?=IdentifierGenerator::widget([
+            <?= IdentifierGenerator::widget([
                 'idTextFrom' => 'page-name',
                 'idTextTo' => 'page-identifier',
                 'delimiter' => '-',
-            ])?>
+            ]) ?>
 
             <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map(Page::find()->all(), 'id', 'name'),
+                'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id', 'name'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber rodiča ...'],
                 'pluginOptions' => [
@@ -51,7 +51,7 @@ use kartik\switchinput\SwitchInput;
             ]); ?>
 
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
-            'type' => SwitchInput::CHECKBOX
+                'type' => SwitchInput::CHECKBOX
             ]) ?>
 
             <?= $form->field($model, 'in_menu')->widget(SwitchInput::classname(), [
@@ -61,11 +61,12 @@ use kartik\switchinput\SwitchInput;
     </div>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Product::find()->all(), 'id', 'name'),
+        'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id',
+            'name'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber produktu ...'],
         'pluginOptions' => [
-        'allowClear' => true
+            'allowClear' => true
         ],
     ]); ?>
 
@@ -101,7 +102,7 @@ use kartik\switchinput\SwitchInput;
             'type' => 'header',
             'controllerUrl' => Url::to(['/page'])
         ]
-    )?>
+    ) ?>
 
     <h3 class="page-header">Hlavný obsah</h3>
 
@@ -112,7 +113,7 @@ use kartik\switchinput\SwitchInput;
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false
         ]
-    )?>
+    ) ?>
 
     <h3 class="page-header">Sidebar</h3>
 
@@ -124,9 +125,18 @@ use kartik\switchinput\SwitchInput;
         ]
     ]) ?>
 
-    <?= $form->field($model, 'sidebar_side')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'sidebar_side')->radioList([
+        'left' => 'Vľavo',
+        'right' => 'Vpravo',
+    ]) ?>
 
-    <?= $form->field($model, 'sidebar_size')->textInput() ?>
+    <?= $form->field($model, 'sidebar_size')->radioList([
+        '4' => '8:4',
+        '5' => '7:5',
+        '6' => '6:6',
+        '7' => '5:7',
+        '8' => '4:8',
+    ]) ?>
 
     <?= LayoutWidget::widget([
             'sections' => $model->sidebarSections,
@@ -135,7 +145,7 @@ use kartik\switchinput\SwitchInput;
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false
         ]
-    )?>
+    ) ?>
 
     <h3 class="page-header">Patička stránky</h3>
 
@@ -149,7 +159,7 @@ use kartik\switchinput\SwitchInput;
             'type' => 'footer',
             'controllerUrl' => Url::to(['/page'])
         ]
-    )?>
+    ) ?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">
@@ -171,5 +181,4 @@ use kartik\switchinput\SwitchInput;
             </div>
         </div>
     </div>
-
 </div>

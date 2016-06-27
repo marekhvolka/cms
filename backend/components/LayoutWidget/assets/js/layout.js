@@ -175,7 +175,7 @@ function attachHideModalEvent(hideButton) {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
 
-        modalWindow.parent().empty();
+        //modalWindow.parent().empty();
     });
 }
 
