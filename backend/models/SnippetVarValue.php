@@ -15,20 +15,19 @@ use Yii;
  * @property int $value_tag_id
  * @property int $value_product_var_id
  * @property int $block_id
- * @property int $value_list_id
  * @property int $value_dropdown_id
  * @property int $list_item_id
  *
  * @property string $value
  * @property SnippetVarDropdown $valueDropdown
- * @property ListVar $valueListVar
- * @property ListVar $list
+ * @property ListItem[] $listItems
+ * @property ListItem $listItem
  * @property Product $valueProduct
  * @property Page $valuePage
  * @property Block $block
  * @property SnippetVar $var
  */
-class SnippetVarValue extends CustomModel
+class SnippetVarValue extends CustomModel implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -98,7 +97,7 @@ class SnippetVarValue extends CustomModel
 
     public function getListItem()
     {
-        return $this->hasOne(ListItem::className(),['id' => 'list_item_id']);
+        return $this->hasOne(ListItem::className(), ['id' => 'list_item_id']);
     }
 
     /**
@@ -136,18 +135,20 @@ class SnippetVarValue extends CustomModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getValueListVar()
+    public function getListItems()
     {
-        if (!isset($this->valueListVar)) {
-            $this->valueListVar = $this->hasOne(ListVar::className(), ['snippet_var_value_id' => 'id'])->one();
+        if (!isset($this->listItems)) {
+            $this->listItems = $this->hasMany(ListItem::className(), ['list_id' => 'id'])
+                ->orderBy(['order' => SORT_ASC])
+                ->all();
         }
 
-        return $this->valueListVar;
+        return $this->listItems;
     }
 
-    public function setValueListVar($value)
+    public function setListItems($value)
     {
-        $this->valueListVar = $value;
+        $this->listItems = $value;
     }
 
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
@@ -161,7 +162,16 @@ class SnippetVarValue extends CustomModel
         switch ($this->var->type->identifier) {
             case 'list' :
 
-                $value = $this->valueListVar->value;
+                $value = ' array(' . PHP_EOL;
+
+                $index = 0;
+                foreach ($this->listItems as $listItem) {
+                    if ($listItem->active) {
+                        $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
+                    }
+                }
+
+                $value .= ')';
 
                 break;
 
@@ -186,7 +196,7 @@ class SnippetVarValue extends CustomModel
 
             case 'product_tag' :
 
-                $value = '$' . $this->valueTag->identifier;
+                $value = '$tags->' . $this->valueTag->identifier;
 
                 //TODO: dokoncit
                 break;
@@ -200,7 +210,7 @@ class SnippetVarValue extends CustomModel
                 if (isset($this->value_text) && $this->value_text != '') {
                     $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
                 } else {
-                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->var->getDefaultValue($productType)))) . '\'';
+                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->var->getDefaultValue($productType)->value))) . '\'';
                 }
 
         }
@@ -221,5 +231,15 @@ class SnippetVarValue extends CustomModel
         if ($this->block) {
             $this->block->resetAfterUpdate();
         }
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->listItems as $listItem) {
+            $listItem->prepareToDuplicate();
+        }
+
+        $this->id = null;
+        $this->block_id = null;
     }
 }

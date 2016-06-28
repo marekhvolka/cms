@@ -18,6 +18,7 @@ class LayoutWidget extends Widget
     public $type;
     public $formId;
     public $prefix;
+    public $productType;
 
     public $allowAddingSection = true;
 
@@ -36,7 +37,8 @@ class LayoutWidget extends Widget
             'type' => $this->type,
             'formId' => $this->formId,
             'prefix' => $this->prefix,
-            'allowAddingSection' => $this->allowAddingSection
+            'allowAddingSection' => $this->allowAddingSection,
+            'productType' => $this->productType
         ]);
     }
 

@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
  * @property Page $page
  * @property Portal $portal
  */
-class Section extends CustomModel
+class Section extends CustomModel implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -153,5 +153,16 @@ class Section extends CustomModel
         $result .= $this->getPostfix();
 
         return $result;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach($this->rows as $row) {
+            $row->prepareToDuplicate();
+        }
+
+        $this->id = null;
+        unset($this->page_id);
+        unset($this->portal_id);
     }
 }

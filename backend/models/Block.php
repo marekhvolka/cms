@@ -2,10 +2,7 @@
 
 namespace backend\models;
 
-use Exception;
 use Yii;
-use yii\db\Query;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_value".
@@ -36,8 +33,10 @@ use yii\helpers\ArrayHelper;
  * @property ProductVarValue $productVarValue
  * @property SnippetCode $snippetCodes
  */
-class Block extends CustomModel implements ICacheable
+class Block extends CustomModel implements ICacheable, IDuplicable
 {
+    public $changed = false;
+
     /**
      * @inheritdoc
      */
@@ -52,7 +51,10 @@ class Block extends CustomModel implements ICacheable
     public function rules()
     {
         return [
-            [['snippet_code_id', 'column_id', 'parent_id', 'order', 'product_var_value_id', 'portal_var_value_id'], 'integer'],
+            [
+                ['snippet_code_id', 'column_id', 'parent_id', 'order', 'product_var_value_id', 'portal_var_value_id'],
+                'integer'
+            ],
             [['data', 'type'], 'string'],
             [['type'], 'required'],
             [
@@ -197,8 +199,7 @@ class Block extends CustomModel implements ICacheable
                     $name = $this->snippetCode->snippet->name;
                 } else if ($this->parent->snippetCode) {
                     $name = $this->parent->snippetCode->snippet->name;
-                }
-                else {
+                } else {
                     $name = 'Zmazaný kód snippetu';
                 }
                 break;
@@ -232,25 +233,18 @@ class Block extends CustomModel implements ICacheable
             $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
         }
 
-        //TODO: simplify
         switch ($this->type) {
             case 'snippet' :
-
-                $blockData = $this->prepareSnippetData($reload);
 
                 $path .= 'snippet_cache' . $this->id . '';
 
                 break;
             case 'portal_snippet' :
 
-                $blockData = $this->prepareSnippetData($reload);
-
                 $path .= 'portal_snippet_cache' . $this->id . '';
 
                 break;
             case 'product_snippet' :
-
-                $blockData = $this->prepareSnippetData($reload);
 
                 $path .= 'product_snippet_cache' . $this->id . '';
 
@@ -258,13 +252,18 @@ class Block extends CustomModel implements ICacheable
             default:
 
                 $path .= 'block_cache' . $this->id . '';
-
-                $blockData = $this->data;
         }
 
-        $buffer .= $blockData;
 
         if (!file_exists($path . '.php') || $reload) {
+
+            if ($this->isSnippet()) {
+                $blockData = $this->prepareSnippetData();
+            } else {
+                $blockData = $this->data;
+            }
+            $buffer .= $blockData;
+
             Yii::$app->cacheEngine->writeToFile($path . '.latte', 'w+', $buffer);
             $result = stripcslashes(html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte',
                 array())));
@@ -298,7 +297,7 @@ class Block extends CustomModel implements ICacheable
             $productType = $this->column->row->section->page->product->productType;
 
             foreach ($this->snippetVarValues as $snippetVarValue) {
-                $defaultValue = $snippetVarValue->var->getDefaultValueAsText($productType);
+                $defaultValue = $snippetVarValue->var->getDefaultValueAsString($productType);
 
                 if (isset($defaultValue)) {
                     $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
@@ -356,5 +355,20 @@ class Block extends CustomModel implements ICacheable
                 $childBlock->resetAfterUpdate();
             }
         }
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->snippetVarValues as $snippetVarValue) {
+            $snippetVarValue->prepareToDuplicate();
+        }
+
+        $this->id = null;
+        $this->column_id = null;
+    }
+
+    public function isSnippet()
+    {
+        return $this->type == 'snippet' || $this->type == 'portal_snippet' || $this->type == 'product_snippet';
     }
 }

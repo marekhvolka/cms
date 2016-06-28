@@ -13,15 +13,14 @@ use yii\helpers\BaseHtml;
 /* @var $indexRow int */
 /* @var $indexColumn int */
 /* @var $prefix string */
+/* @var $productType \backend\models\ProductType */
 
 ?>
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[order]", $model->order, ['class' => 'order']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
@@ -53,7 +52,8 @@ use yii\helpers\BaseHtml;
         <?php foreach ($model->blocks as $indexBlock => $block) : ?>
             <?= $this->render('_block', [
                 'model' => $block,
-                'prefix' => $prefix . "[Block][$indexBlock]"
+                'prefix' => $prefix . "[Block][$indexBlock]",
+                'productType' => $productType
             ]); ?>
         <?php endforeach; ?>
     </div>

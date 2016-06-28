@@ -36,6 +36,7 @@ return [
             ['title' => 'Administrácia krajín', 'controller' => 'language', 'action' => 'index'],
             ['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
             ['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],
+            ['title' => 'Presmerovania', 'controller' => 'redirect', 'action' => 'index'],
         ],
     ],
     ['icon' => 'exclamation-triangle', 'title' => 'Hlásenia', 'controller' => 'system-exception', 'action' => 'index']

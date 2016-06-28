@@ -1,121 +1,119 @@
-// CODE MANAGEMENT (ALTERNATIVES)
+var appendUrl = {
+    code: controllerUrl + '/' + 'append-code',
+    snippetVar: controllerUrl + '/' + 'append-var',
+    listBox: controllerUrl + '/' + 'append-list-box',
+    defaultValue: controllerUrl + '/' + 'append-default-value'
+};
 
-function attachAddCodeEvent(addButton) {
-    addButton.click(function () {
-        $.get(snippetVarParams.appendCodeUrl, function (data) {
-            var row = $('<li></li>');
-            var row = row.appendTo($('.snippet-codes'));
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
-            attachAddCodeEvent(appendedDiv.find('.btn-add-snippet-code'));
-            attachRemoveCodeEvent(appendedDiv.find('.btn-remove-snippet-code'));
-        });
-    });
-}
+var listTypeId = 5;
 
-function attachRemoveCodeEvent(removeButton) {
-    removeButton.click(function () {
-        if ($('.snippet-code').length <= 1) {
-            return;
-        }
-        $(this).parents('li').remove();
-    });
-}
+var body = $("body");
 
-attachAddCodeEvent($('.btn-add-snippet-code'));
-attachRemoveCodeEvent($('.btn-remove-snippet-code'));
-
-// VARIABLES MANAGEMENT
-
-function attachAddVarEvent(addButton, varWrapper, parent) {
-    // Adding new variable.
-    addButton.click(function () {
-        var url = snippetVarParams.appendVarUrl;
-        if (parent) {
-            var parentId = parent.find('.variable-id').val();
-        }
-
+body.on(
+    'click', '.btn-add-snippet-code', function ()
+    {
         var postData = {
-            id : parentId,
-            prefix : $(this).data('prefix')
+            prefix: $(this).data('prefix')
         };
 
-        $.post(url, postData, function (data) {
-            var row = $('<li></li>');
-            row = row.appendTo(varWrapper);
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
-            attachRemoveVarEvent(appendedDiv.find('.btn-remove-snippet-var'));
-            attachSelectToListChangeEvent(appendedDiv);
-        });
-    });
-}
+        $.post(
+            appendUrl.code, postData, function (data)
+            {
+                $('.snippet-codes').append($(data));
+            }
+        );
+    }
+);
 
-function attachRemoveVarEvent(removeButton) {
-    removeButton.click(function () {
-        $(this).parents('li').first().remove();
-    });
-}
+body.on(
+    'click', '.btn-remove-snippet-code', function ()
+    {
+        $(this).parents('.snippet-code').remove();
+    }
+);
 
-attachRemoveVarEvent($('.btn-remove-snippet-var'));
-attachAddVarEvent($('.btn-add-snippet-var'), $('.snippet-vars'), null);
+body.on(
+    'click', '.btn-add-snippet-var', function ()
+    {
+        var url = appendUrl.snippetVar;
 
-// VARIABLE TYPE MANAGEMENT
+        var postData = {
+            prefix: $(this).data('prefix')
+        };
 
-// Attachment event for changing variable type to list.
-function attachSelectToListChangeEvent(variable) {
-    var select = variable.find('select').first();
+        var self = this;
 
-    select.change(function () {
-        if ($(this).val() == snippetVarParams.listId) {        // If selected type is List.
+        $.post(
+            url, postData, function (data)
+            {
+                $(self).parents('.snippet-vars').first().find('.snippet-vars-container').first().append($(data));
+            }
+        );
+    }
+);
+
+body.on(
+    'click', '.btn-remove-snippet-var', function ()
+    {
+        $(this).parents('.snippet-var').first().remove();
+    }
+);
+
+body.on(
+    'change', '.select-var-type', function ()
+    {
+        if ($(this).val() == listTypeId)
+        {        // If selected type is List.
 
             var postData = {
-                prefix : $(this).data('prefix')
+                prefix: $(this).data('prefix')
             };
 
-            $.post(snippetVarParams.appendChildVarBox, postData, function (data) {
-                var varBodyWrapper = variable.find('.var-body');
-                var appended = $(data).appendTo(varBodyWrapper);
-                attachAddVarEvent(appended.find('.btn-add-list-item-var'), varBodyWrapper.find('.snippet-vars'), variable);
-            });
-        } else {
-            variable.find('.child-var-box').first().remove();
+            var self = this;
+
+            $.post(
+                appendUrl.listBox, postData, function (data)
+                {
+                    var listBoxContainer = $(self).parents('.var-body').first().find('.list-box-container');
+                    listBoxContainer.append($(data));
+                }
+            );
         }
-    });
-}
-
-$(".snippet-var").each(function () {
-    attachSelectToListChangeEvent($(this));
-});
-
-// VARIABLE DEFAULT VALUE MANAGEMENT
-
-function attachAddDefaultValueEvent(addButton, varWrapper, parent) {
-    // Adding new variable.
-    addButton.click(function () {
-        var _this = $(this),
-            url   = snippetVarParams.appendDefaultValueUrl;
-        if (parent) {
-            var parentId = parent.find('.variable-id').val();
-            url += '&id=' + parentId;
+        else
+        {
+            $(this).parents('.var-body').first().find('.list-box-container').empty();
         }
+    }
+);
 
-        $.get(url, function (data) {
-            var row = $('<li></li>');
-            var row = row.appendTo(_this.parents(varWrapper).first());
-            var appendedDiv = $(data);
-            $(row).append(appendedDiv);
-            attachRemoveVarEvent(appendedDiv.find('.btn-remove-snippet-default-value'));
-            attachAddDefaultValueEvent(appendedDiv.find('.btn-add-snippet-default-value'), '.snippet-var-default-values', null);
-        });
-    });
-}
-
-function attachRemoveDefaultValueEvent(removeButton) {
-    removeButton.click(function () {
+body.on(
+    'click', '.btn-remove-snippet-default-value', function ()
+    {
         $(this).parents('li').first().remove();
-    });
-}
+    }
+);
 
-attachRemoveDefaultValueEvent($('.btn-remove-snippet-default-value'));
-attachAddDefaultValueEvent($('.btn-add-snippet-default-value'), '.snippet-var-default-values', null);
+body.on(
+    'click', '.btn-add-snippet-default-value', function ()
+    {
+        var _this = $(this);
+
+        var postData = {};
+
+        if (parent)
+        {
+            postData.id = parent.find('.variable-id').val();
+            ;
+        }
+
+        $.post(
+            appendUrl.defaultValue, function (data)
+            {
+                var row = $('<li></li>');
+                var row = row.appendTo(_this.parents(varWrapper).first());
+                var appendedDiv = $(data);
+                $(row).append(appendedDiv);
+            }
+        );
+    }
+);

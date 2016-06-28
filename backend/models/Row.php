@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property Column[] $columns
  * @property Section $section
  */
-class Row extends CustomModel
+class Row extends CustomModel implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -98,5 +98,15 @@ class Row extends CustomModel
         $result .= $this->getPostfix();
 
         return $result;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach($this->columns as $column) {
+            $column->prepareToDuplicate();
+        }
+
+        unset($this->id);
+        unset($this->section_id);
     }
 }

@@ -101,7 +101,7 @@ class Tag extends \yii\db\ActiveRecord
         $buffer .= '\'label\' => \'' . Yii::$app->cacheEngine->normalizeString($this->label) . '\', ' . PHP_EOL;
         $buffer .= '\'id\' => \'' . $this->identifier . '\', ' . PHP_EOL;
 
-        $buffer .= ')' . PHP_EOL;
+        $buffer .= ')';
 
         return $buffer;
     }

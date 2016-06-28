@@ -22,7 +22,8 @@ use yii\helpers\Url;
         'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
         'type' => Yii::$app->request->get('type'),
-        'prefix' => 'section'
+        'prefix' => 'section',
+        'productType' => null
     ]
 )?>
 

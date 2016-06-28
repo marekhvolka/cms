@@ -98,12 +98,10 @@ class SnippetVarDefaultValue extends \yii\db\ActiveRecord
 
     public function getValue()
     {
-        if ($this->snippetVar->type->identifier == 'dropdown') {
-            if ($this->valueDropdown != null)
-                return $this->valueDropdown->value;
-            else return '';
+        if ($this->valueDropdown != null) {
+            return $this->valueDropdown->value;
         } else {
-            return $this->value_text;
+            return '';
         }
     }
 }

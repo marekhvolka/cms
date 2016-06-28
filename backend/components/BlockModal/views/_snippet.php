@@ -1,6 +1,7 @@
 <?php
 /* @var $model backend\models\Block */
-use kartik\select2\Select2;
+use backend\models\Portal;
+use backend\models\Tag;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 
@@ -35,11 +36,23 @@ use yii\helpers\ArrayHelper;
 
     <div class="modal-body">
         <?php
+
+        $globalObjects = array();
+
+        $globalObjects['products'] = ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products,
+            'id', 'name');
+
+        $globalObjects['pages'] = ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id',
+            'breadcrumbs');
+
+        $globalObjects['productTags'] = ArrayHelper::map(Tag::find()->all(), 'id', 'label');
+
         foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'model' => $snippetVarValue,
                 'productType' => $productType,
-                'prefix' => $prefix . "[SnippetVarValue][$indexVar]"
+                'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
+                'globalObjects' => $globalObjects
             ]);
         }
         ?>

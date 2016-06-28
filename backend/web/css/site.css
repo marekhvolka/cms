@@ -121,7 +121,7 @@ ul {
     padding-left: 0;
 }
 
-.btn-remove-snippet-code, .btn-remove-snippet-var, .btn-remove-snippet-default-value, .btn-add-snippet-default-value {
+.btn-remove-snippet-default-value, .btn-add-snippet-default-value {
     position: absolute;
     right: 15px;
     top: 10px;
@@ -134,12 +134,6 @@ ul {
 
 .btn-remove-snippet-default-value {
     right: 43px;
-}
-
-.btn-add-snippet-code {
-    position: absolute;
-    right: 45px;
-    top: 10px;
 }
 
 .snippetcode-name {
@@ -293,4 +287,13 @@ a.anchor {
 #radioBtn .notActive {
     color: #3276b1;
     background-color: #fff;
+}
+
+.panel-heading h3, .panel-heading input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    width: 75% !important;
+    padding-top: 8px;
 }

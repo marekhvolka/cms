@@ -30,28 +30,31 @@ class BlockModalWidget extends Widget
         return $this->render('view', [
             'model' => $this->block,
             'productType' => $this->productType,
+            'prefix' => $this->prefix
         ]);
     }
 
     /** Renders view for one appended variable.
      * @param $block Block
+     * @param $prefix
      * @return string
      */
     public function appendModal($block, $prefix)
     {
+        AssetBundle::register($this->getView());
+
         return $this->render('view', [
             'model' => $block,
             'productType' => $this->productType,
-            'htmlBody' => true,
             'prefix' => $prefix
         ]);
     }
 
-    public function appendListItem($listItem, $prefix)
+    public function appendListItem($listItem, $prefix, $indexItem)
     {
         return $this->render('_list-item', [
             'model' => $listItem,
-            'prefix' => $prefix,
+            'prefix' => $prefix . "[ListItem][$indexItem]",
             'productType' => $this->productType
         ]);
     }

@@ -14,7 +14,7 @@ body.on("click", '.btn-add-section', function () {
     var $this = $(this),
         layouts = $this.parents('.layouts'),
         postData = {
-            type: layoutType,
+            type: $this.data('type'),
             prefix: $this.data('prefix')
         };
 
@@ -122,12 +122,15 @@ $('#' + formId).submit(function () {
     return true;
 });
 
-$('.btn-block-modal').click(function () {
+body.on('click', '.btn-block-modal', function () {
+
+    var modalContainer = $(this).parents('.block').first().find('.modal-container');
+
     var blockId = $(this).data('id'),
         modal = $('#modal-' + blockId);
 
     // if it exists, it will get shown automatically... otherwise, load it
-    if (modal.length == 0) {
+    if (modalContainer.children().length == 0) {
         var postData = {
                 id: blockId,
                 prefix: $(this).data('prefix')
@@ -138,15 +141,15 @@ $('.btn-block-modal').click(function () {
             appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
                 var modalWindow = $(data);
 
-                $(self).parent().find('.modal-container').first().append(modalWindow);
+                modalContainer.append(modalWindow);
 
-                $('#modal-' + blockId).modal();
+                modalWindow.modal();
                 attachHideModalEvent(modalWindow.find('.btn-modal-close'));
                 attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
             }
         );
     } else {
-        modal.modal('show');
+        modalContainer.children('.modal').first().modal('show');
     }
 
     return true;
@@ -157,15 +160,22 @@ body.on('click', '.btn-add-list-item', function () {
 
     var postData = {
         prefix: $(this).data('prefix'),
-        listId: $(this).data('list-id')
+        parentVarId: $(this).data('parent-var-id')
     };
 
     $.get(
-        appendUrl.listItem + '?prefix=' + postData.prefix + '&listId=' + postData.listId, function (data) {
+        appendUrl.listItem + '?prefix=' + postData.prefix + '&parentVarId=' + postData.parentVarId, function (data) {
             appendElement(listContainer, $(data));
         }
     );
 });
+
+body.on(
+    'click', '.btn-remove-list-item', function ()
+    {
+        $(this).parents('.list-item').first().remove();
+    }
+);
 
 function attachHideModalEvent(hideButton) {
     hideButton.click(function () {

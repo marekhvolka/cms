@@ -145,6 +145,22 @@ class Product extends CustomModel implements ICacheable
                 $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
             }
 
+            $buffer .= '\'tags\' => array(' . PHP_EOL;
+
+            foreach ($this->tags as $tag) {
+                $buffer .= '$tags->' . $tag->identifier . ',' . PHP_EOL;
+            }
+
+            $buffer .= '),' . PHP_EOL;
+
+            $buffer .= '\'tagsAsString\' => \'';
+
+            foreach ($this->tags as $tag) {
+                $buffer .= $tag->identifier . ',';
+            }
+
+            $buffer .= '\',' . PHP_EOL;
+
             if (isset($this->parent)) // ak ma produkt rodica
             {
                 $buffer .= ')';
@@ -298,7 +314,8 @@ class Product extends CustomModel implements ICacheable
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['product_id' => 'id']);
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
+            ->viaTable('product_tag', ['product_id' => 'id']);
     }
 
     public function relations()

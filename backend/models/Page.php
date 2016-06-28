@@ -45,7 +45,7 @@ use common\models\User;
  * @property Section $contentSections
  * @property Section $sidebarSections
  */
-class Page extends CustomModel implements ICacheable
+class Page extends CustomModel implements ICacheable, IDuplicable
 {
     /**
      * @inheritdoc
@@ -63,6 +63,7 @@ class Page extends CustomModel implements ICacheable
         $this->sidebar_active = 1;
         $this->header_active = 1;
         $this->footer_active = 1;
+        $this->parsed = 1;
     }
 
     /**
@@ -651,5 +652,26 @@ class Page extends CustomModel implements ICacheable
         $command->bindValue(':priority', $priority);
 
         $command->execute();
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach($this->headerSections as $section) {
+            $section->prepareToDuplicate();
+        }
+
+        foreach($this->footerSections as $section) {
+            $section->prepareToDuplicate();
+        }
+
+        foreach($this->contentSections as $section) {
+            $section->prepareToDuplicate();
+        }
+
+        foreach($this->sidebarSections as $section) {
+            $section->prepareToDuplicate();
+        }
+
+        unset($this->id);
     }
 }

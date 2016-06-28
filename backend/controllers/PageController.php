@@ -4,7 +4,6 @@ namespace backend\controllers;
 
 use backend\models\Page;
 use backend\models\search\PageSearch;
-use backend\models\Section;
 use common\components\CacheEngine;
 use common\components\ParseEngine;
 use Yii;
@@ -51,9 +50,12 @@ class PageController extends BaseController
      * Updates an existing Page model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
+     * @param bool $duplicate
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
      */
-    public function actionEdit($id = null)
+    public function actionEdit($id = null, $duplicate = false)
     {
         if ($id) {
             $model = $this->findModel($id);
@@ -67,38 +69,58 @@ class PageController extends BaseController
         }
 
         if (Yii::$app->request->isPost) {
+
+            if ($duplicate) {
+                $model = new Page();
+                $model->portal_id = Yii::$app->session->get('portal_id');
+            }
+
             $transaction = Yii::$app->db->beginTransaction();
             try {
 
-                if (!($model->load(Yii::$app->request->post()) && $model->save())) {
-                    throw new Exception;
-                }
+                $model->load(Yii::$app->request->post());
 
                 $headerData = Yii::$app->request->post('headerSection');
 
                 if ($headerData != null) {
-                    $this->loadAndSaveLayout($model, $headerData, 'headerSections', 'page');
+                    $this->loadLayout($model, $headerData, 'headerSections');
                 }
 
                 $footerData = Yii::$app->request->post('footerSection');
 
                 if ($footerData != null) {
-                    $this->loadAndSaveLayout($model, $footerData, 'footerSections', 'page');
+                    $this->loadLayout($model, $footerData, 'footerSections');
                 }
 
                 $contentData = Yii::$app->request->post('contentSection');
 
                 if ($contentData != null) {
-                    $this->loadAndSaveLayout($model, $contentData, 'contentSections', 'page');
+                    $this->loadLayout($model, $contentData, 'contentSections');
                 }
 
                 $sidebarData = Yii::$app->request->post('sidebarSection');
 
                 if ($sidebarData != null) {
-                    $this->loadAndSaveLayout($model, $sidebarData, 'sidebarSections', 'page');
+                    $this->loadLayout($model, $sidebarData, 'sidebarSections');
                 }
 
+                if (!($model->validate() && $model->save()))
+                    throw new Exception;
+
+                $this->saveLayout($model, 'headerSections', 'page');
+                $this->saveLayout($model, 'footerSections', 'page');
+                $this->saveLayout($model, 'sidebarSections', 'page');
+                $this->saveLayout($model, 'contentSections', 'page');
+
                 $transaction->commit();
+
+                $continue = Yii::$app->request->post('continue');
+
+                if (isset($continue)) {
+                    return $this->redirect(['edit', 'id' => $model->id]);
+                } else {
+                    return $this->redirect(['index']);
+                }
             } catch (Exception $exc) {
                 $transaction->rollBack();
 
@@ -106,10 +128,11 @@ class PageController extends BaseController
                     'model' => $model
                 ]);
             }
-
-            return $this->redirect(['index']);
         }
 
+        if ($duplicate) {
+            $model->prepareToDuplicate();
+        }
         return $this->render('edit', [
             'model' => $model
         ]);

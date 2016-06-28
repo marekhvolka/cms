@@ -2,24 +2,21 @@
 
 namespace backend\controllers;
 
+use backend\models\search\SnippetSearch;
+use backend\models\Snippet;
 use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarDefaultValue;
 use Exception;
 use Yii;
-use backend\models\Model;
-use backend\models\Snippet;
-use backend\models\search\SnippetSearch;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
+use yii\web\NotFoundHttpException;
 
 /**
  * SnippetController implements the CRUD actions for Snippet model.
  */
 class SnippetController extends BaseController
 {
-
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -57,20 +54,18 @@ class SnippetController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id);
-        }
-        else {
+        } else {
             $model = new Snippet();
         }
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                // Snippet model validated and saved.
-
-                if (!($model->validate() && $model->save()))
+                if (!($model->validate() && $model->save())) {
                     throw new \yii\base\Exception;
-                
-                $snippetCodesData = Yii::$app->request->post('snippetCode');
+                }
+
+                $snippetCodesData = Yii::$app->request->post('SnippetCode');
 
                 if ($snippetCodesData != null) {
                     foreach ($snippetCodesData as $index => $snippetCodeData) {
@@ -86,20 +81,23 @@ class SnippetController extends BaseController
                     }
                 }
 
-                $snippetVarsData = Yii::$app->request->post('snippetVar');
+                $snippetVarsData = Yii::$app->request->post('SnippetVar');
 
                 if ($snippetVarsData != null) {
 
-                    foreach($snippetVarsData as $index => $snippetVarData) {
-                        $model->loadFromData('snippetFirstLevelVars', $snippetVarsData, $index, SnippetVar::className());
+                    foreach ($snippetVarsData as $index => $snippetVarData) {
+                        $model->loadFromData('snippetFirstLevelVars', $snippetVarsData, $index,
+                            SnippetVar::className());
 
-                        if ($snippetVarData['children'] != null)
-                            $model->loadChildren('children', $snippetVarData);
+                        if (key_exists('Children', $snippetVarData)) {
+                            $model->snippetFirstLevelVars[$index]->loadChildren('children', $snippetVarData['Children']);
+                        }
                     }
-                    foreach($model->snippetFirstLevelVars as $snippetVar) {
+                    foreach ($model->snippetFirstLevelVars as $snippetVar) {
                         $snippetVar->snippet_id = $model->id;
-                        if (!($snippetVar->validate() && $snippetVar->save()))
+                        if (!($snippetVar->validate() && $snippetVar->save())) {
                             throw new \yii\base\Exception;
+                        }
 
                         $snippetVar->saveChildren('children');
                     }
@@ -111,10 +109,11 @@ class SnippetController extends BaseController
 
                 $continue = Yii::$app->request->post('continue');
 
-                if (isset($continue))
+                if (isset($continue)) {
                     return $this->redirect(['edit', 'id' => $model->id]);
-                else
+                } else {
                     return $this->redirect(['index']);
+                }
 
             } catch (Exception $e) {
                 $transaction->rollBack();
@@ -131,24 +130,31 @@ class SnippetController extends BaseController
 
     /**
      * Ajax action for appending one code (HTML in partial view) at the end
-     * of codes list. 
+     * of codes list.
      * @return string rendered view for one code.
      */
     public function actionAppendCode()
     {
-        return $this->renderAjax('_code', ['model' => new SnippetCode()]);
+        $snippetCode = new SnippetCode();
+
+        $indexCode = rand(1000, 100000);
+        $prefix = "SnippetCode[$indexCode]";
+
+        return $this->renderAjax('_code', [
+            'model' => $snippetCode,
+            'prefix' => $prefix
+        ]);
     }
 
     /**
      * Ajax action for appending one variable (HTML in partial view) at the end
-     * of variable list. 
+     * of variable list.
      * @param int $id parents id (list type parent), default null - variable is without parent.
      * @return string rendered view for one variable.
      */
-    public function actionAppendVar($id = null)
+    public function actionAppendVar()
     {
         $snippetVar = new SnippetVar();
-        $snippetVar->parent_id = $id;
 
         $prefix = Yii::$app->request->post('prefix');
 
@@ -161,14 +167,16 @@ class SnippetController extends BaseController
     }
 
     /**
-     * Ajax action for appending one wrapper of list item types children 
+     * Ajax action for appending one wrapper of list item types children
      * variables of list type variable (HTML in partial view).
-     * @param int $id parents id (list type parent), default null - variable 
+     * @param int $id parents id (list type parent), default null - variable
      * is without parent and new SnippetVar is created.
      * @return string rendered view for one wrapper box.
      */
-    public function actionAppendChildVarBox($id = null)
+    public function actionAppendListBox()
     {
+        $id = Yii::$app->request->post('id');
+
         $snippetVar = $id == null ? new SnippetVar() : SnippetVar::find()->where(['id' => $id])->one();
 
         $prefix = Yii::$app->request->post('prefix');

@@ -19,9 +19,8 @@ use Yii;
  * @property Row $row
  * @property Block[] $blocks
  */
-class Column extends CustomModel
+class Column extends CustomModel implements IDuplicable
 {
-
     /**
      * @inheritdoc
      */
@@ -153,5 +152,15 @@ class Column extends CustomModel
         $result .= $this->getPostfix();
 
         return $result;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->blocks as $block) {
+            $block->prepareToDuplicate();
+        }
+
+        $this->id = null;
+        $this->row_id = null;
     }
 }

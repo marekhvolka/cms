@@ -9,11 +9,11 @@
 namespace common\components;
 
 
+use backend\models\Block;
 use backend\models\Column;
 use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\Page;
-use backend\models\Block;
 use backend\models\Portal;
 use backend\models\PortalVarValue;
 use backend\models\Product;
@@ -28,7 +28,6 @@ use backend\models\SnippetVarValue;
 use backend\models\Tag;
 use Exception;
 use Yii;
-use yii\db\mysql\QueryBuilder;
 use yii\db\Query;
 use yii\helpers\BaseVarDumper;
 use yii\helpers\VarDumper;
@@ -161,10 +160,11 @@ class ParseEngine
 
         $page->parsed = 1;
 
-        if ($page->validate())
+        if ($page->validate()) {
             $page->save();
-        else
+        } else {
             VarDumper::dump($page->errors);
+        }
         $transaction->commit();
     }
 
@@ -908,8 +908,10 @@ class ParseEngine
             switch ($snippetVar->type->identifier) {
                 case 'list' :
 
-                    $snippetVarValue->save(); //Needed to save to get ID
-                    $this->parseSnippetList($value, $pageBlock, $snippetVar->id, $snippetVarValue);
+                    if (!($snippetVarValue->validate() && $snippetVarValue->save())) {
+                        throw new \yii\base\Exception;
+                    }
+                    $this->parseSnippetList($value, $pageBlock, $snippetVarValue);
 
                     break;
                 case 'page' :
@@ -973,20 +975,18 @@ class ParseEngine
      * @param $pageBlock Block - blok, ktoreho sa zoznamy tykaju
      * @return int
      */
-    private function parseSnippetList($value, Block $pageBlock, $listVarId, $snippetVarValue)
+    private function parseSnippetList($value, Block $pageBlock, $snippetVarValue)
     {
-        $list = new ListVar();
-        $list->snippet_var_value_id = $snippetVarValue->id;
-        $list->save();
-
         $order = 0;
         foreach ($value as $item) {
             $listItem = new ListItem();
             $listItem->active = $item->active;
-            $listItem->list_id = $list->id;
+            $listItem->list_id = $snippetVarValue->id;
             $listItem->order = $order++;
 
-            $listItem->save();
+            if (!($listItem->validate() && $listItem->save())) {
+                throw new \yii\base\Exception;
+            }
 
             foreach ($item as $itemVarIdentifier => $itemVarValue) {
                 $itemVarIdentifier2 = str_replace('-', '_', $itemVarIdentifier);
@@ -999,7 +999,7 @@ class ParseEngine
                         ['identifier' => $itemVarIdentifier],
                         ['identifier' => $itemVarIdentifier2]
                     ])
-                    ->andWhere(['parent_id' => $listVarId])
+                    ->andWhere(['parent_id' => $snippetVarValue->var_id])
                     ->one();
 
                 if ($snippetListVar == null) {
@@ -1018,8 +1018,10 @@ class ParseEngine
                 switch ($snippetListVar->type->identifier) {
                     case 'list' :
 
-                        $snippetListVarValue->save();
-                        $this->parseSnippetList($itemVarValue, $pageBlock, $snippetListVar->id, $snippetListVarValue);
+                        if (!($snippetListVarValue->validate() && $snippetListVarValue->save())) {
+                            throw new \yii\base\Exception;
+                        }
+                        $this->parseSnippetList($itemVarValue, $pageBlock, $snippetListVarValue);
 
                         break;
                     case 'page' :
@@ -1104,8 +1106,6 @@ class ParseEngine
                 }
             }
         }
-
-        return $list->id;
     }
 
     /** Funkcia prekonvertuje zapisane premenne pre dany blok na Latte style

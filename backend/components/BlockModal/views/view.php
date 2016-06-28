@@ -6,7 +6,6 @@ use backend\models\Block;
 use yii\bootstrap\Html;
 
 /* @var $model Block */
-/* @var $htmlBody bool */
 /* @var $productType \backend\models\ProductType */
 /* @var $prefix string */
 
@@ -16,7 +15,7 @@ use yii\bootstrap\Html;
     width: 1000px !important;
 }
 </style>
-<div class="modal fade" id="modal-<?= $model->id ?>" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-xlg">
         <div class="modal-content">
             <?php

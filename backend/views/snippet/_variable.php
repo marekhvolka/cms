@@ -12,7 +12,6 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="item panel panel-default snippet-var"><!-- widgetBody -->
-
     <div class="panel-heading form-inline">
         <label class="control-label" for="snippetvar-identifier">
             <?= $model->getAttributeLabel('identifier'); ?>
@@ -24,27 +23,19 @@ use yii\helpers\BaseHtml;
         ]);
         ?>
 
-        <button type="button" class="btn-remove-snippet-var btn btn-danger btn-xs pull-right"
-                data-var-id="<?= $model->id; ?>">
+        <button type="button" class="btn-remove-snippet-var btn btn-danger btn-xs pull-right">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
     <div class="panel-body var-body">
-
-        <div class="row">
-            <div class="col-sm-12">
-
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-type_id">
                     Typ premennej
                 </label>
                 <?php
-                $allVars = VarType::find()->where(['show_snippet' => 1])->all();
-                $data = ArrayHelper::map($allVars, 'id', 'name');
+                $allTypes = VarType::find()->where(['show_snippet' => 1])->all();
+                $data = ArrayHelper::map($allTypes, 'id', 'name');
 
                 echo BaseHtml::activeDropDownList($model, 'type_id', $data, [
                     'class'  => 'form-control select-var-type',
@@ -83,10 +74,7 @@ use yii\helpers\BaseHtml;
             } ?>
         </ul>
 
-        <?= BaseHtml::hiddenInput($prefix . "[parent_id]",
-            isset($model->parent_id) ? $model->parent_id : ''); ?>
-
-        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'variable-id']); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
 
         <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true'); ?>
 
@@ -102,13 +90,13 @@ use yii\helpers\BaseHtml;
                 ]); ?>
             </div>
         </div>
-
+        <div class="list-box-container">
         <?php if (isset($model->type) && $model->type->identifier == 'list'): ?>
             <?= $this->render('_child-var-box', [
                 'model' => $model,
                 'prefix' => $prefix
             ]); ?>
         <?php endif; ?>
-
+        </div>
     </div>
 </div>

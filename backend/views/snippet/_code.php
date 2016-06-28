@@ -1,36 +1,27 @@
 <?php
 
+use backend\models\Portal;
 use conquer\codemirror\CodemirrorAsset;
 use conquer\codemirror\CodemirrorWidget;
-use yii\helpers\BaseHtml;
 use yii\helpers\ArrayHelper;
-use backend\models\Portal;
+use yii\helpers\BaseHtml;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\SnippetCode */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $indexCode int */
+/* @var $prefix string */
 
-?>
-<?php
-
-if (!isset($indexCode))
-    $indexCode = rand(1000, 10000000); // Index for correctly indexing Post request variable.
 ?>
 
 <div class="item panel panel-default snippet-code"><!-- widgetBody -->
-    <a class="anchor" id="code<?= $model->id?>"></a>
-    <div class="panel-heading"> 
-        <div class="input-group">
-            <?= BaseHtml::activeTextInput($model, "name", [
-                    'class' => 'form-control snippetcode-name',
-                    'name' => "SnippetCode[$indexCode][name]",
-                    'id' => "snippetcode-$indexCode-name",
-                ]); ?>
-            <div class="help-block"></div>
-        </div>
-        <button type="button" class="btn-add-snippet-code btn btn-success btn-xs pull-right">
-            <i class="glyphicon glyphicon-plus"></i>
-        </button>
+    <a class="anchor" id="code<?= $model->id ?>"></a>
+    <div class="panel-heading form-inline">
+
+        <?= BaseHtml::activeTextInput($model, "name", [
+            'class' => 'form-control snippetcode-name',
+            'name' => $prefix . "[name]",
+        ]); ?>
 
         <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">
             <i class="glyphicon glyphicon-minus"></i>
@@ -39,9 +30,8 @@ if (!isset($indexCode))
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-12">
-                <?php
-                echo CodemirrorWidget::widget([
-                        'name' => "SnippetCode[$indexCode][code]",
+                <?= CodemirrorWidget::widget([
+                        'name' => $prefix . "[code]",
                         'value' => $model->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
@@ -63,23 +53,22 @@ if (!isset($indexCode))
                             'class' => 'html-editor form-control code-code attribute',
                             'data-attribute-name' => 'code',
                             'autofocus' => 'true',
-                            'name' => "SnippetCode[$indexCode][code]",
+                            'name' => $prefix . "[code]",
                             'rows' => 40
                         ]
                     ]
-                );
-                ?>
+                ) ?>
             </div>
         </div><!-- .row -->
         <div class="row">
-            <div class="col-sm-12">                
+            <div class="col-sm-12">
                 <label class="control-label" for="snippetcode-popis">
                     <?= $model->getAttributeLabel('description'); ?>
                 </label>
                 <?php
                 echo BaseHtml::activeTextarea($model, "description", [
                     'class' => 'form-control',
-                    'name' => "SnippetCode[$indexCode][description]",
+                    'name' => $prefix . "[description]",
                 ]);
                 ?>
             </div>
@@ -89,18 +78,19 @@ if (!isset($indexCode))
                 <label class="control-label" for="snippetcode-portal">
                     <?= $model->getAttributeLabel('portal'); ?>
                 </label>
-                
+
                 <?php
                 $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
                 echo BaseHtml::activeDropDownList($model, "portal", $data, [
-                    'maxlength' => true, 
+                    'maxlength' => true,
                     'class' => 'form-control',
-                    'name' => "SnippetCode[$indexCode][portal]",
+                    'name' => $prefix . "[portal]",
                 ]);
                 ?>
             </div>
         </div>
-        <?= BaseHtml::hiddenInput("SnippetCode[$indexCode][existing]", $model->isNewRecord ? 'false' : 'true', ['class' => 'existing']); ?>
-        <?= BaseHtml::hiddenInput("SnippetCode[$indexCode][id]", $model->id); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true',
+            ['class' => 'existing']); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id); ?>
     </div>
 </div>

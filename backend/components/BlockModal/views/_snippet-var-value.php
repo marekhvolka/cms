@@ -1,21 +1,14 @@
 <?php
-use backend\models\Page;
-use backend\models\Portal;
-use backend\models\Product;
-use backend\models\Tag;
-use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
-use kartik\color\ColorInput;
 use yii\helpers\BaseHtml;
 use yii\helpers\Html;
-use backend\models\SnippetVarValue;
 
 /* @var $model backend\models\SnippetVarValue */
 /* @var $productType backend\models\ProductType */
 /* @var $prefix string */
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
-
+/* @var $globalObjects array */
 ?>
 
 <?php
@@ -24,10 +17,12 @@ $defaultValue = $model->var->getDefaultValue($productType);
 if ($model->typeName != 'list') : ?>
     <div class="form-group">
         <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
+        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $model->var_id, ['class' => 'var_id']); ?>
         <div class="col-sm-10">
             <?php
             switch ($model->typeName) {
                 case 'url' :
+                case 'icon' :
                 case 'textinput' : ?>
 
                     <input type="text" class="form-control" id="<?= $model->id ?>"
@@ -43,11 +38,9 @@ if ($model->typeName != 'list') : ?>
                               placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
 
-
                     <?php
                     break;
                 case 'color' : ?>
-
                     <div class="input-group">
                         <input type="color" class="form-control" id="<?= $model->id ?>" name=""
                                value="<?= $model->value_text ?>"
@@ -55,22 +48,18 @@ if ($model->typeName != 'list') : ?>
                         <span class="input-group-addon"><i></i></span>
                     </div>
 
-
                     <?php
                     break;
                 case 'editor' : ?>
-
                     <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3"
                               placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
-
-
                     <?php
                     break;
                 case 'product' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_product_id',
-                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id', 'name'),
+                    <?= Html::activeDropDownList($model, 'value_product_id', $globalObjects['products']
+                        ,
                         [
                             'name' => $prefix . '[value_product_id]',
                             'class' => 'form-control',
@@ -81,8 +70,8 @@ if ($model->typeName != 'list') : ?>
                     break;
                 case 'page' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_page_id',
-                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id', 'breadcrumbs'),
+                    <?= Html::activeDropDownList($model, 'value_page_id', $globalObjects['pages']
+                        ,
                         [
                             'name' => $prefix . '[value_page_id]',
                             'class' => 'form-control',
@@ -93,10 +82,10 @@ if ($model->typeName != 'list') : ?>
                     <?php
                     break;
 
-                case 'tag' : ?>
+                case 'product_tag' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_tag_id',
-                        ArrayHelper::map(Tag::find()->all(), 'id', 'label'),
+                    <?= Html::activeDropDownList($model, 'value_tag_id', $globalObjects['productTags']
+                        ,
                         [
                             'name' => $prefix . '[value_tag_id]',
                             'class' => 'form-control',
@@ -108,7 +97,7 @@ if ($model->typeName != 'list') : ?>
 
                 case 'dropdown' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_tag_id',
+                    <?= Html::activeDropDownList($model, 'value_dropdown_id',
                         ArrayHelper::map($model->var->dropdownValues, 'id', 'value'),
                         [
                             'name' => $prefix . '[value_dropdown_id]',
@@ -134,30 +123,32 @@ if ($model->typeName != 'list') : ?>
     </div>
 <?php else  : ?>
     <div class="panel panel-default list-panel">
+        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $model->var_id, ['class' => 'var_id']); ?>
         <div class="panel-heading">
-                <span>
-                    <a data-toggle="collapse" href="#panel<?= $model->id ?>">
-                        <i class="fa fa-angle-down">
-                            <?= $model->var->identifier ?>
-                        </i>
-                    </a>
-                </span>
-                <span>
-                    Počet položiek: <?= sizeof($model->valueListVar->listItems) ?>
-                </span>
+            <span>
+                <a data-toggle="collapse" href="#panel<?= $model->id ?>">
+                    <i class="fa fa-angle-down">
+                        <?= $model->var->identifier ?>
+                    </i>
+                </a>
+            </span>
+            <span>
+                Počet položiek: <?= sizeof($model->listItems) ?>
+            </span>
             <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-                    data-prefix="<?= $prefix ?>" data-list-id="<?= $model->valueListVar->id ?>">
+               data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $model->var_id ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
 
         <div class="panel-body panel-collapse collapse in children-list" id="panel<?= $model->id ?>">
-            <?php foreach ($model->valueListVar->listItems as $indexItem => $listItem) : ?>
-                    <?= $this->render('_list-item', [
-                        'model' => $listItem,
-                        'productType' => $productType,
-                        'prefix' => $prefix . "[ListItem][$indexItem]"
-                    ]); ?>
+            <?php foreach ($model->listItems as $indexItem => $listItem) : ?>
+                <?= $this->render('_list-item', [
+                    'model' => $listItem,
+                    'productType' => $productType,
+                    'prefix' => $prefix . "[ListItem][$indexItem]",
+                    'globalObjects' => $globalObjects
+                ]); ?>
             <?php endforeach; ?>
         </div>
     </div>

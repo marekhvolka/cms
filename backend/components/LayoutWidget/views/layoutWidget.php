@@ -6,24 +6,25 @@
 /* @var $allowAddingSection bool */
 
 /* @var $prefix string */
+/* @var $productType \backend\models\ProductType */
+/* @var $type string */
+
 ?>
 
 <div class="layouts">
-    <?php
-    $idHash = Yii::$app->security->generateRandomString();  // ID as hash for using more layoutWidget in one view.
-    ?>
-    <div class="children-list" id="<?= $idHash ?>">
+    <div class="children-list">
         <?php foreach ($sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,
-                'prefix' => $prefix . "[$indexSection]"
+                'prefix' => $prefix . "[$indexSection]",
+                'productType' => $productType
             ]); ?>
         <?php endforeach; ?>
     </div>
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
-        <button type="button" class="btn btn-success btn-sm btn-add-section" data-sections-id="<?= $idHash ?>"
-                data-prefix="<?= $prefix ?>">
+        <button type="button" class="btn btn-success btn-sm btn-add-section"
+                data-prefix="<?= $prefix ?>" data-type="<?= $type ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
         <?php endif; ?>
@@ -35,8 +36,6 @@
 $js = <<<JS
 
 var controllerUrl = '$controllerUrl';
-var layoutType = '$type';
-var formId = '$formId';
         
 JS;
 

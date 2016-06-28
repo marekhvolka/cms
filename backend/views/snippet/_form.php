@@ -1,85 +1,74 @@
 <?php
 
-use backend\models\SnippetVar;
 use backend\models\VarType;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use kartik\switchinput\SwitchInput;
-use kartik\select2\Select2;
 use yii\helpers\Url;
 use yii\web\View;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="snippet-form">
 
     <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form', 
+        'id' => 'dynamic-form',
         //'enableAjaxValidation' => true,
     ]); ?>
-    
-    <h3 class="page-header">Všeobecné <small>nastavenia</small></h3>
+
+    <h3 class="page-header">Všeobecné
+        <small>nastavenia</small>
+    </h3>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'snippet_type')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX,
-        'pluginOptions'=>[
-            'onText'=>'Dynamický',
-            'offText'=>'Statický'
-        ]
-    ]) ?>
-
     <div class="form-group">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Alternatívy</h4></div>
-            <div class="panel-body">
-                <ul class="snippet-codes">
+            <div class="panel-heading">
+                <h4>
+                    Alternatívy
+                    <a class="btn btn-success btn-xs btn-add-snippet-code pull-right" data-prefix="">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </h4>
+            </div>
+            <div class="panel-body snippet-codes">
                 <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
-                <li>
                     <?= $this->render('_code', [
                         'model' => $snippetCode,
                         'form' => $form,
-                        'indexCode' => $indexCode
-                    ]) ;?>
-                </li>
-                <?php endforeach;?>
-                </ul>
+                        'prefix' => "SnippetCode[$indexCode]"
+                    ]); ?>
+
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
-    
+
     <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
-    
+
     <?= $this->render('_blocks-and-sections', ['model' => $model]); ?>
-    
-    <div class="form-group">
+
+    <div class="form-group snippet-vars">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Premenné</h4></div>
-            <div class="panel-body">
-                <?php
-                Select2::widget([
-                   'name' => "test",
-                ]);
-                ?>
-                <ul class="snippet-vars">
-                    <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
-                    <li>
-                        <?= $this->render('_variable', [
-                            'model' => $snippetVar,
-                            'prefix' => "SnippetVar[$indexVar]"
-                        ]); ?>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <div class="col-sm-offset-2">
-                    <button type="button" class="btn-add-snippet-var btn btn-success" data-prefix="SnippetVar">
-                        Pridať premennú
-                    </button>
-                </div>
+            <div class="panel-heading form-inline">
+                <h4>
+                    Premenné
+                    <a class="btn btn-success btn-xs btn-add-snippet-var pull-right" data-prefix="SnippetVar">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </h4>
+            </div>
+            <div class="panel-body snippet-vars-container">
+                <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
+                    <?= $this->render('_variable', [
+                        'model' => $snippetVar,
+                        'prefix' => "SnippetVar[$indexVar]"
+                    ]); ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
@@ -94,7 +83,7 @@ use yii\web\View;
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-                    'id'    => 'submit-btn',
+                    'id' => 'submit-btn',
                     'name' => 'continue'
                 ]) ?>
             </div>
@@ -104,26 +93,17 @@ use yii\web\View;
     <?php ActiveForm::end(); ?>
 
 </div>
- 
+
 <?php
-$urlForAppendVar = Url::to(['/snippet/append-var']);
-$urlForAppendCode = Url::to(['/snippet/append-code']);
-$urlForAppendChildVarBox = Url::to(['/snippet/append-child-var-box']);
-$urlForAppendDefaultValue = Url::to(['/snippet/append-default-value']);
+
+$controllerUrl = Url::to(['/snippet']);
 $listIdJs = VarType::find()->where(['identifier' => 'list'])->one()->id;
 
 $js = <<<JS
 
-var snippetVarParams = {
-    variableHtml: '',
-    codeHtml: '',
-    listId: $listIdJs,
-    appendVarUrl: '$urlForAppendVar',
-    appendCodeUrl: '$urlForAppendCode',
-    appendChildVarBox: '$urlForAppendChildVarBox',
-    appendDefaultValueUrl: '$urlForAppendDefaultValue'
-}
-        
+var listId = $listIdJs;
+var controllerUrl = '$controllerUrl';
+
 JS;
 
 $this->registerJs($js, View::POS_BEGIN);

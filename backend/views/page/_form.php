@@ -100,7 +100,8 @@ use kartik\switchinput\SwitchInput;
             'sections' => $model->headerSections,
             'prefix' => 'headerSection',
             'type' => 'header',
-            'controllerUrl' => Url::to(['/page'])
+            'controllerUrl' => Url::to(['/page']),
+            'productType' => $model->product->productType
         ]
     ) ?>
 
@@ -111,7 +112,8 @@ use kartik\switchinput\SwitchInput;
             'type' => 'content',
             'prefix' => 'contentSection',
             'controllerUrl' => Url::to(['/page']),
-            'allowAddingSection' => false
+            'allowAddingSection' => false,
+            'productType' => $model->product->productType
         ]
     ) ?>
 
@@ -143,7 +145,8 @@ use kartik\switchinput\SwitchInput;
             'type' => 'sidebar',
             'prefix' => 'sidebarSection',
             'controllerUrl' => Url::to(['/page']),
-            'allowAddingSection' => false
+            'allowAddingSection' => false,
+            'productType' => $model->product->productType
         ]
     ) ?>
 
@@ -157,7 +160,8 @@ use kartik\switchinput\SwitchInput;
             'sections' => $model->footerSections,
             'prefix' => 'footerSection',
             'type' => 'footer',
-            'controllerUrl' => Url::to(['/page'])
+            'controllerUrl' => Url::to(['/page']),
+            'productType' => $model->product->productType
         ]
     ) ?>
 
@@ -167,6 +171,12 @@ use kartik\switchinput\SwitchInput;
                 <?= Html::submitButton('Uložiť', [
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
                     'id' => 'submit-btn'
+                ]) ?>
+
+                <?= Html::submitButton('Uložiť a pokračovať', [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'id'    => 'submit-btn',
+                    'name' => 'continue'
                 ]) ?>
             </div>
         </div>

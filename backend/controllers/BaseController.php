@@ -14,10 +14,10 @@ use backend\models\Portal;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
+use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use Yii;
 use yii\base\Exception;
-use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -152,16 +152,18 @@ abstract class BaseController extends Controller
         return (new BlockModalWidget())->appendModal($block, $prefix);
     }
 
-    public function actionAppendListItem($listId, $prefix)
+    public function actionAppendListItem($parentVarId, $prefix)
     {
         //$listId = Yii::$app->request->post('listId');
         //$prefix = Yii::$app->request->post('prefix');
 
-        $list = ListVar::find()->where(['id' => $listId])->one();
+        $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
-        $listItem = $list->createNewListItem();
+        $listItem = $parentVar->createNewListItem();
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix);
+        $indexItem = rand(1000, 10000);
+
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem);
     }
 
     public function actionCacheFromBuffer($limit = 20)
@@ -193,7 +195,7 @@ abstract class BaseController extends Controller
      * @param $propertyIdentifier
      * @throws \yii\base\Exception
      */
-    public function loadAndSaveLayout(CustomModel $model, $sectionsData, $propertyIdentifier, $type)
+    public function loadLayout(CustomModel $model, $sectionsData, $propertyIdentifier)
     {
         $sectionOrderIndex = 1;
         foreach ($sectionsData as $indexSection => $itemSection) {
@@ -236,13 +238,17 @@ abstract class BaseController extends Controller
                         }
 
                         $block = $column->blocks[$indexBlock];
+                        $block->changed = true;
 
                         $this->loadSnippetVarValues($itemBlock, $block);
                     }
                 }
             }
         }
+    }
 
+    public function saveLayout($model, $propertyIdentifier, $type)
+    {
         foreach ($model->{$propertyIdentifier} as $section) {
             if ($type == 'page') {
                 $section->page_id = $model->id;
@@ -290,7 +296,9 @@ abstract class BaseController extends Controller
                             throw new Exception;
                         }
 
-                        $this->saveSnippetVarValues($block);
+                        if ($block->changed) {
+                            $this->saveSnippetVarValues($block);
+                        }
                     }
                 }
             }
@@ -300,10 +308,10 @@ abstract class BaseController extends Controller
     private function loadSnippetVarValues($data, $model)
     {
         foreach ($data['SnippetVarValue'] as $indexVar => $itemVarValue) {
-            $model->snippetVarValues[$indexVar]->load($itemVarValue, '');
+            $model->loadFromData('snippetVarValues', $itemVarValue, $indexVar, SnippetVarValue::className());
 
             if (key_exists('ListItem', $itemVarValue)) {
-                $list = $model->snippetVarValues[$indexVar]->valueListVar;
+                $list = $model->snippetVarValues[$indexVar];
 
                 $listItemOrderIndex = 1;
                 foreach ($itemVarValue['ListItem'] as $indexListItem => $itemList) {
@@ -318,29 +326,34 @@ abstract class BaseController extends Controller
         }
     }
 
-    private function saveSnippetVarValues($model)
+    private function saveSnippetVarValues($model, $type = 'block')
     {
         foreach ($model->snippetVarValues as $snippetVarValue) {
+
+            if ($type == 'block') {
+                $snippetVarValue->block_id = $model->id;
+            } else if ($type == 'list') {
+                $snippetVarValue->list_item_id = $model->id;
+            }
+
             if (!($snippetVarValue->validate() && $snippetVarValue->save())) {
                 throw new Exception;
             }
 
-            if (isset($snippetVarValue->valueList)) {
-                if (!($snippetVarValue->valueList->validate() && $snippetVarValue->valueList->save())) {
+            $listItemOrder = 1;
+            foreach ($snippetVarValue->listItems as $listItem) {
+                if ($listItem->removed) {
+                    $listItem->delete();
+                    continue;
+                }
+                $listItem->list_id = $snippetVarValue->id;
+                $listItem->order = $listItemOrder++;
+
+                if (!($listItem->validate() && $listItem->save())) {
                     throw new Exception;
                 }
 
-                foreach ($snippetVarValue->valueList->listItems as $listItem) {
-                    if ($listItem->removed) {
-                        $listItem->delete();
-                        continue;
-                    }
-                    if (!($listItem->validate() && $listItem->save())) {
-                        throw new Exception;
-                    }
-
-                    $this->saveSnippetVarValues($listItem);
-                }
+                $this->saveSnippetVarValues($listItem, 'list');
             }
         }
     }

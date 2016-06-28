@@ -70,19 +70,25 @@ class CustomModel extends \yii\db\ActiveRecord
             $this->loadFromData($propertyIdentifier, $item, $index,
                 SnippetVar::className());
 
-            if (isset($item[$propertyIdentifier]))
-                $this->loadChildren($propertyIdentifier, $item[$propertyIdentifier]);
+            if (key_exists('Children', $item))
+                $this->{$propertyIdentifier}[$index]->loadChildren($propertyIdentifier, $item['Children']);
         }
     }
 
     public function saveChildren($propertyIdentifier)
     {
-        foreach($this->{$propertyIdentifier} as $snippetVar) {
-            $snippetVar->parent_id = $this->id;
-            if (!($snippetVar->validate() && $snippetVar->save()))
+        foreach($this->{$propertyIdentifier} as $snippetVarValue) {
+            $snippetVarValue->parent_id = $this->id;
+
+            if ($snippetVarValue->removed) {
+                $snippetVarValue->delete();
+                continue;
+            }
+
+            if (!($snippetVarValue->validate() && $snippetVarValue->save()))
                 throw new \yii\base\Exception;
 
-            $this->saveChildren('children');
+            $snippetVarValue->saveChildren('children');
         }
     }
 

@@ -12,9 +12,9 @@ use Yii;
  * @property integer $active
  *
  * @property SnippetVarValue[] $snippetVarValues
- * @property ListVar $list
+ * @property SnippetVarValue $list
  */
-class ListItem extends CustomModel
+class ListItem extends CustomModel implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -30,13 +30,13 @@ class ListItem extends CustomModel
     public function rules()
     {
         return [
-            [['list_id'], 'required'],
+            [['list_id', 'order'], 'required'],
             [['id', 'list_id', 'active'], 'integer'],
             [
                 ['list_id'],
                 'exist',
                 'skipOnError' => true,
-                'targetClass' => ListVar::className(),
+                'targetClass' => SnippetVarValue::className(),
                 'targetAttribute' => ['list_id' => 'id']
             ],
         ];
@@ -59,7 +59,7 @@ class ListItem extends CustomModel
      */
     public function getList()
     {
-        return $this->hasOne(ListVar::className(), ['id' => 'list_id']);
+        return $this->hasOne(SnippetVarValue::className(), ['id' => 'list_id']);
     }
 
     public function getSnippetVarValues()
@@ -93,5 +93,15 @@ class ListItem extends CustomModel
     public function resetAfterUpdate()
     {
         $this->list->resetAfterUpdate();
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach($this->snippetVarValues as $snippetVarValue) {
+            $snippetVarValue->prepareToDuplicate();
+        }
+
+        $this->id = null;
+        $this->list_id = null;
     }
 }

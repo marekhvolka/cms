@@ -42,7 +42,7 @@ class SnippetVar extends Variable
     {
         return [
             [['identifier', 'type_id'], 'required'],
-            [['type_id', 'description'], 'string'],
+            [['description'], 'string'],
             [['identifier'], 'string', 'max' => 50],
             [['snippet_id', 'parent_id', 'id'], 'integer'],
             [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
@@ -159,7 +159,7 @@ class SnippetVar extends Variable
      * @param null $productType
      * @return string
      */
-    public function getDefaultValueAsText($productType = null)
+    public function getDefaultValueAsString($productType = null)
     {
         $cacheEngine = Yii::$app->cacheEngine;
 
@@ -193,7 +193,7 @@ class SnippetVar extends Variable
 
                 $productTypeDefaultValue = $this->getDefaultValue($productType);
 
-                $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue) . '\'';
+                $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value_text) . '\'';
         }
 
         return $value;
@@ -222,6 +222,22 @@ class SnippetVar extends Variable
                 ->one();
         }
 
-        return $defaultValue->value;
+        return $defaultValue;
+    }
+
+    public function createNewListItem()
+    {
+        $listItem = new ListItem();
+        $listItem->active = true;
+        $listItem->getSnippetVarValues();
+
+        foreach ($this->children as $childVar) {
+            $childVarValue = new SnippetVarValue();
+            $childVarValue->var_id = $childVar->id;
+
+            $listItem->snippetVarValues[] = $childVarValue;
+        }
+
+        return $listItem;
     }
 }

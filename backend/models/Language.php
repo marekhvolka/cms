@@ -153,12 +153,14 @@ class Language extends \yii\db\ActiveRecord
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            //$buffer .= 'set_exception_handler(array(\'ExceptionHandler\', \'handleException\'));' . PHP_EOL;
+            $buffer .= '$tags = (object) array(' . PHP_EOL;
 
             foreach(Tag::find()->all() as $tag)
             {
-                $buffer .= '$' . $tag->identifier . ' = ' . $tag->value . ';' . PHP_EOL;
+                $buffer .= '\'' . $tag->identifier . '\' => ' . $tag->value . ',' . PHP_EOL;
             }
+
+            $buffer .= ');' . PHP_EOL;
 
             foreach ($this->products as $product)
             {

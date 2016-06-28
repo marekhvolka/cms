@@ -3,11 +3,12 @@ use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
 /* @var $prefix string */
+/* @var $productType \backend\models\ProductType */
+
 ?>
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
     <div class="btn-group section-buttons">
         <div class="section-button">
@@ -42,7 +43,8 @@ use yii\helpers\BaseHtml;
             <?php foreach ($model->rows as $indexRow => $row) : ?>
                 <?= $this->render('_row', [
                     'model' => $row,
-                    'prefix' => $prefix . "[Row][$indexRow]"
+                    'prefix' => $prefix . "[Row][$indexRow]",
+                    'productType' => $productType
                 ]); ?>
             <?php endforeach;?>
         </div>
