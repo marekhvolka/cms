@@ -16,6 +16,7 @@ use Yii;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
+ * @property ColorScheme[] $colorSchemes
  * @property Portal[] $portals
  * @property User $lastEditUser
  */
@@ -75,9 +76,42 @@ class Template extends \yii\db\ActiveRecord
 
     public function getColorSchemes()
     {
-        $colorSchemes = array();
+        if (!isset($this->colorSchemes)) {
 
+            $this->colorSchemes = array();
+            chdir($this->getColorSchemeDirectoryPath());
 
+            foreach (glob('*.scss') as $file) {
+                $item = new ColorScheme();
+                $item->label = str_replace('.scss', '', $file);
+                $item->name = $file;
+                $item->template_id = $this->id;
+
+                $this->colorSchemes[] = $item;
+            }
+        }
+
+        return $this->colorSchemes;
+    }
+
+    public function setColorSchemes($value)
+    {
+        $this->colorSchemes = $value;
+    }
+
+    public function getColorSchemeDirectoryPath()
+    {
+        return $this->getMainDirectory() . 'css/scheme/';
+    }
+
+    public function getMainDirectory()
+    {
+        return Yii::$app->dataEngine->getTemplatesDirectory() . $this->identifier . '/';
+    }
+
+    public function getIndexPath()
+    {
+        return $this->getMainDirectory() . '/index.php';
     }
 
     /**

@@ -161,7 +161,7 @@ class SnippetVar extends Variable
      */
     public function getDefaultValueAsString($productType = null)
     {
-        $cacheEngine = Yii::$app->cacheEngine;
+        $cacheEngine = Yii::$app->dataEngine;
 
         $value = '\'\'';
 

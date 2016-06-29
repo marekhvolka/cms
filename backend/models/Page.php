@@ -64,6 +64,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $this->header_active = 1;
         $this->footer_active = 1;
         $this->parsed = 1;
+        $this->color_scheme = 'inherit';
     }
 
     /**
@@ -419,9 +420,9 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre danu podstranku
      * @return string
      */
-    public function getCacheDirectory()
+    public function getMainDirectory()
     {
-        $path = $this->portal->getPagesMainCacheDirectory() . 'page' . $this->id . '/';
+        $path = $this->portal->getPagesDirectory() . 'page' . $this->id . '/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -436,10 +437,10 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getVarCacheFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'page_var.php';
+        $path = $this->getMainDirectory() . 'page_var.php';
 
         if (!file_exists($path) || $reload) {
-            $cacheEngine = Yii::$app->cacheEngine;
+            $dataEngine = Yii::$app->dataEngine;
 
             $buffer = '<?php ' . PHP_EOL;
 
@@ -453,11 +454,11 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             }
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            $buffer .= '\'url\' => \'' . $cacheEngine->normalizeString($this->url) . '\',' . PHP_EOL;
-            $buffer .= '\'name\' => \'' . $cacheEngine->normalizeString($this->name) . '\',' . PHP_EOL;
-            $buffer .= '\'title\' => \'' . $cacheEngine->normalizeString($this->title) . '\',' . PHP_EOL;
-            $buffer .= '\'description\' => \'' . $cacheEngine->normalizeString($this->description) . '\',' . PHP_EOL;
-            $buffer .= '\'keywords\' => \'' . $cacheEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
+            $buffer .= '\'url\' => \'' . $dataEngine->normalizeString($this->url) . '\',' . PHP_EOL;
+            $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
+            $buffer .= '\'title\' => \'' . $dataEngine->normalizeString($this->title) . '\',' . PHP_EOL;
+            $buffer .= '\'description\' => \'' . $dataEngine->normalizeString($this->description) . '\',' . PHP_EOL;
+            $buffer .= '\'keywords\' => \'' . $dataEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
             $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
 
             if (isset($this->parent)) {
@@ -480,7 +481,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
             $buffer .= '?>';
 
-            $cacheEngine->writeToFile($path, 'w+', $buffer);
+            $dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -493,7 +494,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getLayoutCacheFile($type, $reload = false)
     {
-        $path = $this->getCacheDirectory() . 'page_' . $type . '.php';
+        $path = $this->getMainDirectory() . 'page_' . $type . '.php';
 
         if (!file_exists($path) || $reload) {
             $buffer = '';
@@ -517,7 +518,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                     break;
             }
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -528,7 +529,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getPageBlocksMainCacheDirectory()
     {
-        $path = $this->getCacheDirectory() . 'blocks/';
+        $path = $this->getMainDirectory() . 'blocks/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -543,7 +544,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getMainPreCacheFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'page_prepared.latte';
+        $path = $this->getMainDirectory() . 'page_prepared.latte';
 
         if (!file_exists($path) || $reload) {
             $prefix = $this->getIncludePrefix();
@@ -567,14 +568,13 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
             $prefix .= '?>' . PHP_EOL;
 
-            $templateIndex = file_get_contents(Yii::$app->params['templatesDirectory']
-                . $this->portal->template->identifier . '/index.php');
+            $templateIndex = file_get_contents($this->portal->template->getIndexPath());
 
             $pageContent = $prefix . $templateIndex;
 
             $pageContent = html_entity_decode($pageContent);
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $pageContent);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $pageContent);
         }
 
         return $path;
@@ -586,14 +586,14 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getMainCacheFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'page_compiled.html';
+        $path = $this->getMainDirectory() . 'page_compiled.html';
 
         if (!file_exists($path) || $reload) {
-            $result = Yii::$app->cacheEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+            $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
 
             $result = html_entity_decode($result, ENT_QUOTES);
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $result);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $result);
         }
 
         return $path;

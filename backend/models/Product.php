@@ -127,7 +127,7 @@ class Product extends CustomModel implements ICacheable
      */
     public function getProductVarsFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'product_var.php';
+        $path = $this->getMainDirectory() . 'product_var.php';
 
         if (!file_exists($path) || $reload) {
             $buffer = '<?php ' . PHP_EOL;
@@ -170,15 +170,15 @@ class Product extends CustomModel implements ICacheable
 
             $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \'' . $this->identifier . '\'); ' . PHP_EOL;
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
     }
 
-    public function getCacheDirectory()
+    public function getMainDirectory()
     {
-        $path = $this->language->getProductsCacheDirectory() . $this->identifier . '/';
+        $path = $this->language->getProductsDirectory() . $this->identifier . '/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -344,7 +344,7 @@ class Product extends CustomModel implements ICacheable
 
     public function getMainCacheFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'main_file.php';
+        $path = $this->getMainDirectory() . 'main_file.php';
 
         if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
@@ -358,7 +358,7 @@ class Product extends CustomModel implements ICacheable
 
             $buffer .= '?>';
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;

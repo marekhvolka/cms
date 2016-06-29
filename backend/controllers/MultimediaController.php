@@ -38,7 +38,7 @@ class MultimediaController extends BaseController
      * Lists all MultimediaCategory models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndexOld()
     {
         $active_portal_name = Portal::findOne(Yii::$app->session->get('portal_id'));
         $active_portal_name = $active_portal_name == null ? null : $active_portal_name->name ;
@@ -101,12 +101,17 @@ class MultimediaController extends BaseController
             }
         }
 
-        return $this->render('index', [
+        return $this->render('index-old', [
             'data' => $data,
             'uploadFile' => $upload_file,
             'allSubcategories' => MultimediaCategory::getSubcategories(),
             'allCategories' => $categories
         ]);
+    }
+
+    public function actionIndex()
+    {
+        return $this->render('index');
     }
 
     /**

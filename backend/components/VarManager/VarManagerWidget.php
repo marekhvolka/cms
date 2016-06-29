@@ -59,5 +59,4 @@ class VarManagerWidget extends Widget
             'model' => $model
         ]);
     }
-
 }

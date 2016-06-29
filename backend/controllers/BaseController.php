@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
+use backend\components\MultimediaWidget\MultimediaWidget;
 use backend\models\Block;
 use backend\models\Column;
 use backend\models\CustomModel;
@@ -154,9 +155,6 @@ abstract class BaseController extends Controller
 
     public function actionAppendListItem($parentVarId, $prefix)
     {
-        //$listId = Yii::$app->request->post('listId');
-        //$prefix = Yii::$app->request->post('prefix');
-
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
         $listItem = $parentVar->createNewListItem();
@@ -164,6 +162,11 @@ abstract class BaseController extends Controller
         $indexItem = rand(1000, 10000);
 
         return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem);
+    }
+
+    public function actionAppendMultimediaWindow()
+    {
+        return (new MultimediaWidget())->run();
     }
 
     public function actionCacheFromBuffer($limit = 20)

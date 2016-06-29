@@ -1940,7 +1940,7 @@ ul.alert-dropdown {
 }
 
 .active .collapse {
-    border-left: 4px solid #19AA8D;
+    /*border-left: 4px solid #19AA8D;*/
 }
 
 .navbar-inverse {

@@ -109,7 +109,7 @@ abstract class Variable extends CustomModel
                 break;
             default:
 
-                $value = '\''. addslashes(html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text)))) . '\'';
+                $value = '\''. addslashes(html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text)))) . '\'';
         }
 
         return $value;

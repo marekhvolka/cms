@@ -98,7 +98,7 @@ class Tag extends \yii\db\ActiveRecord
     {
         $buffer = '(object) array(' . PHP_EOL;
 
-        $buffer .= '\'label\' => \'' . Yii::$app->cacheEngine->normalizeString($this->label) . '\', ' . PHP_EOL;
+        $buffer .= '\'label\' => \'' . Yii::$app->dataEngine->normalizeString($this->label) . '\', ' . PHP_EOL;
         $buffer .= '\'id\' => \'' . $this->identifier . '\', ' . PHP_EOL;
 
         $buffer .= ')';

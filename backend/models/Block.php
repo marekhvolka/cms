@@ -221,10 +221,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         if (isset($this->portalVarValue)) { //portalovy snippet
             $buffer = $this->portalVarValue->portal->language->getIncludePrefix();
             $buffer .= '<?php include "' . $this->portalVarValue->portal->getPortalVarsFile() . '"; ?>';
-            $path = $this->portalVarValue->portal->getPortalSnippetCacheDirectory();
+            $path = $this->portalVarValue->portal->getPortalSnippetsDirectory();
         } else if (isset($this->productVarValue)) { //produktovy snippet
             $buffer = '<?php include "' . $this->productVarValue->product->language->getDictionaryCacheFile() . '"; ?>';
-            $path = $this->productVarValue->product->getCacheDirectory();
+            $path = $this->productVarValue->product->getMainDirectory();
         } else if (isset($this->column->row->section->page)) { //block podstranky
             $buffer = $this->column->row->section->page->getIncludePrefix();
             $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
@@ -264,11 +264,11 @@ class Block extends CustomModel implements ICacheable, IDuplicable
             }
             $buffer .= $blockData;
 
-            Yii::$app->cacheEngine->writeToFile($path . '.latte', 'w+', $buffer);
-            $result = stripcslashes(html_entity_decode(Yii::$app->cacheEngine->latteRenderer->renderToString($path . '.latte',
+            Yii::$app->dataEngine->writeToFile($path . '.latte', 'w+', $buffer);
+            $result = stripcslashes(html_entity_decode(Yii::$app->dataEngine->latteRenderer->renderToString($path . '.latte',
                 array())));
 
-            Yii::$app->cacheEngine->writeToFile($path . '.php', 'w+', $result);
+            Yii::$app->dataEngine->writeToFile($path . '.php', 'w+', $result);
         }
 
         return $path . '.php';
@@ -330,7 +330,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $buffer;
     }
 
-    public function getCacheDirectory()
+    public function getMainDirectory()
     {
         // TODO: Implement getCacheDirectory() method.
     }

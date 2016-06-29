@@ -208,9 +208,9 @@ class SnippetVarValue extends CustomModel implements IDuplicable
             default:
 
                 if (isset($this->value_text) && $this->value_text != '') {
-                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->value_text))) . '\'';
+                    $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text))) . '\'';
                 } else {
-                    $value = '\'' . html_entity_decode(Yii::$app->cacheEngine->normalizeString(($this->var->getDefaultValue($productType)->value))) . '\'';
+                    $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->var->getDefaultValue($productType)->value))) . '\'';
                 }
 
         }

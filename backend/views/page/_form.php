@@ -2,19 +2,19 @@
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
-use backend\models\Page;
-use backend\models\Product;
 use backend\models\Portal;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
+
+$productType = $model->product ? $model->product->productType : null;
 ?>
 
 <div class="page-form">
@@ -84,7 +84,8 @@ use kartik\switchinput\SwitchInput;
         </div>
     </div>
 
-    <?= $form->field($model, 'color_scheme')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'color_scheme')->dropDownList(
+        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->template->getColorSchemes(), 'label', 'label')); ?>
 
     <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX,
@@ -101,7 +102,7 @@ use kartik\switchinput\SwitchInput;
             'prefix' => 'headerSection',
             'type' => 'header',
             'controllerUrl' => Url::to(['/page']),
-            'productType' => $model->product->productType
+            'productType' => $productType
         ]
     ) ?>
 
@@ -113,7 +114,7 @@ use kartik\switchinput\SwitchInput;
             'prefix' => 'contentSection',
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'productType' => $model->product->productType
+            'productType' => $productType
         ]
     ) ?>
 
@@ -146,7 +147,7 @@ use kartik\switchinput\SwitchInput;
             'prefix' => 'sidebarSection',
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'productType' => $model->product->productType
+            'productType' => $productType
         ]
     ) ?>
 
@@ -161,7 +162,7 @@ use kartik\switchinput\SwitchInput;
             'prefix' => 'footerSection',
             'type' => 'footer',
             'controllerUrl' => Url::to(['/page']),
-            'productType' => $model->product->productType
+            'productType' => $productType
         ]
     ) ?>
 
@@ -175,7 +176,7 @@ use kartik\switchinput\SwitchInput;
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-                    'id'    => 'submit-btn',
+                    'id' => 'submit-btn',
                     'name' => 'continue'
                 ]) ?>
             </div>

@@ -5,12 +5,11 @@ namespace backend\models;
 use backend\components\PathHelper;
 use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
  * Represents a single multimedia category.
  *
+ * @property $items[] MultimediaItem
  * @package backend\models
  */
 class MultimediaCategory extends Model
@@ -22,13 +21,17 @@ class MultimediaCategory extends Model
      */
     public $name;
 
-    /**
-     * Get path containing all categories of files.
-     */
-    public static function GET_MULTIMEDIA_PATH()
-    {
-        return Yii::getAlias('@frontend') . '/web/multimedia'; // WITHOUT SLASH AT THE END!!
-    }
+    public $fullName;
+
+    public $portal;
+
+    public $path;
+
+    public $pathForWeb;
+
+    private $items;
+
+    public $id;
 
     /**
      * Return the model if found, otherwise return null.
@@ -38,7 +41,7 @@ class MultimediaCategory extends Model
      */
     public static function find($name)
     {
-        if (is_dir(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $name)) {
+        if (is_dir(Yii::$app->dataEngine->getMultimediaDirectory() . $name)) {
             $category = new MultimediaCategory();
             $category->name = $name;
 
@@ -55,11 +58,14 @@ class MultimediaCategory extends Model
     {
         return [
             [['name'], 'required'],
-            ['name', function ($attribute) {
-                if (strpbrk($this->$attribute, "\\/?%*:|\"<>") !== false) {
-                    $this->addError($attribute, 'Meno kategórie obsahuje nepovolené znaky.');
+            [
+                'name',
+                function ($attribute) {
+                    if (strpbrk($this->$attribute, "\\/?%*:|\"<>") !== false) {
+                        $this->addError($attribute, 'Meno kategórie obsahuje nepovolené znaky.');
+                    }
                 }
-            }]
+            ]
         ];
     }
 
@@ -71,82 +77,71 @@ class MultimediaCategory extends Model
      */
     public static function loadAll()
     {
-        return array_map(function ($dir) {
+        $multimediaCategories = array();
+
+        $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
+
+        chdir($portal->getMultimediaDirectory());
+
+        $directories = glob('*', GLOB_ONLYDIR);
+
+        foreach ($directories as $directory) {
             $category = new MultimediaCategory();
+            $category->name = $directory;
+            $category->portal = $portal;
+            $category->path = $portal->getMultimediaDirectory() . $directory . '/';
+            $category->pathForWeb = $portal->getMultimediaDirectoryForWeb() . $directory . '/';
+            $category->fullName = $category->portal->name . ' ' . $category->name;
 
-            $dirsArray = explode('/', $dir);
+            $category->id = hash('md5', $category->fullName);
 
-            $category->name = end($dirsArray);
-
-            return $category;
-        }, array_filter(glob(self::GET_MULTIMEDIA_PATH() . '/*'), 'is_dir'));
-    }
-
-    /**
-     * Return all possible subcategories.
-     *
-     * @param string $portal subcategories for a portal
-     * @return array
-     */
-    public static function getSubcategories($portal = null)
-    {
-        $query = Portal::find();
-        if (!empty($portal)) {
-            $query = $query->where(['name' => $portal]);
+            $multimediaCategories[] = $category;
         }
-        return ArrayHelper::map($query->asArray(true)->all(), 'name', 'name') + ['global' => 'Spoločné pre všetky portály'];
-    }
 
-    /**
-     * Remove subcategory form all categories.
-     *
-     * @param $id string subcategory's name
-     */
-    public static function removeSubcategory($id)
-    {
-        foreach (array_filter(glob(self::GET_MULTIMEDIA_PATH() . '/*/*'), function ($item) use ($id) {
-            return is_dir($item) && end(explode("/", $item)) == $id;
-        }) as $dir) {
-            PathHelper::remove($dir);
+        chdir(Yii::$app->dataEngine->getMultimediaDirectory());
+
+        $directories = glob('*', GLOB_ONLYDIR);
+
+        foreach ($directories as $directory) {
+            $category = new MultimediaCategory();
+            $category->name = $directory;
+            $category->path = Yii::$app->dataEngine->getMultimediaDirectory() . $directory . '/';
+            $category->pathForWeb = Yii::$app->dataEngine->getMultimediaDirectoryForWeb() . $directory . '/';
+            $category->fullName = $category->name;
+
+            $category->id = hash('md5', $category->fullName);
+
+            $multimediaCategories[] = $category;
         }
+
+        return $multimediaCategories;
     }
 
     /**
      * Return all possible items (set their category name, subcategory, etc);
      *
-     * @param null $subcategory
      * @param bool $only_images
      * @return array
      */
-    public function getItems($subcategory = null, $only_images = false)
+    public function getItems($only_images = false)
     {
-        $process = function ($data, $only_images, $global, $category_name) {
-            return array_map(function ($file) use ($global, $category_name) {
+        if (!isset($this->items)) {
+
+            $this->items = array();
+            chdir($this->path);
+
+            foreach (glob('*') as $file) {
                 $item = new MultimediaItem();
-                $split_path = explode("/", $file);
-                $item->name = end($split_path);
-                $item->categoryName = $category_name;
-                $item->subcategory = $global === true ? 'global' : $split_path[count($split_path) - 2];
+                $item->name = $file;
+                $item->multimedia_category_id = $this->id;
 
-                return $item;
-            }, array_filter($data, function ($item) use ($only_images) {
-                return is_file($item) && (!$only_images || PathHelper::isImageFile($item));
-            }));
-        };
+                $item->type = MultimediaItem::determineType($file);
 
-        $data = [];
-
-        if ($subcategory == null || $subcategory == 'global') {
-            $data = $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . '/*'), $only_images, true, $this->name);
-
-            if ($subcategory == 'global') {
-                return $data;
+                $this->items[] = $item;
             }
         }
 
-        $data += $process(glob(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name . DIRECTORY_SEPARATOR . (($subcategory == null) ? '*/*' : $subcategory . DIRECTORY_SEPARATOR . '*')), $only_images, false, $this->name);
-
-        return $data;
+        return $this->items;
     }
 
     /**

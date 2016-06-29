@@ -72,7 +72,7 @@ class TemplateController extends BaseController
          */
         $file_editor = Yii::createObject([
             'class'     => FileEditorWidget::className(),
-            'directory' => Yii::$app->params['templatesDirectory'] . $template->identifier,
+            'directory' => $template->getMainDirectory(),
             'compileScssTo' => __DIR__. '/../testing-data-compiled',
         ]);
         $state = $file_editor->performActions();

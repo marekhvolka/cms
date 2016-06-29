@@ -3,29 +3,17 @@
 namespace common\components;
 
 
-use backend\models\Language;
-use backend\models\Page;
-use backend\models\Portal;
-use backend\models\Product;
-use backend\models\Block;
-use backend\models\Snippet;
-use backend\models\SnippetCode;
-use backend\models\SnippetVarValue;
+use Latte\Engine;
 use Latte\Loaders\FileLoader;
 use Yii;
 use yii\base\Component;
-use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
 
-use Latte\Engine;
-use Latte\Loaders\StringLoader;
-
-class CacheEngine extends Component
+class DataEngine extends Component
 {
     /**
      * @var string adresar, v ktorom sa nachadza cache
      */
-    public $cacheDirectory = '';
+    private $dataDirectory = '';
 
     /**
      * @var Engine
@@ -34,10 +22,10 @@ class CacheEngine extends Component
 
     public function init()
     {
-        $this->cacheDirectory = Yii::getAlias('@frontend') . '/web/cache/';
+        $this->dataDirectory = Yii::getAlias('@frontend') . '/web/data/';
 
-        if (!file_exists($this->cacheDirectory)) {
-            mkdir($this->cacheDirectory, 0777, true);
+        if (!file_exists($this->dataDirectory)) {
+            mkdir($this->dataDirectory, 0777, true);
         }
 
         $this->latteRenderer = new Engine();
@@ -63,15 +51,25 @@ class CacheEngine extends Component
         return __DIR__ . '/ExceptionHandler.php';
     }
 
+    public function getDataDirectory()
+    {
+        return $this->dataDirectory;
+    }
+
+    public function getCommonDirectory()
+    {
+        return $this->dataDirectory . 'common/';
+    }
+
     public function getCommonCacheFile($reload = false)
     {
-        $path = $this->cacheDirectory . 'common.php';
+        $path = $this->getCommonDirectory() . 'common.php';
 
         if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
 
-            $buffer .= 'require_once(\'' . Yii::$app->cacheEngine->getObjectBridgeClassPath() . '\');' . PHP_EOL;
-            $buffer .= 'require_once(\'' . Yii::$app->cacheEngine->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
+            $buffer .= 'require_once(\'' . $this->getObjectBridgeClassPath() . '\');' . PHP_EOL;
+            $buffer .= 'require_once(\'' . $this->getExceptionHandlerClassPath() . '\');' . PHP_EOL;
 
             $buffer .= '$bootstrap_css = \'http://www.hyperfinance.cz/css/bootstrap.min.css\';' . PHP_EOL;
             $buffer .= '$bootstrap_js = \'http://www.hyperfinance.cz/js/bootstrap.min.js\';' . PHP_EOL;
@@ -90,15 +88,53 @@ class CacheEngine extends Component
     /** vrati cestu k hlavnemu adresaru, kde su ulozene informacie k snippetom
      * @return string
      */
-    public function getSnippetsMainDirectory()
+    public function getSnippetsDirectory()
     {
-        $path = $this->cacheDirectory . 'snippets/';
+        $path = $this->getCommonDirectory() . 'snippets/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
         return $path;
+    }
+
+    public function getTemplatesDirectory()
+    {
+        $path = $this->getCommonDirectory() . 'templates/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
+    }
+
+    public function getProductsDirectory()
+    {
+        $path = $this->getCommonDirectory() . 'products/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
+    }
+
+    public function getMultimediaDirectory()
+    {
+        $path = $this->getCommonDirectory() . 'multimedia/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return $path;
+    }
+
+    public function getMultimediaDirectoryForWeb()
+    {
+        return 'http://hypercms/data/common/multimedia/';
     }
 
     //endregion

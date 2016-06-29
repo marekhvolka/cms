@@ -123,7 +123,6 @@ $('#' + formId).submit(function () {
 });
 
 body.on('click', '.btn-block-modal', function () {
-
     var modalContainer = $(this).parents('.block').first().find('.modal-container');
 
     var blockId = $(this).data('id'),

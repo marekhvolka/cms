@@ -1,4 +1,3 @@
-/frontend/web/cache
 /frontend/web/public
 # yii console command
 /yii
@@ -34,3 +33,4 @@ phpunit.phar
 # log files and debug
 backend/runtime
 /common/components/tmp/
+/frontend/web/data/

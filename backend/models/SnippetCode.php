@@ -102,10 +102,10 @@ class SnippetCode extends CustomModel
      */
     public function getMainFile($reload = false)
     {
-        $path = $this->snippet->getCacheDirectory() . 'code' . $this->id . '.php';
+        $path = $this->snippet->getMainDirectory() . 'code' . $this->id . '.php';
 
         if (!file_exists($path) || $reload)
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $this->code);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $this->code);
 
         return $path;
     }

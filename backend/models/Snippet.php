@@ -137,9 +137,9 @@ class Snippet extends CustomModel implements ICacheable
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
      * @return string
      */
-    public function getCacheDirectory()
+    public function getMainDirectory()
     {
-        $path = Yii::$app->cacheEngine->getSnippetsMainDirectory() . 'snippet' . $this->id . '/';
+        $path = Yii::$app->dataEngine->getSnippetsDirectory() . 'snippet' . $this->id . '/';
 
         if (!file_exists($path))
             mkdir($path, 0777, true);
@@ -154,10 +154,10 @@ class Snippet extends CustomModel implements ICacheable
      */
     public function getMainCacheFile($reload = false)
     {
-        $path = $this->getCacheDirectory() . 'snippet.php';
+        $path = $this->getMainDirectory() . 'snippet.php';
 
         if (!file_exists($path) || $reload) {
-            $cacheEngine = Yii::$app->cacheEngine;
+            $dataEngine = Yii::$app->dataEngine;
 
             $buffer = '<?php ' . PHP_EOL;
 
@@ -172,7 +172,7 @@ class Snippet extends CustomModel implements ICacheable
 
             $buffer .= '?>' . PHP_EOL;
 
-            $cacheEngine->writeToFile($path, 'w+', $buffer);
+            $dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;

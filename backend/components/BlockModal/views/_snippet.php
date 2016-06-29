@@ -4,6 +4,7 @@ use backend\models\Portal;
 use backend\models\Tag;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\BaseHtml;
 
 /* @var $productType backend\models\ProductType */
 /* @var $prefix string */
@@ -11,6 +12,7 @@ use yii\helpers\ArrayHelper;
 ?>
 
 <div class="col-md-12" id="appendSmartSnippetInfo">
+    <?= BaseHtml::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
     <div class="modal-header">
         <button type="button" class="btn modal close" data-dismiss="modal">
             <span aria-hidden="true">×</span><span class="sr-only">Close</span></button>

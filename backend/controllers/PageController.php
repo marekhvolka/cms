@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Page;
 use backend\models\search\PageSearch;
-use common\components\CacheEngine;
+use common\components\DataEngine;
 use common\components\ParseEngine;
 use Yii;
 use yii\base\Exception;
@@ -169,7 +169,7 @@ class PageController extends BaseController
 
     public function actionGenerate($id)
     {
-        $cacheEngine = new CacheEngine();
+        $cacheEngine = new DataEngine();
 
         $cacheEngine->init();
 

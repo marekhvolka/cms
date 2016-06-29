@@ -20,14 +20,6 @@ class MultimediaItem extends Model
     const SCENARIO_UPLOAD = 'upload';
 
     /**
-     * @var string The name of the subcategory.
-     */
-    public $subcategory = 'global';
-    /**
-     * @var string the name of the category
-     */
-    public $categoryName;
-    /**
      * @var string the name of the file
      */
     public $name;
@@ -35,6 +27,10 @@ class MultimediaItem extends Model
      * @var UploadedFile the new file in case of upload scenario
      */
     public $file;
+
+    public $type;
+
+    public $multimedia_category_id;
 
     /**
      * @inheritdoc
@@ -86,22 +82,6 @@ class MultimediaItem extends Model
     }
 
     /**
-     * Return the path to the file.
-     * @return string
-     * @throws UnauthorizedHttpException in case of an illegal access to a file
-     */
-    public function getPath()
-    {
-        $path = realpath(MultimediaCategory::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->categoryName . DIRECTORY_SEPARATOR . ($this->subcategory == 'global' ? $this->name : $this->subcategory . DIRECTORY_SEPARATOR . $this->name));
-
-        if (PathHelper::isInside($path, realpath(MultimediaCategory::GET_MULTIMEDIA_PATH()))) {
-            return $path;
-        } else {
-            throw new UnauthorizedHttpException();
-        }
-    }
-
-    /**
      * @inheritdoc
      */
     public function scenarios()
@@ -139,5 +119,32 @@ class MultimediaItem extends Model
         if (is_file($path)) {
             PathHelper::remove($path);
         }
+    }
+
+    public static function determineType($fileName)
+    {
+        if (!strpos($fileName, '.'))
+            return null;
+
+        $extension = explode('.', $fileName)[1];
+
+        switch($extension) {
+            case 'pdf':
+
+                $type = 'pdf';
+                break;
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+            case 'gif':
+
+                $type = 'image';
+                break;
+
+            default:
+                $type = '';
+        }
+
+        return $type;
     }
 }

@@ -29,7 +29,8 @@
         "latte/latte": "^2.3",
         "leafo/scssphp": "^0.6.3",
         "kartik-v/yii2-widget-colorinput": "*",
-        "kartik-v/yii2-widget-datepicker": "*"
+        "kartik-v/yii2-widget-datepicker": "*",
+        "kartik-v/yii2-widget-fileinput": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

@@ -77,34 +77,18 @@ class Language extends \yii\db\ActiveRecord
             ->orderBy('parent_id');
     }
 
-    /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany jazyk
-     * @return string
-     */
-    public function getCacheDirectory()
-    {
-        $path = Yii::$app->cacheEngine->cacheDirectory . $this->identifier . '/';
-
-        if (!file_exists($path))
-        {
-            mkdir($path, 0777, true);
-            mkdir($path . 'portals', 0777, true); //vytvori priecinok pre portaly
-        }
-
-        return $path;
-    }
-
     /** Vrati cestu k suboru, v ktorom su nacachovane data zo slovnika
      * @return string
      */
     public function getDictionaryCacheFile()
     {
-        $path = $this->getCacheDirectory() . 'dictionary.php';
+        $path = Yii::$app->dataEngine->getCommonDirectory() . $this->identifier . '_dictionary.php';
 
         if (!file_exists($path))
         {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= 'include "' . Yii::$app->cacheEngine->getCommonCacheFile() . '";' . PHP_EOL;
+            $buffer .= 'include "' . Yii::$app->dataEngine->getCommonCacheFile() . '";' . PHP_EOL;
 
             $buffer .= '$tempObject = ';
 
@@ -122,7 +106,7 @@ class Language extends \yii\db\ActiveRecord
 
             $buffer .= '$slovnik = new ObjectBridge($tempObject, \'slovnik\'); ?>' . PHP_EOL;
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
         return $path;
     }
@@ -130,9 +114,9 @@ class Language extends \yii\db\ActiveRecord
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre produkty daneho jazyka
      * @return string
      */
-    public function getProductsCacheDirectory()
+    public function getProductsDirectory()
     {
-        $path = $this->getCacheDirectory() . 'products/';
+        $path = Yii::$app->dataEngine->getProductsDirectory() . $this->identifier . '/';
 
         if (!file_exists($path))
         {
@@ -147,7 +131,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getProductsMainCacheFile()
     {
-        $path = $this->getCacheDirectory() . 'products.php';
+        $path = $this->getProductsDirectory() . 'products.php';
 
         if (!file_exists($path))
         {
@@ -171,7 +155,7 @@ class Language extends \yii\db\ActiveRecord
 
             $buffer .= ' ?>';
 
-            Yii::$app->cacheEngine->writeToFile($path, 'w+', $buffer);
+            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;

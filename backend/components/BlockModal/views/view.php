@@ -22,10 +22,8 @@ use yii\bootstrap\Html;
             switch ($model->type) {
                 case 'product_snippet' :
 
-                    break;
                 case 'portal_snippet' :
 
-                    break;
                 case 'snippet' :
 
                     echo $this->render('_snippet', [
