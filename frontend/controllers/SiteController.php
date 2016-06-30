@@ -84,7 +84,7 @@ class SiteController extends Controller
         $identifiers = explode("/", strtolower($url));
 
         $portal = Portal::find()->where([
-            'domain' => $_SERVER['HTTP_HOST']
+            'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
         ])
             ->one();
 
@@ -104,7 +104,10 @@ class SiteController extends Controller
 
         if (!isset($page)) {
             $page = Page::find()
-                ->where(['identifier' => '404'])->one();
+                ->where([
+                    'identifier' => '404',
+                    'portal_id' => $portalId
+                ])->one();
         }
 
         if ($page->portal->parsed == 0) {
