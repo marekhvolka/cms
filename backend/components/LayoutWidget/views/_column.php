@@ -30,7 +30,7 @@ use yii\helpers\BaseHtml;
         <div class="dropdown dropdown-column-content inline-button add-block">
             <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
                     title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
-                    data-product-type-id="<?= $productType->id ?>">
+                    data-product-type-id="<?= $productType ? $productType->id : '' ?>">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
