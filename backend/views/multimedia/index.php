@@ -1,6 +1,7 @@
 <?php
 
 use backend\assets\FancyBoxAsset;
+use backend\components\MultimediaWidget\MultimediaWidget;
 use kartik\select2\Select2;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -17,4 +18,4 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<?= \backend\components\MultimediaWidget\MultimediaWidget::widget() ?>
+<?= MultimediaWidget::widget() ?>
