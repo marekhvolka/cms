@@ -7,6 +7,9 @@ use yii\helpers\Html;
 /* @var $prefix string */
 /* @var $productType \backend\models\ProductType */
 
+if (!isset($renderModal)) {
+    $renderModal = false;
+}
 ?>
 
 <div class="btn-group layout-block block"
@@ -24,7 +27,7 @@ use yii\helpers\Html;
         <?php echo $model->name; ?>
     </button>
 
-    <?php if (($model->type == 'snippet')) : ?>
+    <?php if (($model->type == 'snippet') && $model->snippetCode) : ?>
         <?=
         Html::a(
             '<span class="glyphicon glyphicon-link"></span>', $model->snippetCode->url, [
@@ -35,7 +38,7 @@ use yii\helpers\Html;
         ) ?>
     <?php endif; ?>
 
-    <?php if (($model->type == 'portal_snippet') || ($model->type == 'product_snippet')) : ?>
+    <?php if ((($model->type == 'portal_snippet') || ($model->type == 'product_snippet')) && $model->parent && $model->parent->snippetCode) : ?>
         <?=
         Html::a(
             '<span class="glyphicon glyphicon-link"></span>', $model->parent->snippetCode->url, [
@@ -51,7 +54,7 @@ use yii\helpers\Html;
     </button>
 
     <div class="modal-container">
-        <?php if (Yii::$app->request->get('duplicate')) {
+        <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
             echo BlockModalWidget::widget([
                 'block' => $model,
                 'productType' => $productType,

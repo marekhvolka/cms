@@ -197,10 +197,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
             case 'snippet':
                 if ($this->snippetCode) {
                     $name = $this->snippetCode->snippet->name;
-                } else if ($this->parent->snippetCode) {
+                } else if ($this->parent && $this->parent->snippetCode) {
                     $name = $this->parent->snippetCode->snippet->name;
                 } else {
-                    $name = 'Zmazaný kód snippetu';
+                    $name = 'Neznámy kód snippetu';
                 }
                 break;
             case 'text':

@@ -1,6 +1,7 @@
 <?php
 /* @var $model backend\models\Block */
 use backend\models\Portal;
+use backend\models\Snippet;
 use backend\models\Tag;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
@@ -20,19 +21,27 @@ use yii\helpers\BaseHtml;
             <span title="Rozbaliť / zbaliť všetko" style="margin-right: 5px; cursor: pointer;">
                 <i class="fa fa-sort"></i>
             </span>
-            <span id=""><?= $model->snippetCode->snippet->name ?></span>
 
-            <?= Html::activeDropDownList($model, 'snippet_code_id',
+            <?php if ($model->snippetCode) : ?>
+                <span id=""><?= $model->snippetCode->snippet->name ?></span>
+
+                <?= Html::activeDropDownList($model, 'snippet_code_id',
                 ArrayHelper::map($model->snippetCode->snippet->snippetCodes, 'id', 'name'),
                 [
                     'name' => $prefix . '[snippet_code_id]'
                 ]) ?>
 
-            <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
-                    style="right: 60px; top: 13px;" data-toggle="modal"
-                    data-target="#supportModal" title="Nápoveda">
-                <span class="fa fa-question"></span>
-            </button>
+                <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
+                        style="right: 60px; top: 13px;" data-toggle="modal"
+                        data-target="#supportModal" title="Nápoveda">
+                    <span class="fa fa-question"></span>
+                </button>
+            <?php else : ?>
+                <?= Html::dropDownList('snippet_id', null, ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
+                    'prompt' => 'Výber snippetu',
+                    'class' => 'snippet-dropdown'
+                ]) ?>
+            <?php endif; ?>
         </h4>
     </div>
 

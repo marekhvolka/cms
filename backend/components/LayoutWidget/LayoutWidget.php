@@ -90,11 +90,13 @@ class LayoutWidget extends Widget
      * @param $indexBlock
      * @return string
      */
-    public function appendBlock(Block $block, $prefix, $indexBlock)
+    public function appendBlock(Block $block, $prefix, $indexBlock, $productType)
     {
         return $this->render('_block', [
             'model' => $block,
             'prefix' => $prefix . "[Block][$indexBlock]",
+            'renderModal' => true,
+            'productType' => $productType
         ]);
     }
 

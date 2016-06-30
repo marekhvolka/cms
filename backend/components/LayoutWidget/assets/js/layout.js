@@ -8,80 +8,114 @@ var appendUrl = {
     },
     body = $("body");
 
-
 // Event for appending new section.
-body.on("click", '.btn-add-section', function () {
-    var $this = $(this),
-        layouts = $this.parents('.layouts'),
-        postData = {
-            type: $this.data('type'),
-            prefix: $this.data('prefix')
-        };
-
-    $.post(appendUrl.section, postData, function (data) {
-        appendElement(layouts, $(data));
-    });
-});
-
-body.on("click", ".btn-remove-section", function () {
-    $(this).parents('.section').remove();
-});
-
-body.on("click", ".btn-remove-row", function () {
-    $(this).parents('.layout-row').first().remove();
-});
-
-body.on("click", ".add-row", function () {
-    var $this = $(this),
-        columnsByWidth = getColumnsWidths($this.data('row-type-width')),
-        section = $this.parents('.section').first(),
-        postData = {
-            prefix: $this.data('prefix')
-        };
-
-    $.post(appendUrl.row, postData, function (data) {
-        var row = appendElement(section, $(data)),
-            postColumnData = {
-                width: columnsByWidth,
-                prefix: row.data('prefix')
+body.on(
+    "click", '.btn-add-section', function ()
+    {
+        var $this = $(this),
+            layouts = $this.parents('.layouts'),
+            postData = {
+                type: $this.data('type'),
+                prefix: $this.data('prefix')
             };
 
-        $.post(appendUrl.column, postColumnData, function (columnsData) {
-            $.each(JSON.parse(columnsData), function () {
-                appendElement(row, this);
-            });
-        });
-    });
-});
+        $.post(
+            appendUrl.section, postData, function (data)
+            {
+                appendElement(layouts, $(data));
+            }
+        );
+    }
+);
 
-body.on("click", ".column-option", function () {
-    var column = $(this).parents('.column').first();
+body.on(
+    "click", ".btn-remove-section", function ()
+    {
+        $(this).parents('.section').remove();
+    }
+);
 
-    var postData = {
-        prefix: $(this).data('prefix')
-    };
+body.on(
+    "click", ".btn-remove-row", function ()
+    {
+        $(this).parents('.layout-row').first().remove();
+    }
+);
 
-    $.post(appendUrl.block, postData, function (data) {
-        appendElement(column, $(data));
-    });
-});
+body.on(
+    "click", ".add-row", function ()
+    {
+        var $this = $(this),
+            columnsByWidth = getColumnsWidths($this.data('row-type-width')),
+            section = $this.parents('.section').first(),
+            postData = {
+                prefix: $this.data('prefix')
+            };
 
-body.on("click", ".btn-remove-block", function () {
-    $(this).parents('.layout-block').first().remove();
-});
+        $.post(
+            appendUrl.row, postData, function (data)
+            {
+                var row = appendElement(section, $(data)),
+                    postColumnData = {
+                        width: columnsByWidth,
+                        prefix: row.data('prefix')
+                    };
 
+                $.post(
+                    appendUrl.column, postColumnData, function (columnsData)
+                    {
+                        $.each(
+                            JSON.parse(columnsData), function ()
+                            {
+                                appendElement(row, this);
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    }
+);
 
-function appendElement(parentElement, dataToAppend) {
-    parentElement
-        .find('.children-list:first')
-        .append(dataToAppend);
+body.on(
+    "click", ".column-option", function ()
+    {
+        var column = $(this).parents('.column').first();
+        var mainButton = $(this).parents('.add-block').first().find('.add-block-btn').first();
+
+        var postData = {
+            prefix: mainButton.data('prefix'),
+            product_type_id: mainButton.data('product-type-id'),
+            type: $(this).data('type')
+        };
+
+        $.post(
+            appendUrl.block, postData, function (data)
+            {
+                appendElement(column, $(data));
+            }
+        );
+    }
+);
+
+body.on(
+    "click", ".btn-remove-block", function ()
+    {
+        $(this).parents('.layout-block').first().remove();
+    }
+);
+
+function appendElement(parentElement, dataToAppend)
+{
+    parentElement.find('.children-list:first').append(dataToAppend);
 
     return dataToAppend;
 }
 
-
-function getColumnsWidths(rowType) {
-    switch (rowType) {
+function getColumnsWidths(rowType)
+{
+    switch (rowType)
+    {
         case 1:
             return ['12'];
         case 2:
@@ -98,76 +132,89 @@ function getColumnsWidths(rowType) {
 }
 
 // Handles elements (blocks, columns, rows) ordering.
-$('#' + formId).submit(function () {
-    $(".section-rows").each(function () {
-        var rowOrder = 1;
-        var rows = $(this).find('.layout-row');
-        rows.each(function () {
-            $(this).find('.order').val(rowOrder);
-            rowOrder++;
-            var columnOrder = 1;
-            var columns = $(this).find('.column');
-            columns.each(function () {
-                $(this).find('.order').val(columnOrder);
-                columnOrder++;
-                var blocks = $(this).find('.layout-block');
-                var blockOrder = 1;
-                blocks.each(function () {
-                    $(this).find('.order').val(blockOrder);
-                    blockOrder++;
-                });
-            });
-        });
-    });
-    return true;
-});
+/*
+ $('#' + formId).submit(function () {
+ $(".section-rows").each(function () {
+ var rowOrder = 1;
+ var rows = $(this).find('.layout-row');
+ rows.each(function () {
+ $(this).find('.order').val(rowOrder);
+ rowOrder++;
+ var columnOrder = 1;
+ var columns = $(this).find('.column');
+ columns.each(function () {
+ $(this).find('.order').val(columnOrder);
+ columnOrder++;
+ var blocks = $(this).find('.layout-block');
+ var blockOrder = 1;
+ blocks.each(function () {
+ $(this).find('.order').val(blockOrder);
+ blockOrder++;
+ });
+ });
+ });
+ });
+ return true;
+ });
 
-body.on('click', '.btn-block-modal', function () {
-    var modalContainer = $(this).parents('.block').first().find('.modal-container');
+ */
+body.on(
+    'click', '.btn-block-modal', function ()
+    {
+        var modalContainer = $(this).parents('.block').first().find('.modal-container');
 
-    var blockId = $(this).data('id'),
-        modal = $('#modal-' + blockId);
+        var blockId = $(this).data('id'),
+            modal = $('#modal-' + blockId);
 
-    // if it exists, it will get shown automatically... otherwise, load it
-    if (modalContainer.children().length == 0) {
+        // if it exists, it will get shown automatically... otherwise, load it
+        if (modalContainer.children().length == 0)
+        {
+            var postData = {
+                    id: blockId,
+                    prefix: $(this).data('prefix')
+                },
+                self = this;
+
+            $.get(
+                appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data)
+                {
+                    var modalWindow = $(data);
+
+                    modalContainer.append(modalWindow);
+
+                    modalWindow.modal();
+                    attachHideModalEvent(modalWindow.find('.btn-modal-close'));
+                    attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
+                }
+            );
+        }
+        else
+        {
+            modalContainer.children('.modal').first().modal('show');
+        }
+
+        return true;
+    }
+);
+
+body.on(
+    'click', '.btn-add-list-item', function ()
+    {
+        var listContainer = $(this).parents('.list-panel').first();
+
         var postData = {
-                id: blockId,
-                prefix: $(this).data('prefix')
-            },
-            self = this;
+            prefix: $(this).data('prefix'),
+            parentVarId: $(this).data('parent-var-id')
+        };
 
         $.get(
-            appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data) {
-                var modalWindow = $(data);
-
-                modalContainer.append(modalWindow);
-
-                modalWindow.modal();
-                attachHideModalEvent(modalWindow.find('.btn-modal-close'));
-                attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
+            appendUrl.listItem + '?prefix=' + postData.prefix + '&parentVarId=' + postData.parentVarId, function (data)
+            {
+                appendElement(listContainer, $(data));
             }
         );
-    } else {
-        modalContainer.children('.modal').first().modal('show');
     }
-
-    return true;
-});
-
-body.on('click', '.btn-add-list-item', function () {
-    var listContainer = $(this).parents('.list-panel').first();
-
-    var postData = {
-        prefix: $(this).data('prefix'),
-        parentVarId: $(this).data('parent-var-id')
-    };
-
-    $.get(
-        appendUrl.listItem + '?prefix=' + postData.prefix + '&parentVarId=' + postData.parentVarId, function (data) {
-            appendElement(listContainer, $(data));
-        }
-    );
-});
+);
 
 body.on(
     'click', '.btn-remove-list-item', function ()
@@ -176,26 +223,36 @@ body.on(
     }
 );
 
-function attachHideModalEvent(hideButton) {
-    hideButton.click(function () {
-        var modalWindow = $(this).parents('.modal').first();
+function attachHideModalEvent(hideButton)
+{
+    hideButton.click(
+        function ()
+        {
+            var modalWindow = $(this).parents('.modal').first();
 
-        modalWindow.modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
+            modalWindow.modal('hide');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
 
-        //modalWindow.parent().empty();
-    });
+            //modalWindow.parent().empty();
+        }
+    );
 }
 
-function attachSaveModalEvent(saveButton) {
-    saveButton.click(function () {
-        var modalWindow = $(this).parents('.modal').first();
+function attachSaveModalEvent(saveButton)
+{
+    saveButton.click(
+        function ()
+        {
+            var modalWindow = $(this).parents('.modal').first();
 
-        modalWindow.modal('hide');
-        //$('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-    });
+            modalWindow.modal('hide');
+            //$('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    );
 }
+
+$('.dropdown-toggle').dropdown();
 
 

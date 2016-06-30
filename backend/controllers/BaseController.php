@@ -12,6 +12,7 @@ use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\ProductType;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
@@ -131,16 +132,17 @@ abstract class BaseController extends Controller
     public function actionAppendBlock()
     {
         $columnId = Yii::$app->request->post('columnId');
-
         $prefix = Yii::$app->request->post('prefix');
+
+        $productType = ProductType::findOne(Yii::$app->request->post('product_type_id'));
 
         $indexBlock = rand(1000, 1000000);
 
         $block = new Block();
         $block->column_id = $columnId;
-        $block->type = 'text'; // TODO test data.
+        $block->type = Yii::$app->request->post('type');
 
-        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $productType);
     }
 
     public function actionAppendBlockModal($id, $prefix)

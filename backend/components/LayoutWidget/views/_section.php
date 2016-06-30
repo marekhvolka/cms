@@ -11,12 +11,12 @@ use yii\helpers\BaseHtml;
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
     <div class="btn-group section-buttons">
-        <div class="section-button">
+        <div class="inline-button">
             <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             </button>
         </div>
-        <div class="dropdown dropdown-blocks section-button">
+        <div class="dropdown dropdown-blocks inline-button">
             <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
                     title="Vložiť nový riadok" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -30,7 +30,7 @@ use yii\helpers\BaseHtml;
                 <li><a class="add-row" data-row-type-width="1/2" data-prefix="<?= $prefix ?>">1/2 riadok</a></li>
             </ul>
         </div>
-        <div class="section-button">
+        <div class="inline-button">
             <button type="button" class="btn btn-danger btn-xs btn-remove-section" title="Zmazať" >
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>

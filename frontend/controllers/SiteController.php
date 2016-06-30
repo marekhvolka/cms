@@ -1,22 +1,21 @@
 <?php
 namespace frontend\controllers;
 
-use backend\models\Block;
 use backend\models\Page;
+use backend\models\Portal;
 use backend\models\Product;
 use common\components\ParseEngine;
-use Yii;
 use common\models\LoginForm;
+use frontend\models\ContactForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use Yii;
 use yii\base\InvalidParamException;
-use yii\db\Query;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 
 /**
  * Site controller
@@ -84,9 +83,21 @@ class SiteController extends Controller
 
         $identifiers = explode("/", strtolower($url));
 
+        $portal = Portal::find()->where([
+            'domain' => $_SERVER['HTTP_HOST']
+        ])
+            ->one();
+
+        if (isset($portal)) {
+            $portalId = $portal->id;
+        } else {
+            $portalId = 3;
+        }
+
         $pages = Page::find()
             ->where([
-                'parent_id' => null
+                'parent_id' => null,
+                'portal_id' => $portalId
             ])->all();
 
         $page = $this->findPage($pages, $identifiers, 0);
