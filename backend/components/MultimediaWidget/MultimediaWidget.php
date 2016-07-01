@@ -2,6 +2,7 @@
 
 namespace backend\components\MultimediaWidget;
 
+use backend\models\MultimediaCategory;
 use yii\base\Widget;
 
 /**
@@ -21,9 +22,10 @@ class MultimediaWidget extends Widget
 
     public function run()
     {
-        AssetBundle::register($this->getView());
+        MultimediaWidgetAsset::register($this->getView());
 
         return $this->render('view', [
+            'categories' => MultimediaCategory::loadAll()
         ]);
     }
 }

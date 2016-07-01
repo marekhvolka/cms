@@ -23,8 +23,6 @@ class MultimediaCategory extends Model
 
     public $fullName;
 
-    public $portal;
-
     public $path;
 
     public $pathForWeb;
@@ -77,42 +75,50 @@ class MultimediaCategory extends Model
      */
     public static function loadAll()
     {
-        $multimediaCategories = array();
+        /**
+         * @param array $dirs
+         * @param $basePath
+         * @param $basePathForWeb
+         * @param Portal $portal
+         * @return array
+         */
+        $processDirs = function (array $dirs, $basePath, $basePathForWeb, $portal = null) {
+            $result = [];
+
+
+            foreach ($dirs as $directory) {
+                $category = new MultimediaCategory();
+                $category->name = $directory;
+                $category->path = $basePath . $directory . '/';
+                $category->pathForWeb = $basePathForWeb . $directory . '/';
+                $category->fullName = ($portal != null ? $portal->name : 'Spoločné pre všetky portály') . ' ' . $category->name;
+                $category->id = hash('md5', $category->fullName);
+                $result[] = $category;
+            }
+
+            return $result;
+        };
+
+        $multimediaCategories = [];
 
         $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
 
-        chdir($portal->getMultimediaDirectory());
-
-        $directories = glob('*', GLOB_ONLYDIR);
-
-        foreach ($directories as $directory) {
-            $category = new MultimediaCategory();
-            $category->name = $directory;
-            $category->portal = $portal;
-            $category->path = $portal->getMultimediaDirectory() . $directory . '/';
-            $category->pathForWeb = $portal->getMultimediaDirectoryForWeb() . $directory . '/';
-            $category->fullName = $category->portal->name . ' ' . $category->name;
-
-            $category->id = hash('md5', $category->fullName);
-
-            $multimediaCategories[] = $category;
+        if ($portal) {
+            chdir($portal->getMultimediaDirectory()); // so that we get only directory name as result of glob
+            $multimediaCategories = array_merge($multimediaCategories, $processDirs(
+                glob('*', GLOB_ONLYDIR),
+                $portal->getMultimediaDirectory(),
+                $portal->getMultimediaDirectoryForWeb(),
+                $portal
+            ));
         }
 
-        chdir(Yii::$app->dataEngine->getMultimediaDirectory());
-
-        $directories = glob('*', GLOB_ONLYDIR);
-
-        foreach ($directories as $directory) {
-            $category = new MultimediaCategory();
-            $category->name = $directory;
-            $category->path = Yii::$app->dataEngine->getMultimediaDirectory() . $directory . '/';
-            $category->pathForWeb = Yii::$app->dataEngine->getMultimediaDirectoryForWeb() . $directory . '/';
-            $category->fullName = $category->name;
-
-            $category->id = hash('md5', $category->fullName);
-
-            $multimediaCategories[] = $category;
-        }
+        chdir(Yii::$app->dataEngine->getMultimediaDirectory()); // so that we get only directory name as result of glob
+        $multimediaCategories = array_merge($multimediaCategories, $processDirs(
+            glob('*', GLOB_ONLYDIR),
+            Yii::$app->dataEngine->getMultimediaDirectory(),
+            Yii::$app->dataEngine->getMultimediaDirectoryForWeb()
+        ));
 
         return $multimediaCategories;
     }
@@ -131,37 +137,16 @@ class MultimediaCategory extends Model
             chdir($this->path);
 
             foreach (glob('*') as $file) {
-                $item = new MultimediaItem();
-                $item->name = $file;
-                $item->multimedia_category_id = $this->id;
-
-                $item->type = MultimediaItem::determineType($file);
-
-                $this->items[] = $item;
+                if (!$only_images || PathHelper::isImageFile($file)) {
+                    $item = new MultimediaItem();
+                    $item->name = $file;
+                    $item->multimedia_category_id = $this->id;
+                    $this->items[] = $item;
+                }
             }
         }
 
         return $this->items;
-    }
-
-    /**
-     * If the model is valid, saves the category.
-     *
-     * @param bool $validate should the model be revalidated?
-     * @return bool if everything went ok
-     */
-    public function save($validate = true)
-    {
-        if (!$validate || $this->validate()) {
-            $path = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name;
-            if (!is_dir($path)) {
-                return @mkdir($path, 0777);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -170,16 +155,23 @@ class MultimediaCategory extends Model
      * @param $from string the old name
      * @return bool if the operation was successful
      */
-    public function rename($from)
+    public function rename($to)
     {
-        $old_path = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $from;
-        $new_name = self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name;
+        $new_name = explode("/", $this->path);
+        $new_name[count($new_name - 1)] = $to;
+        $new_name = join("/", $new_name);
 
-        if (is_dir($old_path)) {
-            return @rename($old_path, $new_name);
+
+        if (is_dir($this->path)) {
+            rename($this->path, $new_name);
         } else {
-            return @mkdir($new_name);
+            mkdir($new_name);
         }
+
+        $this->path = $new_name;
+        $this->pathForWeb = explode('/', $this->pathForWeb);
+        $this->pathForWeb[count($this->pathForWeb - 1)] = $to;
+        $this->pathForWeb = join("/", $this->pathForWeb);
     }
 
     /**
@@ -189,6 +181,6 @@ class MultimediaCategory extends Model
      */
     public function delete()
     {
-        return PathHelper::remove(self::GET_MULTIMEDIA_PATH() . DIRECTORY_SEPARATOR . $this->name);
+        return PathHelper::remove($this->path);
     }
 }

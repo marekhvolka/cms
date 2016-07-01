@@ -113,7 +113,7 @@ class PathHelper
      */
     public static function isImageFile($fileName)
     {
-        return in_array(mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION)), ["jpg", "jpeg", "gif", "png"]);
+        return in_array(mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION)), ["jpg", "jpeg", "gif", "png", "svg"]);
     }
 
     /**

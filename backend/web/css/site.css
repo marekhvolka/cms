@@ -215,6 +215,10 @@ ul {
     padding-left: 10px;
 }
 
+.multimedia-category .multimedia-item img {
+    cursor: pointer;
+}
+
 .column-without-padding {
     padding: 0;
 }
