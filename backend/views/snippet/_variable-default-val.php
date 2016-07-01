@@ -9,11 +9,12 @@ use yii\helpers\ArrayHelper;
 /* @var $indexDefaultValue int */
 /* @var $prefix string */
 /* @var $parentPrefix string */
+/* @var $forProductType bool */
 
 ?>
 <div class="row">
     <div class="col-sm-12">
-        <?php if ($defaultValue->productType) : ?>
+        <?php if ($defaultValue->productType || $forProductType) : ?>
             <div class="col-sm-4 column-without-padding">
                 <?= BaseHtml::activeDropDownList($defaultValue, "product_type_id", ArrayHelper::map(
                     ProductType::find()->all(), "id", "name"
@@ -25,12 +26,12 @@ use yii\helpers\ArrayHelper;
                 ?>
             </div>
         <?php endif; ?>
-        <div class="col-sm-<?= $defaultValue->productType ? '8' : '12' ?> column-without-padding">
+        <div class="col-sm-<?= $defaultValue->productType || $forProductType ? '8' : '12' ?> column-without-padding">
             <?= BaseHtml::activeTextInput($defaultValue, "value_text", [
                 'class' => 'form-control',
-                'name' => $prefix . "[default_value]",
+                'name' => $prefix . "[value_text]",
             ]); ?>
-            <?php if ($defaultValue->productType) : ?>
+            <?php if ($defaultValue->productType || $forProductType) : ?>
                 <button type="button" class="btn-remove-snippet-default-value btn btn-danger btn-xs pull-right">
                     <i class="glyphicon glyphicon-minus"></i>
                 </button>

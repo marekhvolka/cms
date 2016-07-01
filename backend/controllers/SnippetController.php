@@ -184,7 +184,8 @@ class SnippetController extends BaseController
         return $this->renderAjax('_variable-default-val', [
             'defaultValue' => new SnippetVarDefaultValue(),
             'parentPrefix' => Yii::$app->request->post('parentPrefix'),
-            'prefix' => $parentPrefix . "[SnippetDefaultVarValue][$indexDefaultValue]"
+            'prefix' => $parentPrefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
+            'forProductType' => true
         ]);
     }
 

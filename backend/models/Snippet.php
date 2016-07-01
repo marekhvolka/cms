@@ -251,6 +251,11 @@ class Snippet extends CustomModel implements ICacheable
             foreach($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
 
+                if ($defaultValue->removed) {
+                    $defaultValue->delete();
+                    continue;
+                }
+
                 if (!($defaultValue->validate() && $defaultValue->save())) {
                     throw new \yii\base\Exception;
                 }

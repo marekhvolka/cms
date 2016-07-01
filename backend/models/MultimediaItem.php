@@ -29,6 +29,8 @@ class MultimediaItem extends Model
      */
     public $file;
 
+    public $multimedia_category_id;
+
     /**
      * @inheritdoc
      */

@@ -297,6 +297,11 @@ a.anchor {
     background-color: #fff;
 }
 
+.panel-heading {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .panel-heading h3, .panel-heading input {
     white-space: nowrap;
     overflow: hidden;

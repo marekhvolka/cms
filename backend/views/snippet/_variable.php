@@ -58,7 +58,8 @@ use yii\helpers\BaseHtml;
                         <?= $this->render("_variable-default-val", [
                             'defaultValue'   => $defaultValue,
                             'parentPrefix' => $prefix,
-                            'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]"
+                            'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
+                            'forProductType' => false
                         ])
                         ?>
                     <?php endforeach; ?>
