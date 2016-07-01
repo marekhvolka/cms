@@ -32,7 +32,7 @@ class GlobalSearch
 
         // SNIPPETS
         $snippets = (new Query())->select("id, name")->from("snippet")->where(['like', 'name', $searchTerm])
-            ->limit(3)->all();
+            ->limit(10)->all();
 
         foreach ($snippets as $snippet) {
             $results['snippet'][] = ['link' => Url::to(['/snippet/edit', 'id' => $snippet['id']])] + $snippet;
@@ -43,7 +43,7 @@ class GlobalSearch
         $snippet_codes = (new Query())->select("id, name, snippet_id")
             ->from("snippet_code")
             ->filterWhere(['like', 'name', $searchTerm])
-            ->limit(5)
+            ->limit(10)
             ->all();
 
         foreach ($snippet_codes as $snippet_code) {
@@ -74,7 +74,7 @@ class GlobalSearch
         // PRODUCTS
 
         $products = (new Query())->select("id, name")->from("product")->filterWhere(['like', 'name', $searchTerm])
-            ->limit(8)->all();
+            ->limit(10)->all();
 
         foreach ($products as $product) {
             $results['product'][] = ['link' => Url::to(['/product/edit', 'id' => $product['id']])] + $product;

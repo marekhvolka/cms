@@ -20,7 +20,7 @@ class SnippetSearch extends Snippet
     public function rules()
     {
         return [
-            [['id', 'default_code_id', 'snippet_type', 'last_edit_user'], 'integer'],
+            [['id', 'default_code_id', 'type', 'last_edit_user'], 'integer'],
             [['globalSearch', 'name', 'description', 'section_id', 'section_class', 'section_style', 'column_id', 'column_class', 'column_style', 'last_edit'], 'safe'],
         ];
     }

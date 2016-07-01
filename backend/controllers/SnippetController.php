@@ -85,22 +85,8 @@ class SnippetController extends BaseController
 
                 if ($snippetVarsData != null) {
 
-                    foreach ($snippetVarsData as $index => $snippetVarData) {
-                        $model->loadFromData('snippetFirstLevelVars', $snippetVarsData, $index,
-                            SnippetVar::className());
-
-                        if (key_exists('Children', $snippetVarData)) {
-                            $model->snippetFirstLevelVars[$index]->loadChildren('children', $snippetVarData['Children']);
-                        }
-                    }
-                    foreach ($model->snippetFirstLevelVars as $snippetVar) {
-                        $snippetVar->snippet_id = $model->id;
-                        if (!($snippetVar->validate() && $snippetVar->save())) {
-                            throw new \yii\base\Exception;
-                        }
-
-                        $snippetVar->saveChildren('children');
-                    }
+                    $model->loadChildren('snippetFirstLevelVars', $snippetVarsData);
+                    $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
                 }
 
                 $transaction->commit();
@@ -149,7 +135,6 @@ class SnippetController extends BaseController
     /**
      * Ajax action for appending one variable (HTML in partial view) at the end
      * of variable list.
-     * @param int $id parents id (list type parent), default null - variable is without parent.
      * @return string rendered view for one variable.
      */
     public function actionAppendVar()
@@ -169,7 +154,6 @@ class SnippetController extends BaseController
     /**
      * Ajax action for appending one wrapper of list item types children
      * variables of list type variable (HTML in partial view).
-     * @param int $id parents id (list type parent), default null - variable
      * is without parent and new SnippetVar is created.
      * @return string rendered view for one wrapper box.
      */
@@ -193,7 +177,15 @@ class SnippetController extends BaseController
      */
     public function actionAppendDefaultValue()
     {
-        return $this->renderAjax('_variable-default-val', ['defaultValue' => new SnippetVarDefaultValue()]);
+        $indexDefaultValue = rand(1000, 10000);
+
+        $parentPrefix = Yii::$app->request->post('parentPrefix');
+
+        return $this->renderAjax('_variable-default-val', [
+            'defaultValue' => new SnippetVarDefaultValue(),
+            'parentPrefix' => Yii::$app->request->post('parentPrefix'),
+            'prefix' => $parentPrefix . "[SnippetDefaultVarValue][$indexDefaultValue]"
+        ]);
     }
 
     /**

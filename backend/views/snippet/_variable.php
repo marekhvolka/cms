@@ -47,32 +47,24 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                <label class="control-label">
+                    Defaultne hodnoty
+                </label>
 
-        <?php
-        $defaultValue = $model->getDefaultValues()->where("product_type_id IS NULL")->one();
-        if (!$defaultValue) {
-            $defaultValue = new SnippetVarDefaultValue();
-        }
-
-        ?>
-        <ul class="snippet-var-default-values">
-            <li>
-                <?php
-                echo $this->render("_variable-default-val", [
-                    'defaultValue'   => $defaultValue,
-                    'withoutProduct' => true
-                ]);
-                ?>
-            </li>
-            <?php
-            foreach ($model->getDefaultValues()->where("product_type_id IS NOT NULL")->all() as $defaultValue) {
-                echo '<li>';
-                echo $this->render("_variable-default-val", [
-                    'defaultValue' => $defaultValue
-                ]);
-                echo '</li>';
-            } ?>
-        </ul>
+                <div class="snippet-var-default-values">
+                    <?php foreach ($model->defaultValues as $indexDefaultValue => $defaultValue) : ?>
+                        <?= $this->render("_variable-default-val", [
+                            'defaultValue'   => $defaultValue,
+                            'parentPrefix' => $prefix,
+                            'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]"
+                        ])
+                        ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
 
         <?= BaseHtml::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
 

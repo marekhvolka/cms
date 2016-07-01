@@ -14,7 +14,7 @@ use Yii;
  * @property SnippetVarDefaultValue[] $snippetVarDefaultValues
  * @property SnippetVar $var
  */
-class SnippetVarDropdown extends \yii\db\ActiveRecord
+class SnippetVarDropdown extends CustomModel
 {
     /**
      * @inheritdoc

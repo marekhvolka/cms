@@ -94,14 +94,24 @@ class SiteController extends Controller
             $portalId = 3;
         }
 
-        $pages = Page::find()
-            ->where([
+        if ($identifiers[0] == '') { //homepage
+            $page = Page::find()->where([
                 'parent_id' => null,
-                'portal_id' => $portalId
-            ])->all();
+                'portal_id' => $portalId,
+                'identifier' => 'homepage'
+            ])
+                ->one();
+        }
+        else {
 
-        $page = $this->findPage($pages, $identifiers, 0);
+            $pages = Page::find()
+                ->where([
+                    'parent_id' => null,
+                    'portal_id' => $portalId
+                ])->all();
 
+            $page = $this->findPage($pages, $identifiers, 0);
+        }
         if (!isset($page)) {
             $page = Page::find()
                 ->where([

@@ -27,7 +27,7 @@ use yii\helpers\BaseHtml;
             <span class="glyphicon glyphicon-remove"></span>
         </a>
     </div>
-    <div class="panel-body panel-collapse collapse in" id="panelItem<?= $model->id ?>">
+    <div class="panel-body panel-collapse collapse in fixed-panel" id="panelItem<?= $model->id ?>">
         <?php foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'model' => $snippetVarValue,

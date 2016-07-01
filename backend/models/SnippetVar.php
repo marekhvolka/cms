@@ -4,7 +4,6 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "snippet_var".
@@ -45,9 +44,20 @@ class SnippetVar extends Variable
             [['description'], 'string'],
             [['identifier'], 'string', 'max' => 50],
             [['snippet_id', 'parent_id', 'id'], 'integer'],
-            [['identifier', 'snippet_id', 'parent_id'], 'unique', 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'], 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'],
+            [
+                ['identifier', 'snippet_id', 'parent_id'],
+                'unique',
+                'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
+                'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'
+            ],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
-            [['snippet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Snippet::className(), 'targetAttribute' => ['snippet_id' => 'id']],
+            [
+                ['snippet_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Snippet::className(),
+                'targetAttribute' => ['snippet_id' => 'id']
+            ],
             //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
@@ -58,12 +68,12 @@ class SnippetVar extends Variable
     public function attributeLabels()
     {
         return [
-            'id'          => 'ID',
-            'identifier'  => 'Identifikátor',
+            'id' => 'ID',
+            'identifier' => 'Identifikátor',
             'description' => 'Popis',
-            'type_id'     => 'Typ premennej',
-            'snippet_id'  => 'Snippet ID',
-            'parent_id'   => 'Parent ID',
+            'type_id' => 'Typ premennej',
+            'snippet_id' => 'Snippet ID',
+            'parent_id' => 'Parent ID',
         ];
     }
 
@@ -83,12 +93,23 @@ class SnippetVar extends Variable
         return parent::beforeDelete();
     }
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDefaultValues()
     {
-        return $this->hasMany(SnippetVarDefaultValue::className(), ['snippet_var_id' => 'id']);
+        if (!isset($this->defaultValues)) {
+            $this->defaultValues = $this->hasMany(SnippetVarDefaultValue::className(),
+                ['snippet_var_id' => 'id'])->orderBy('product_type_id')->all();
+        }
+
+        return $this->defaultValues;
+    }
+
+    public function setDefaultValues($value)
+    {
+        $this->defaultValues = $value;
     }
 
     /**
@@ -104,7 +125,8 @@ class SnippetVar extends Variable
      */
     public function getProductTypes()
     {
-        return $this->hasMany(ProductType::className(), ['id' => 'product_type_id'])->viaTable('snippet_product_value', ['variable_id' => 'id']);
+        return $this->hasMany(ProductType::className(), ['id' => 'product_type_id'])->viaTable('snippet_product_value',
+            ['variable_id' => 'id']);
     }
 
     /**
@@ -120,8 +142,9 @@ class SnippetVar extends Variable
      */
     public function getChildren()
     {
-        if (!isset($this->children))
+        if (!isset($this->children)) {
             $this->children = $this->hasMany(SnippetVar::className(), ['parent_id' => 'id'])->all();
+        }
 
         return $this->children;
     }
@@ -185,15 +208,18 @@ class SnippetVar extends Variable
 
                 $productTypeDefaultValue = $this->getDefaultValue($productType);
 
-                if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown))
+                if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown)) {
                     $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
+                }
 
                 break;
             default:
 
                 $productTypeDefaultValue = $this->getDefaultValue($productType);
 
-                $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value_text) . '\'';
+                if ($productTypeDefaultValue) {
+                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value_text) . '\'';
+                }
         }
 
         return $value;
@@ -239,5 +265,62 @@ class SnippetVar extends Variable
         }
 
         return $listItem;
+    }
+
+    /** Metoda na nacitanie potomkovskych poloziek - obsahuje rekurziu
+     * @param $propertyIdentifier
+     * @param $data
+     */
+    public function loadChildren($propertyIdentifier, $data)
+    {
+        foreach ($data as $index => $item) {
+            $this->loadFromData($propertyIdentifier, $item, $index,
+                SnippetVar::className());
+
+            if (key_exists('SnippetVarDefaultValue', $item)) {
+                foreach ($item['SnippetVarDefaultValue'] as $indexDefaultValue => $defaultValue) {
+                    $this->{$propertyIdentifier}[$index]->loadFromData('defaultValues', $defaultValue,
+                        $indexDefaultValue, SnippetVarDefaultValue::className());
+                }
+            }
+
+            if (key_exists('Children', $item)) {
+                $this->{$propertyIdentifier}[$index]->loadChildren('children', $item['Children']);
+            }
+        }
+    }
+
+    /**
+     * Metoda na ulozenie potomkovskych poloziek - rekurzia v pripade ze potomok ma dalsich potomkov
+     * @param $propertyIdentifier - identifikator zoznamu, ktory obsahuje potomkov
+     * @param $globalParentPropertyIdentifier - identifikator globalneho rodicovskeho atributu (block_id, portal_id)
+     * @throws \yii\base\Exception
+     */
+    public function saveChildren($propertyIdentifier, $globalParentPropertyIdentifier)
+    {
+        foreach ($this->{$propertyIdentifier} as $childModel) {
+            $childModel->parent_id = $this->id;
+
+            $childModel->{$globalParentPropertyIdentifier} = $this->{$globalParentPropertyIdentifier};
+
+            if ($childModel->removed) {
+                $childModel->delete();
+                continue;
+            }
+
+            if (!($childModel->validate() && $childModel->save())) {
+                throw new \yii\base\Exception;
+            }
+
+            foreach($childModel->defaultValues as $defaultValue) {
+                $defaultValue->snippet_var_id = $childModel->id;
+
+                if (!($defaultValue->validate() && $defaultValue->save())) {
+                    throw new \yii\base\Exception;
+                }
+            }
+
+            $childModel->saveChildren('children', $globalParentPropertyIdentifier);
+        }
     }
 }
