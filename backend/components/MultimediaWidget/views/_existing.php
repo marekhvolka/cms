@@ -1,11 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarekHvolka
- * Date: 29.06.16
- * Time: 14:55
- */
-use backend\models\MultimediaCategory;
+use backend\components\PathHelper;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 ?>
@@ -13,21 +8,20 @@ use yii\widgets\ActiveForm;
 <div class="form-group">
     <div class="col-md-10 col-sm-offset-2">
         <div class="input-group">
-            <input type="text" placeholder="Hľadať" class="form-control">
+            <input type="text" placeholder="Hľadať" class="form-control search-multimedia">
         </div>
     </div>
     <div class="clearfix"></div>
 </div>
 <?php
-foreach (MultimediaCategory::loadAll() as $multimediaCategory) : ?>
-
-    <div class="panel panel-default">
+foreach ($categories as $multimediaCategory) : ?>
+    <div class="panel panel-default multimedia-category">
         <div class="panel-heading">
             <h4>
                 <?= $multimediaCategory->fullName ?>
 
                 <a data-toggle="collapse" href="#multimediaCategory<?= $multimediaCategory->id ?>"
-                    class="pull-right">
+                   class="pull-right">
                 <span>
                     <i class="fa fa-angle-down"></i>
                 </span>
@@ -36,9 +30,9 @@ foreach (MultimediaCategory::loadAll() as $multimediaCategory) : ?>
         </div>
         <div class="panel-body panel-collapse collapse in" id="multimediaCategory<?= $multimediaCategory->id ?>">
             <?php foreach ($multimediaCategory->items as $item) : ?>
-                <div class="col-md-2">
+                <div class="col-md-2 multimedia-item" data-name="<?= $item->name ?>">
                     <div class="thumbnail">
-                        <img src="<?= $multimediaCategory->pathForWeb . $item->name ?>"/>
+                        <img src="<?= (PathHelper::isImageFile($item->name)) ? ($multimediaCategory->pathForWeb . $item->name) : Url::to('/images/file.png') ?>"/>
                     </div>
                 </div>
             <?php endforeach; ?>

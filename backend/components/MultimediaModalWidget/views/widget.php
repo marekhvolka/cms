@@ -18,7 +18,7 @@ use yii\web\View;
         <div class="modal-content">
             <?php $form = ActiveForm::begin() ?>
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Zavrieť">
+                <button type="button" class="close close-modal" aria-label="Zavrieť">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="selectFileFromMultimediaLabel">Vybrať súbor</h4>

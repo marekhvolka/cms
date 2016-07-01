@@ -166,33 +166,6 @@ class MultimediaController extends BaseController
     }
 
     /**
-     * Return the content of a multimedia file.
-     *
-     * @param $name string the name of the file
-     * @param $categoryName string the name of its category
-     * @param $subcategory string the name of its subcategory
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionFile($name, $categoryName, $subcategory)
-    {
-        $item = MultimediaItem::find($categoryName, $subcategory, $name);
-
-        if ($item != null) {
-            Yii::$app->response->format = Response::FORMAT_RAW;
-
-            if (PathHelper::isImageFile($name)) {
-                Yii::$app->response->headers->set('Content-Type', 'image/' . pathinfo($name, PATHINFO_EXTENSION));
-                return $item->getContent();
-            } else {
-                return Yii::$app->response->sendFile($item->getPath());
-            }
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
      * Finds the MultimediaCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $name

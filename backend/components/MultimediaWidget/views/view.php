@@ -6,6 +6,9 @@
  * Time: 14:43
  */
 
+use backend\components\MultimediaWidget\MultimediaWidgetAsset;
+
+MultimediaWidgetAsset::register($this);
 ?>
 
 <div class="company-crossing">
@@ -22,7 +25,7 @@
             <?= $this->render('_new')?>
         </div>
         <div class="tab-pane" id="tab_existing">
-            <?= $this->render('_existing')?>
+            <?= $this->render('_existing', ['categories' => $categories])?>
         </div>
     </div>
     <div class="clearfix"></div>
