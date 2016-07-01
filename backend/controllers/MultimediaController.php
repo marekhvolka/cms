@@ -48,7 +48,7 @@ class MultimediaController extends BaseController
 
         // uploading new file
         if ($upload_file->load($request->post())) {
-            $upload_file->file = UploadedFile::getInstance($upload_file, 'file');
+            $upload_file->files = UploadedFile::getInstance($upload_file, 'file');
 
             if ($upload_file->validate()) {
                 $upload_file->upload();
