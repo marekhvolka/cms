@@ -56,6 +56,9 @@ if (!isset($model)) {
                             'prompt' => 'Vyber podstránku'
                         ]);
                     break;
+                case 'image':
+
+                    break;
                 case 'portal_snippet':
                 case 'product_snippet': ?>
                     <div class="btn-group layout-block block-<?= $varValue->id ?>"

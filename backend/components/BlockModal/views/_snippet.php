@@ -39,7 +39,9 @@ use yii\helpers\BaseHtml;
             <?php else : ?>
                 <?= Html::dropDownList('snippet_id', null, ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
                     'prompt' => 'Výber snippetu',
-                    'class' => 'snippet-dropdown'
+                    'class' => 'snippet-dropdown',
+                    'data-prefix' => $prefix,
+                    'data-product-type-id' => $productType ? $productType->id : ''
                 ]) ?>
             <?php endif; ?>
         </h4>

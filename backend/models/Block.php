@@ -371,4 +371,20 @@ class Block extends CustomModel implements ICacheable, IDuplicable
     {
         return $this->type == 'snippet' || $this->type == 'portal_snippet' || $this->type == 'product_snippet';
     }
+
+    public function initializeVarValues($snippetId)
+    {
+        $this->snippetVarValues = array();
+
+        $snippet = Snippet::findOne($snippetId);
+
+        $this->snippet_code_id = $snippet->snippetCodes[0];
+
+        foreach($snippet->snippetVariables as $snippetVar) {
+            $snippetVarValue = new SnippetVarValue();
+            $snippetVarValue->var_id = $snippetVar->id;
+
+            $this->snippetVarValues[rand(1000, 10000)] = $snippetVarValue;
+        }
+    }
 }

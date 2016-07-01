@@ -21,6 +21,8 @@ if ($model->typeName != 'list') : ?>
         <div class="col-sm-10">
             <?php
             switch ($model->typeName) {
+                case 'image':
+                    break;
                 case 'url' :
                 case 'icon' :
                 case 'textinput' : ?>

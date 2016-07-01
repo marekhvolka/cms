@@ -4,7 +4,8 @@ var appendUrl = {
         column: controllerUrl + '/' + 'append-columns',
         block: controllerUrl + '/' + 'append-block',
         blockModal: controllerUrl + '/' + 'append-block-modal',
-        listItem: controllerUrl + '/' + 'append-list-item'
+        listItem: controllerUrl + '/' + 'append-list-item',
+        blockModalContent: controllerUrl + '/' + 'append-block-modal-content'
     },
     body = $("body");
 
@@ -105,6 +106,29 @@ body.on(
     }
 );
 
+body.on('change', '.snippet-dropdown', function() {
+
+    var postData = {
+        prefix: $(this).data('prefix'),
+        productTypeId: $(this).data('product-type-id'),
+        snippetId: $(this).val()
+    };
+
+    var snippetName = $(this).find("option[value='" + $(this).val() + "']").text();
+
+    var self = $(this);
+
+    $.post(appendUrl.blockModalContent, postData, function(data)
+    {
+        self.parents('.btn-group').first().find('.btn-block-modal').first().html(snippetName);
+
+        var modalContent = self.parents('.modal-main-content').first();
+        modalContent.empty();
+        modalContent.append($(data));
+    });
+
+});
+
 function appendElement(parentElement, dataToAppend)
 {
     parentElement.find('.children-list:first').append(dataToAppend);
@@ -183,8 +207,6 @@ body.on(
                     modalContainer.append(modalWindow);
 
                     modalWindow.modal();
-                    attachHideModalEvent(modalWindow.find('.btn-modal-close'));
-                    attachSaveModalEvent(modalWindow.find('.btn-modal-save'));
                 }
             );
         }
@@ -223,35 +245,21 @@ body.on(
     }
 );
 
-function attachHideModalEvent(hideButton)
-{
-    hideButton.click(
-        function ()
-        {
-            var modalWindow = $(this).parents('.modal').first();
+body.on('click', '.btn-modal-save', function() {
+    var modalWindow = $(this).parents('.modal').first();
 
-            modalWindow.modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
+    modalWindow.modal('hide');
+    //$('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+});
 
-            //modalWindow.parent().empty();
-        }
-    );
-}
+body.on('click', '.btn-modal-close', function() {
+    var modalWindow = $(this).parents('.modal').first();
 
-function attachSaveModalEvent(saveButton)
-{
-    saveButton.click(
-        function ()
-        {
-            var modalWindow = $(this).parents('.modal').first();
-
-            modalWindow.modal('hide');
-            //$('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        }
-    );
-}
+    modalWindow.modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+});
 
 $('.dropdown-toggle').dropdown();
 

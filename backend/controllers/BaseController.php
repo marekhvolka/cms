@@ -22,7 +22,6 @@ use backend\models\SnippetVarValue;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -168,6 +167,24 @@ abstract class BaseController extends Controller
         $block = Block::findOne(['id' => $id]);
 
         return (new BlockModalWidget())->appendModal($block, $prefix);
+    }
+
+    public function actionAppendBlockModalContent()
+    {
+        $snippetId = Yii::$app->request->post('snippetId');
+
+        $block = new Block();
+
+        $productType = ProductType::find()->where(['id' => Yii::$app->request->post('productTypeId')])->one();
+        $prefix = Yii::$app->request->post('prefix');
+
+        $block->initializeVarValues($snippetId);
+
+        return (new BlockModalWidget())->render('_snippet', [
+            'model' => $block,
+            'productType' => $productType,
+            'prefix' => $prefix
+        ]);
     }
 
     public function actionAppendListItem($parentVarId, $prefix)
