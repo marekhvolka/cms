@@ -141,7 +141,7 @@ if ($model->typeName != 'list') : ?>
             </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in children-list" id="panel<?= $model->id ?>">
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel" id="panel<?= $model->id ?>">
             <?php foreach ($model->listItems as $indexItem => $listItem) : ?>
                 <?= $this->render('_list-item', [
                     'model' => $listItem,

@@ -16,7 +16,7 @@
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </button>
             </div>
-            <div class="panel-body snippet-vars-container">
+            <div class="panel-body snippet-vars-container fixed-panel">
                 <?php foreach ($model->children as $indexChild => $child) : ?>
                     <?= $this->render('_variable', [
                         'model' => $child,

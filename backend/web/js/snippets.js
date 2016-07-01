@@ -89,30 +89,24 @@ body.on(
 body.on(
     'click', '.btn-remove-snippet-default-value', function ()
     {
-        $(this).parents('li').first().remove();
+        $(this).parents('.row').first().remove();
     }
 );
 
 body.on(
     'click', '.btn-add-snippet-default-value', function ()
     {
-        var _this = $(this);
+        var postData = {
+            parentPrefix: $(this).data('parent-prefix'),
 
-        var postData = {};
+        };
 
-        if (parent)
-        {
-            postData.id = parent.find('.variable-id').val();
-            ;
-        }
+        var self = $(this);
 
         $.post(
-            appendUrl.defaultValue, function (data)
+            appendUrl.defaultValue, postData, function (data)
             {
-                var row = $('<li></li>');
-                var row = row.appendTo(_this.parents(varWrapper).first());
-                var appendedDiv = $(data);
-                $(row).append(appendedDiv);
+                self.parents('.snippet-var-default-values').first().append($(data));
             }
         );
     }

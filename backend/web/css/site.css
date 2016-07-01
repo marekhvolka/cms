@@ -176,7 +176,11 @@ ul {
     left: 225px;
     border-top: 1px solid #ccc;
     background: #fff;
-    padding-top: 15px;
+    padding-top: 5px;
+}
+
+.navbar-fixed-bottom .form-group {
+    margin-bottom: 5px;
 }
 
 .panel-body .row {
@@ -296,4 +300,9 @@ a.anchor {
     line-height: normal;
     width: 75% !important;
     padding-top: 8px;
+}
+
+.fixed-panel {
+    max-height: 600px;
+    overflow-y: scroll;
 }

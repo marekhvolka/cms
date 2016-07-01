@@ -17,7 +17,7 @@ use Yii;
  * @property ProductType $productType
  * @property SnippetVar $snippetVar
  */
-class SnippetVarDefaultValue extends \yii\db\ActiveRecord
+class SnippetVarDefaultValue extends CustomModel
 {
     /**
      * @inheritdoc

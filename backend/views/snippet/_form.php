@@ -35,7 +35,7 @@ use yii\widgets\ActiveForm;
                     </a>
                 </h4>
             </div>
-            <div class="panel-body snippet-codes">
+            <div class="panel-body snippet-codes fixed-panel">
                 <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
                     <?= $this->render('_code', [
                         'model' => $snippetCode,
@@ -62,7 +62,7 @@ use yii\widgets\ActiveForm;
                     </a>
                 </h4>
             </div>
-            <div class="panel-body snippet-vars-container">
+            <div class="panel-body snippet-vars-container fixed-panel">
                 <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
                     <?= $this->render('_variable', [
                         'model' => $snippetVar,

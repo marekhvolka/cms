@@ -16,10 +16,10 @@ $portal = Portal::find()
 $portalName = isset($portal->name) ? $portal->name : '';
 
 NavBar::begin([
-    'brandLabel'           => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
-    'brandUrl'             => Yii::$app->homeUrl,
+    'brandLabel' => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
+    'brandUrl' => Yii::$app->homeUrl,
     'renderInnerContainer' => false,
-    'options'              => [
+    'options' => [
         'class' => 'navbar-inverse navbar-fixed-top',
     ],
 ]);
@@ -29,7 +29,7 @@ $portals = Portal::find()->all();
 foreach ($portals as $portal) {
     $item = [
         'label' => $portal->name,
-        'url'   => Url::current(['change-portal' => $portal->id]),
+        'url' => Url::current(['change-portal' => $portal->id]),
     ];
     $items[] = $item;
 }
@@ -37,9 +37,9 @@ foreach ($portals as $portal) {
 echo Nav::widget([
     'options' => [
         'class' => 'navbar-nav',
-        'id'    => 'portal-nav',
+        'id' => 'portal-nav',
     ],
-    'items'   => [
+    'items' => [
         [
             'label' => $portalName,
             'items' => $items
@@ -49,12 +49,12 @@ echo Nav::widget([
 
 if (!empty($this->params['breadcrumbs'])) {
     echo Breadcrumbs::widget([
-        'options'  => [
+        'options' => [
             'class' => 'navbar-nav nav',
-            'id'    => 'breadcrumbs',
+            'id' => 'breadcrumbs',
         ],
         'homeLink' => false,
-        'links'    => $this->params['breadcrumbs']
+        'links' => $this->params['breadcrumbs']
     ]);
 }
 
@@ -65,7 +65,8 @@ $this->registerJs("var globalSearchUrl = \"" . Url::to(['global-search-results']
             'id' => 'global-search-input',
             'placeholder' => 'Globálne vyhľadávanie',
             'class' => 'form-control',
-            'autofocus' => 'autofocus'
+            'autofocus' => 'autofocus',
+            'autocomplete' => 'off'
         ]) ?>
         <div class="data">
             <ul>
@@ -88,9 +89,9 @@ if (!Yii::$app->user->isGuest) {
     echo Nav::widget([
         'options' => [
             'class' => 'navbar-nav navbar-right',
-            'id'    => 'login-box'
+            'id' => 'login-box'
         ],
-        'items'   => $loginMenu,
+        'items' => $loginMenu,
 
     ]);
 }
