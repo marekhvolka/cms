@@ -140,7 +140,6 @@ class MultimediaCategory extends Model
                 if (!$only_images || PathHelper::isImageFile($file)) {
                     $item = new MultimediaItem();
                     $item->name = $file;
-                    $item->multimedia_category_id = $this->id;
                     $this->items[] = $item;
                 }
             }

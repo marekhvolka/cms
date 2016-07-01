@@ -22,7 +22,7 @@ MultimediaWidgetAsset::register($this);
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_new">
-            <?= $this->render('_new')?>
+            <?= $this->render('_new', ['categories' => $categories])?>
         </div>
         <div class="tab-pane" id="tab_existing">
             <?= $this->render('_existing', ['categories' => $categories])?>

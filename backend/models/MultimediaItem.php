@@ -5,6 +5,7 @@ namespace backend\models;
 use backend\components\PathHelper;
 use Yii;
 use yii\base\Model;
+use yii\web\BadRequestHttpException;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
@@ -25,9 +26,11 @@ class MultimediaItem extends Model
      */
     public $name;
     /**
-     * @var UploadedFile the new file in case of upload scenario
+     * @var UploadedFile[] the new file in case of upload scenario
      */
-    public $file;
+    public $files;
+
+    public $path;
 
     /**
      * @inheritdoc
@@ -35,7 +38,8 @@ class MultimediaItem extends Model
     public function rules()
     {
         return [
-            [['file'], 'file', 'skipOnEmpty' => false]
+            [['files'], 'each', "rule" => ['file', 'skipOnEmpty' => false]],
+            [['path'], 'required']
         ];
     }
 
@@ -46,7 +50,7 @@ class MultimediaItem extends Model
     {
         return [
             self::SCENARIO_DEFAULT => ['name'],
-            self::SCENARIO_UPLOAD => ['file']
+            self::SCENARIO_UPLOAD => ['files', 'path']
         ];
     }
 
@@ -55,13 +59,20 @@ class MultimediaItem extends Model
      *
      * @return bool the successfulness of the operation
      */
-    public function upload($path)
+    public function upload()
     {
-        if ($this->validate(['file'])) {
-            PathHelper::makePath($path);
+        if ($this->validate(['files', 'path'])) {
+            PathHelper::makePath($this->path);
 
-            $this->name = $this->file->getBaseName() . '.' . $this->file->getExtension();
-            return $this->file->saveAs($path . DIRECTORY_SEPARATOR . $this->file->getBaseName() . '.' . $this->file->getExtension());
+
+            foreach($this->files as $file){
+
+                if(!$file->saveAs($this->path . DIRECTORY_SEPARATOR . $file->getBaseName() . '.' . $file->getExtension())){
+                    return false;
+                };
+            }
+
+            return true;
         }
 
         return false;
@@ -70,9 +81,9 @@ class MultimediaItem extends Model
     /**
      * Delete the item.
      */
-    public function delete($fromPath)
+    public function delete()
     {
-        $path = $fromPath . DIRECTORY_SEPARATOR . $this->name;
+        $path = $this->path . DIRECTORY_SEPARATOR . $this->name;
 
         if (is_file($path)) {
             PathHelper::remove($path);

@@ -10,6 +10,7 @@ use backend\models\Column;
 use backend\models\CustomModel;
 use backend\models\ListItem;
 use backend\models\ListVar;
+use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
 use backend\models\ProductType;
@@ -21,8 +22,10 @@ use backend\models\SnippetVarValue;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 /**
  * WordController implements the CRUD actions for Word model.
@@ -65,6 +68,18 @@ abstract class BaseController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return (new GlobalSearch)->search($q);
+    }
+
+    public function actionMultimediaUpload()
+    {
+        $item = new MultimediaItem();
+        $item->scenario = MultimediaItem::SCENARIO_UPLOAD;
+        $item->load(Yii::$app->request->post());
+        $item->files = UploadedFile::getInstances($item, 'files');
+        $item->upload();
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return ["state" => "ok"];
     }
 
     /**
