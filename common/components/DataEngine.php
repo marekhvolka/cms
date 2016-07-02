@@ -139,7 +139,7 @@ class DataEngine extends Component
 
     public function getMultimediaDirectoryForWeb()
     {
-        return 'http://hypercms/data/common/multimedia/';
+        return '/data/common/multimedia/';
     }
 
     //endregion

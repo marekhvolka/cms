@@ -443,7 +443,7 @@ class Portal extends CustomModel implements ICacheable
 
     public function getMultimediaDirectoryForWeb()
     {
-        return 'http://hypercms/data/' . $this->domain . '/multimedia/';
+        return '/data/' . $this->domain . '/multimedia/';
     }
 
     /** Metoda, vracajuca cestu k adresaru, v ktorom su ulozene portalove snippety
