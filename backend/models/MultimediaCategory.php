@@ -91,7 +91,7 @@ class MultimediaCategory extends Model
                 $category->name = $directory;
                 $category->path = $basePath . $directory . '/';
                 $category->pathForWeb = $basePathForWeb . $directory . '/';
-                $category->fullName = ($portal != null ? $portal->name : 'Spoločné pre všetky portály') . ' ' . $category->name;
+                $category->fullName = $category->name . ' (' . ($portal != null ? $portal->name : 'spoločné pre všetky portály') . ')';
                 $category->id = hash('md5', $category->fullName);
                 $result[] = $category;
             }

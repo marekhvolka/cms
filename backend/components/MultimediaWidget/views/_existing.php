@@ -30,7 +30,7 @@ foreach ($categories as $multimediaCategory) : ?>
                 </a>
             </h4>
         </div>
-        <div class="panel-body panel-collapse collapse in" id="multimediaCategory<?= $multimediaCategory->id ?>">
+        <div class="panel-body panel-collapse collapse in fixed-panel" id="multimediaCategory<?= $multimediaCategory->id ?>">
             <?php foreach ($multimediaCategory->items as $item) : ?>
                 <div class="col-md-2 multimedia-item" data-name="<?= $item->name ?>">
                     <div class="thumbnail">
