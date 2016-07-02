@@ -110,6 +110,11 @@ class DataEngine extends Component
         return $path;
     }
 
+    public function getGlobalCssFile()
+    {
+        return $this->getTemplatesDirectory() . 'global.min.css';
+    }
+
     public function getProductsDirectory()
     {
         $path = $this->getCommonDirectory() . 'products/';

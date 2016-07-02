@@ -341,7 +341,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         } else if ($this->color_scheme == '') {
             return $this->portal->getColorSchemePath();
         } else {
-            return $this->portal->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
+            return $this->portal->getTemplatePath() . '/css/scheme/' . $this->color_scheme . '.min.css';
         }
     }
 
@@ -565,6 +565,8 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             } else {
                 $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
             }
+
+            $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile() . '\';' . PHP_EOL;
 
             $prefix .= '?>' . PHP_EOL;
 

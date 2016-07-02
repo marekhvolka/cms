@@ -253,7 +253,7 @@ class Portal extends CustomModel implements ICacheable
      */
     public function getColorSchemePath()
     {
-        return $this->getTemplatePath() . '/css/public/' . $this->color_scheme . '.css';
+        return $this->getTemplatePath() . '/css/scheme/' . $this->color_scheme . '.min.css';
     }
 
     /** Vrati cestu k suboru, v ktorom je ulozeny layout casti portalu
