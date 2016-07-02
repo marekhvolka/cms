@@ -88,7 +88,11 @@ class SiteController extends Controller
         ])
             ->one();
 
-        if (isset($portal)) {
+        $portalPreviewId = Yii::$app->session->get('portal_preview');
+
+        if (isset($portalPreviewId)) {
+            $portalId = $portalPreviewId;
+        } else if (isset($portal)) {
             $portalId = $portal->id;
         } else {
             $portalId = 3;
@@ -101,8 +105,7 @@ class SiteController extends Controller
                 'identifier' => 'homepage'
             ])
                 ->one();
-        }
-        else {
+        } else {
 
             $pages = Page::find()
                 ->where([

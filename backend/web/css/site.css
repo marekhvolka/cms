@@ -247,11 +247,12 @@ ul {
     border: 1px solid #C9C9C9;
     border-top: none;
     z-index: 1;
-}
-
-.global-search .data ul {
     padding-left: 0;
     margin-bottom: 0;
+}
+
+.global-search ul.data {
+
 }
 
 .global-search .data li {

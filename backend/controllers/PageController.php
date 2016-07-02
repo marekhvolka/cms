@@ -167,14 +167,12 @@ class PageController extends BaseController
         }
     }
 
-    public function actionGenerate($id)
+    public function actionShow($id)
     {
-        $cacheEngine = new DataEngine();
+        $page = $this->findModel($id);
 
-        $cacheEngine->init();
+        Yii::$app->session->set('portal_preview', $page->portal->id);
 
-        $path = Page::findOne(['id' => $id])->getMainCacheFile();
-
-        echo file_get_contents($path);
+        $this->redirect($page->getUrl());
     }
 }

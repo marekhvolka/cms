@@ -68,11 +68,9 @@ $this->registerJs("var globalSearchUrl = \"" . Url::to(['global-search-results']
             'autofocus' => 'autofocus',
             'autocomplete' => 'off'
         ]) ?>
-        <div class="data">
-            <ul>
-                <li>Žiadne výsledky</li>
-            </ul>
-        </div>
+        <ul class="data">
+            <li>Žiadne výsledky</li>
+        </ul>
     </div>
 <?php
 
