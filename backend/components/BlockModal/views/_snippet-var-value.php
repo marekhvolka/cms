@@ -29,7 +29,7 @@ if ($model->typeName != 'list') : ?>
 
                     <input type="text" class="form-control" id="<?= $model->id ?>"
                            name="<?= $prefix . '[value_text]' ?>"
-                           placeholder="<?= htmlentities($defaultValue->value_text) ?>"
+                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
                            value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
                     <?php
                     break;
@@ -37,7 +37,8 @@ if ($model->typeName != 'list') : ?>
 
                     <textarea class="form-control" id="<?= $model->id ?>" name="<?= $prefix . '[value_text]' ?>"
                               rows="3"
-                              placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
+                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
+                        <?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
 
                     <?php
@@ -46,7 +47,7 @@ if ($model->typeName != 'list') : ?>
                     <div class="input-group">
                         <input type="color" class="form-control" id="<?= $model->id ?>" name=""
                                value="<?= $model->value_text ?>"
-                               placeholder="<?= $defaultValue->value_text ?>">
+                               placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
                         <span class="input-group-addon"><i></i></span>
                     </div>
 
@@ -54,7 +55,7 @@ if ($model->typeName != 'list') : ?>
                     break;
                 case 'editor' : ?>
                     <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3"
-                              placeholder="<?= htmlentities($defaultValue->value_text) ?>"><?= htmlspecialchars($model->value_text,
+                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"><?= htmlspecialchars($model->value_text,
                             ENT_QUOTES) ?></textarea>
                     <?php
                     break;
@@ -118,7 +119,7 @@ if ($model->typeName != 'list') : ?>
             } ?>
             <?php if (!empty($defaultValue)) : ?>
                 <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je
-                    <strong><?= htmlentities($defaultValue->value_text) ?></strong></p>
+                    <strong><?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?></strong></p>
             <?php endif; ?>
         </div>
         <div class="clearfix"></div>
