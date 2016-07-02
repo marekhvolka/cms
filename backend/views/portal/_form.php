@@ -44,14 +44,6 @@ use backend\components\VarManager\VarManagerWidget;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <?= $form->field($model, 'published')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
-
-    <?= $form->field($model, 'cached')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
-
     <?= VarManagerWidget::widget([
         'allVariables' => $allVariables,
         'assignedVariableValues' => $model->portalVarValues,

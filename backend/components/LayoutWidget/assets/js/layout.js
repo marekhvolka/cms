@@ -17,7 +17,8 @@ body.on(
             layouts = $this.parents('.layouts'),
             postData = {
                 type: $this.data('type'),
-                prefix: $this.data('prefix')
+                prefix: $this.data('prefix'),
+                productTypeId: $this.data('product-type-id')
             };
 
         $.post(
@@ -50,7 +51,8 @@ body.on(
             columnsByWidth = getColumnsWidths($this.data('row-type-width')),
             section = $this.parents('.section').first(),
             postData = {
-                prefix: $this.data('prefix')
+                prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
+                productTypeId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('product-type-id')
             };
 
         $.post(
@@ -59,7 +61,8 @@ body.on(
                 var row = appendElement(section, $(data)),
                     postColumnData = {
                         width: columnsByWidth,
-                        prefix: row.data('prefix')
+                        prefix: row.data('prefix'),
+                        productTypeId: row.data('product-type-id')
                     };
 
                 $.post(
@@ -86,7 +89,7 @@ body.on(
 
         var postData = {
             prefix: mainButton.data('prefix'),
-            product_type_id: mainButton.data('product-type-id'),
+            productTypeId: mainButton.data('product-type-id'),
             type: $(this).data('type')
         };
 

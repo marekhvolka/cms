@@ -166,7 +166,8 @@ class PortalController extends BaseController
             try {
                 $sectionsData = Yii::$app->request->post('section');
 
-                $this->loadAndSaveLayout($model, $sectionsData, $propertyIdentifier, 'portal');
+                $this->loadLayout($model, $sectionsData, $propertyIdentifier);
+                $this->saveLayout($model, $propertyIdentifier);
 
                 $transaction->commit();
             } catch (Exception $exc) {

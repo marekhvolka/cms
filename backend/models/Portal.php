@@ -17,8 +17,6 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property integer $published
- * @property integer $cached
- *
  *
  * @property string $templatePath
  * @property Page[] $pages
@@ -51,10 +49,10 @@ class Portal extends CustomModel implements ICacheable
     {
         return [
             [
-                ['name', 'language_id', 'domain', 'template_id', 'color_scheme', 'active', 'published', 'cached'],
+                ['name', 'language_id', 'domain', 'template_id', 'color_scheme', 'active'],
                 'required'
             ],
-            [['language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
+            [['language_id', 'template_id', 'active'], 'integer'],
             [['color_scheme'], 'string'],
             [['name', 'domain'], 'string', 'max' => 50]
         ];
@@ -72,9 +70,7 @@ class Portal extends CustomModel implements ICacheable
             'domain' => 'Doména',
             'template_id' => 'Šablóna',
             'color_scheme' => 'Farebná schéma',
-            'active' => 'Active',
-            'published' => 'Publikovaný',
-            'cached' => 'Cache',
+            'active' => 'Aktívny',
         ];
     }
 

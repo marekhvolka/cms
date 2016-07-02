@@ -48,11 +48,12 @@ class LayoutWidget extends Widget
      * @param int $indexSection
      * @return string
      */
-    public function appendSection(Section $section, $prefix, $indexSection)
+    public function appendSection(Section $section, $prefix, $indexSection, $productType)
     {
         return $this->render('_section', [
             'model' => $section,
-            'prefix' => $prefix . "[$indexSection]"
+            'prefix' => $prefix . "[$indexSection]",
+            'productType' => $productType
         ]);
     }
 
@@ -62,11 +63,12 @@ class LayoutWidget extends Widget
      * @param $indexRow
      * @return string
      */
-    public function appendRow(Row $row, $prefix, $indexRow)
+    public function appendRow(Row $row, $prefix, $indexRow, $productType)
     {
         return $this->render('_row', [
             'model' => $row,
             'prefix' => $prefix . "[Row][$indexRow]",
+            'productType' => $productType
         ]);
     }
 
@@ -76,11 +78,12 @@ class LayoutWidget extends Widget
      * @param $indexColumn
      * @return string
      */
-    public function appendColumn(Column $column, $prefix, $indexColumn)
+    public function appendColumn(Column $column, $prefix, $indexColumn, $productType)
     {
         return $this->render('_column', [
             'model' => $column,
             'prefix' => $prefix . "[Column][$indexColumn]",
+            'productType' => $productType
         ]);
     }
 
@@ -88,6 +91,7 @@ class LayoutWidget extends Widget
      * @param Block $block
      * @param $prefix
      * @param $indexBlock
+     * @param $productType
      * @return string
      */
     public function appendBlock(Block $block, $prefix, $indexBlock, $productType)

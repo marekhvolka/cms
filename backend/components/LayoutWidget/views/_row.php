@@ -7,7 +7,7 @@ use yii\helpers\BaseHtml;
 
 ?>
 
-<div class="row layout-row" data-prefix="<?= $prefix ?>">
+<div class="row layout-row" data-prefix="<?= $prefix ?>" data-product-type-id="<?= $productType ? $productType->id : '' ?>">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[section_id]", $model->section_id, ['class' => 'section_id']); ?>
     <div class="children-list">

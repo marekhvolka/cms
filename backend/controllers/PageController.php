@@ -107,10 +107,10 @@ class PageController extends BaseController
                 if (!($model->validate() && $model->save()))
                     throw new Exception;
 
-                $this->saveLayout($model, 'headerSections', 'page');
-                $this->saveLayout($model, 'footerSections', 'page');
-                $this->saveLayout($model, 'sidebarSections', 'page');
-                $this->saveLayout($model, 'contentSections', 'page');
+                $this->saveLayout($model, 'headerSections');
+                $this->saveLayout($model, 'footerSections');
+                $this->saveLayout($model, 'sidebarSections');
+                $this->saveLayout($model, 'contentSections');
 
                 $transaction->commit();
 

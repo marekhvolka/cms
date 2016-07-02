@@ -111,19 +111,20 @@ abstract class BaseController extends Controller
     public function actionAppendRow()
     {
         $prefix = Yii::$app->request->post('prefix');
+        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
 
         $row = new Row();
 
         $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $productType);
     }
 
     public function actionAppendColumns()
     {
         $width = Yii::$app->request->post('width');
-
         $prefix = Yii::$app->request->post('prefix');
+        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
 
         $columnsData = array();
 
@@ -134,7 +135,7 @@ abstract class BaseController extends Controller
 
             $indexColumn = rand(1000, 10000000);
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn);
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $productType);
         }
         return json_encode($columnsData);
     }
@@ -148,7 +149,7 @@ abstract class BaseController extends Controller
         $columnId = Yii::$app->request->post('columnId');
         $prefix = Yii::$app->request->post('prefix');
 
-        $productType = ProductType::findOne(Yii::$app->request->post('product_type_id'));
+        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
 
         $indexBlock = rand(1000, 1000000);
 
@@ -284,12 +285,18 @@ abstract class BaseController extends Controller
         }
     }
 
-    public function saveLayout($model, $propertyIdentifier, $type)
+    /** Metoda na ulozenie layoutu
+     * @param $model - objekt, portal/podstranka
+     * @param $propertyIdentifier - identifikator pola, obsahujuceho sekcie - headerSections, atd
+     * @param $type - typ objektu - portal/podstranka
+     * @throws Exception
+     */
+    public function saveLayout($model, $propertyIdentifier)
     {
         foreach ($model->{$propertyIdentifier} as $section) {
-            if ($type == 'page') {
+            if (get_class($model) == Page::className()) {
                 $section->page_id = $model->id;
-            } else if ($type == 'portal') {
+            } else if (get_class($model) == Portal::className()) {
                 $section->portal_id = $model->id;
             }
 

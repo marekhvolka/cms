@@ -16,22 +16,25 @@ use yii\helpers\BaseHtml;
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             </button>
         </div>
-        <div class="dropdown dropdown-blocks inline-button">
+        <div class="dropdown dropdown-cols inline-button">
             <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
+                    data-prefix="<?= $prefix ?>" data-product-type-id="<?= $productType ? $productType->id : '' ?>"
                     title="Vložiť nový riadok" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><div></div><a class="add-row" data-row-type-width="1" data-prefix="<?= $prefix ?>">Fullwidth riadok</a></li>
-                <li><a class="add-row" data-row-type-width="2" data-prefix="<?= $prefix ?>">2 stĺpcový riadok</a></li>
-                <li><a class="add-row" data-row-type-width="3" data-prefix="<?= $prefix ?>">3 stĺpcový riadok</a></li>
-                <li><a class="add-row" data-row-type-width="4" data-prefix="<?= $prefix ?>">4 stĺpcový riadok</a></li>
-                <li><a class="add-row" data-row-type-width="2/1" data-prefix="<?= $prefix ?>">2/1 riadok</a></li>
-                <li><a class="add-row" data-row-type-width="1/2" data-prefix="<?= $prefix ?>">1/2 riadok</a></li>
+                <li>
+                    <div></div>
+                    <a class="add-row" data-row-type-width="1">Fullwidth riadok</a></li>
+                <li><a class="add-row" data-row-type-width="2">2 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="3">3 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="4">4 stĺpcový riadok</a></li>
+                <li><a class="add-row" data-row-type-width="2/1">2/1 riadok</a></li>
+                <li><a class="add-row" data-row-type-width="1/2">1/2 riadok</a></li>
             </ul>
         </div>
         <div class="inline-button">
-            <button type="button" class="btn btn-danger btn-xs btn-remove-section" title="Zmazať" >
+            <button type="button" class="btn btn-danger btn-xs btn-remove-section" title="Zmazať">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
         </div>
@@ -46,7 +49,7 @@ use yii\helpers\BaseHtml;
                     'prefix' => $prefix . "[Row][$indexRow]",
                     'productType' => $productType
                 ]); ?>
-            <?php endforeach;?>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

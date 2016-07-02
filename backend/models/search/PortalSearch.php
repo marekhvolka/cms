@@ -18,7 +18,7 @@ class PortalSearch extends Portal
     public function rules()
     {
         return [
-            [['id', 'language_id', 'template_id', 'active', 'published', 'cached'], 'integer'],
+            [['id', 'language_id', 'template_id', 'active'], 'integer'],
             [['name', 'domain'], 'safe'],
         ];
     }
@@ -60,8 +60,6 @@ class PortalSearch extends Portal
             'language_id' => $this->language_id,
             'template_id' => $this->template_id,
             'active' => $this->active,
-            'published' => $this->published,
-            'cached' => $this->cached,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
