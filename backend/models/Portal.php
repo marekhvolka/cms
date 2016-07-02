@@ -339,7 +339,7 @@ class Portal extends CustomModel implements ICacheable
             $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
             $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
             $buffer .= '\'currency\' => \'' . $dataEngine->normalizeString($this->language->currency) . '\',' . PHP_EOL;
-            $buffer .= '\'template\' => \'' . $this->getTemplatePath() . '\',' . PHP_EOL;
+            $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
             $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
 
             $buffer .= '/* Portal pages */' . PHP_EOL;
