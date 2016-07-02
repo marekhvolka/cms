@@ -99,19 +99,19 @@ class Template extends \yii\db\ActiveRecord
         $this->colorSchemes = $value;
     }
 
-    public function getColorSchemeDirectoryPath()
+    public function getColorSchemeDirectoryPath($forWeb = false)
     {
-        return $this->getMainDirectory() . 'css/scheme/';
+        return $this->getMainDirectory($forWeb) . 'css/scheme/';
     }
 
-    public function getMainDirectory()
+    public function getMainDirectory($forWeb = false)
     {
-        return Yii::$app->dataEngine->getTemplatesDirectory() . $this->identifier . '/';
+        return Yii::$app->dataEngine->getTemplatesDirectory($forWeb) . $this->identifier . '/';
     }
 
-    public function getIndexPath()
+    public function getIndexPath($forWeb = false)
     {
-        return $this->getMainDirectory() . '/index.php';
+        return $this->getMainDirectory($forWeb) . '/index.php';
     }
 
     /**

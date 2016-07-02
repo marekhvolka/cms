@@ -330,18 +330,18 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     /** Vrati cestu k farebnej scheme portalu
      * @return string
      */
-    public function getColorSchemePath()
+    public function getColorSchemePath($forWeb = false)
     {
         if ($this->color_scheme == 'inherit') {
             if (isset($this->parent)) {
-                return $this->parent->getColorSchemePath();
+                return $this->parent->getColorSchemePath($forWeb);
             } else {
-                return $this->portal->getColorSchemePath();
+                return $this->portal->getColorSchemePath($forWeb);
             }
         } else if ($this->color_scheme == '') {
-            return $this->portal->getColorSchemePath();
+            return $this->portal->getColorSchemePath($forWeb);
         } else {
-            return $this->portal->getTemplatePath() . '/css/scheme/' . $this->color_scheme . '.min.css';
+            return $this->portal->template->getColorSchemeDirectoryPath($forWeb) . $this->color_scheme . '.min.css';
         }
     }
 
@@ -474,7 +474,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
             if (isset($this->color_scheme)) {
-                $buffer .= '$color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
+                $buffer .= '$color_scheme = \'' . $this->getColorSchemePath(true) . '\';' . PHP_EOL;
             }
 
             $buffer .= '/* Product Variables */' . PHP_EOL;
@@ -566,7 +566,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
             }
 
-            $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile() . '\';' . PHP_EOL;
+            $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile(true) . '\';' . PHP_EOL;
 
             $prefix .= '?>' . PHP_EOL;
 

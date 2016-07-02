@@ -240,20 +240,13 @@ class Portal extends CustomModel implements ICacheable
         return addslashes($result);
     }
 
-    /** Vrati cestu k sablone
-     * @return string
-     */
-    public function getTemplatePath()
-    {
-        return 'http://www.hyperfinance.cz/template/' . $this->template->identifier;
-    }
-
     /** Vrati cestu k farebnej scheme portalu
+     * @param bool $forWeb
      * @return string
      */
-    public function getColorSchemePath()
+    public function getColorSchemePath($forWeb = false)
     {
-        return $this->getTemplatePath() . '/css/scheme/' . $this->color_scheme . '.min.css';
+        return $this->template->getColorSchemeDirectoryPath($forWeb) . $this->color_scheme . '.min.css';
     }
 
     /** Vrati cestu k suboru, v ktorom je ulozeny layout casti portalu
@@ -305,13 +298,14 @@ class Portal extends CustomModel implements ICacheable
     }
 
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany portal
+     * @param bool $forWeb
      * @return string
      */
-    public function getMainDirectory()
+    public function getMainDirectory($forWeb = false)
     {
-        $path = Yii::$app->dataEngine->getDataDirectory() . $this->domain . '/';
+        $path = Yii::$app->dataEngine->getDataDirectory($forWeb) . $this->domain . '/';
 
-        if (!file_exists($path)) {
+        if (!file_exists($path) && !$forWeb) {
             mkdir($path, 0777, true);
             mkdir($this->getMultimediaDirectory(), 0777, true);
             mkdir($this->getThanksDirectory(), 0777, true);
@@ -431,19 +425,14 @@ class Portal extends CustomModel implements ICacheable
         return $this->getMainDirectory() . 'pages/';
     }
 
-    public function getThanksDirectory()
+    public function getThanksDirectory($forWeb = false)
     {
-        return $this->getMainDirectory() . 'thanks/';
+        return $this->getMainDirectory($forWeb) . 'thanks/';
     }
 
-    public function getMultimediaDirectory()
+    public function getMultimediaDirectory($forWeb = false)
     {
-        return $this->getMainDirectory() . 'multimedia/';
-    }
-
-    public function getMultimediaDirectoryForWeb()
-    {
-        return '/data/' . $this->domain . '/multimedia/';
+        return $this->getMainDirectory($forWeb) . 'multimedia/';
     }
 
     /** Metoda, vracajuca cestu k adresaru, v ktorom su ulozene portalove snippety

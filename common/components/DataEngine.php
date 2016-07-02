@@ -22,12 +22,6 @@ class DataEngine extends Component
 
     public function init()
     {
-        $this->dataDirectory = Yii::getAlias('@frontend') . '/web/data/';
-
-        if (!file_exists($this->dataDirectory)) {
-            mkdir($this->dataDirectory, 0777, true);
-        }
-
         $this->latteRenderer = new Engine();
 
         $this->latteRenderer->setLoader(new FileLoader());
@@ -51,14 +45,19 @@ class DataEngine extends Component
         return __DIR__ . '/ExceptionHandler.php';
     }
 
-    public function getDataDirectory()
+    public function getDataDirectory($forWeb = false)
     {
-        return $this->dataDirectory;
+        $this->dataDirectory = 'data';
+
+        if ($forWeb)
+            return '/' . $this->dataDirectory . '/';
+        else
+            return Yii::getAlias('@frontend') . '/web/' . $this->dataDirectory . '/';
     }
 
-    public function getCommonDirectory()
+    public function getCommonDirectory($forWeb = false)
     {
-        return $this->dataDirectory . 'common/';
+        return $this->getDataDirectory($forWeb) . 'common/';
     }
 
     public function getCommonCacheFile($reload = false)
@@ -99,20 +98,14 @@ class DataEngine extends Component
         return $path;
     }
 
-    public function getTemplatesDirectory()
+    public function getTemplatesDirectory($forWeb = false)
     {
-        $path = $this->getCommonDirectory() . 'templates/';
-
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-
-        return $path;
+        return $this->getCommonDirectory($forWeb) . 'templates/';
     }
 
-    public function getGlobalCssFile()
+    public function getGlobalCssFile($forWeb = false)
     {
-        return $this->getTemplatesDirectory() . 'global.min.css';
+        return $this->getTemplatesDirectory($forWeb) . 'global.min.css';
     }
 
     public function getProductsDirectory()
@@ -126,20 +119,9 @@ class DataEngine extends Component
         return $path;
     }
 
-    public function getMultimediaDirectory()
+    public function getMultimediaDirectory($forWeb = false)
     {
-        $path = $this->getCommonDirectory() . 'multimedia/';
-
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-
-        return $path;
-    }
-
-    public function getMultimediaDirectoryForWeb()
-    {
-        return '/data/common/multimedia/';
+        return $this->getCommonDirectory($forWeb) . 'multimedia/';
     }
 
     //endregion

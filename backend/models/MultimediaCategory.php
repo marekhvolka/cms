@@ -85,7 +85,6 @@ class MultimediaCategory extends Model
         $processDirs = function (array $dirs, $basePath, $basePathForWeb, $portal = null) {
             $result = [];
 
-
             foreach ($dirs as $directory) {
                 $category = new MultimediaCategory();
                 $category->name = $directory;
@@ -108,7 +107,7 @@ class MultimediaCategory extends Model
             $multimediaCategories = array_merge($multimediaCategories, $processDirs(
                 glob('*', GLOB_ONLYDIR),
                 $portal->getMultimediaDirectory(),
-                $portal->getMultimediaDirectoryForWeb(),
+                $portal->getMultimediaDirectory(true),
                 $portal
             ));
         }
@@ -117,7 +116,7 @@ class MultimediaCategory extends Model
         $multimediaCategories = array_merge($multimediaCategories, $processDirs(
             glob('*', GLOB_ONLYDIR),
             Yii::$app->dataEngine->getMultimediaDirectory(),
-            Yii::$app->dataEngine->getMultimediaDirectoryForWeb()
+            Yii::$app->dataEngine->getMultimediaDirectory(true)
         ));
 
         return $multimediaCategories;
