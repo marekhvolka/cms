@@ -2,10 +2,10 @@
 
 namespace backend\models\search;
 
+use backend\models\Snippet;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Snippet;
 
 /**
  * SnippetSearch represents the model behind the search form about `app\models\Snippet`.
@@ -20,8 +20,22 @@ class SnippetSearch extends Snippet
     public function rules()
     {
         return [
-            [['id', 'default_code_id', 'type', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'description', 'section_id', 'section_class', 'section_style', 'column_id', 'column_class', 'column_style', 'last_edit'], 'safe'],
+            [['id', 'type', 'last_edit_user'], 'integer'],
+            [
+                [
+                    'globalSearch',
+                    'name',
+                    'description',
+                    'section_id',
+                    'section_class',
+                    'section_style',
+                    'column_id',
+                    'column_class',
+                    'column_style',
+                    'last_edit'
+                ],
+                'safe'
+            ],
         ];
     }
 

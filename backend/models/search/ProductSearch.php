@@ -22,7 +22,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
-            [['globalSearch', 'name', 'identifier', 'popis', 'last_edit'], 'safe'],
+            [['globalSearch', 'name', 'identifier', 'description', 'last_edit'], 'safe'],
         ];
     }
 
@@ -57,7 +57,7 @@ class ProductSearch extends Product
         if (!empty($this->globalSearch)) {
             $query->andFilterWhere(['like', 'name', $this->globalSearch]);
             $query->andFilterWhere(['like', 'identifier', $this->globalSearch]);
-            $query->andFilterWhere(['like', 'popis', $this->globalSearch]);
+            $query->andFilterWhere(['like', 'description', $this->globalSearch]);
         }
 
         return $query;
