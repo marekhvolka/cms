@@ -328,38 +328,27 @@ class Portal extends CustomModel implements ICacheable
 
             $buffer = '<?php ' . PHP_EOL;
 
-            foreach ($this->pages as $page) {
-                $buffer .= $page->getHead();
-            }
-
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
             $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
             $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
             $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
             $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
-            $buffer .= '\'currency\' => \'' . $dataEngine->normalizeString($this->language->currency) . '\',' . PHP_EOL;
             $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
             $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
-
-            $buffer .= '/* Portal pages */' . PHP_EOL;
-
-            $buffer .= '\'pages\' => (object) array(' . PHP_EOL;
-
-            foreach ($this->pages as $page) {
-                $buffer .= '\'page' . $page->id . '\' => new ObjectBridge($tempPage' . $page->id . ', \'page' . $page->id . '\'),' . PHP_EOL;
-            }
-
-            $buffer .= '),' . PHP_EOL;
 
             $buffer .= ');' . PHP_EOL;
 
             $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
 
-            /*foreach($this->pages as $page)
-            {
-                $buffer .= '$page' . $page->id . ' = $portal->pages[\'page' . $page->id . '\'];' . PHP_EOL;
-            }*/
+            $buffer .= '/* Portal pages */' . PHP_EOL;
+
+            $buffer .= '$portal->pages = (object) array();' . PHP_EOL;
+
+            foreach ($this->pages as $page) {
+                $buffer .= 'include("' . $page->getVarCacheFile() . '");' . PHP_EOL;
+                $buffer .= '$portal->pages->page' . $page->id . ' = ' . $page->cacheIdentifier . ';' . PHP_EOL;
+            }
 
             $buffer .= '/* Portal vars */' . PHP_EOL;
 
@@ -369,10 +358,10 @@ class Portal extends CustomModel implements ICacheable
                 }
             }
 
-            $buffer .= '$include_head = stripcslashes(\'' . $this->getTrackingCodesAsString('head') . '\');' . PHP_EOL;
-            $buffer .= '$include_head_end = stripcslashes(\'' . $this->getTrackingCodesAsString('head_end') . '\');' . PHP_EOL;
-            $buffer .= '$include_body = stripcslashes(\'' . $this->getTrackingCodesAsString('body') . '\');' . PHP_EOL;
-            $buffer .= '$include_body_end = stripcslashes(\'' . $this->getTrackingCodesAsString('body_end') . '\');' . PHP_EOL;
+            $buffer .= '$include_head = stripcslashes("' . $this->getTrackingCodesAsString('head') . '");' . PHP_EOL;
+            $buffer .= '$include_head_end = stripcslashes("' . $this->getTrackingCodesAsString('head_end') . '");' . PHP_EOL;
+            $buffer .= '$include_body = stripcslashes("' . $this->getTrackingCodesAsString('body') . '");' . PHP_EOL;
+            $buffer .= '$include_body_end = stripcslashes("' . $this->getTrackingCodesAsString('body_end') . '");' . PHP_EOL;
 
             $buffer .= '?>';
 
@@ -389,11 +378,13 @@ class Portal extends CustomModel implements ICacheable
         if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
 
-            $buffer .= 'include \'' . $this->getPortalVarsFile() . '\';' . PHP_EOL;
+            $buffer .= 'include("' . $this->getPortalVarsFile() . '");' . PHP_EOL;
 
-            foreach ($this->portalSnippets as $portalSnippet) {
-                $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents(\'' . $portalSnippet->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
-            }
+            /*foreach ($this->portalSnippets as $portalSnippet) {
+                $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents("' . $portalSnippet->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
+            }*/
+
+            //TODO:: fix this
 
             $buffer .= '?>';
 
@@ -455,7 +446,7 @@ class Portal extends CustomModel implements ICacheable
 
         $prefix .= '<?php' . PHP_EOL;
 
-        $prefix .= 'include "' . $this->getMainCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include("' . $this->getMainCacheFile() . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
@@ -466,8 +457,8 @@ class Portal extends CustomModel implements ICacheable
     {
         $prefix = '<?php' . PHP_EOL;
 
-        $prefix .= '$global_header = file_get_contents(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
-        $prefix .= '$global_footer = file_get_contents(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
+        $prefix .= '$global_header = file_get_contents("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
+        $prefix .= '$global_footer = file_get_contents("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 

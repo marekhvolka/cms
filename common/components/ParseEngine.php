@@ -973,10 +973,20 @@ class ParseEngine
     /** Pomocna metoda pre parsovanie zoznamov - rekurzivne sa vola pre zoznamy nizsich urovni
      * @param $value - cast jsonu, z ktorej sa parsuju data
      * @param $pageBlock Block - blok, ktoreho sa zoznamy tykaju
+     * @param $snippetVarValue
      * @return int
+     * @throws \yii\base\Exception
      */
     private function parseSnippetList($value, Block $pageBlock, $snippetVarValue)
     {
+        if (isset($pageBlock->snippetCode)) {
+            $snippetId = $pageBlock->snippetCode->snippet_id;
+        } else if (isset($pageBlock->parent)) {
+            $snippetId = $pageBlock->parent->snippetCode->snippet_id;
+        } else {
+            return;
+        }
+
         $order = 0;
         foreach ($value as $item) {
             $listItem = new ListItem();
@@ -993,7 +1003,7 @@ class ParseEngine
 
                 /* @var $snippetListVar SnippetVar */
                 $snippetListVar = SnippetVar::find()
-                    ->andWhere(['snippet_id' => $pageBlock->snippetCode->snippet_id])
+                    ->andWhere(['snippet_id' => $snippetId])
                     ->andFilterWhere([
                         'or',
                         ['identifier' => $itemVarIdentifier],

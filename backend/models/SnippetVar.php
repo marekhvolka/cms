@@ -58,6 +58,11 @@ class SnippetVar extends Variable
                 'targetClass' => Snippet::className(),
                 'targetAttribute' => ['snippet_id' => 'id']
             ],
+            ['identifier', function ($attribute, $params) {
+                if ($this->$attribute == 'active') {
+                    $this->addError($attribute, 'Zvoľ iný identifikátor');
+                }
+            }],
             //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
@@ -85,14 +90,6 @@ class SnippetVar extends Variable
 
         return parent::beforeSave($insert);
     }
-
-    public function beforeDelete()
-    {
-        $this->unlinkAll('children', true);
-
-        return parent::beforeDelete();
-    }
-
 
     /**
      * @return \yii\db\ActiveQuery

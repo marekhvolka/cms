@@ -244,6 +244,8 @@ class Snippet extends CustomModel implements ICacheable
                 continue;
             }
 
+            $childModel->snippet_id = $this->id;
+
             if (!($childModel->validate() && $childModel->save())) {
                 throw new \yii\base\Exception;
             }

@@ -30,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($dataProvider->name,Url::to(['/language/edit/', 'id' => $dataProvider->id]));
                 },
             ],
-            'currency',
             'identifier',
             'active:boolean',
 

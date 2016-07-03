@@ -13,6 +13,11 @@ use yii\helpers\BaseHtml;
 
 <div class="item panel panel-default snippet-var"><!-- widgetBody -->
     <div class="panel-heading form-inline">
+        <a data-toggle="collapse" href="#panelVar<?= $prefix ?>">
+            <span>
+                <i class="fa fa-angle-down"></i>
+            </span>
+        </a>
         <label class="control-label" for="snippetvar-identifier">
             <?= $model->getAttributeLabel('identifier'); ?>
         </label>
@@ -27,7 +32,7 @@ use yii\helpers\BaseHtml;
             <i class="glyphicon glyphicon-minus"></i>
         </button>
     </div>
-    <div class="panel-body var-body">
+    <div class="panel-body panel-collapse collapse in var-body" id="panelVar<?= $prefix ?>">
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-type_id">

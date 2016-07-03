@@ -119,6 +119,14 @@ class SnippetVarValue extends CustomModel implements IDuplicable
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getValueProductVar()
+    {
+        return $this->hasOne(ProductVar::className(), ['id' => 'value_product_var_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getValueDropdown()
     {
         return $this->hasOne(SnippetVarDropdown::className(), ['id' => 'value_dropdown_id']);
@@ -193,7 +201,10 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                 }
 
                 break;
+            case 'product_var' :
+                $value = '\'' . $this->valueProductVar->identifier . '\'';
 
+                break;
             case 'product_tag' :
 
                 $value = '$tags->' . $this->valueTag->identifier;
@@ -210,9 +221,15 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                 if (isset($this->value_text) && $this->value_text != '') {
                     $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text))) . '\'';
                 } else {
-                    $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->var->getDefaultValue($productType)->value))) . '\'';
-                }
+                    $defaultValue = $this->var->getDefaultValue($productType);
 
+                    if (isset($defaultValue)) {
+                        $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) . '\'';
+                    }
+                    else {
+                        $value = '\'\'';
+                    }
+                }
         }
 
         return $value;

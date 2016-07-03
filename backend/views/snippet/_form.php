@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin([
         'id' => 'dynamic-form',
-        //'enableAjaxValidation' => true,
+        'enableAjaxValidation' => true,
     ]); ?>
 
     <h3 class="page-header">Všeobecné

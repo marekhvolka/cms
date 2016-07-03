@@ -132,10 +132,13 @@ class Product extends CustomModel implements ICacheable
         if (!file_exists($path) || $reload) {
             $buffer = '<?php ' . PHP_EOL;
 
+            if (isset($this->parent)) {
+                $buffer .= 'include("' . $this->parent->getProductVarsFile() . '");' . PHP_EOL;
+            }
+
             $buffer .= '$tempObject = (object) ';
 
-            if (isset($this->parent)) // ak ma produkt rodica
-            {
+            if (isset($this->parent)) { // ak ma produkt rodica
                 $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
             }
 
@@ -169,6 +172,8 @@ class Product extends CustomModel implements ICacheable
             $buffer .= ');' . PHP_EOL;
 
             $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \'' . $this->identifier . '\'); ' . PHP_EOL;
+
+            $buffer .= '?>' . PHP_EOL;
 
             Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
@@ -349,11 +354,11 @@ class Product extends CustomModel implements ICacheable
         if (!file_exists($path) || $reload) {
             $buffer = '<?php' . PHP_EOL;
 
-            $buffer .= 'include \'' . $this->getProductVarsFile() . '\';' . PHP_EOL;
+            $buffer .= 'include("' . $this->getProductVarsFile() . '");' . PHP_EOL;
 
             foreach ($this->productSnippets as $productVarValue) {
                 $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier .
-                    ' = file_get_contents(\'' . $productVarValue->valueBlock->getMainCacheFile() . '\');' . PHP_EOL;
+                    ' = file_get_contents("' . $productVarValue->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
             }
 
             $buffer .= '?>';

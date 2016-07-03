@@ -11,7 +11,7 @@ use yii\helpers\BaseHtml;
 <div class="panel panel-default list-item">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <div class="panel-heading">
-        <a data-toggle="collapse" href="#panelItem<?= $model->id ?>">
+        <a data-toggle="collapse" href="#panelItem<?= $prefix ?>">
             <span>
                 <i class="fa fa-angle-down"></i>
             </span>
@@ -27,7 +27,7 @@ use yii\helpers\BaseHtml;
             <span class="glyphicon glyphicon-remove"></span>
         </a>
     </div>
-    <div class="panel-body panel-collapse collapse in fixed-panel" id="panelItem<?= $model->id ?>">
+    <div class="panel-body panel-collapse collapse in fixed-panel" id="panelItem<?= $prefix ?>">
         <?php foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'model' => $snippetVarValue,

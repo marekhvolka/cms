@@ -167,7 +167,26 @@ class Block extends CustomModel implements ICacheable, IDuplicable
     public function getSnippetVarValues()
     {
         if (!isset($this->snippetVarValues)) {
-            $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['block_id' => 'id'])->all();
+
+            $this->snippetVarValues = array();
+
+            if ($this->snippetCode) {
+                foreach ($this->snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
+                    $snippetVarValue = SnippetVarValue::find()->where([
+                        'block_id' => $this->id,
+                        'var_id' => $firstLevelVar->id
+                    ])->one();
+
+                    if ($snippetVarValue) {
+                        $this->snippetVarValues[] = $snippetVarValue;
+                    } else {
+                        $snippetVarValue = new SnippetVarValue();
+                        $snippetVarValue->var_id = $firstLevelVar->id;
+
+                        $this->snippetVarValues[] = $snippetVarValue;
+                    }
+                }
+            }
         }
 
         return $this->snippetVarValues;
@@ -220,10 +239,13 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         if (isset($this->portalVarValue)) { //portalovy snippet
             $buffer = $this->portalVarValue->portal->language->getIncludePrefix();
-            $buffer .= '<?php include "' . $this->portalVarValue->portal->getPortalVarsFile() . '"; ?>';
+            $buffer .= '<?php include("' . $this->portalVarValue->portal->getPortalVarsFile() . '"); ?>';
             $path = $this->portalVarValue->portal->getPortalSnippetsDirectory();
         } else if (isset($this->productVarValue)) { //produktovy snippet
-            $buffer = '<?php include "' . $this->productVarValue->product->language->getDictionaryCacheFile() . '"; ?>';
+            $buffer = '<?php include("' . $this->productVarValue->product->language->getDictionaryCacheFile() . '");' . PHP_EOL;
+            $buffer .= 'include("' . $this->productVarValue->product->getProductVarsFile() . '");' . PHP_EOL;
+            $buffer .= '$product = $' . $this->productVarValue->product->identifier . '; ?>' . PHP_EOL;
+
             $path = $this->productVarValue->product->getMainDirectory();
         } else if (isset($this->column->row->section->page)) { //block podstranky
             $buffer = $this->column->row->section->page->getIncludePrefix();
@@ -283,10 +305,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         $snippetCode = null;
 
         if (isset($this->parent)) {
-            $buffer .= 'include "' . $this->parent->snippetCode->snippet->getMainCacheFile() . '";' . PHP_EOL;
+            $buffer .= 'include("' . $this->parent->snippetCode->snippet->getMainCacheFile() . '");' . PHP_EOL;
             $snippetCode = $this->parent->snippetCode;
         } else {
-            $buffer .= 'include "' . $this->snippetCode->snippet->getMainCacheFile() . '";' . PHP_EOL;
+            $buffer .= 'include("' . $this->snippetCode->snippet->getMainCacheFile() . '");' . PHP_EOL;
             $snippetCode = $this->snippetCode;
         }
 
@@ -380,7 +402,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         $this->snippet_code_id = $snippet->snippetCodes[0];
 
-        foreach($snippet->snippetVariables as $snippetVar) {
+        foreach ($snippet->snippetVariables as $snippetVar) {
             $snippetVarValue = new SnippetVarValue();
             $snippetVarValue->var_id = $snippetVar->id;
 

@@ -65,7 +65,21 @@ class ListItem extends CustomModel implements IDuplicable
     public function getSnippetVarValues()
     {
         if (!isset($this->snippetVarValues)) {
-            $this->snippetVarValues = $this->hasMany(SnippetVarValue::className(), ['list_item_id' => 'id'])->all();
+            foreach($this->list->var->children as $snippetVar) {
+                $snippetVarValue = SnippetVarValue::find()->where([
+                    'list_item_id' => $this->id,
+                    'var_id' => $snippetVar->id
+                ])->one();
+
+                if ($snippetVarValue)
+                    $this->snippetVarValues[] = $snippetVarValue;
+                else {
+                    $snippetVarValue = new SnippetVarValue();
+                    $snippetVarValue->var_id = $snippetVar->id;
+
+                    $this->snippetVarValues[] = $snippetVarValue;
+                }
+            }
         }
         return $this->snippetVarValues;
     }

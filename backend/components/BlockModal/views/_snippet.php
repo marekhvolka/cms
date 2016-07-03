@@ -1,6 +1,7 @@
 <?php
 /* @var $model backend\models\Block */
 use backend\models\Portal;
+use backend\models\ProductVar;
 use backend\models\Snippet;
 use backend\models\Tag;
 use yii\bootstrap\Html;
@@ -51,6 +52,8 @@ use yii\helpers\BaseHtml;
         <?php
 
         $globalObjects = array();
+
+        $globalObjects['productVars'] = ArrayHelper::map(ProductVar::find()->all(), 'id', 'name');
 
         $globalObjects['products'] = ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products,
             'id', 'name');

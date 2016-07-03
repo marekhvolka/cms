@@ -3,14 +3,13 @@
 namespace backend\controllers;
 
 use backend\models\Language;
+use backend\models\search\WordSearch;
 use backend\models\Word;
 use backend\models\WordTranslation;
-use backend\models\search\WordSearch;
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\filters\VerbFilter;
-use yii\helpers\BaseVarDumper;
-use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -20,9 +19,9 @@ class WordController extends BaseController
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -40,7 +39,7 @@ class WordController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel'  => $searchModel,
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -57,13 +56,11 @@ class WordController extends BaseController
         if ($id) {
             $model = $this->findModel($id);
             $translations = $model->translations;
-        }
-        else {
+        } else {
             $model = new Word();
             $translations = [];
 
-            foreach(Language::find()->all() as $language)
-            {
+            foreach (Language::find()->all() as $language) {
                 $translation = new WordTranslation();
                 $translation->language_id = $language->id;
 
@@ -73,38 +70,35 @@ class WordController extends BaseController
 
         //TODO: dokoncit funkcionalitu pri pridani noveho jazyka
 
-        if ($model->load(Yii::$app->request->post()))
-        {
+        if ($model->load(Yii::$app->request->post())) {
             Model::loadMultiple($translations, Yii::$app->request->post());
 
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($translations) && $valid;
+            if (!$model->validate() || !$model->save()) {
+                throw new Exception();
+            }
 
-            if ($valid)
-            {
-                $model->save();
+            foreach ($translations as $translation) {
+                $translation->word_id = $model->id;
+            }
 
-                foreach($translations as $translation)
-                {
+            if (Model::validateMultiple($translations)) {
+                foreach ($translations as $translation) {
                     $translation->save();
                 }
 
                 Yii::$app->session->setFlash('success', 'Uložené');
-            }
-            else
-            {
+            } else {
                 Yii::$app->session->setFlash('error', 'Nastala chyba');
             }
 
             $continue = Yii::$app->request->post('continue');
 
-            if (isset($continue))
+            if (isset($continue)) {
                 return $this->redirect(['edit', 'id' => $model->id]);
-            else
+            } else {
                 return $this->redirect(['index']);
-        }
-        else
-        {
+            }
+        } else {
             return $this->render('edit', [
                 'model' => $model,
                 'translations' => $translations,

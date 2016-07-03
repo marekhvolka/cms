@@ -39,10 +39,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'size' => '3',
             ],
             [
-                'label' => 'Aktívna',
-                'value' => 'active',
+                'label' => 'Vyparsovana',
+                'value' => 'parsed',
                 'size' => '1',
             ],
+//            [
+//                'label' => 'Aktívna',
+//                'value' => 'active',
+//                'size' => '1',
+//            ],
             [
                 'label' => 'Posledná zmena',
                 'value' => function ($data) {

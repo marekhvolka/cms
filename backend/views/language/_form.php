@@ -15,8 +15,6 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'currency')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [

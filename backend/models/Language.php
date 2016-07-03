@@ -10,7 +10,6 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property string $name
- * @property string $currency
  * @property string $identifier
  * @property integer $active
  *
@@ -27,7 +26,7 @@ class Language extends \yii\db\ActiveRecord
         return 'language';
     }
 
-        public function init()
+    public function init()
     {
         $this->active = 1;
     }
@@ -38,7 +37,7 @@ class Language extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'currency', 'identifier', 'active'], 'required'],
+            [['name', 'identifier', 'active'], 'required'],
             [['active'], 'integer'],
             [['name'], 'string', 'max' => 50],
             [['currency'], 'string', 'max' => 5],
@@ -54,7 +53,6 @@ class Language extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Názov',
-            'currency' => 'Mena',
             'identifier' => 'Identifikátor',
             'active' => 'Aktívny',
         ];
@@ -84,11 +82,10 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = Yii::$app->dataEngine->getCommonDirectory() . $this->identifier . '_dictionary.php';
 
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= 'include "' . Yii::$app->dataEngine->getCommonCacheFile() . '";' . PHP_EOL;
+            $buffer .= 'include("' . Yii::$app->dataEngine->getCommonCacheFile() . '");' . PHP_EOL;
 
             $buffer .= '$tempObject = ';
 
@@ -104,7 +101,15 @@ class Language extends \yii\db\ActiveRecord
 
             $buffer = str_replace("stdClass::__set_state", "(object)", $buffer);
 
-            $buffer .= '$slovnik = new ObjectBridge($tempObject, \'slovnik\'); ?>' . PHP_EOL;
+            $buffer .= '$slovnik = new ObjectBridge($tempObject, \'slovnik\'); ' . PHP_EOL;
+
+            $buffer .= '$tags = (object) array(' . PHP_EOL;
+
+            foreach (Tag::find()->all() as $tag) {
+                $buffer .= '\'' . $tag->identifier . '\' => ' . $tag->value . ',' . PHP_EOL;
+            }
+
+            $buffer .= ');' . PHP_EOL;
 
             Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
@@ -118,8 +123,7 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = Yii::$app->dataEngine->getProductsDirectory() . $this->identifier . '/';
 
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             mkdir($path, 0777, true); //vytvori priecinok pre produkty
         }
 
@@ -133,24 +137,13 @@ class Language extends \yii\db\ActiveRecord
     {
         $path = $this->getProductsDirectory() . 'products.php';
 
-        if (!file_exists($path))
-        {
+        if (!file_exists($path)) {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= '$tags = (object) array(' . PHP_EOL;
-
-            foreach(Tag::find()->all() as $tag)
-            {
-                $buffer .= '\'' . $tag->identifier . '\' => ' . $tag->value . ',' . PHP_EOL;
-            }
-
-            $buffer .= ');' . PHP_EOL;
-
-            foreach ($this->products as $product)
-            {
+            foreach ($this->products as $product) {
                 $productPath = $product->getMainCacheFile();
 
-                $buffer .= 'include "' . $productPath . '";' . PHP_EOL;
+                $buffer .= 'include("' . $productPath . '");' . PHP_EOL;
             }
 
             $buffer .= ' ?>';
@@ -165,8 +158,8 @@ class Language extends \yii\db\ActiveRecord
     {
         $prefix = '<?php' . PHP_EOL;
 
-        $prefix .= 'include "' . $this->getDictionaryCacheFile() . '";' . PHP_EOL;
-        $prefix .= 'include "' . $this->getProductsMainCacheFile() . '";' . PHP_EOL;
+        $prefix .= 'include("' . $this->getDictionaryCacheFile() . '");' . PHP_EOL;
+        $prefix .= 'include("' . $this->getProductsMainCacheFile() . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 

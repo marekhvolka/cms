@@ -21,7 +21,12 @@ if ($model->typeName != 'list') : ?>
         <div class="col-sm-10">
             <?php
             switch ($model->typeName) {
-                case 'image':
+                case 'image': ?>
+                    <input type="text" class="form-control" id="<?= $model->id ?>"
+                           name="<?= $prefix . '[value_text]' ?>"
+                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                           value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
+                    <?php
                     break;
                 case 'url' :
                 case 'icon' :
@@ -84,7 +89,18 @@ if ($model->typeName != 'list') : ?>
 
                     <?php
                     break;
+                case 'product_var' : ?>
 
+                    <?= Html::activeDropDownList($model, 'value_product_var_id', $globalObjects['productVars']
+                        ,
+                        [
+                            'name' => $prefix . '[value_product_var_id]',
+                            'class' => 'form-control',
+                            'prompt' => 'Vyber produktovú premennú'
+                        ]) ?>
+
+                    <?php
+                    break;
                 case 'product_tag' : ?>
 
                     <?= Html::activeDropDownList($model, 'value_tag_id', $globalObjects['productTags']

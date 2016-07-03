@@ -50,6 +50,8 @@ abstract class BaseController extends Controller
     {
         parent::init();
 
+        Yii::$app->session->setTimeout(3600 * 24 * 30);
+
         $change_portal = Yii::$app->request->get('change-portal');
 
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
@@ -288,8 +290,8 @@ abstract class BaseController extends Controller
     /** Metoda na ulozenie layoutu
      * @param $model - objekt, portal/podstranka
      * @param $propertyIdentifier - identifikator pola, obsahujuceho sekcie - headerSections, atd
-     * @param $type - typ objektu - portal/podstranka
      * @throws Exception
+     * @internal param $type - typ objektu - portal/podstranka
      */
     public function saveLayout($model, $propertyIdentifier)
     {

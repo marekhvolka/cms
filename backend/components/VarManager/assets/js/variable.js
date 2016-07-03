@@ -3,7 +3,7 @@ for (var i = 0; i < selectedVarIds.length; i++)
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true);
 }
 
-$('#types-dropdown').select2();
+//$('#types-dropdown').select2();
 
 $('#types-dropdown').change(
     function ()
@@ -22,7 +22,7 @@ $('#types-dropdown').change(
                 attachRemove(newVariableValue.find('.remove-btn').first());
 
                 $('#types-dropdown').find('[value="' + postData.varId + '"]').prop('disabled', true); //zneviditelnime polozku
-                $('#types-dropdown').select2();
+                //$('#types-dropdown').select2();
             }
         );
     }

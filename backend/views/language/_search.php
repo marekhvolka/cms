@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\LanguageSearch */
+/* @var $model backend\models\search\LanguageSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -18,8 +18,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'currency') ?>
 
     <?= $form->field($model, 'identifier') ?>
 

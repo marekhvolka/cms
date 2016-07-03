@@ -2,9 +2,8 @@
 
 namespace backend\models;
 
-use backend\models\ICacheable;
-use Yii;
 use common\models\User;
+use Yii;
 
 /**
  * This is the model class for table "page".
@@ -47,6 +46,8 @@ use common\models\User;
  */
 class Page extends CustomModel implements ICacheable, IDuplicable
 {
+    public $cacheIdentifier;
+
     /**
      * @inheritdoc
      */
@@ -106,7 +107,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             ],
             [['description'], 'string'],
             [['last_edit', 'breadcrumbs', 'url'], 'safe'],
-            [['name', 'identifier', 'color_scheme'], 'string', 'max' => 50],
+            [['name', 'identifier', 'color_scheme'], 'string', 'max' => 80],
             [['title'], 'string', 'max' => 150],
             [
                 ['identifier', 'portal_id', 'parent_id'],
@@ -174,6 +175,9 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getUrl()
     {
+        if ($this->identifier == 'homepage' && !$this->parent)
+            return '/';
+
         if (isset($this->parent)) {
             $url = $this->parent->url;
         } else {
@@ -440,9 +444,14 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $path = $this->getMainDirectory() . 'page_var.php';
 
         if (!file_exists($path) || $reload) {
+
             $dataEngine = Yii::$app->dataEngine;
 
             $buffer = '<?php ' . PHP_EOL;
+
+            if (isset($this->parent)) {
+                $buffer .= 'include("' . $this->parent->getVarCacheFile() . '");' . PHP_EOL;
+            }
 
             if (isset($this->product)) {
                 $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
@@ -454,16 +463,12 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             }
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            $buffer .= '\'url\' => \'' . $dataEngine->normalizeString($this->url) . '\',' . PHP_EOL;
-            $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
-            $buffer .= '\'title\' => \'' . $dataEngine->normalizeString($this->title) . '\',' . PHP_EOL;
-            $buffer .= '\'description\' => \'' . $dataEngine->normalizeString($this->description) . '\',' . PHP_EOL;
-            $buffer .= '\'keywords\' => \'' . $dataEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
+            $buffer .= '\'url\' => \'' . addslashes($dataEngine->normalizeString($this->url)) . '\',' . PHP_EOL;
+            $buffer .= '\'name\' => \'' . addslashes($dataEngine->normalizeString($this->name)) . '\',' . PHP_EOL;
+            $buffer .= '\'title\' => \'' . addslashes($dataEngine->normalizeString($this->title)) . '\',' . PHP_EOL;
+            $buffer .= '\'description\' => \'' . addslashes($dataEngine->normalizeString($this->description)) . '\',' . PHP_EOL;
+            $buffer .= '\'keywords\' => \'' . addslashes($dataEngine->normalizeString($this->keywords)) . '\',' . PHP_EOL;
             $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
-
-            if (isset($this->parent)) {
-                $buffer .= '\'parent\' => $portal->pages->page' . $this->parent->id . ',' . PHP_EOL;
-            }
 
             if (isset($this->product)) {
                 $buffer .= '\'product\' => $product,' . PHP_EOL;
@@ -471,13 +476,23 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
             $buffer .= ');' . PHP_EOL;
 
-            $buffer .= '$page = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
+            if ($this->parent) {
+                $buffer .= '$tempObject->parent = ' . $this->parent->cacheIdentifier . ';' . PHP_EOL;
+
+                $buffer .= '$tempObject->parents = array_merge_recursive($tempObject->parent->parents,
+                    array($tempObject->parent));' . PHP_EOL;
+            }
+            else {
+                $buffer .= '$tempObject->parents = array();' . PHP_EOL;
+            }
+
+            $buffer .= $this->cacheIdentifier . ' = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
 
             if (isset($this->color_scheme)) {
                 $buffer .= '$color_scheme = \'' . $this->getColorSchemePath(true) . '\';' . PHP_EOL;
             }
 
-            $buffer .= '/* Product Variables */' . PHP_EOL;
+            $buffer .= '$page = ' . $this->cacheIdentifier . ';' . PHP_EOL;
 
             $buffer .= '?>';
 
@@ -551,14 +566,14 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
             $prefix .= '<?php' . PHP_EOL;
 
-            $prefix .= '$global_header = executeScript(\'' . $this->portal->getLayoutCacheFile('header') . '\');' . PHP_EOL;
-            $prefix .= '$global_footer = executeScript(\'' . $this->portal->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
+            $prefix .= '$global_header = executeScript("' . $this->portal->getLayoutCacheFile('header') . '");' . PHP_EOL;
+            $prefix .= '$global_footer = executeScript("' . $this->portal->getLayoutCacheFile('footer') . '");' . PHP_EOL;
 
-            $prefix .= '$page_header = executeScript(\'' . $this->getLayoutCacheFile('header') . '\');' . PHP_EOL;
-            $prefix .= '$page_footer = executeScript(\'' . $this->getLayoutCacheFile('footer') . '\');' . PHP_EOL;
+            $prefix .= '$page_header = executeScript("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
+            $prefix .= '$page_footer = executeScript("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
 
-            $prefix .= '$page_sidebar = executeScript(\'' . $this->getLayoutCacheFile('sidebar') . '\');' . PHP_EOL;
-            $prefix .= '$page_content = executeScript(\'' . $this->getLayoutCacheFile('content') . '\');' . PHP_EOL;
+            $prefix .= '$page_sidebar = executeScript("' . $this->getLayoutCacheFile('sidebar') . '");' . PHP_EOL;
+            $prefix .= '$page_content = executeScript("' . $this->getLayoutCacheFile('content') . '");' . PHP_EOL;
 
             if ($this->sidebar_side == 'left') {
                 $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
@@ -610,27 +625,11 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
         $prefix .= '<?php ' . PHP_EOL;
 
-        $prefix .= 'include "' . $this->getVarCacheFile($reload) . '";' . PHP_EOL;
+        $prefix .= 'include("' . $this->getVarCacheFile($reload) . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
         return $prefix;
-    }
-
-    /**
-     * Vrati objekt podstranky spolu so zoznamom zakladnych premennych
-     */
-    public function getHead()
-    {
-        $buffer = '$tempPage' . $this->id . ' = (object) array(' . PHP_EOL;
-
-        $buffer .= '\'url\' => \'' . $this->getUrl() . '\', ' . PHP_EOL;
-        $buffer .= '\'name\' => \'' . addslashes($this->name) . '\', ' . PHP_EOL;
-        $buffer .= '\'active\' => ' . $this->active . ', ' . PHP_EOL;
-
-        $buffer .= ');' . PHP_EOL;
-
-        return $buffer;
     }
 
     public function resetAfterUpdate()
@@ -658,22 +657,29 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
     public function prepareToDuplicate()
     {
-        foreach($this->headerSections as $section) {
+        foreach ($this->headerSections as $section) {
             $section->prepareToDuplicate();
         }
 
-        foreach($this->footerSections as $section) {
+        foreach ($this->footerSections as $section) {
             $section->prepareToDuplicate();
         }
 
-        foreach($this->contentSections as $section) {
+        foreach ($this->contentSections as $section) {
             $section->prepareToDuplicate();
         }
 
-        foreach($this->sidebarSections as $section) {
+        foreach ($this->sidebarSections as $section) {
             $section->prepareToDuplicate();
         }
 
         unset($this->id);
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind(); // TODO: Change the autogenerated stub
+
+        $this->cacheIdentifier = '$page' . $this->id;
     }
 }
