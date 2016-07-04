@@ -177,7 +177,7 @@ class Snippet extends CustomModel implements ICacheable
 
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            foreach ($this->snippetVariables as $snippetVar) {
+            foreach ($this->snippetFirstLevelVars as $snippetVar) {
                 $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValueAsString() . ',' . PHP_EOL;
             }
 
