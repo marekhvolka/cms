@@ -95,6 +95,9 @@ class Row extends CustomModel implements IDuplicable
 
     public function getContent($reload = false)
     {
+        if ($this->getBlocksCount() == 0)
+            return '';
+
         $result = $this->getPrefix();
 
         foreach ($this->columns as $column) {

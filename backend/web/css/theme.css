@@ -1191,6 +1191,8 @@ video {
 
 .modal-body {
     padding: 20px 30px 30px 30px;
+    max-height: 420px;
+    overflow-y: auto;
 }
 
 .inmodal .modal-body {
