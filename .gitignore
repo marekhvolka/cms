@@ -34,3 +34,4 @@ phpunit.phar
 backend/runtime
 /common/components/tmp/
 /frontend/web/data/
+/.htaccess
