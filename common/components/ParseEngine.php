@@ -12,7 +12,6 @@ namespace common\components;
 use backend\models\Block;
 use backend\models\Column;
 use backend\models\ListItem;
-use backend\models\ListVar;
 use backend\models\Page;
 use backend\models\Portal;
 use backend\models\PortalVarValue;
@@ -200,14 +199,12 @@ class ParseEngine
         ])
             ->execute();
 
-        $parseEngine = new ParseEngine();
-
         foreach ($portal->portalSnippets as $portalSnippet) {
-            $portalSnippet->valueBlock->data = $parseEngine->convertMacrosToLatteStyle($portalSnippet->valueBlock->data);
+            $portalSnippet->valueBlock->data = $this->convertMacrosToLatteStyle($portalSnippet->valueBlock->data);
 
             $portalSnippet->valueBlock->save();
 
-            $parseEngine->parseSnippetVarValues($portalSnippet->valueBlock);
+            $this->parseSnippetVarValues($portalSnippet->valueBlock);
         }
 
         $transaction->commit();
@@ -242,14 +239,12 @@ class ParseEngine
         ])
             ->execute();
 
-        $parseEngine = new ParseEngine();
-
         foreach ($product->productSnippets as $productSnippet) {
-            $productSnippet->valueBlock->data = $parseEngine->convertMacrosToLatteStyle($productSnippet->valueBlock->data);
+            $productSnippet->valueBlock->data = $this->convertMacrosToLatteStyle($productSnippet->valueBlock->data);
 
             $productSnippet->valueBlock->save();
 
-            $parseEngine->parseSnippetVarValues($productSnippet->valueBlock);
+            $this->parseSnippetVarValues($productSnippet->valueBlock);
         }
 
         $transaction->commit();
@@ -363,10 +358,18 @@ class ParseEngine
                             $pageBlock->data = json_decode($result['json'], true)['content']['master']
                             [$columnIndex . $rowIds[$i]][$tempId];
 
-                            if (isset(json_decode($pageBlock->data)->code_select)) {
-                                $pageBlock->snippet_code_id = json_decode($pageBlock->data)->code_select;
-                            } else {
-                                $pageBlock->snippet_code_id = json_decode(json_decode($pageBlock->data)->result)->code_select;
+                            if ($pageBlock->data == '[]') {
+                                continue;
+                            }
+
+                            json_decode($pageBlock->data);
+
+                            if (json_last_error() == JSON_ERROR_NONE) {
+                                if (isset(json_decode($pageBlock->data)->code_select)) {
+                                    $pageBlock->snippet_code_id = json_decode($pageBlock->data)->code_select;
+                                } else {
+                                    $pageBlock->snippet_code_id = json_decode(json_decode($pageBlock->data)->result)->code_select;
+                                }
                             }
 
                             break;
@@ -540,6 +543,10 @@ class ParseEngine
                                 true)['sidebar']['master'][$columnIndex . $rowIds[$i]][$tempId];
 
                             $pageBlock->type = 'snippet';
+
+                            if (!isset(json_decode($json)->code_select)) {
+                                break;
+                            }
 
                             $pageBlock->snippet_code_id = json_decode($json)->code_select;
 
@@ -952,7 +959,7 @@ class ParseEngine
                         ->all();
 
                     if (!isset($value) || ($value == '') || $value + 1 > sizeof($dropdowns)) {
-                        $snippetVarValue->value_dropdown_id = $snippetVar->defaultValue;
+                        $snippetVarValue->value_dropdown_id = $snippetVar->getDefaultValue()->value_dropdown_id;
                     } else {
                         $snippetVarValue->value_dropdown_id = $dropdowns[$value]->id;
                     }

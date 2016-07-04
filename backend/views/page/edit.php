@@ -12,7 +12,6 @@ use yii\helpers\Html;
 $this->title = 'Úprava podstránky: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Podstránky', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Úprava';
 
 ?>
 <div class="page-update">

@@ -16,8 +16,8 @@ $portal = Portal::find()
 $portalName = isset($portal->name) ? $portal->name : '';
 
 NavBar::begin([
-    'brandLabel' => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
-    'brandUrl' => Yii::$app->homeUrl,
+    /*'brandLabel' => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
+    'brandUrl' => Yii::$app->homeUrl,*/
     'renderInnerContainer' => false,
     'options' => [
         'class' => 'navbar-inverse navbar-fixed-top',
@@ -93,6 +93,5 @@ if (!Yii::$app->user->isGuest) {
 
     ]);
 }
-
 
 NavBar::end();

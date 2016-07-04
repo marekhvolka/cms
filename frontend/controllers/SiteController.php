@@ -3,8 +3,6 @@ namespace frontend\controllers;
 
 use backend\models\Page;
 use backend\models\Portal;
-use backend\models\Product;
-use common\components\ParseEngine;
 use common\models\LoginForm;
 use frontend\models\ContactForm;
 use frontend\models\PasswordResetRequestForm;
@@ -71,16 +69,6 @@ class SiteController extends Controller
 
     public function actionIndex($url = null)
     {
-        $parseEngine = new ParseEngine();
-
-        $products = Product::find()->all();
-
-        foreach ($products as $product) {
-            if ($product->parsed == 0) {
-                $parseEngine->parseProduct($product);
-            }
-        }
-
         $identifiers = explode("/", strtolower($url));
 
         $portal = Portal::find()->where([
@@ -121,14 +109,6 @@ class SiteController extends Controller
                     'identifier' => '404',
                     'portal_id' => $portalId
                 ])->one();
-        }
-
-        if ($page->portal->parsed == 0) {
-            $parseEngine->parsePortal($page->portal);
-        }
-
-        if ($page->parsed == 0) {
-            $parseEngine->parsePage($page);
         }
 
         if (isset($page)) {

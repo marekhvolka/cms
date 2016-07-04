@@ -3,25 +3,15 @@
 namespace backend\controllers;
 
 use backend\components\VarManager\VarManagerWidget;
-use backend\models\CustomModel;
-use common\components\ParseEngine;
-use Exception;
-use Yii;
-use yii\db\Query;
-use yii\helpers\ArrayHelper;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 use backend\models\Model;
+use backend\models\Portal;
 use backend\models\PortalVar;
 use backend\models\PortalVarValue;
-use backend\models\Section;
-use backend\models\Row;
-use backend\models\Column;
-use backend\models\Block;
-use backend\models\Portal;
 use backend\models\search\PortalSearch;
+use Exception;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * PortalController implements the CRUD actions for Portal model.
@@ -125,8 +115,9 @@ class PortalController extends BaseController
 
         $model = null;
 
-        if (isset($modelId))
+        if (isset($modelId)) {
             $model = Portal::findOne($modelId);
+        }
 
         $prefix = Yii::$app->request->post('prefix');
 

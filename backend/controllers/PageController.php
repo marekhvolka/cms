@@ -4,8 +4,6 @@ namespace backend\controllers;
 
 use backend\models\Page;
 use backend\models\search\PageSearch;
-use common\components\DataEngine;
-use common\components\ParseEngine;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -59,11 +57,6 @@ class PageController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id);
-
-            if ($model->parsed == 0) {
-                $parseEngine = new ParseEngine();
-                $parseEngine->parsePage($model);
-            }
         } else {
             $model = new Page();
         }
@@ -104,8 +97,9 @@ class PageController extends BaseController
                     $this->loadLayout($model, $sidebarData, 'sidebarSections');
                 }
 
-                if (!($model->validate() && $model->save()))
+                if (!($model->validate() && $model->save())) {
                     throw new Exception;
+                }
 
                 $this->saveLayout($model, 'headerSections');
                 $this->saveLayout($model, 'footerSections');
