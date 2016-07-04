@@ -2,9 +2,7 @@
 
 namespace backend\models;
 
-use Exception;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "section".
@@ -42,8 +40,20 @@ class Section extends CustomModel implements IDuplicable
             [['page_id', 'portal_id'], 'integer'],
             [['css_class', 'css_style', 'css_id'], 'string'],
             [['type'], 'string', 'max' => 10],
-            [['page_id'], 'exist', 'skipOnError' => true, 'targetClass' => Page::className(), 'targetAttribute' => ['page_id' => 'id']],
-            [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
+            [
+                ['page_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Page::className(),
+                'targetAttribute' => ['page_id' => 'id']
+            ],
+            [
+                ['portal_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Portal::className(),
+                'targetAttribute' => ['portal_id' => 'id']
+            ],
         ];
     }
 
@@ -65,10 +75,11 @@ class Section extends CustomModel implements IDuplicable
      */
     public function getRows()
     {
-        if (!isset($this->rows))
+        if (!isset($this->rows)) {
             $this->rows = $this->hasMany(Row::className(), ['section_id' => 'id'])
                 ->orderBy('order')
                 ->all();
+        }
 
         return $this->rows;
     }
@@ -125,14 +136,17 @@ class Section extends CustomModel implements IDuplicable
         $settings['ids'] = ''; //'section' . $this->id . ' ';
         $settings['styles'] = '';
 
-        foreach ($this->rows as $row)
-            foreach ($row->columns as $column)
-                foreach ($column->blocks as $block)
+        foreach ($this->rows as $row) {
+            foreach ($row->columns as $column) {
+                foreach ($column->blocks as $block) {
                     if (isset($block->snippetCode)) {
                         $settings['classes'] .= $block->snippetCode->snippet->section_class . ' ';
                         $settings['ids'] .= $block->snippetCode->snippet->section_id . ' ';
                         $settings['styles'] .= $block->snippetCode->snippet->section_style . ' ';
                     }
+                }
+            }
+        }
 
         return $settings;
     }
@@ -140,15 +154,19 @@ class Section extends CustomModel implements IDuplicable
     public function getPostfix()
     {
         return '</div> <!-- container end --> ' . PHP_EOL .
-                '</div> <!-- section end -->' . PHP_EOL;
+        '</div> <!-- section end -->' . PHP_EOL;
     }
 
     public function getContent($reload = false)
     {
+        if ($this->getBlocksCount() == 0)
+            return '';
+
         $result = $this->getPrefix();
 
-        foreach ($this->rows as $row)
+        foreach ($this->rows as $row) {
             $result .= $row->getContent($reload);
+        }
 
         $result .= $this->getPostfix();
 
@@ -157,12 +175,23 @@ class Section extends CustomModel implements IDuplicable
 
     public function prepareToDuplicate()
     {
-        foreach($this->rows as $row) {
+        foreach ($this->rows as $row) {
             $row->prepareToDuplicate();
         }
 
         $this->id = null;
         unset($this->page_id);
         unset($this->portal_id);
+    }
+
+    public function getBlocksCount()
+    {
+        $count = 0;
+
+        foreach ($this->rows as $row) {
+            $count += $row->getBlocksCount();
+        }
+
+        return $count;
     }
 }

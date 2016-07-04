@@ -23,6 +23,7 @@ use Yii;
  * @property ListItem[] $listItems
  * @property ListItem $listItem
  * @property Product $valueProduct
+ * @property ProductVar $valueProductVar
  * @property Page $valuePage
  * @property Block $block
  * @property SnippetVar $var
@@ -202,8 +203,12 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 break;
             case 'product_var' :
-                $value = '\'' . $this->valueProductVar->identifier . '\'';
-
+                if (isset($this->valueProductVar)) {
+                    $value = '\'' . $this->valueProductVar->identifier . '\'';
+                }
+                else {
+                    $value = 'NULL';
+                }
                 break;
             case 'product_tag' :
 

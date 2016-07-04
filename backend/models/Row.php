@@ -2,9 +2,7 @@
 
 namespace backend\models;
 
-use Exception;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "row".
@@ -35,7 +33,13 @@ class Row extends CustomModel implements IDuplicable
         return [
             [['section_id', 'order'], 'integer'],
             [['options'], 'string'],
-            [['section_id'], 'exist', 'skipOnError' => true, 'targetClass' => Section::className(), 'targetAttribute' => ['section_id' => 'id']],
+            [
+                ['section_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Section::className(),
+                'targetAttribute' => ['section_id' => 'id']
+            ],
         ];
     }
 
@@ -57,10 +61,11 @@ class Row extends CustomModel implements IDuplicable
      */
     public function getColumns()
     {
-        if (!isset($this->columns))
+        if (!isset($this->columns)) {
             $this->columns = $this->hasMany(Column::className(), ['row_id' => 'id'])
                 ->orderBy('order')
                 ->all();
+        }
 
         return $this->columns;
     }
@@ -92,8 +97,9 @@ class Row extends CustomModel implements IDuplicable
     {
         $result = $this->getPrefix();
 
-        foreach ($this->columns as $column)
+        foreach ($this->columns as $column) {
             $result .= $column->getContent($reload);
+        }
 
         $result .= $this->getPostfix();
 
@@ -102,11 +108,22 @@ class Row extends CustomModel implements IDuplicable
 
     public function prepareToDuplicate()
     {
-        foreach($this->columns as $column) {
+        foreach ($this->columns as $column) {
             $column->prepareToDuplicate();
         }
 
         unset($this->id);
         unset($this->section_id);
+    }
+
+    public function getBlocksCount()
+    {
+        $count = 0;
+
+        foreach ($this->columns as $column) {
+            $count += $column->getBlocksCount();
+        }
+
+        return $count;
     }
 }

@@ -206,29 +206,6 @@ abstract class BaseController extends Controller
         return (new MultimediaWidget())->run();
     }
 
-    public function actionCacheFromBuffer($limit = 20)
-    {
-        $query = 'SELECT * FROM cache_page ORDER BY priority DESC, added_at ASC LIMIT :limit';
-
-        $command = Yii::$app->db->createCommand($query);
-        $command->bindValue(':limit', $limit);
-
-        $results = $command->queryAll();
-
-        foreach ($results as $row) {
-            $page = Page::find()->where(['id' => $row['page_id']])->one();
-
-            $page->getMainCacheFile(true);
-
-            $removeQuery = 'DELETE FROM cache_page WHERE id = :id';
-
-            $removeCommand = Yii::$app->db->createCommand($removeQuery);
-            $removeCommand->bindValue(':id', $row['id']);
-
-            $removeCommand->execute();
-        }
-    }
-
     /** Metoda na nacitanie a ulozenie dat pre layout
      * @param CustomModel $model
      * @param $sectionsData
