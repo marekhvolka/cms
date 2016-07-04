@@ -183,7 +183,7 @@ class Product extends CustomModel implements ICacheable
 
     public function getMainDirectory()
     {
-        $path = $this->language->getProductsDirectory() . $this->identifier . '/';
+        $path = $this->language->getProductsDirectory() . 'product' . $this->id . '/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
