@@ -170,6 +170,8 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
             $this->snippetVarValues = array();
 
+            
+
             if ($this->snippetCode) {
                 foreach ($this->snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
                     $snippetVarValue = SnippetVarValue::find()->where([

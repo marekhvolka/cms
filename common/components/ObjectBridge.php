@@ -60,6 +60,16 @@ class ObjectBridge extends ArrayObject
     {
         return '' . $this->string;
     }
+
+    public function hasTag($tag)
+    {
+        if (!isset($this->obj->tags) || !isset($tag))
+            return false;
+
+        if (key_exists($tag->id, $this->obj->tags))
+            return true;
+        return false;
+    }
 }
 
 function executeScript($path)

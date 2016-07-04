@@ -105,7 +105,7 @@ class Product extends CustomModel implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $this->getProductVarsFile(true); //resetneme hlavny subor
+        $this->getMainCacheFile(true); //resetneme hlavny subor
 
         foreach ($this->pages as $page) {
             $page->addToCacheBuffer();
@@ -151,7 +151,7 @@ class Product extends CustomModel implements ICacheable
             $buffer .= '\'tags\' => array(' . PHP_EOL;
 
             foreach ($this->tags as $tag) {
-                $buffer .= '$tags->' . $tag->identifier . ',' . PHP_EOL;
+                $buffer .= '\'' . $tag->identifier . '\' => $tags->' . $tag->identifier . ',' . PHP_EOL;
             }
 
             $buffer .= '),' . PHP_EOL;

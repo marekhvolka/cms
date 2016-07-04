@@ -85,7 +85,8 @@ $productType = $model->product ? $model->product->productType : null;
     </div>
 
     <?= $form->field($model, 'color_scheme')->dropDownList(
-        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->template->getColorSchemes(), 'label', 'label')); ?>
+        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->template->getColorSchemes(), 'label',
+            'label')); ?>
 
     <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX,
@@ -178,6 +179,10 @@ $productType = $model->product ? $model->product->productType : null;
                     'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
                     'id' => 'submit-btn',
                     'name' => 'continue'
+                ]) ?>
+                <?= Html::a('Náhľad', Url::to(['show', 'id' => $model->id]), [
+                    'class' => 'btn btn-info',
+                    'target' => '_blank'
                 ]) ?>
             </div>
         </div>

@@ -58,11 +58,14 @@ class SnippetVar extends Variable
                 'targetClass' => Snippet::className(),
                 'targetAttribute' => ['snippet_id' => 'id']
             ],
-            ['identifier', function ($attribute, $params) {
-                if ($this->$attribute == 'active') {
-                    $this->addError($attribute, 'Zvoľ iný identifikátor');
+            [
+                'identifier',
+                function ($attribute, $params) {
+                    if ($this->$attribute == 'active') {
+                        $this->addError($attribute, 'Zvoľ iný identifikátor');
+                    }
                 }
-            }],
+            ],
             //[['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VarType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
@@ -199,8 +202,12 @@ class SnippetVar extends Variable
 
             case 'product' :
                 $value = 'NULL';
-                break;
 
+                break;
+            case 'product_tag' :
+                $value = 'NULL';
+
+                break;
             case 'dropdown' :
 
                 $productTypeDefaultValue = $this->getDefaultValue($productType);
@@ -309,7 +316,7 @@ class SnippetVar extends Variable
                 throw new \yii\base\Exception;
             }
 
-            foreach($childModel->defaultValues as $defaultValue) {
+            foreach ($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
 
                 if (!($defaultValue->validate() && $defaultValue->save())) {
@@ -319,5 +326,32 @@ class SnippetVar extends Variable
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);
         }
+    }
+
+    public function hasChanged()
+    {
+        if (!empty($this->dirtyAttributes)) {
+            return true;
+        }
+
+        foreach ($this->children as $childVar) {
+            if ($childVar->hasChanged()) {
+                return true;
+            }
+        }
+
+        foreach ($this->defaultValues as $defaultValue) {
+            if ($defaultValue->hasChanged()) {
+                return true;
+            }
+        }
+
+        foreach ($this->dropdownValues as $dropdown) {
+            if ($dropdown->hasChanged()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
