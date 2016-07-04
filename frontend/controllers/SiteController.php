@@ -112,7 +112,7 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $path = $page->getMainCacheFile();
+            $path = $page->getMainCacheFile($page->reload);
         }
 
         if (isset($path)) {
@@ -283,24 +283,12 @@ class SiteController extends Controller
 
     public function actionCacheFromBuffer($limit = 1)
     {
-        $query = 'SELECT * FROM cache_page ORDER BY priority DESC, added_at ASC LIMIT :limit';
+        $pages = Page::find()->where(['reload' => 1])
+                ->limit($limit)
+            ->all();
 
-        $command = Yii::$app->db->createCommand($query);
-        $command->bindValue(':limit', intval($limit));
-
-        $results = $command->queryAll();
-
-        foreach ($results as $row) {
-            $page = Page::find()->where(['id' => $row['page_id']])->one();
-
+        foreach ($pages as $page) {
             $page->getMainCacheFile(true);
-
-            $removeQuery = 'DELETE FROM cache_page WHERE id = :id';
-
-            $removeCommand = Yii::$app->db->createCommand($removeQuery);
-            $removeCommand->bindValue(':id', $row['id']);
-
-            $removeCommand->execute();
         }
     }
 }

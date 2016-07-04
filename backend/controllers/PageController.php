@@ -108,6 +108,8 @@ class PageController extends BaseController
 
                 $transaction->commit();
 
+                $model->resetAfterUpdate();
+
                 $continue = Yii::$app->request->post('continue');
 
                 if (isset($continue)) {

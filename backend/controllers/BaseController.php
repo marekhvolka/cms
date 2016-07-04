@@ -322,6 +322,8 @@ abstract class BaseController extends Controller
                         if ($block->changed) {
                             $this->saveSnippetVarValues($block);
                         }
+
+                        $block->resetAfterUpdate();
                     }
                 }
             }
