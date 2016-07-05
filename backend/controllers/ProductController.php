@@ -43,7 +43,7 @@ class ProductController extends BaseController
     {
         $searchModel = new ProductSearch();
 
-        $products = $searchModel->search(Yii::$app->request->queryParams)
+        $products = $searchModel->search(Yii::$app->request->queryParams, true)
             ->andWhere('parent_id IS NULL')
             ->all();
 

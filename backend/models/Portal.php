@@ -22,7 +22,7 @@ use yii\helpers\ArrayHelper;
  * @property Page[] $pages
  * @property Language $language
  * @property Template $template
- * @property PortalVarValue[] $portalSnippets
+ * @property Block[] $portalSnippets
  * @property Section[] $headerSections
  * @property Section[] $footerSections
  * @property PortalVarValue[] $portalVarValues
@@ -121,15 +121,22 @@ class Portal extends CustomModel implements ICacheable
      */
     public function getPortalSnippets()
     {
-        $array = array();
+        if (!isset($this->portalSnippets)) {
+            $this->portalSnippets = array();
 
-        foreach ($this->portalVarValues as $portalVarValue) {
-            if ($portalVarValue->var->isSnippet()) {
-                $array[] = $portalVarValue;
+            foreach ($this->portalVarValues as $index => $portalVarValue) {
+                if ($portalVarValue->var->isSnippet()) {
+                    $this->portalSnippets[$index] = $portalVarValue->valueBlock;
+                }
             }
         }
 
-        return $array;
+        return $this->portalSnippets;
+    }
+
+    public function setPortalSnippets($value)
+    {
+        $this->portalSnippets = $value;
     }
 
     /** Vrati zoznam hodnot premennych - portalovych vlastnosti
@@ -474,7 +481,7 @@ class Portal extends CustomModel implements ICacheable
         }
 
         foreach ($this->portalSnippets as $portalSnippet) {
-            $portalSnippet->valueBlock->resetAfterUpdate();
+            $portalSnippet->resetAfterUpdate();
         }
     }
 }

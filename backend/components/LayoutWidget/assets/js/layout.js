@@ -18,7 +18,7 @@ body.on(
             postData = {
                 type: $this.data('type'),
                 prefix: $this.data('prefix'),
-                productTypeId: $this.data('product-type-id')
+                productId: $this.data('product-id')
             };
 
         $.post(
@@ -52,7 +52,7 @@ body.on(
             section = $this.parents('.section').first(),
             postData = {
                 prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
-                productTypeId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('product-type-id')
+                productId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('product-id')
             };
 
         $.post(
@@ -62,7 +62,7 @@ body.on(
                     postColumnData = {
                         width: columnsByWidth,
                         prefix: row.data('prefix'),
-                        productTypeId: row.data('product-type-id')
+                        productId: row.data('product-id')
                     };
 
                 $.post(
@@ -89,7 +89,7 @@ body.on(
 
         var postData = {
             prefix: mainButton.data('prefix'),
-            productTypeId: mainButton.data('product-type-id'),
+            productId: mainButton.data('product-id'),
             type: $(this).data('type')
         };
 
@@ -108,29 +108,6 @@ body.on(
         $(this).parents('.layout-block').first().remove();
     }
 );
-
-body.on('change', '.snippet-dropdown', function() {
-
-    var postData = {
-        prefix: $(this).data('prefix'),
-        productTypeId: $(this).data('product-type-id'),
-        snippetId: $(this).val()
-    };
-
-    var snippetName = $(this).find("option[value='" + $(this).val() + "']").text();
-
-    var self = $(this);
-
-    $.post(appendUrl.blockModalContent, postData, function(data)
-    {
-        self.parents('.btn-group').first().find('.btn-block-modal').first().html(snippetName);
-
-        var modalContent = self.parents('.modal-main-content').first();
-        modalContent.empty();
-        modalContent.append($(data));
-    });
-
-});
 
 function appendElement(parentElement, dataToAppend)
 {
@@ -185,84 +162,6 @@ function getColumnsWidths(rowType)
  });
 
  */
-body.on(
-    'click', '.btn-block-modal', function ()
-    {
-        var modalContainer = $(this).parents('.block').first().find('.modal-container');
-
-        var blockId = $(this).data('id'),
-            modal = $('#modal-' + blockId);
-
-        // if it exists, it will get shown automatically... otherwise, load it
-        if (modalContainer.children().length == 0)
-        {
-            var postData = {
-                    id: blockId,
-                    prefix: $(this).data('prefix')
-                },
-                self = this;
-
-            $.get(
-                appendUrl.blockModal + '?id=' + postData.id + '&prefix=' + postData.prefix, function (data)
-                {
-                    var modalWindow = $(data);
-
-                    modalContainer.append(modalWindow);
-
-                    modalWindow.modal();
-                }
-            );
-        }
-        else
-        {
-            modalContainer.children('.modal').first().modal('show');
-        }
-
-        return true;
-    }
-);
-
-body.on(
-    'click', '.btn-add-list-item', function ()
-    {
-        var listContainer = $(this).parents('.list-panel').first();
-
-        var postData = {
-            prefix: $(this).data('prefix'),
-            parentVarId: $(this).data('parent-var-id')
-        };
-
-        $.get(
-            appendUrl.listItem + '?prefix=' + postData.prefix + '&parentVarId=' + postData.parentVarId, function (data)
-            {
-                appendElement(listContainer, $(data));
-            }
-        );
-    }
-);
-
-body.on(
-    'click', '.btn-remove-list-item', function ()
-    {
-        $(this).parents('.list-item').first().remove();
-    }
-);
-
-body.on('click', '.btn-modal-save', function() {
-    var modalWindow = $(this).parents('.modal').first();
-
-    modalWindow.modal('hide');
-    //$('body').removeClass('modal-open');
-    $('.modal-backdrop').remove();
-});
-
-body.on('click', '.btn-modal-close', function() {
-    var modalWindow = $(this).parents('.modal').first();
-
-    modalWindow.modal('hide');
-    $('body').removeClass('modal-open');
-    $('.modal-backdrop').remove();
-});
 
 $('.dropdown-toggle').dropdown();
 

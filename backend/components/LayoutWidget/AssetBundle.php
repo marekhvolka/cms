@@ -20,7 +20,8 @@ class AssetBundle extends \yii\web\AssetBundle
         'css/style.css'
     ];
     public $js = [
-        'js/layout.js'
+        'js/layout.js',
+        'js/block-modal.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

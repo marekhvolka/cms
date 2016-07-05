@@ -4,6 +4,7 @@ namespace backend\models\search;
 
 use backend\models\Model;
 use backend\models\Page;
+use backend\models\Portal;
 use Yii;
 use yii\db\Query;
 use yii\helpers\Url;
@@ -72,8 +73,12 @@ class GlobalSearch
         }
 
         // PRODUCTS
+        $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
 
         $products = (new Query())->select("id, name")->from("product")->filterWhere(['like', 'name', $searchTerm])
+            ->andWhere([
+                'language_id' => $portal->language_id
+            ])
             ->limit(10)->all();
 
         foreach ($products as $product) {

@@ -14,7 +14,6 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
 
-$productType = $model->product ? $model->product->productType : null;
 ?>
 
 <div class="page-form">
@@ -103,7 +102,7 @@ $productType = $model->product ? $model->product->productType : null;
             'prefix' => 'headerSection',
             'type' => 'header',
             'controllerUrl' => Url::to(['/page']),
-            'productType' => $productType
+            'product' => $model->product
         ]
     ) ?>
 
@@ -115,7 +114,7 @@ $productType = $model->product ? $model->product->productType : null;
             'prefix' => 'contentSection',
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'productType' => $productType
+            'product' => $model->product
         ]
     ) ?>
 
@@ -148,7 +147,7 @@ $productType = $model->product ? $model->product->productType : null;
             'prefix' => 'sidebarSection',
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'productType' => $productType
+            'product' => $model->product
         ]
     ) ?>
 
@@ -163,7 +162,7 @@ $productType = $model->product ? $model->product->productType : null;
             'prefix' => 'footerSection',
             'type' => 'footer',
             'controllerUrl' => Url::to(['/page']),
-            'productType' => $productType
+            'product' => $model->product
         ]
     ) ?>
 

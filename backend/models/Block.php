@@ -19,6 +19,7 @@ use Yii;
  * @property string $data
  * @property string $type
  * @property boolean $active
+ * @property string $varIdentifier
  *
  *
  * @property string $existing
@@ -170,23 +171,31 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
             $this->snippetVarValues = array();
 
-            
-
             if ($this->snippetCode) {
-                foreach ($this->snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
-                    $snippetVarValue = SnippetVarValue::find()->where([
-                        'block_id' => $this->id,
-                        'var_id' => $firstLevelVar->id
-                    ])->one();
+                $snippetCode = $this->snippetCode;
+            }
+            else { //jedna sa o portalovy alebo produktovy snippet
+                if ($this->parent) {
+                    $snippetCode = $this->parent->snippetCode;
+                }
+                else {
+                    return $this->snippetVarValues;
+                }
+            }
 
-                    if ($snippetVarValue) {
-                        $this->snippetVarValues[] = $snippetVarValue;
-                    } else {
-                        $snippetVarValue = new SnippetVarValue();
-                        $snippetVarValue->var_id = $firstLevelVar->id;
+            foreach ($snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
+                $snippetVarValue = SnippetVarValue::find()->where([
+                    'block_id' => $this->id,
+                    'var_id' => $firstLevelVar->id
+                ])->one();
 
-                        $this->snippetVarValues[] = $snippetVarValue;
-                    }
+                if ($snippetVarValue) {
+                    $this->snippetVarValues[] = $snippetVarValue;
+                } else {
+                    $snippetVarValue = new SnippetVarValue();
+                    $snippetVarValue->var_id = $firstLevelVar->id;
+
+                    $this->snippetVarValues[] = $snippetVarValue;
                 }
             }
         }
@@ -396,19 +405,12 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $this->type == 'snippet' || $this->type == 'portal_snippet' || $this->type == 'product_snippet';
     }
 
-    public function initializeVarValues($snippetId)
+    public function getVarIdentifier()
     {
-        $this->snippetVarValues = array();
-
-        $snippet = Snippet::findOne($snippetId);
-
-        $this->snippet_code_id = $snippet->snippetCodes[0];
-
-        foreach ($snippet->snippetVariables as $snippetVar) {
-            $snippetVarValue = new SnippetVarValue();
-            $snippetVarValue->var_id = $snippetVar->id;
-
-            $this->snippetVarValues[rand(1000, 10000)] = $snippetVarValue;
-        }
+        if ($this->type == 'product_snippet')
+            return $this->productVarValue->var->name;
+        else if ($this->type == 'portal_snippet')
+           return $this->portalVarValue->var->name;
+        return '';
     }
 }

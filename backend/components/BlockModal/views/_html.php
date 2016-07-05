@@ -12,11 +12,7 @@ use backend\components\MultimediaModalWidget\MultimediaModalWidget;
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
 <div class="modal-body">
-<textarea class="form-control editor ckeditor" id="textModal" rows="3" name="<?= $prefix . '[data]' ?>">
+<textarea class="form-control editor" id="textModal" rows="3" name="<?= $prefix . '[data]' ?>">
     <?= $model->data ?>
 </textarea>
 </div>
-
-<script type="text/javascript">
-    CKEDITOR.replace('textModal');
-</script>

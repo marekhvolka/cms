@@ -4,54 +4,60 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 use yii\helpers\Html;
 
-/* @var $model backend\models\SnippetVarValue */
-/* @var $productType backend\models\ProductType */
+/* @var $snippetVarValue backend\models\SnippetVarValue */
+/* @var $product backend\models\Product */
 /* @var $prefix string */
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
 /* @var $globalObjects array */
+/* @var $blockType string */
 ?>
 
 <?php
-$defaultValue = $model->var->getDefaultValue($productType);
-
-if ($model->typeName != 'list') : ?>
+if ($product) {
+    $defaultValue = $snippetVarValue->var->getDefaultValue($product->productType);
+}
+else
+    $defaultValue = null;
+if ($snippetVarValue->typeName != 'list') : ?>
     <div class="form-group">
-        <label class="col-sm-2 control-label" for="<?= $model->id ?>"><?= $model->var->identifier ?></label>
-        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $model->var_id, ['class' => 'var_id']); ?>
+        <label class="col-sm-2 control-label"
+               for="<?= $snippetVarValue->id ?>"><?= $snippetVarValue->var->identifier ?></label>
+        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="col-sm-10">
             <?php
-            switch ($model->typeName) {
+            switch ($snippetVarValue->typeName) {
                 case 'image': ?>
-                    <input type="text" class="form-control" id="<?= $model->id ?>"
+                    <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
                            name="<?= $prefix . '[value_text]' ?>"
                            placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                           value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
+                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
                     <?php
                     break;
                 case 'url' :
                 case 'icon' :
                 case 'textinput' : ?>
 
-                    <input type="text" class="form-control" id="<?= $model->id ?>"
+                    <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
                            name="<?= $prefix . '[value_text]' ?>"
                            placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                           value="<?= htmlspecialchars($model->value_text, ENT_QUOTES) ?>"/>
+                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
                     <?php
                     break;
                 case 'textarea' : ?>
 
-                    <textarea class="form-control" id="<?= $model->id ?>" name="<?= $prefix . '[value_text]' ?>"
+                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>"
+                              name="<?= $prefix . '[value_text]' ?>"
                               rows="3"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
-                        <?= htmlspecialchars($model->value_text,
+                        <?= htmlspecialchars($snippetVarValue->value_text,
                             ENT_QUOTES) ?></textarea>
 
                     <?php
                     break;
                 case 'color' : ?>
                     <div class="input-group">
-                        <input type="color" class="form-control" id="<?= $model->id ?>" name=""
-                               value="<?= $model->value_text ?>"
+                        <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name=""
+                               value="<?= $snippetVarValue->value_text ?>"
                                placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
                         <span class="input-group-addon"><i></i></span>
                     </div>
@@ -59,14 +65,15 @@ if ($model->typeName != 'list') : ?>
                     <?php
                     break;
                 case 'editor' : ?>
-                    <textarea class="form-control" id="<?= $model->id ?>" name="" rows="3"
-                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"><?= htmlspecialchars($model->value_text,
-                            ENT_QUOTES) ?></textarea>
+                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="" rows="3"
+                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
+                        <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
+                    </textarea>
                     <?php
                     break;
                 case 'product' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_product_id', $globalObjects['products']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id', $globalObjects['products']
                         ,
                         [
                             'name' => $prefix . '[value_product_id]',
@@ -78,7 +85,7 @@ if ($model->typeName != 'list') : ?>
                     break;
                 case 'page' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_page_id', $globalObjects['pages']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id', $globalObjects['pages']
                         ,
                         [
                             'name' => $prefix . '[value_page_id]',
@@ -91,7 +98,7 @@ if ($model->typeName != 'list') : ?>
                     break;
                 case 'product_var' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_product_var_id', $globalObjects['productVars']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id', $globalObjects['productVars']
                         ,
                         [
                             'name' => $prefix . '[value_product_var_id]',
@@ -103,7 +110,7 @@ if ($model->typeName != 'list') : ?>
                     break;
                 case 'product_tag' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_tag_id', $globalObjects['productTags']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id', $globalObjects['productTags']
                         ,
                         [
                             'name' => $prefix . '[value_tag_id]',
@@ -116,8 +123,8 @@ if ($model->typeName != 'list') : ?>
 
                 case 'dropdown' : ?>
 
-                    <?= Html::activeDropDownList($model, 'value_dropdown_id',
-                        ArrayHelper::map($model->var->dropdownValues, 'id', 'value'),
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_dropdown_id',
+                        ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
                         [
                             'name' => $prefix . '[value_dropdown_id]',
                             'class' => 'form-control'
@@ -128,7 +135,7 @@ if ($model->typeName != 'list') : ?>
 
                 case 'bool' : ?>
 
-                    <?= SwitchInput::widget(['name' => $prefix . 'value_text', 'value' => $model->var->value_text]); ?>
+                    <?= SwitchInput::widget(['name' => $prefix . 'value_text', 'value' => $snippetVarValue->var->value_text]); ?>
 
                     <?php
                     break;
@@ -140,33 +147,34 @@ if ($model->typeName != 'list') : ?>
         </div>
         <div class="clearfix"></div>
     </div>
-<?php else  : ?>
+<?php elseif ($blockType == 'snippet')  : ?>
     <div class="panel panel-default list-panel">
-        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $model->var_id, ['class' => 'var_id']); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="panel-heading">
             <span>
-                <a data-toggle="collapse" href="#panel<?= $model->id ?>">
+                <a data-toggle="collapse" href="#panel<?= $snippetVarValue->id ?>">
                     <i class="fa fa-angle-down">
-                        <?= $model->var->identifier ?>
+                        <?= $snippetVarValue->var->identifier ?>
                     </i>
                 </a>
             </span>
             <span>
-                Počet položiek: <?= sizeof($model->listItems) ?>
+                Počet položiek: <?= sizeof($snippetVarValue->listItems) ?>
             </span>
             <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-               data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $model->var_id ?>">
+               data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in children-list fixed-panel" id="panel<?= $model->id ?>">
-            <?php foreach ($model->listItems as $indexItem => $listItem) : ?>
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel" id="panel<?= $snippetVarValue->id ?>">
+            <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
                 <?= $this->render('_list-item', [
-                    'model' => $listItem,
-                    'productType' => $productType,
+                    'listItem' => $listItem,
+                    'product' => $product,
                     'prefix' => $prefix . "[ListItem][$indexItem]",
-                    'globalObjects' => $globalObjects
+                    'globalObjects' => $globalObjects,
+                    'blockType' => $blockType
                 ]); ?>
             <?php endforeach; ?>
         </div>

@@ -27,7 +27,7 @@ use Yii;
  * @property Language $language
  * @property Product $parent
  * @property Product[] $products
- * @property ProductVarValue[] $productSnippets
+ * @property Block[] $productSnippets
  * @property ProductVarValue[] $productProperties
  * @property Tag[] $tags
  * @property ProductVarValue[] $productVarValues
@@ -113,7 +113,7 @@ class Product extends CustomModel implements ICacheable
 
         /* @var $productSnippet SnippetVarValue */
         foreach ($this->productSnippets as $productSnippet) {
-            $productSnippet->valueBlock->resetAfterUpdate();
+            $productSnippet->resetAfterUpdate();
         }
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
@@ -281,7 +281,7 @@ class Product extends CustomModel implements ICacheable
             $this->productSnippets = array();
             foreach ($this->productVarValues as $index => $productVarValue) {
                 if ($productVarValue->var->isSnippet()) {
-                    $this->productSnippets[$index] = $productVarValue;
+                    $this->productSnippets[$index] = $productVarValue->valueBlock;
                 }
             }
         }
@@ -357,8 +357,8 @@ class Product extends CustomModel implements ICacheable
             $buffer .= 'include("' . $this->getProductVarsFile() . '");' . PHP_EOL;
 
             foreach ($this->productSnippets as $productVarValue) {
-                $buffer .= '$' . $this->identifier . '->' . $productVarValue->var->identifier .
-                    ' = file_get_contents("' . $productVarValue->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
+                $buffer .= '$' . $this->identifier . '->' . $productVarValue->productVarValue->var->identifier .
+                    ' = file_get_contents("' . $productVarValue->getMainCacheFile() . '");' . PHP_EOL;
             }
 
             $buffer .= '?>';

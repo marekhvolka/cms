@@ -3,7 +3,7 @@ use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
 /* @var $prefix string */
-/* @var $productType \backend\models\ProductType */
+/* @var $product \backend\models\Product */
 
 ?>
 <!--SECTION TO ADD-->
@@ -23,7 +23,7 @@ use yii\helpers\BaseHtml;
                 </div>
                 <div class="dropdown dropdown-cols inline-button">
                     <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
-                            data-prefix="<?= $prefix ?>" data-product-type-id="<?= $productType ? $productType->id : '' ?>"
+                            data-prefix="<?= $prefix ?>" data-product-id="<?= $product ? $product->id : '' ?>"
                             title="Vložiť nový riadok" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
@@ -52,7 +52,7 @@ use yii\helpers\BaseHtml;
                 <?= $this->render('_row', [
                     'model' => $row,
                     'prefix' => $prefix . "[Row][$indexRow]",
-                    'productType' => $productType
+                    'product' => $product
                 ]); ?>
             <?php endforeach; ?>
         </div>
