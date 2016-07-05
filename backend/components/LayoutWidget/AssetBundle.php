@@ -21,11 +21,11 @@ class AssetBundle extends \yii\web\AssetBundle
     ];
     public $js = [
         'js/layout.js',
-        'js/block-modal.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'backend\components\BlockModal\AssetBundle'
     ];
 
     public function init()

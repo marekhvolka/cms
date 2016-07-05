@@ -11,8 +11,6 @@ namespace backend\components\VarManager;
 
 class AssetBundle extends \yii\web\AssetBundle
 {
-    public $basePath = '@app/components/LayoutWidget/assets';
-
     public $css = [
         'css/style.css'
     ];
@@ -22,7 +20,7 @@ class AssetBundle extends \yii\web\AssetBundle
     ];
 
     public $depends = [
-        'backend\components\LayoutWidget',
+        'backend\components\BlockModal\AssetBundle'
     ];
 
     public function init()

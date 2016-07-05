@@ -7,7 +7,7 @@ use yii\helpers\BaseHtml;
 /* @var $prefix string */
 /* @var $indexItem int */
 /* @var $globalObjects array */
-/* @var $blockType string */
+/* @var $parentId int */
 ?>
 
 <div class="panel panel-default list-item">
@@ -36,7 +36,7 @@ use yii\helpers\BaseHtml;
                 'product' => $product,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
                 'globalObjects' => $globalObjects,
-                'blockType' => $blockType
+                'parentId' => $parentId
             ]);
         }
         ?>

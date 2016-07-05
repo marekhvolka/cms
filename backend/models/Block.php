@@ -407,9 +407,9 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function getVarIdentifier()
     {
-        if ($this->type == 'product_snippet')
+        if ($this->productVarValue)
             return $this->productVarValue->var->name;
-        else if ($this->type == 'portal_snippet')
+        else if ($this->portalVarValue)
            return $this->portalVarValue->var->name;
         return '';
     }

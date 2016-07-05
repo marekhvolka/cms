@@ -23,7 +23,8 @@ class MultimediaWidgetAsset extends AssetBundle
 
     public $depends = [
         'backend\assets\FancyBoxAsset',
-        'yii\web\JqueryAsset'
+        'yii\web\JqueryAsset',
+        'backend\assets\BlockModal\AssetBundle'
     ];
 
     public function init()

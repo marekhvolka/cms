@@ -42,7 +42,9 @@ use yii\helpers\BaseHtml;
                         <li><a class="column-option" data-type="text">Text</a></li>
                         <li><a class="column-option" data-type="html">HTML</a></li>
                         <li><a class="column-option" data-type="snippet">Snippet</a></li>
-                        <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
+                        <?php if ($product) : ?>
+                            <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
+                        <?php endif; ?>
                         <li><a class="column-option" data-type="portal_snippet">Portálový snippet</a></li>
                     </ul>
                 </div>

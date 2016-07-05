@@ -51,13 +51,12 @@ class BlockModalWidget extends Widget
         ]);
     }
 
-    public function appendListItem($listItem, $prefix, $indexItem, $blockType, $product)
+    public function appendListItem($listItem, $prefix, $indexItem, $product)
     {
         return $this->render('_list-item', [
             'listItem' => $listItem,
             'prefix' => $prefix . "[ListItem][$indexItem]",
             'product' => $product,
-            'blockType' => $blockType
         ]);
     }
 }

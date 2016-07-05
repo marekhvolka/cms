@@ -9,15 +9,17 @@ use yii\helpers\Html;
 /* @var $prefix string */
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
 /* @var $globalObjects array */
-/* @var $blockType string */
+/* @var $parentId int */
 ?>
 
 <?php
 if ($product) {
-    $defaultValue = $snippetVarValue->var->getDefaultValue($product->productType);
+    $productType = $product->productType;
+} else {
+    $productType = null;
 }
-else
-    $defaultValue = null;
+$defaultValue = $snippetVarValue->var->getDefaultValue($productType);
+
 if ($snippetVarValue->typeName != 'list') : ?>
     <div class="form-group">
         <label class="col-sm-2 control-label"
@@ -135,7 +137,10 @@ if ($snippetVarValue->typeName != 'list') : ?>
 
                 case 'bool' : ?>
 
-                    <?= SwitchInput::widget(['name' => $prefix . 'value_text', 'value' => $snippetVarValue->var->value_text]); ?>
+                    <?= SwitchInput::widget([
+                        'name' => $prefix . 'value_text',
+                        'value' => $snippetVarValue->var->value_text
+                    ]); ?>
 
                     <?php
                     break;
@@ -147,7 +152,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
         </div>
         <div class="clearfix"></div>
     </div>
-<?php elseif ($blockType == 'snippet')  : ?>
+<?php elseif (!isset($parentId))  : ?>
     <div class="panel panel-default list-panel">
         <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="panel-heading">
@@ -167,14 +172,15 @@ if ($snippetVarValue->typeName != 'list') : ?>
             </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in children-list fixed-panel" id="panel<?= $snippetVarValue->id ?>">
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel"
+             id="panel<?= $snippetVarValue->id ?>">
             <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
                 <?= $this->render('_list-item', [
                     'listItem' => $listItem,
                     'product' => $product,
                     'prefix' => $prefix . "[ListItem][$indexItem]",
                     'globalObjects' => $globalObjects,
-                    'blockType' => $blockType
+                    'parentId' => $parentId
                 ]); ?>
             <?php endforeach; ?>
         </div>

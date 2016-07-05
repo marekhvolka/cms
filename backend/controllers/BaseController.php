@@ -191,7 +191,7 @@ abstract class BaseController extends Controller
         $parent = Block::findOne(Yii::$app->request->post('parentId'));
 
         $block = new Block();
-        $block->type = Yii::$app->request->post('type');
+        $block->type = Yii::$app->request->post('blockType');
 
         if ($snippet) {
             $block->snippet_code_id = current($snippet->snippetCodes);
@@ -218,15 +218,13 @@ abstract class BaseController extends Controller
 
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
-        $blockType = Yii::$app->request->post('blockType');
-
         $product = Product::findOne(Yii::$app->request->post('productId'));
 
         $listItem = $parentVar->createNewListItem();
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $blockType, $product);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $product);
     }
 
     public function actionAppendMultimediaWindow()
@@ -296,7 +294,6 @@ abstract class BaseController extends Controller
      * @param $model - objekt, portal/podstranka
      * @param $propertyIdentifier - identifikator pola, obsahujuceho sekcie - headerSections, atd
      * @throws Exception
-     * @internal param $type - typ objektu - portal/podstranka
      */
     public function saveLayout($model, $propertyIdentifier)
     {
@@ -358,7 +355,7 @@ abstract class BaseController extends Controller
         }
     }
 
-    private function loadSnippetVarValues($data, $model)
+    public function loadSnippetVarValues($data, $model)
     {
         foreach ($data['SnippetVarValue'] as $indexVar => $itemVarValue) {
             $model->loadFromData('snippetVarValues', $itemVarValue, $indexVar, SnippetVarValue::className());
@@ -379,7 +376,7 @@ abstract class BaseController extends Controller
         }
     }
 
-    private function saveSnippetVarValues($model, $type = 'block')
+    public function saveSnippetVarValues($model, $type = 'block')
     {
         foreach ($model->snippetVarValues as $snippetVarValue) {
 
