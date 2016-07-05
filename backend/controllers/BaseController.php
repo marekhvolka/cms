@@ -220,11 +220,13 @@ abstract class BaseController extends Controller
 
         $product = Product::findOne(Yii::$app->request->post('productId'));
 
+        $parentId = Yii::$app->request->post('parentId');
+
         $listItem = $parentVar->createNewListItem();
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $product);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $product, $parentId);
     }
 
     public function actionAppendMultimediaWindow()

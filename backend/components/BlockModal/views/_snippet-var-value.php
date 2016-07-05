@@ -1,4 +1,7 @@
 <?php
+use backend\models\Portal;
+use backend\models\ProductVar;
+use backend\models\Tag;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 use yii\helpers\Html;
@@ -46,7 +49,8 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'textarea' : ?>
 
-                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
+                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>"
+                              name="<?= $prefix . '[value_text]' ?>"
                               rows="3" placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
                     ><?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?></textarea>
 
@@ -71,7 +75,9 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'product' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id', $globalObjects['products']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products,
+                            'id', 'name')
                         ,
                         [
                             'name' => $prefix . '[value_product_id]',
@@ -83,7 +89,9 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'page' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id', $globalObjects['pages']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
+                        ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id',
+                            'breadcrumbs')
                         ,
                         [
                             'name' => $prefix . '[value_page_id]',
@@ -96,7 +104,8 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'product_var' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id', $globalObjects['productVars']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id',
+                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'name')
                         ,
                         [
                             'name' => $prefix . '[value_product_var_id]',
@@ -108,7 +117,8 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'product_tag' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id', $globalObjects['productTags']
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id',
+                        ArrayHelper::map(Tag::find()->all(), 'id', 'label')
                         ,
                         [
                             'name' => $prefix . '[value_tag_id]',
@@ -148,33 +158,28 @@ if ($snippetVarValue->typeName != 'list') : ?>
         <div class="clearfix"></div>
     </div>
 <?php elseif (!isset($parentId))  : ?>
-    <div class="panel panel-default list-panel">
+    <div class="panel panel-collapsable panel-container list-panel">
         <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="panel-heading">
             <span>
-                <a data-toggle="collapse" href="#panel<?= $snippetVarValue->id ?>">
-                    <i class="fa fa-angle-down">
-                        <?= $snippetVarValue->var->identifier ?>
-                    </i>
-                </a>
+                <?= $snippetVarValue->var->identifier ?>
             </span>
             <span>
-                Počet položiek: <?= sizeof($snippetVarValue->listItems) ?>
+                Počet položiek: <span class="list-items-count"><?= sizeof($snippetVarValue->listItems) ?></span>
             </span>
             <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-               data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>">
+               data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
+                data-parent-id="<?= $parentId ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in children-list fixed-panel"
-             id="panel<?= $snippetVarValue->id ?>">
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel">
             <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
                 <?= $this->render('_list-item', [
                     'listItem' => $listItem,
                     'product' => $product,
                     'prefix' => $prefix . "[ListItem][$indexItem]",
-                    'globalObjects' => $globalObjects,
                     'parentId' => $parentId
                 ]); ?>
             <?php endforeach; ?>

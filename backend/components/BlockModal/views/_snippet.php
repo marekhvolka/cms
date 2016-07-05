@@ -95,25 +95,11 @@ use yii\helpers\BaseHtml;
 
     <div class="modal-body">
         <?php
-
-        $globalObjects = array();
-
-        $globalObjects['productVars'] = ArrayHelper::map(ProductVar::find()->all(), 'id', 'name');
-
-        $globalObjects['products'] = ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products,
-            'id', 'name');
-
-        $globalObjects['pages'] = ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id',
-            'breadcrumbs');
-
-        $globalObjects['productTags'] = ArrayHelper::map(Tag::find()->all(), 'id', 'label');
-
         foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
                 echo $this->render('_snippet-var-value', [
                     'snippetVarValue' => $snippetVarValue,
                     'product' => $product,
                     'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
-                    'globalObjects' => $globalObjects,
                     'parentId' => $model->parent_id
                 ]);
         }

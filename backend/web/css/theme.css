@@ -2011,3 +2011,23 @@ table {
 .top-bar-buttons a {
     margin-right: 5px;
 }
+
+.panel-container {
+    border-color: #337ab7;
+}
+
+.panel-container > .panel-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.panel-item {
+    border-color: #d6e9c6;
+}
+
+.panel-item > .panel-heading {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}

@@ -10,14 +10,9 @@ use yii\helpers\BaseHtml;
 /* @var $parentId int */
 ?>
 
-<div class="panel panel-default list-item">
+<div class="panel panel-collapsable panel-item list-item">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$listItem->isNewRecord, ['class' => 'existing']); ?>
     <div class="panel-heading">
-        <a data-toggle="collapse" href="#panelItem<?= $prefix ?>">
-            <span>
-                <i class="fa fa-angle-down"></i>
-            </span>
-        </a>
         <span>
             <i class="fa fa-bars"></i>
         </span>
@@ -29,13 +24,12 @@ use yii\helpers\BaseHtml;
             <span class="glyphicon glyphicon-remove"></span>
         </a>
     </div>
-    <div class="panel-body panel-collapse collapse in fixed-panel" id="panelItem<?= $prefix ?>">
+    <div class="panel-body panel-collapse collapse in fixed-panel">
         <?php foreach ($listItem->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'snippetVarValue' => $snippetVarValue,
                 'product' => $product,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
-                'globalObjects' => $globalObjects,
                 'parentId' => $parentId
             ]);
         }

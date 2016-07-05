@@ -263,7 +263,7 @@ class SnippetVar extends Variable
     {
         $listItem = new ListItem();
         $listItem->active = true;
-        $listItem->getSnippetVarValues();
+        $listItem->snippetVarValues = array();
 
         foreach ($this->children as $childVar) {
             $childVarValue = new SnippetVarValue();
