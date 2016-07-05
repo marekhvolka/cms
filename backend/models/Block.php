@@ -351,7 +351,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         foreach ($this->snippetVarValues as $snippetVarValue) {
 
             $value = $snippetVarValue->getValue($productType);
-            if (isset($value) && $value != '\'\'' && $value != 'NULL') {
+            if (isset($value) && $value != '\'\'' && $value != 'NULL' && $value != 'array()') {
                 $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $value . ';' . PHP_EOL;
             }
         }

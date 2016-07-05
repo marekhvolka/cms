@@ -172,17 +172,16 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         switch ($this->var->type->identifier) {
             case 'list' :
 
-                if (sizeof($this->listItems) != 0) {
-                    $value = ' array(' . PHP_EOL;
+                $value = 'array(' . PHP_EOL;
+                $index = 0;
 
-                    $index = 0;
-                    foreach ($this->listItems as $listItem) {
-                        if ($listItem->active) {
-                            $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
-                        }
+                foreach ($this->listItems as $listItem) {
+                    if ($listItem->active) {
+                        $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
                     }
-                    $value .= ')';
                 }
+
+                $value .= ')';
 
                 break;
 
@@ -211,8 +210,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
             case 'product_var' :
                 if (isset($this->valueProductVar)) {
                     $value = '\'' . $this->valueProductVar->identifier . '\'';
-                }
-                else {
+                } else {
                     $value = 'NULL';
                 }
                 break;
@@ -220,8 +218,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 if ($this->valueTag) {
                     $value = '$tags->' . $this->valueTag->identifier;
-                }
-                else {
+                } else {
                     $value = 'NULL';
                 }
 
@@ -233,8 +230,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                     $this->save();
 
                     $value = '\'' . $this->var->defaultValue->valueDropdown->value . '\'';
-                }
-                else {
+                } else {
                     $value = '\'' . $this->valueDropdown->value . '\'';
                 }
 
@@ -248,8 +244,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                     if (isset($defaultValue)) {
                         $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) . '\'';
-                    }
-                    else {
+                    } else {
                         $value = '\'\'';
                     }
                 }

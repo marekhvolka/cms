@@ -157,7 +157,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
         </div>
         <div class="clearfix"></div>
     </div>
-<?php elseif (!isset($parentId))  : ?>
+<?php elseif (!isset($parentId)) : ?>
     <div class="panel panel-collapsable panel-container list-panel">
         <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="panel-heading">
