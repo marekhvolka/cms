@@ -172,7 +172,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         switch ($this->var->type->identifier) {
             case 'list' :
 
-                $value = 'array(' . PHP_EOL;
+                $value = 'array(';
                 $index = 0;
 
                 foreach ($this->listItems as $listItem) {
