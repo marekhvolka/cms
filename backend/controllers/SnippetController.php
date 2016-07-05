@@ -56,6 +56,12 @@ class SnippetController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Snippet();
+
+            $defaultSnippetCode = new SnippetCode();
+            $defaultSnippetCode->name = 'default';
+
+            $model->snippetCodes = array();
+            $model->snippetCodes[] = $defaultSnippetCode;
         }
 
         if ($model->load(Yii::$app->request->post())) {

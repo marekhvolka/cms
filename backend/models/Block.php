@@ -36,8 +36,6 @@ use Yii;
  */
 class Block extends CustomModel implements ICacheable, IDuplicable
 {
-    public $changed = false;
-
     /**
      * @inheritdoc
      */
@@ -351,14 +349,16 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         $buffer .= '/* Var values  */' . PHP_EOL;
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
-            if (isset($snippetVarValue->value) && $snippetVarValue->value != '\'\'') {
-                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->getValue($productType) . ';' . PHP_EOL;
+
+            $value = $snippetVarValue->getValue($productType);
+            if (isset($value) && $value != '\'\'' && $value != 'NULL') {
+                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $value . ';' . PHP_EOL;
             }
         }
 
         $buffer .= '?>' . PHP_EOL;
 
-        $buffer .= file_get_contents($snippetCode->getMainFile($reload));
+        $buffer .= $snippetCode->code;
 
         return $buffer;
     }

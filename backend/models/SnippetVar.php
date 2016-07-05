@@ -208,6 +208,10 @@ class SnippetVar extends Variable
                 $value = 'NULL';
 
                 break;
+            case 'bool' :
+                $value = 'false';
+
+                break;
             case 'dropdown' :
 
                 $productTypeDefaultValue = $this->getDefaultValue($productType);

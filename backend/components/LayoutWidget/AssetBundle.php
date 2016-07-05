@@ -11,7 +11,6 @@ namespace backend\components\LayoutWidget;
 
 class AssetBundle extends \yii\web\AssetBundle
 {
-
     // Disables assets caching.
     public $publishOptions = [
         'forceCopy' => true,

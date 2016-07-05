@@ -194,7 +194,7 @@ abstract class BaseController extends Controller
         $block->type = Yii::$app->request->post('blockType');
 
         if ($snippet) {
-            $block->snippet_code_id = current($snippet->snippetCodes);
+            $block->snippet_code_id = $snippet->snippetCodes[0];
         }
         else if ($parent) {
             $block->parent_id = $parent->id;

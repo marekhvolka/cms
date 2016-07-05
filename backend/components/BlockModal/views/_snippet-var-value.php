@@ -1,5 +1,4 @@
 <?php
-use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 use yii\helpers\Html;
@@ -137,10 +136,9 @@ if ($snippetVarValue->typeName != 'list') : ?>
 
                 case 'bool' : ?>
 
-                    <?= SwitchInput::widget([
-                        'name' => $prefix . 'value_text',
-                        'value' => $snippetVarValue->var->value_text
-                    ]); ?>
+                    <?= Html::activeCheckbox($snippetVarValue, 'value_text', [
+                        'name' => $prefix . '[value_text]',
+                    ]) ?>
 
                     <?php
                     break;

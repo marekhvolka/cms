@@ -85,6 +85,8 @@ class ProductController extends BaseController
                         continue;
                     }
 
+                    $model->productVarValues[$index]->changed = true;
+
                     if (!$model->productVarValues[$index]->valueBlock) {
                         $block = new Block();
                         $block->type = 'snippet';
@@ -98,6 +100,11 @@ class ProductController extends BaseController
 
                 foreach($model->productVarValues as $productVarValue) {
                     $productVarValue->product_id = $model->id;
+
+                    if ($productVarValue->removed) {
+                        $productVarValue->delete();
+                    }
+
                     if (!($productVarValue->validate() && $productVarValue->save()))
                         throw new Exception;
 
@@ -106,7 +113,9 @@ class ProductController extends BaseController
                             throw new Exception;
                         }
 
-                        $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        if ($productVarValue->changed) {
+                            $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        }
                     }
                 }
 

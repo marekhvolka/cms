@@ -23,6 +23,7 @@ use Yii;
  * @property ListItem[] $listItems
  * @property ListItem $listItem
  * @property Product $valueProduct
+ * @property Tag $valueTag
  * @property ProductVar $valueProductVar
  * @property Page $valuePage
  * @property Block $block
@@ -185,6 +186,10 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 break;
 
+            case 'bool' :
+                $value = $this->value_text == 1 ? 'true' : 'false';
+
+                break;
             case 'page' :
 
                 if (isset($this->valuePage)) {
@@ -213,13 +218,25 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                 break;
             case 'product_tag' :
 
-                $value = '$tags->' . $this->valueTag->identifier;
+                if ($this->valueTag) {
+                    $value = '$tags->' . $this->valueTag->identifier;
+                }
+                else {
+                    $value = 'NULL';
+                }
 
-                //TODO: dokoncit
                 break;
             case 'dropdown' :
 
-                $value = '\'' . $this->valueDropdown->value . '\'';
+                if (!isset($this->valueDropdown)) {
+                    $this->value_dropdown_id = $this->var->defaultValue->valueDropdown->id;
+                    $this->save();
+
+                    $value = '\'' . $this->var->defaultValue->valueDropdown->value . '\'';
+                }
+                else {
+                    $value = '\'' . $this->valueDropdown->value . '\'';
+                }
 
                 break;
             default:
