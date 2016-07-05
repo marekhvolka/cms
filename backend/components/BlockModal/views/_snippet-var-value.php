@@ -46,12 +46,9 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'textarea' : ?>
 
-                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>"
-                              name="<?= $prefix . '[value_text]' ?>"
-                              rows="3"
-                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
-                        <?= htmlspecialchars($snippetVarValue->value_text,
-                            ENT_QUOTES) ?></textarea>
+                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
+                              rows="3" placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                    ><?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?></textarea>
 
                     <?php
                     break;
