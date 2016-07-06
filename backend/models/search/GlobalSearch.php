@@ -5,13 +5,15 @@ namespace backend\models\search;
 use backend\models\Model;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Product;
+use backend\models\SnippetCode;
 use Yii;
 use yii\db\Query;
 use yii\helpers\Url;
 
 /**
  * Used for global searching throughout the whole application's data.
- * 
+ *
  * @package backend\models\search
  */
 class GlobalSearch
@@ -41,8 +43,8 @@ class GlobalSearch
 
         // SNIPPET CODES / ALTERNATIVES
 
-        $snippet_codes = (new Query())->select("id, name, snippet_id")
-            ->from("snippet_code")
+        /** @var SnippetCode[] $snippet_codes */
+        $snippet_codes = SnippetCode::find()
             ->filterWhere(['like', 'name', $searchTerm])
             ->limit(10)
             ->all();
@@ -52,39 +54,54 @@ class GlobalSearch
                     '/snippet/edit',
                     'id' => $snippet_code['snippet_id'],
                     '#' => 'code' . $snippet_code['id'],
-                ])] + $snippet_code;
+                ])] + ['name' => $snippet_code->name . ' < ' . $snippet_code->getSnippet()->one()->name, 'id' => $snippet_code->id];
         }
 
         // PAGES
 
-        $pages = (new Query())->select("id, name")->from("page")->filterWhere([
+        $pages = Page::find()->filterWhere([
             'or',
             ['like', 'name', $searchTerm],
             ['like', 'identifier', $searchTerm],
             ['like', 'title', $searchTerm],
-            ])
+        ])
             ->andWhere([
                 'portal_id' => Yii::$app->session->get('portal_id')
             ])
-            ->limit(10)->all();
+            ->limit(10)
+            ->all();
 
         foreach ($pages as $page) {
-            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + $page;
+            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + ['id' => $page->id, 'name' => $page->name .$this->buildName($page)];
         }
 
         // PRODUCTS
         $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
 
-        $products = (new Query())->select("id, name")->from("product")->filterWhere(['like', 'name', $searchTerm])
+        $products = Product::find()
+            ->filterWhere(['like', 'name', $searchTerm])
             ->andWhere([
                 'language_id' => $portal->language_id
             ])
-            ->limit(10)->all();
+            ->limit(10)
+            ->all();
 
         foreach ($products as $product) {
-            $results['product'][] = ['link' => Url::to(['/product/edit', 'id' => $product['id']])] + $product;
+            $results['product'][] = ['link' => Url::to(['/product/edit', 'id' => $product['id']])] + ['name' => $product->name . $this->buildName($product), 'id' => $product->id];
         }
-        
+
         return $results;
+    }
+
+    private function buildName($item, $appendTo = '')
+    {
+        $parent = $item->getParent()->one();
+        if (!empty($parent)) {
+            $appendTo .= ' < ' . $parent->name;
+
+            $appendTo = $this->buildName($parent, $appendTo);
+        }
+
+        return $appendTo;
     }
 }
