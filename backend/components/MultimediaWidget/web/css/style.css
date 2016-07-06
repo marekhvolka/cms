@@ -1,3 +1,23 @@
 .tab-pane {
     padding: 20px;
 }
+
+.multimedia-category .multimedia-item .thumbnail {
+    padding: 10px;
+}
+
+.multimedia-category .multimedia-item .thumbnail .caption {
+    padding-top: 5px;
+    padding-bottom: 15px;
+    text-align: center;
+    word-break: break-all;
+}
+
+.multimedia-category > div > div:not(.multimedia-image) img {
+    max-width: 40px;
+}
+
+#multimediaWidget > .modal-dialog{
+    width: 90%;
+    margin-top: 63px;
+}

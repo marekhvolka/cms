@@ -35,17 +35,51 @@ class MultimediaCategory extends Model
      * Return the model if found, otherwise return null.
      *
      * @param $name string the name of the category
+     * @param null $portal_name
      * @return MultimediaCategory|null
+     * @internal param null $portal_id
      */
-    public static function find($name)
+    public static function find($name, $portal_name = null)
     {
-        if (is_dir(Yii::$app->dataEngine->getMultimediaDirectory() . $name)) {
+        if (!empty($portal_name)) {
+            $portal = Portal::findOne(['name' => $portal_name]);
+
+
             $category = new MultimediaCategory();
             $category->name = $name;
+            $category->path = $portal->getMultimediaDirectory() . $name;
+            $category->pathForWeb = $portal->getMultimediaDirectory(true) . $name;
+            $category->fullName = $category->name . ' (' . $portal->name . ')';
+            $category->id = hash('md5', $category->fullName);
 
+            return $category;
+        }
+
+        $dir_name = Yii::$app->dataEngine->getMultimediaDirectory() . $name;
+        if (is_dir($dir_name)) {
+            $category = new MultimediaCategory();
+            $category->name = $name;
+            $category->path = $dir_name;
+            $category->pathForWeb = Yii::$app->dataEngine->getMultimediaDirectory(true) . $name;
+            $category->fullName = $category->name . ' (spoločné pre všetky portály)';
+            $category->id = hash('md5', $category->fullName);
             return $category;
         } else {
             return null;
+        }
+    }
+
+    public static function fromPath($path)
+    {
+        $globalDir = Yii::$app->dataEngine->getMultimediaDirectory();
+        $pos = mb_strpos($path, $globalDir);
+        if ($pos === false) {
+            $explode = explode("/", trim($path, "/"));
+            $count = count($explode);
+
+            return MultimediaCategory::find($explode[$count - 1], $explode[$count - 3]);
+        } else {
+            return MultimediaCategory::find(trim(str_replace($globalDir, '', $path), "/"));
         }
     }
 
@@ -145,40 +179,5 @@ class MultimediaCategory extends Model
         }
 
         return $this->items;
-    }
-
-    /**
-     * If the multimedia existed with the name defined in $from, rename it to have the current name.
-     *
-     * @param $from string the old name
-     * @return bool if the operation was successful
-     */
-    public function rename($to)
-    {
-        $new_name = explode("/", $this->path);
-        $new_name[count($new_name - 1)] = $to;
-        $new_name = join("/", $new_name);
-
-
-        if (is_dir($this->path)) {
-            rename($this->path, $new_name);
-        } else {
-            mkdir($new_name);
-        }
-
-        $this->path = $new_name;
-        $this->pathForWeb = explode('/', $this->pathForWeb);
-        $this->pathForWeb[count($this->pathForWeb - 1)] = $to;
-        $this->pathForWeb = join("/", $this->pathForWeb);
-    }
-
-    /**
-     * Removes the category.
-     *
-     * @return bool
-     */
-    public function delete()
-    {
-        return PathHelper::remove($this->path);
     }
 }

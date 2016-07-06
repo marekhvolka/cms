@@ -26,12 +26,12 @@ use yii\web\UploadedFile;
  * $file_editor = Yii::createObject([
  *      'class'     => FileEditorWidget::className(),
  *      'directory' => __DIR__ . '/../testing-data',
- *      'compileScssTo' => __DIR__ . '/../testing-data-compiled'
+ *      'compileScss' => true
  * ]);
  * </code>
  *
- * Note that if you want to compile scss files, set the 'compileScssTo' path to the directory into which the
- * generated items will be saved (inner directories will be created according the directories in 'directory' param).
+ * Note that if you want to compile scss files, set the 'compileScss' to true and the css files will get compiled
+ * after saving / uploading and this compiled and minified version will be saved next to the original file.
  *
  * 2) the editor has some its actions that need to be performed, like to return the content of the file when
  * requested by AJAX ... that is done by method performActions(); ... you need to store the return value
@@ -67,8 +67,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
      * @var string the directory to be edited by the file editor
      */
     public $directory;
-    // not implemented yet
-    public $compileScssTo = false;
+    public $compileScss = true;
 
     /**
      * Perform internal actions. In case that it returns something apart from false, return the response to the Yii 2
@@ -80,7 +79,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
     public function performActions()
     {
         if (empty($this->directory) || !is_dir($this->directory)) {
-            throw new InvalidArgumentException('Given directory does not exist.');
+            PathHelper::makePath($this->directory);
         }
 
         if (!empty(Yii::$app->request->get('file'))) {
@@ -119,8 +118,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $new_file_form->save(false);
 
             $new_file_path = $new_file_form->getFullPath();
-            if ($this->compileScssTo && PathHelper::isSCSSFile($new_file_path)) {
-                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($new_file_form->directory) . DIRECTORY_SEPARATOR . trim($new_file_form->name, "/");
+            if ($this->compileScss && PathHelper::isSCSSFile($new_file_path)) {
+                $compiled_path = mb_substr($new_file_path, 0, count($new_file_path) - 5) . "min.css"; // so that we remove .scss
                 $this->compileScss($new_file_path, $compiled_path);
             }
 
@@ -132,8 +131,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $edit_file_form->save(false);
 
             $edited_file_path = $edit_file_form->getFullPath();
-            if ($this->compileScssTo && PathHelper::isSCSSFile($edited_file_path)) {
-                $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
+            if ($this->compileScss && PathHelper::isSCSSFile($edited_file_path)) {
+                $compiled_path = mb_substr($edited_file_path, 0, count($edited_file_path) - 5) . "min.css";;
                 $this->compileScss($edited_file_path, $compiled_path);
             }
         }
@@ -151,8 +150,9 @@ class FileEditorWidget extends Component implements ViewContextInterface
                 } else {
                     $edit_file_form->text = file_get_contents($path);
 
-                    if ($this->compileScssTo && PathHelper::isSCSSFile($edit_file_form->name)) {
-                        $compiled_path = '/' . trim($this->compileScssTo, "/") . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
+                    if ($this->compileScss && PathHelper::isSCSSFile($edit_file_form->name)) {
+                        $compiled_path = $this->directory . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
+                        $compiled_path = mb_substr($compiled_path, 0, count($compiled_path) - 5) . "min.css";
                         $this->compileScss($path, $compiled_path);
                     }
                 }
@@ -169,14 +169,14 @@ class FileEditorWidget extends Component implements ViewContextInterface
         $fileTree = $this->buildTreeForDirectory($this->directory);
 
         echo Yii::$app->getView()->render('file-editor', [
-            'directory'           => $this->directory,
-            'fileTree'            => $fileTree['with-files'],
-            'directoryTree'       => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
-            'editFileForm'        => $edit_file_form,
-            'uploadFileForm'      => $upload_file_form,
-            'newFileForm'         => $new_file_form,
+            'directory' => $this->directory,
+            'fileTree' => $fileTree['with-files'],
+            'directoryTree' => array_merge(["/" => "/"], $fileTree['only-directories']), // add even the root to the list
+            'editFileForm' => $edit_file_form,
+            'uploadFileForm' => $upload_file_form,
+            'newFileForm' => $new_file_form,
             'createDirectoryForm' => $create_directory_form,
-            'isImageLoaded'       => $is_image_loaded
+            'isImageLoaded' => $is_image_loaded
         ], $this);
     }
 
@@ -192,6 +192,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
         $scss_compiler = new Compiler();
         PathHelper::makePath($to, true);
         $scss_compiler->setFormatter(new Compressed());
+        $scss_compiler->setImportPaths(pathinfo($from, PATHINFO_DIRNAME));
+
         file_put_contents($to, $scss_compiler->compile(file_get_contents($from)));
     }
 

@@ -10,6 +10,7 @@ use backend\models\Column;
 use backend\models\CustomModel;
 use backend\models\ListItem;
 use backend\models\ListVar;
+use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
@@ -80,7 +81,12 @@ abstract class BaseController extends Controller
         $item->upload();
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return ["state" => "ok"];
+        return ["state" => "ok", 'path' => $item->path, 'pathForWeb' => MultimediaCategory::fromPath($item->path)->pathForWeb];
+    }
+
+    public function actionMultimediaRefresh()
+    {
+        return MultimediaWidget::widget(['onlyItems' => true]);
     }
 
     /**

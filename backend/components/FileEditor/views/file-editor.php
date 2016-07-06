@@ -39,8 +39,8 @@ function build_file_tree($data, $from_dir = '')
                 // directory
                 ?>
                 <li class="directory expanded">
-                    <?= $index ?> <a data-path="<?= $path?>" href="<?= Url::current(['file'       => $path,
-                                                             'fileAction' => 'delete'])
+                    <?= $index ?> <a data-path="<?= $path ?>" href="<?= Url::current(['file' => $path,
+                        'fileAction' => 'delete'])
                     ?>" class="delete">x</a> <a href="#"
                                                 class="add-file"
                                                 data-name='<?= $path ?>'
@@ -61,7 +61,7 @@ function build_file_tree($data, $from_dir = '')
                        class="file-link">
                         <?= $item ?>
                     </a>
-                    <a href="<?= Url::current(['file' => $path, 'fileAction' => 'delete']) ?>"
+                    <a href=" <?= Url::current(['file' => $path, 'fileAction' => 'delete']) ?>"
                        class="delete"
                        data-path="<?= $path ?>">
                         x
@@ -78,14 +78,14 @@ function build_file_tree($data, $from_dir = '')
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Vytvoriť súbor', "#", ['class'       => 'btn btn-success pull-right', 'data-name' => '/',
-                                    'data-toggle' => "modal", 'data-target' => '#createFileModal']) ?>
+<?= Html::a('Vytvoriť súbor', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
+    'data-toggle' => "modal", 'data-target' => '#createFileModal']) ?>
 
-<?= Html::a('Nahrať súbor', "#", ['class'       => 'btn btn-success pull-right', 'data-name' => '/',
-                                  'data-toggle' => "modal", 'data-target' => '#uploadFileModal']) ?>
+<?= Html::a('Nahrať súbor', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
+    'data-toggle' => "modal", 'data-target' => '#uploadFileModal']) ?>
 
-<?= Html::a('Vytvoriť priečinok', "#", ['class'       => 'btn btn-success pull-right', 'data-name' => '/',
-                                        'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
+<?= Html::a('Vytvoriť priečinok', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
+    'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">
@@ -99,13 +99,14 @@ function build_file_tree($data, $from_dir = '')
             <?php if ($editFileForm->name == null) : ?>
                 <h3 class="select-a-file">Vyberte súbor alebo nahrajte nový</h3>
             <?php endif; ?>
+            <h3 class="file-name"><?= $editFileForm->name ?></h3>
             <div class="file-editing"
                  <?php if ($isImageLoaded || $editFileForm->name == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = ActiveForm::begin() ?>
                 <?= CodemirrorWidget::widget([
-                        'name'     => $editFileForm->formName() . '[text]',
-                        'value'    => $editFileForm->text,
-                        'assets'   => [
+                        'name' => $editFileForm->formName() . '[text]',
+                        'value' => $editFileForm->text,
+                        'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
                             CodemirrorAsset::KEYMAP_EMACS,
                             CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
@@ -122,10 +123,26 @@ function build_file_tree($data, $from_dir = '')
                 ) ?>
                 <?= $form->field($editFileForm, 'name')->hiddenInput()->label(false) ?>
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
-                <?= Html::submitButton('Uložiť', [
-                    'class' => 'btn btn-success',
-                    'id'    => 'submit-btn'
-                ]) ?>
+
+                <div class="url-address-to-copy">
+                    <input class="form-control" id="url" value="{$portal->template|escapeUrl}<?= $editFileForm->directory . "/" . $editFileForm->name ?>">
+                    <button class="clippy" data-clipboard-target="#url">
+                        <img src="/images/clippy.svg" alt="Copy to clipboard">
+                    </button>
+                </div>
+
+                <div class="navbar-fixed-bottom">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <div class="form-group">
+                            <?= Html::submitButton('Uložiť', [
+                                'class' => 'btn btn-success',
+                                'id' => 'submit-btn'
+                            ]) ?>
+                        </div>
+                    </div>
+                </div>
+
+
                 <?php $form->end() ?>
             </div>
             <div class="image"> <!-- will be shown only if an image is opened -->
@@ -151,16 +168,16 @@ function build_file_tree($data, $from_dir = '')
             <div class="modal-body">
                 <?= $form->field($uploadFileForm, 'file')->fileInput() ?>
                 <?= $form->field($uploadFileForm, 'directory')->widget(Select2::className(), [
-                    'data'          => $directoryTree,
+                    'data' => $directoryTree,
                     'maintainOrder' => false,
-                    'hideSearch'    => true
+                    'hideSearch' => true
                 ]) ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
                 <?= Html::submitButton('Nahrať', [
                     'class' => 'btn btn-primary',
-                    'id'    => 'submit-btn'
+                    'id' => 'submit-btn'
                 ]) ?>
             </div>
             <?php $form->end() ?>
@@ -183,15 +200,15 @@ function build_file_tree($data, $from_dir = '')
                 <?= $form->field($newFileForm, 'name')->textInput() ?>
 
                 <?= $form->field($newFileForm, 'directory')->widget(Select2::className(), [
-                    'data'          => $directoryTree,
+                    'data' => $directoryTree,
                     'maintainOrder' => false,
-                    'hideSearch'    => true
+                    'hideSearch' => true
                 ]) ?>
 
                 <?= CodemirrorWidget::widget([
-                        'name'     => $newFileForm->formName() . '[text]',
-                        'value'    => empty($newFileForm->text) ? "" : $newFileForm->text,
-                        'assets'   => [
+                        'name' => $newFileForm->formName() . '[text]',
+                        'value' => empty($newFileForm->text) ? "" : $newFileForm->text,
+                        'assets' => [
                             CodemirrorAsset::MODE_CLIKE,
                             CodemirrorAsset::KEYMAP_EMACS,
                             CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
@@ -210,7 +227,7 @@ function build_file_tree($data, $from_dir = '')
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
                 <?= Html::submitButton('Vytvoriť', [
                     'class' => 'btn btn-primary',
-                    'id'    => 'submit-btn'
+                    'id' => 'submit-btn'
                 ]) ?>
             </div>
             <?php $form->end() ?>
@@ -233,16 +250,16 @@ function build_file_tree($data, $from_dir = '')
             <div class="modal-body">
                 <?= $form->field($createDirectoryForm, 'name')->textInput() ?>
                 <?= $form->field($createDirectoryForm, 'directory')->widget(Select2::className(), [
-                    'data'          => $directoryTree,
+                    'data' => $directoryTree,
                     'maintainOrder' => false,
-                    'hideSearch'    => true
+                    'hideSearch' => true
                 ]) ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
                 <?= Html::submitButton('Nahrať', [
                     'class' => 'btn btn-primary',
-                    'id'    => 'submit-btn'
+                    'id' => 'submit-btn'
                 ]) ?>
             </div>
             <?php $form->end() ?>

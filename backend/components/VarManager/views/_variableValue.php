@@ -57,7 +57,15 @@ if (!isset($model)) {
                         ]);
                     break;
                 case 'image':
+                    echo Html::activeTextInput($varValue, 'value_text', [
+                        'class' => 'form-control value',
+                        'name' => $prefix . '[value_text]',
+                    ]);
 
+                    echo '<span class="input-group-btn">';
+                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
+                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']);
+                    echo '</span>';
                     break;
                 case 'portal_snippet':
                 case 'product_snippet': ?>

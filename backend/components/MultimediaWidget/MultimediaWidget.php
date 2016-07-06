@@ -13,7 +13,9 @@ use yii\base\Widget;
  */
 class MultimediaWidget extends Widget
 {
-    public $path;
+    public $renderAsModal = false;
+    public $onlyItems = false;
+    public $selectCallbackName = null;
 
     public function init()
     {
@@ -22,10 +24,18 @@ class MultimediaWidget extends Widget
 
     public function run()
     {
+        $categories = MultimediaCategory::loadAll();
+
+        if ($this->onlyItems) {
+            return $this->render('_items', ['categories' => $categories]);
+        }
+
         MultimediaWidgetAsset::register($this->getView());
 
-        return $this->render('view', [
-            'categories' => MultimediaCategory::loadAll()
+        return $this->render($this->renderAsModal ? 'view-modal' : 'view', [
+            'categories' => $categories,
+            'modal' => $this->renderAsModal,
+            'selectCallbackName' => $this->selectCallbackName
         ]);
     }
 }

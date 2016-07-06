@@ -43,3 +43,13 @@ function attachRemove(button)
 }
 
 attachRemove($('.remove-btn'));
+
+var assigningTo = null;
+
+$("body").on('click', ".variable-value a[data-target='#multimediaWidget']", function () {
+     assigningTo = $(this).parents('.var-value').first().find('.value');
+});
+
+function assignMultimediaItemToVariable(path) {
+    assigningTo.val(path);
+}

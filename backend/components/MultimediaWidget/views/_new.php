@@ -16,13 +16,12 @@ use yii\widgets\ActiveForm;
 $model = new MultimediaItem();
 
 ?>
-<?php $form = ActiveForm::begin(['id' => 'upload-file-multimedia', 'options' => ['enctype' => 'multipart/form-data']]); ?>
 <div class="form-group">
     <label class="col-sm-2 control-label">Umiestnenie</label>
     <div class="col-sm-10">
         <?= Html::activeDropDownList($model, 'path',
             ArrayHelper::map($categories, 'path', 'fullName'), [
-                'class' => 'form-control'
+                'class' => 'form-control select-path'
             ]) ?>
     </div>
     <div class="clearfix"></div>
@@ -30,17 +29,21 @@ $model = new MultimediaItem();
 <div class="form-group upload-multimedia-file">
     <label class="col-sm-2 control-label">Súbory</label>
     <div class="col-sm-10">
-        <?= $form->field($model, 'files')->widget(FileInput::className(), [
-            'options' => ['multiple' => true]
-        ]) ?>
+        <?= FileInput::widget([
+            'model' => $model,
+            'attribute' => 'files',
+            'options' => [
+                'multiple' => !$modal
+            ]
+        ]); ?>
     </div>
     <div class="clearfix"></div>
 </div>
 <div class="form-group">
-    <?= Html::submitButton('Uložiť', ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton('Uložiť', ['class' => 'btn btn-success save-multimedia']) ?>
 </div>
-<?php $form->end() ?>
 
 <script type="text/javascript">
-    var multimediaUploadURL = "<?= Url::to(['multimedia-upload']) ?>";
+    var multimediaUploadURL = "<?= Url::to(['multimedia-upload']) ?>",
+        multimediaRefreshURL = "<?= Url::to(['multimedia-refresh']) ?>";
 </script>

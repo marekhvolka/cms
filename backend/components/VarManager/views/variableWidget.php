@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\MultimediaWidget\MultimediaWidget;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 
@@ -11,6 +12,9 @@ use kartik\select2\Select2;
 /* @var $prefix string */
 
 ?>
+
+<?= MultimediaWidget::widget(['renderAsModal' => true, 'selectCallbackName' => 'assignMultimediaItemToVariable']) ?>
+
     <h3>Premenné</h3>
 
     <div id="dynamic-fields" class="row">

@@ -14,7 +14,8 @@ class FileEditorAsset extends AssetBundle
         'css/file-editor.css',
     ];
     public $js = [
-        'js/file-editor.js'
+        'js/file-editor.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'

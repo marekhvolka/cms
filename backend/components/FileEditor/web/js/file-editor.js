@@ -31,8 +31,11 @@ $(function () {
             file_editor.find('.image').hide();
 
             $.get(url, function (data) {
+                $("#url").val("{$portal->template|escapeUrl}" + directory + "/" + name);
+                file_editor.find('.file-name').text(name);
                 code_mirror.getDoc().setValue(data);
                 code_mirror.setOption('readOnly', false);
+                code_mirror.refresh();
             });
         }
     }
@@ -56,5 +59,21 @@ $(function () {
         event.preventDefault();
         // set the directory to be predefined in the input
         $("#uploadfileform-directory").val($(this).attr('data-name')).trigger("change");
+    });
+
+    $("*[data-target='#createFileModal']").click(function () {
+        setTimeout(function () {
+            $('#createFileModal .CodeMirror')[0].CodeMirror.refresh();
+        }, 400);
+    });
+
+    new Clipboard('.clippy');
+
+    $(".clippy").click(function (e) {
+        e.preventDefault();
+    });
+
+    $("#url").on("keydown keypress keyup paste", function(e){
+        e.preventDefault();
     });
 });

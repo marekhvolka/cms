@@ -11,7 +11,7 @@ use backend\components\MultimediaWidget\MultimediaWidgetAsset;
 MultimediaWidgetAsset::register($this);
 ?>
 
-<div class="company-crossing">
+<div class="company-crossing multimedia-widget">
     <ul class="nav nav-tabs">
         <li role="presentation" class="tab-label active">
             <a href="#tab_new" data-toggle="tab">Nahrať nový obrázok</a>
@@ -22,10 +22,10 @@ MultimediaWidgetAsset::register($this);
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_new">
-            <?= $this->render('_new', ['categories' => $categories])?>
+            <?= $this->render('_new', ['categories' => $categories, 'modal' => $modal]) ?>
         </div>
         <div class="tab-pane" id="tab_existing">
-            <?= $this->render('_existing', ['categories' => $categories])?>
+            <?= $this->render('_existing', ['categories' => $categories]) ?>
         </div>
     </div>
     <div class="clearfix"></div>
