@@ -4,7 +4,6 @@ namespace backend\controllers;
 
 
 use backend\components\FileEditor\FileEditorWidget;
-use common\components\DataEngine;
 use Yii;
 
 class ThanksController extends BaseController

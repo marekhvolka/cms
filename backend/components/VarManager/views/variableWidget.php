@@ -62,7 +62,7 @@ $assignedVariableIds .= ']';
 $js = <<<JS
 
 var selectedVarIds = $assignedVariableIds;
-var appendUrl = '$appendVarValueUrl';
+var appendVarValueUrl = '$appendVarValueUrl';
         
 JS;
 $this->registerJs($js, \yii\web\View::POS_BEGIN);

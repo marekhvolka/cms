@@ -15,7 +15,7 @@ $('#types-dropdown').change(
         };
 
         $.post(
-            appendUrl, postData, function (data)
+            appendVarValueUrl, postData, function (data)
             {
                 var newVariableValue = $(data);
                 $('#dynamic-fields').append(newVariableValue); //pripojime vygenerovany view do zoznamu
