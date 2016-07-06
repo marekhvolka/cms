@@ -87,7 +87,11 @@ class GlobalSearch
         $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
 
         $products = Product::find()
-            ->filterWhere(['like', 'name', $searchTerm])
+            ->filterWhere([
+                'or',
+                ['like', 'name', $searchTerm],
+                ['like', 'identifier', $searchTerm],
+            ])
             ->andWhere([
                 'language_id' => $portal->language_id
             ])

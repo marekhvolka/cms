@@ -325,9 +325,9 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         $buffer .= '/* Snippet values */' . PHP_EOL;
 
-        if (isset($this->column) && isset($this->column->row->section->page) && isset($this->column->row->section->page->product)) {
+        if (isset($this->column) && isset($this->column->row->section->area->page) && isset($this->column->row->section->area->page->product)) {
             $buffer .= '/* Product type default var values  */' . PHP_EOL;
-            $productType = $this->column->row->section->page->product->productType;
+            $productType = $this->column->row->section->area->page->product->productType;
 
             foreach ($this->snippetVarValues as $snippetVarValue) {
                 $defaultValue = $snippetVarValue->var->getDefaultValueAsString($productType);
