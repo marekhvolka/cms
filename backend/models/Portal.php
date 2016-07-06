@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property integer $published
- * @property bool $changed
  *
  * @property string $templatePath
  * @property Page[] $pages
@@ -80,7 +79,8 @@ class Portal extends CustomModel implements ICacheable
     {
         parent::afterDelete();
 
-        MultimediaCategory::removeSubcategory($this->id);
+        //MultimediaCategory::removeSubcategory($this->id);
+        //TODO:: remove whole portal directory
     }
 
     /**
@@ -277,14 +277,13 @@ class Portal extends CustomModel implements ICacheable
     }
 
     /** Vrati cestu k suboru, v ktorom nacachovane data k portalu
-     * @param bool $reload - ak true, tak sa subor nanovo vytvori
      * @return string
      */
-    public function getPortalVarsFile($reload = false)
+    public function getPortalVarsFile()
     {
         $path = $this->getMainDirectory() . 'portal_var.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -337,21 +336,15 @@ class Portal extends CustomModel implements ICacheable
         return $path;
     }
 
-    public function getMainCacheFile($reload = false)
+    public function getMainCacheFile()
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
             try {
                 $buffer = '<?php' . PHP_EOL;
 
                 $buffer .= 'include("' . $this->getPortalVarsFile() . '");' . PHP_EOL;
-
-                /*foreach ($this->portalSnippets as $portalSnippet) {
-                    $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents("' . $portalSnippet->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
-                }*/
-
-                //TODO:: fix this
 
                 $buffer .= '?>';
 
@@ -360,20 +353,6 @@ class Portal extends CustomModel implements ICacheable
             } catch (Exception $exception) {
                 $this->logException($exception, 'portal_main_file');
             }
-        }
-
-        return $path;
-    }
-
-    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych blokov pre portal
-     * @return string
-     */
-    public function getBlocksMainCacheDirectory()
-    {
-        $path = $this->getMainDirectory() . 'blocks/';
-
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
         }
 
         return $path;
@@ -424,24 +403,12 @@ class Portal extends CustomModel implements ICacheable
         return $prefix;
     }
 
-    public function getPortalLayout()
-    {
-        $prefix = '<?php' . PHP_EOL;
-
-        $prefix .= '$global_header = file_get_contents("' . $this->header->getCacheFile() . '");' . PHP_EOL;
-        $prefix .= '$global_footer = file_get_contents("' . $this->footer->getCacheFile() . '");' . PHP_EOL;
-
-        $prefix .= '?>' . PHP_EOL;
-
-        return $prefix;
-    }
-
     public function resetAfterUpdate()
     {
-        $this->getPortalVarsFile(true);
+        $this->setChanged();
 
         foreach ($this->pages as $page) {
-            $page->addToCacheBuffer();
+            $page->resetAfterUpdate();
         }
 
         foreach ($this->portalSnippets as $portalSnippet) {

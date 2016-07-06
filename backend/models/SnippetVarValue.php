@@ -266,6 +266,9 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         if ($this->block) {
             $this->block->resetAfterUpdate();
         }
+        else if ($this->listItem) {
+            $this->listItem->resetAfterUpdate();
+        }
     }
 
     public function prepareToDuplicate()

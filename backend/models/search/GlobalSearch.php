@@ -50,11 +50,16 @@ class GlobalSearch
             ->all();
 
         foreach ($snippet_codes as $snippet_code) {
-            $results['snippet_code'][] = ['link' => Url::to([
-                    '/snippet/edit',
-                    'id' => $snippet_code['snippet_id'],
-                    '#' => 'code' . $snippet_code['id'],
-                ])] + ['name' => $snippet_code->name . ' < ' . $snippet_code->getSnippet()->one()->name, 'id' => $snippet_code->id];
+            $results['snippet_code'][] = [
+                    'link' => Url::to([
+                        '/snippet/edit',
+                        'id' => $snippet_code['snippet_id'],
+                        '#' => 'code' . $snippet_code['id'],
+                    ])
+                ] + [
+                    'name' => $snippet_code->getSnippet()->one()->name . ' >> ' . $snippet_code->name,
+                    'id' => $snippet_code->id
+                ];
         }
 
         // PAGES
@@ -72,7 +77,10 @@ class GlobalSearch
             ->all();
 
         foreach ($pages as $page) {
-            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + ['id' => $page->id, 'name' => $page->name .$this->buildName($page)];
+            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + [
+                    'id' => $page->id,
+                    'name' => $page->breadcrumbs
+                ];
         }
 
         // PRODUCTS
@@ -87,21 +95,14 @@ class GlobalSearch
             ->all();
 
         foreach ($products as $product) {
-            $results['product'][] = ['link' => Url::to(['/product/edit', 'id' => $product['id']])] + ['name' => $product->name . $this->buildName($product), 'id' => $product->id];
+            $results['product'][] = [
+                    'link' => Url::to([
+                        '/product/edit',
+                        'id' => $product['id']
+                    ])
+                ] + ['name' => $product->breadcrumbs, 'id' => $product->id];
         }
 
         return $results;
-    }
-
-    private function buildName($item, $appendTo = '')
-    {
-        $parent = $item->getParent()->one();
-        if (!empty($parent)) {
-            $appendTo .= ' < ' . $parent->name;
-
-            $appendTo = $this->buildName($parent, $appendTo);
-        }
-
-        return $appendTo;
     }
 }

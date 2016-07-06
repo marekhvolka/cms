@@ -140,7 +140,7 @@ class Column extends CustomModel implements IDuplicable
         return $result;
     }
 
-    public function getContent($reload = false)
+    public function getContent()
     {
         $result = $this->getPrefix();
 
@@ -149,7 +149,7 @@ class Column extends CustomModel implements IDuplicable
 
                 $result .= '<?php' . PHP_EOL;
 
-                $result .= 'include("' . $block->getMainCacheFile($reload) . '");' . PHP_EOL;
+                $result .= 'include("' . $block->getMainCacheFile() . '");' . PHP_EOL;
 
                 $result .= '?>' . PHP_EOL;
             }

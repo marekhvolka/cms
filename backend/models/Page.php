@@ -29,7 +29,6 @@ use yii\base\Exception;
  * @property string $last_edit
  * @property integer $last_edit_user
  * @property string $breadcrumbs
- * @property bool $changed
  *
  * @property Portal $portal
  * @property User $lastEditUser
@@ -308,6 +307,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     }
 
     /** Vrati cestu k farebnej scheme portalu
+     * @param bool $forWeb
      * @return string
      */
     public function getColorSchemePath($forWeb = false)
@@ -340,14 +340,13 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     }
 
     /** Vrati cestu k suboru, v ktorom su ulozene premenne podstranky
-     * @param bool $reload
      * @return string
      */
-    public function getVarCacheFile($reload = false)
+    public function getVarCacheFile()
     {
         $path = $this->getMainDirectory() . 'page_var.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
 
             try {
                 $dataEngine = Yii::$app->dataEngine;
@@ -410,43 +409,28 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         return $path;
     }
 
-    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych blokov podstranky
-     * @return string
-     */
-    public function getPageBlocksMainCacheDirectory()
-    {
-        $path = $this->getMainDirectory() . 'blocks/';
-
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-
-        return $path;
-    }
-
     /** Vrati cestu k suboru, kde je ulozeny finalny obsah stranky pred kompilaciou
-     * @param bool $reload
      * @return string
      */
-    public function getMainPreCacheFile($reload = false)
+    public function getMainPreCacheFile()
     {
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
 
             try {
                 $prefix = $this->getIncludePrefix();
 
                 $prefix .= '<?php' . PHP_EOL;
 
-                $prefix .= '$global_header = executeScript("' . $this->portal->getLayoutCacheFile('header') . '");' . PHP_EOL;
-                $prefix .= '$global_footer = executeScript("' . $this->portal->getLayoutCacheFile('footer') . '");' . PHP_EOL;
+                $prefix .= '$global_header = executeScript("' . $this->portal->header->getCacheFile() . '");' . PHP_EOL;
+                $prefix .= '$global_footer = executeScript("' . $this->portal->footer->getCacheFile() . '");' . PHP_EOL;
 
-                $prefix .= '$page_header = executeScript("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
-                $prefix .= '$page_footer = executeScript("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
+                $prefix .= '$page_header = executeScript("' . $this->header->getCacheFile() . '");' . PHP_EOL;
+                $prefix .= '$page_footer = executeScript("' . $this->footer->getCacheFile() . '");' . PHP_EOL;
 
-                $prefix .= '$page_sidebar = executeScript("' . $this->getLayoutCacheFile('sidebar') . '");' . PHP_EOL;
-                $prefix .= '$page_content = executeScript("' . $this->getLayoutCacheFile('content') . '");' . PHP_EOL;
+                $prefix .= '$page_sidebar = executeScript("' . $this->sidebar->getCacheFile() . '");' . PHP_EOL;
+                $prefix .= '$page_content = executeScript("' . $this->content->getCacheFile() . '");' . PHP_EOL;
 
                 if ($this->sidebar_side == 'left') {
                     $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
@@ -465,7 +449,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 $pageContent = html_entity_decode($pageContent);
 
                 Yii::$app->dataEngine->writeToFile($path, 'w+', $pageContent);
-                $this->removeException();
 
             } catch (Exception $exception) {
                 $this->logException($exception, 'page_precache');
@@ -492,9 +475,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
                 Yii::$app->dataEngine->writeToFile($path, 'w+', $result);
 
-                $this->reload = 0;
-                $this->save();
-                $this->removeException();
+                $this->setActual();
             } catch (Exception $exception) {
                 $this->logException($exception, 'page_final');
             }
@@ -506,13 +487,13 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     /** Vrati hlavicku s includami pre danu podstranku
      * @return string
      */
-    public function getIncludePrefix($reload = false)
+    public function getIncludePrefix()
     {
         $prefix = $this->portal->getIncludePrefix();
 
         $prefix .= '<?php ' . PHP_EOL;
 
-        $prefix .= 'include("' . $this->getVarCacheFile($reload) . '");' . PHP_EOL;
+        $prefix .= 'include("' . $this->getVarCacheFile() . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
@@ -521,19 +502,15 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
     public function resetAfterUpdate()
     {
-        $this->getVarCacheFile(true);
+        $this->setChanged();
 
-        $this->addToCacheBuffer();
-    }
+        foreach ($this->pages as $page) {
+            $page->resetAfterUpdate();
+        }
 
-    /** Metoda na pridanie stranky do buffra na reset cache
-     * @param int $priority - priorita resetnutia, defaultne rovna 0 (radi sa podla casu poziadavky)
-     * @throws \yii\db\Exception
-     */
-    public function addToCacheBuffer($priority = 0)
-    {
-        $this->reload = 1;
-        $this->save();
+        foreach ($this->snippetVarValues as $snippetVarValue) {
+            $snippetVarValue->resetAfterUpdate();
+        }
     }
 
     public function prepareToDuplicate()

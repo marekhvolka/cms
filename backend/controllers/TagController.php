@@ -59,6 +59,7 @@ class TagController extends BaseController
             $model->product_type = $productTypesIds;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                $model->resetAfterUpdate();
                 return $this->redirect(['index']);
             }
         } else {

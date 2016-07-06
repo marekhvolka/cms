@@ -21,7 +21,6 @@ use Yii;
  * @property string $type
  * @property boolean $active
  * @property string $varIdentifier
- * @property bool $changed
  *
  * @property string $existing
  * @property string $name
@@ -240,7 +239,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $name;
     }
 
-    public function getMainCacheFile($reload = false)
+    public function getMainCacheFile()
     {
         $path = '';
         $buffer = '';
@@ -255,12 +254,12 @@ class Block extends CustomModel implements ICacheable, IDuplicable
             $buffer .= '$product = $' . $this->productVarValue->product->identifier . '; ?>' . PHP_EOL;
 
             $path = $this->productVarValue->product->getMainDirectory();
-        } else if (isset($this->column->row->section->page)) { //block podstranky
-            $buffer = $this->column->row->section->page->getIncludePrefix();
-            $path = $this->column->row->section->page->getPageBlocksMainCacheDirectory();
-        } else if (isset($this->column->row->section->portal)) { //block portalu
-            $buffer = $this->column->row->section->portal->getIncludePrefix();
-            $path = $this->column->row->section->portal->getBlocksMainCacheDirectory();
+        } else if (isset($this->column->row->section->area->page)) { //block podstranky
+            $buffer = $this->column->row->section->area->page->getIncludePrefix();
+            $path = $this->column->row->section->area->getBlocksMainCacheDirectory();
+        } else if (isset($this->column->row->section->area->portal)) { //block portalu
+            $buffer = $this->column->row->section->area->portal->getIncludePrefix();
+            $path = $this->column->row->section->area->getBlocksMainCacheDirectory();
         }
 
         switch ($this->type) {
@@ -285,7 +284,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         }
 
 
-        if (!file_exists($path . '.php') || $reload) {
+        if (!file_exists($path . '.php') || $this->changed) {
             try {
                 if ($this->isSnippet()) {
                     $blockData = $this->prepareSnippetData();
@@ -299,8 +298,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
                     array())));
 
                 Yii::$app->dataEngine->writeToFile($path . '.php', 'w+', $result);
-                $this->removeException();
-
+                $this->setActual();
             } catch (Exception $exception) {
                 $this->logException($exception, 'block');
             }
@@ -309,7 +307,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $path . '.php';
     }
 
-    private function prepareSnippetData($reload = false)
+    private function prepareSnippetData()
     {
         $productType = null;
 
@@ -374,18 +372,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function resetAfterUpdate()
     {
-        $this->getMainCacheFile(true);
-
         if (isset($this->column)) {
-            $section = $this->column->row->section;
+            $area = $this->column->row->section->area;
 
-            if (isset($section->page)) {
-                $section->page->addToCacheBuffer();
-            } else if (isset($section->portal)) {
-                foreach ($section->portal->pages as $page) {
-                    $page->addToCacheBuffer();
-                }
-            }
+            $area->resetAfterUpdate();
         }
         if (!isset($this->column)) {
             foreach ($this->childBlocks as $childBlock) {

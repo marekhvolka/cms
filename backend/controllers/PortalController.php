@@ -173,9 +173,12 @@ class PortalController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $sectionsData = Yii::$app->request->post($type);
 
-                $this->loadLayout($model->{$type}, $sectionsData);
+                $areaData = Yii::$app->request->post($type);
+                $model->{$type}->load($areaData);
+                $this->loadLayout($model->{$type}, $areaData);
+
+                $model->{$type}->portal_id = $model->id;
                 $this->saveLayout($model->{$type});
 
                 $transaction->commit();

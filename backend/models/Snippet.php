@@ -20,7 +20,6 @@ use Yii;
  * @property string $last_edit
  * @property bool $type
  * @property integer $last_edit_user
- * @property bool $changed
  *
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes

@@ -19,7 +19,6 @@ use yii\base\Exception;
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
- * @property bool $changed
  *
  * @property ProductType $productType
  * @property string $productTypeName
@@ -106,10 +105,10 @@ class Product extends CustomModel implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $this->getMainCacheFile(true); //resetneme hlavny subor
+        $this->setChanged();
 
         foreach ($this->pages as $page) {
-            $page->addToCacheBuffer();
+            $page->resetAfterUpdate();
         }
 
         /* @var $productSnippet SnippetVarValue */
@@ -123,14 +122,13 @@ class Product extends CustomModel implements ICacheable
     }
 
     /** Vrati cestu k suboru, v ktorom je nacachovany produkt
-     * @param bool $reload - ak je true, subor sa nanovo vytvori (aj ak existuje)
      * @return string
      */
-    public function getProductVarsFile($reload = false)
+    public function getProductVarsFile()
     {
         $path = $this->getMainDirectory() . 'product_var.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
 
             try {
                 $buffer = '<?php ' . PHP_EOL;
@@ -181,7 +179,6 @@ class Product extends CustomModel implements ICacheable
                 $buffer .= '?>' . PHP_EOL;
 
                 Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
-                $this->removeException();
             } catch (Exception $exception) {
                 $this->logException($exception, 'product_var');
             }
@@ -356,11 +353,11 @@ class Product extends CustomModel implements ICacheable
         return $this->productType->name;
     }
 
-    public function getMainCacheFile($reload = false)
+    public function getMainCacheFile()
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $this->changed) {
 
             try {
                 $buffer = '<?php' . PHP_EOL;
@@ -375,12 +372,26 @@ class Product extends CustomModel implements ICacheable
                 $buffer .= '?>';
 
                 Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
-                $this->removeException();
+                $this->setActual();
             } catch (Exception $exception) {
                 $this->logException($exception, 'product_main_file');
             }
         }
 
         return $path;
+    }
+
+    /** Metoda na vyskladanie URL pre podstranku
+     * @return string
+     */
+    public function getBreadcrumbs()
+    {
+        $breadcrumbs = '';
+
+        if (isset($this->parent)) {
+            $breadcrumbs = $this->parent->breadcrumbs . ' -> ';
+        }
+
+        return $breadcrumbs . $this->name;
     }
 }

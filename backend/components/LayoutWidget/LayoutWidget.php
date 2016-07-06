@@ -34,7 +34,8 @@ class LayoutWidget extends Widget
             'controllerUrl' => $this->controllerUrl,
             'formId' => $this->formId,
             'allowAddingSection' => $this->allowAddingSection,
-            'product' => $this->product
+            'product' => $this->product,
+            'prefix' => $this->area->type
         ]);
     }
 

@@ -90,34 +90,33 @@ class PageController extends BaseController
                 $model->load(Yii::$app->request->post());
 
                 $headerData = Yii::$app->request->post('header');
+                $model->header->load($headerData);
+                $this->loadLayout($model->header, $headerData);
 
-                if ($headerData != null) {
-                    $this->loadLayout($model->header, $headerData);
-                }
 
                 $footerData = Yii::$app->request->post('footer');
+                $model->footer->load($footerData);
+                $this->loadLayout($model->footer, $footerData);
 
-                if ($footerData != null) {
-                    $this->loadLayout($model->footer, $footerData);
-                }
 
                 $contentData = Yii::$app->request->post('content');
-
-                if ($contentData != null) {
-                    $this->loadLayout($model->content, $contentData);
-                }
+                $model->content->load($contentData);
+                $this->loadLayout($model->content, $contentData);
 
                 $sidebarData = Yii::$app->request->post('sidebar');
-
-                if ($sidebarData != null) {
-                    $this->loadLayout($model->sidebar, $sidebarData);
-                }
+                $model->sidebar->load($sidebarData);
+                $this->loadLayout($model->sidebar, $sidebarData);
 
                 $model->portal_id = Yii::$app->session->get('portal_id');
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
+
+                $model->header->page_id = $model->id;
+                $model->footer->page_id = $model->id;
+                $model->content->page_id = $model->id;
+                $model->sidebar->page_id = $model->id;
 
                 $this->saveLayout($model->header);
                 $this->saveLayout($model->footer);

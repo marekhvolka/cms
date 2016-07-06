@@ -238,13 +238,16 @@ abstract class BaseController extends Controller
 
     /** Metoda na nacitanie a ulozenie dat pre layout
      * @param Area $model
-     * @param $sectionsData
+     * @param $data
      * @throws \yii\base\Exception
      */
-    public function loadLayout(Area $model, $sectionsData)
+    public function loadLayout(Area $model, $data)
     {
+        if (!key_exists('Section', $data))
+            return;
+
         $sectionOrderIndex = 1;
-        foreach ($sectionsData as $indexSection => $itemSection) {
+        foreach ($data['Section'] as $indexSection => $itemSection) {
             $itemSection['order'] = $sectionOrderIndex++;
             $model->loadFromData('sections', $itemSection, $indexSection, Section::className());
 

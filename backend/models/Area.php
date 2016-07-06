@@ -113,7 +113,7 @@ class Area extends CustomModel
         $this->sections = $value;
     }
 
-    public function getContent($reload = false)
+    public function getContent()
     {
         $result = '';
 
@@ -124,7 +124,7 @@ class Area extends CustomModel
 
                     if ($this->active) {
                         foreach ($this->sections as $section) {
-                            $result .= $section->getContent($reload);
+                            $result .= $section->getContent();
                         }
                     }
 
@@ -136,7 +136,7 @@ class Area extends CustomModel
 
                     if ($this->active) {
                         foreach ($this->sections as $section) {
-                            $result .= $section->getContent($reload);
+                            $result .= $section->getContent();
                         }
                     }
 
@@ -147,14 +147,14 @@ class Area extends CustomModel
                     if (!$this->page->sidebar->active) {
                         $width = 12;
                     } else {
-                        $width = 12 - $this->size;
+                        $width = 12 - $this->page->sidebar->size;
                     }
 
                     $result = '<div id="content" class="col-md-' . $width . '">';
 
                     foreach ($this->sections as $section) {
                         foreach ($section->rows as $row) {
-                            $result .= $row->getContent($reload);
+                            $result .= $row->getContent();
                         }
                     }
 
@@ -168,7 +168,7 @@ class Area extends CustomModel
 
                         foreach ($this->sections as $section) {
                             foreach ($section->rows as $row) {
-                                $result .= $row->getContent($reload);
+                                $result .= $row->getContent();
                             }
                         }
 
@@ -208,11 +208,11 @@ class Area extends CustomModel
     }
 
     /** Vrati cestu k suboru, v ktorom je ulozeny layout casti podstranky
-     * @param string $type - cast - header, footer, sidebar, content
-     * @param bool $reload
      * @return string
+     * @internal param string $type - cast - header, footer, sidebar, content
+     * @internal param bool $reload
      */
-    public function getCacheFile($reload = false)
+    public function getCacheFile()
     {
         $path = '';
 
@@ -222,10 +222,42 @@ class Area extends CustomModel
             $path = $this->portal->getMainDirectory() . 'portal_' . $this->type . '.php';
         }
 
-        if (!file_exists($path) || $reload) {
-            $buffer = $this->getContent($reload);
+        if (!file_exists($path) || $this->changed) {
+            $buffer = $this->getContent();
 
             Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+        }
+
+        return $path;
+    }
+
+    public function resetAfterUpdate()
+    {
+        $this->setChanged();
+
+        if ($this->portal) {
+            $this->portal->resetAfterUpdate();
+        } else if ($this->page) {
+            $this->page->resetAfterUpdate();
+        }
+    }
+
+    /** Vrati cestu k adresaru, v ktorom budu sablony jednotlivych blokov podstranky
+     * @return string
+     */
+    public function getBlocksMainCacheDirectory()
+    {
+        $path = '';
+        if ($this->page) {
+            $path = $this->page->getMainDirectory();
+        } else if ($this->portal) {
+            $path = $this->portal->getMainDirectory();
+        }
+
+        $path .= 'blocks_' . $this->type . '/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
 
         return $path;

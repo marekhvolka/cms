@@ -10,7 +10,7 @@ namespace backend\models;
 
 interface ICacheable
 {
-    public function getMainCacheFile($reload = false);
+    public function getMainCacheFile();
     public function getMainDirectory();
     public function resetAfterUpdate();
 }

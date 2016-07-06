@@ -89,8 +89,9 @@ use yii\widgets\ActiveForm;
 
     <h3 class="page-header">Hlavička stránky</h3>
 
-    <?= $form->field($model->header, 'active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
+    <?= SwitchInput::widget([
+        'name' => 'header[active]',
+        'value' => $model->header->active,
     ]) ?>
 
     <?= LayoutWidget::widget([
@@ -112,8 +113,9 @@ use yii\widgets\ActiveForm;
 
     <h3 class="page-header">Sidebar</h3>
 
-    <?= $form->field($model->sidebar, 'active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
+    <?= SwitchInput::widget([
+        'name' => 'sidebar[active]',
+        'value' => $model->sidebar->active,
     ]) ?>
 
     <?= $form->field($model, 'sidebar_side')->radioList([
@@ -121,7 +123,7 @@ use yii\widgets\ActiveForm;
         'right' => 'Vpravo',
     ]) ?>
 
-    <?= $form->field($model->sidebar, 'size')->radioList([
+    <?= Html::radioList('sidebar[size]', $model->sidebar->size, [
         '4' => '8:4',
         '5' => '7:5',
         '6' => '6:6',
@@ -139,8 +141,9 @@ use yii\widgets\ActiveForm;
 
     <h3 class="page-footer">Patička stránky</h3>
 
-    <?= $form->field($model->footer, 'active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
+    <?= SwitchInput::widget([
+        'name' => 'footer[active]',
+        'value' => $model->footer->active,
     ]) ?>
 
     <?= LayoutWidget::widget([

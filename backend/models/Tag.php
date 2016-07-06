@@ -22,7 +22,7 @@ use Yii;
  * @property User $lastEditUser
  * @property SnippetVarValue[] $snippetVarValues
  */
-class Tag extends \yii\db\ActiveRecord
+class Tag extends CustomModel
 {
     /**
      * @inheritdoc
@@ -104,5 +104,16 @@ class Tag extends \yii\db\ActiveRecord
         $buffer .= ')';
 
         return $buffer;
+    }
+
+    public function resetAfterUpdate()
+    {
+        foreach ($this->products as $product) {
+            $product->resetAfterUpdate();
+        }
+
+        foreach ($this->snippetVarValues as $snippetVarValue) {
+            $snippetVarValue->resetAfterUpdate();
+        }
     }
 }
