@@ -17,10 +17,10 @@ $this->title = $name;
     </div>
 
     <p>
-        The above error occurred while the Web server was processing your request.
+        Chyba uvedená vyššie nastala pri spracovávaní Vašeho požiadavku.
     </p>
     <p>
-        Please contact us if you think this is a server error. Thank you.
+        Prosíme Vás, kontaktujte nás v prípade, ak je to chyba servera. Ďakujeme Vám.
     </p>
 
 </div>

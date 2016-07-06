@@ -6,6 +6,7 @@ use backend\models\Language;
 use backend\models\search\WordSearch;
 use backend\models\Word;
 use backend\models\WordTranslation;
+use common\components\Alert;
 use Yii;
 use yii\base\Exception;
 use yii\base\Model;
@@ -86,9 +87,9 @@ class WordController extends BaseController
                     $translation->save();
                 }
 
-                Yii::$app->session->setFlash('success', 'Uložené');
+                Alert::success('Uložené');
             } else {
-                Yii::$app->session->setFlash('error', 'Nastala chyba');
+                Alert::danger('Nastala chyba.');
             }
 
             $continue = Yii::$app->request->post('continue');

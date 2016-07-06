@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\SystemException */
 
-$this->title = 'Create System Exception';
-$this->params['breadcrumbs'][] = ['label' => 'System Exceptions', 'url' => ['index']];
+$this->title = 'Vytvoriť hlásenie';
+$this->params['breadcrumbs'][] = ['label' => 'Hlásenia', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-exception-create">

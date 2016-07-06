@@ -64,9 +64,9 @@ class Section extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'page_id' => 'Page ID',
-            'portal_id' => 'Portal ID',
-            'type' => 'Type',
+            'page_id' => 'ID stránky',
+            'portal_id' => 'ID portálu',
+            'type' => 'Typ',
         ];
     }
 

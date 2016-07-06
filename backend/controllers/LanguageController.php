@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\components\Alert;
 use Yii;
 use backend\models\Language;
 use backend\models\search\LanguageSearch;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -48,18 +50,24 @@ class LanguageController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id)
+        if ($id) {
             $model = $this->findModel($id);
-        else
-            $model = new Language();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
         } else {
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+            $model = new Language();
         }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                Alert::success('Položka bola úspešne uložená.');
+                return $this->redirect(Url::current());
+            } else {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky. Skontrolujte dáta.');
+            }
+        }
+
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -70,7 +78,11 @@ class LanguageController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Položku sa nepodarilo vymazať.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -87,7 +99,7 @@ class LanguageController extends BaseController
         if (($model = Language::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Táto stránka neexistuje.');
         }
     }
 }

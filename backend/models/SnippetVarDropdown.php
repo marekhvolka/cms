@@ -45,8 +45,8 @@ class SnippetVarDropdown extends CustomModel
     {
         return [
             'id' => 'ID',
-            'var_id' => 'Var ID',
-            'value' => 'Value',
+            'var_id' => 'ID premennej',
+            'value' => 'Hodnota',
         ];
     }
 

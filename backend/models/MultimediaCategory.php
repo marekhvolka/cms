@@ -32,6 +32,21 @@ class MultimediaCategory extends Model
     public $id;
 
     /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'fullName' => 'Meno',
+            'name' => 'Meno',
+            'path' => 'Cesta k súboru',
+            'pathForWeb' => 'Verejná cesta k súboru',
+            'items' => 'Položky'
+        ];
+    }
+
+    /**
      * Return the model if found, otherwise return null.
      *
      * @param $name string the name of the category

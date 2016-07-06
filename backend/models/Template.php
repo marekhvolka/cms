@@ -57,12 +57,12 @@ class Template extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Nebi',
             'description' => 'Popis',
             'identifier' => 'Adresár šablóny',
             'active' => 'Aktívna',
-            'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit' => 'Posledná zmena',
+            'last_edit_user' => 'Naposledy editoval',
         ];
     }
 

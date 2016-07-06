@@ -87,13 +87,13 @@ class Block extends CustomModel implements ICacheable, IDuplicable
     {
         return [
             'id' => 'ID',
-            'snippet_id' => 'Snippet ID',
-            'column_id' => 'Column ID',
-            'portal_var_value_id' => 'Portal Var ID',
-            'product_var_value_id' => 'Product Var ID',
-            'parent_id' => 'Parent ID',
-            'order' => 'Order',
-            'data' => 'Data',
+            'snippet_id' => 'ID snippetu',
+            'column_id' => 'ID stĺpca',
+            'portal_var_value_id' => 'ID portálovej premennej',
+            'product_var_value_id' => 'ID produktovej premennej',
+            'parent_id' => 'ID rodiča',
+            'order' => 'Poradie',
+            'data' => 'Dáta',
             'type' => 'Typ bloku',
             'active' => 'Aktívny'
         ];

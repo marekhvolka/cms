@@ -49,8 +49,8 @@ class ListItem extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'list_id' => 'List ID',
-            'active' => 'Active',
+            'list_id' => 'ID zoznamu',
+            'active' => 'Aktívna',
         ];
     }
 

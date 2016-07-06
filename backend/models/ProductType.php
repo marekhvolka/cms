@@ -52,10 +52,10 @@ class ProductType extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'active' => 'Active',
-            'last_edit_user' => 'Last Edit User',
-            'last_edit' => 'Last Edit',
+            'name' => 'Meno',
+            'active' => 'Aktívna',
+            'last_edit_user' => 'Naposledy editoval',
+            'last_edit' => 'Posledná zmena',
         ];
     }
 

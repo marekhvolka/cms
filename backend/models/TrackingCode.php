@@ -60,13 +60,13 @@ class TrackingCode extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Meno',
             'code' => 'Kód',
             'place_id' => 'Umiestnenie',
-            'portal_id' => 'Portal ID',
+            'portal_id' => 'ID portálu',
             'active' => 'Aktívny',
-            'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'last_edit' => 'Posledná zmena',
+            'last_edit_user' => 'Naposledy editoval',
         ];
     }
 

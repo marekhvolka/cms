@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
             'role',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}'],
         ],
     ]); ?>
 

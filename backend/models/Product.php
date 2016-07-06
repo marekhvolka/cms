@@ -86,8 +86,8 @@ class Product extends CustomModel implements ICacheable
             'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'language_id' => 'Krajina',
-            'active' => 'Active',
-            'last_edit' => 'Last Edit',
+            'active' => 'Aktívny',
+            'last_edit' => 'Posledná zmena',
             'last_edit_user' => 'Naposledy editoval',
         ];
     }

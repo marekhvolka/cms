@@ -80,8 +80,8 @@ class SnippetVar extends Variable
             'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'type_id' => 'Typ premennej',
-            'snippet_id' => 'Snippet ID',
-            'parent_id' => 'Parent ID',
+            'snippet_id' => 'ID snippetu',
+            'parent_id' => 'ID rodiča',
         ];
     }
 

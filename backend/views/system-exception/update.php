@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\SystemException */
 
-$this->title = 'Update System Exception: ' . $model->identifier;
-$this->params['breadcrumbs'][] = ['label' => 'System Exceptions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->identifier, 'url' => ['view', 'id' => $model->identifier]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Upraviť hlásenie' . $model->identifier;
+$this->params['breadcrumbs'][] = ['label' => 'Hlásenie', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Upraviť';
 ?>
 <div class="system-exception-update">
 

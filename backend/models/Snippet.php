@@ -75,11 +75,11 @@ class Snippet extends CustomModel implements ICacheable
             'section_id' => 'Sekcia ID',
             'section_class' => 'Sekcia Class',
             'section_style' => 'Sekcia Style',
-            'column_id' => 'Column ID',
-            'column_class' => 'Column Class',
-            'column_style' => 'Column Style',
-            'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User',
+            'column_id' => 'ID stĺpca',
+            'column_class' => 'CSS trieda stĺpca',
+            'column_style' => 'Štýly stĺpca',
+            'last_edit' => 'Posledná zmena',
+            'last_edit_user' => 'Naposledy editoval',
         ];
     }
 

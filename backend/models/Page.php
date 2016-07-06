@@ -126,26 +126,26 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Meno',
             'identifier' => 'Identifikátor',
             'url' => 'Url',
             'portal_id' => 'Portál',
             'active' => 'Aktívna',
-            'in_menu' => 'V Menu',
+            'in_menu' => 'V menu',
             'parent_id' => 'Predok',
             'order' => 'Poradie',
             'product_id' => 'Produkt',
-            'title' => 'Title',
-            'description' => 'Description',
-            'keywords' => 'Keywords',
+            'title' => 'Titulok',
+            'description' => 'Popis',
+            'keywords' => 'Kľúčové slová',
             'color_scheme' => 'Farebná schéma',
-            'sidebar_active' => 'Sidebar',
+            'sidebar_active' => 'Bočný panel',
             'sidebar_side' => 'Pozícia sidebaru',
             'sidebar_size' => 'Veľkosť sidebaru',
-            'footer_active' => 'Footer',
-            'header_active' => 'Header',
-            'last_edit' => 'Last Edit',
-            'last_edit_user' => 'Last Edit User'
+            'footer_active' => 'Pätička',
+            'header_active' => 'Hlavička',
+            'last_edit' => 'Posledná zmena',
+            'last_edit_user' => 'Naposledy editoval'
         ];
     }
 

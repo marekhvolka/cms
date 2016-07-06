@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\SystemExceptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'System Exceptions';
+$this->title = 'Hlásenia';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-exception-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create System Exception', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Vytvoriť hlásenie', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'time',
             'message:ntext',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}'],
         ],
     ]); ?>
 </div>

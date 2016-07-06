@@ -49,10 +49,10 @@ class ProductVarValue extends Variable
     {
         return [
             'id' => 'ID',
-            'product_id' => 'Product ID',
-            'portal_id' => 'Portal ID',
-            'var_id' => 'Var ID',
-            'value_text' => 'Value',
+            'product_id' => 'ID produktu',
+            'portal_id' => 'ID portálu',
+            'var_id' => 'ID premennej',
+            'value_text' => 'Hodnota',
         ];
     }
     

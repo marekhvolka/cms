@@ -31,7 +31,7 @@ AppAsset::register($this);
         'items' => Yii::$app->params['menuItems']
     ]) ?>
     <div id="page-wrapper">
-        <?= Alert::widget() ?>
+        <?= $this->render('_alerts') ?>
         <?php if (!empty($this->title)) : ?>
 
             <div class="row wrapper border-bottom white-bg page-heading">

@@ -75,9 +75,9 @@ class SnippetVarValue extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'block_id' => 'Block ID',
-            'var_id' => 'Var ID',
-            'value' => 'Value',
+            'block_id' => 'ID bloku',
+            'var_id' => 'ID premennej',
+            'value' => 'Hodnota',
         ];
     }
 

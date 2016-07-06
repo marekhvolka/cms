@@ -39,9 +39,9 @@ class SystemException extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'identifier' => 'Identifier',
-            'time' => 'Time',
-            'message' => 'Message',
+            'identifier' => 'Identifikátor',
+            'time' => 'Čas',
+            'message' => 'Správa',
         ];
     }
 }

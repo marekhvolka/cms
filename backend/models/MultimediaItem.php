@@ -48,6 +48,20 @@ class MultimediaItem extends Model
     /**
      * @inheritdoc
      */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Meno položky',
+            'files' => 'Súbory',
+            'path' => 'Cesta',
+            'multimedia_category_id' => 'ID kategórie'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function scenarios()
     {
         return [

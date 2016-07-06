@@ -53,11 +53,11 @@ class Column extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'row_id' => 'Row ID',
-            'order' => 'Order',
-            'width' => 'Width',
+            'row_id' => 'ID riadka',
+            'order' => 'Poradie',
+            'width' => 'Šírka',
             'css_id' => 'ID stĺpca',
-            'css_class' => 'Class stĺpca',
+            'css_class' => 'CSS trieda stĺpca',
             'css_style' => 'Štýly stĺpca'
         ];
     }

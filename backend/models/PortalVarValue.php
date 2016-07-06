@@ -47,9 +47,9 @@ class PortalVarValue extends CustomModel
     {
         return [
             'id' => 'ID',
-            'portal_id' => 'Portal ID',
-            'var_id' => 'Var ID',
-            'value_text' => 'Value',
+            'portal_id' => 'ID portálu',
+            'var_id' => 'ID premennej',
+            'value_text' => 'Hodnota',
         ];
     }
 

@@ -66,8 +66,8 @@ class SnippetVarDefaultValue extends CustomModel
     {
         return [
             'id' => 'ID',
-            'snippet_var_id' => 'Snippet Var ID',
-            'product_type_id' => 'Product Type ID',
+            'snippet_var_id' => 'Snippet Var ID premennej snippetu',
+            'product_type_id' => 'ID typu produktu',
             'value_text' => 'Predvolená hodnota',
         ];
     }

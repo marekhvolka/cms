@@ -50,9 +50,9 @@ class Row extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'section_id' => 'Section ID',
-            'order' => 'Order',
-            'options' => 'Options',
+            'section_id' => 'ID sekcies',
+            'order' => 'Poradie',
+            'options' => 'Nastavenia',
         ];
     }
 

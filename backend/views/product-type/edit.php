@@ -7,8 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Upraviť typ produktu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Typy produktov', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Upraviť typ produktu';
 ?>
 <div class="product-type-update">
 
