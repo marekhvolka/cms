@@ -2,6 +2,10 @@
     padding: 20px;
 }
 
+.multimedia-category .multimedia-item {
+    cursor: pointer;
+}
+
 .multimedia-category .multimedia-item .thumbnail {
     padding: 10px;
 }
