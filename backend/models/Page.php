@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "page".
@@ -15,7 +16,6 @@ use Yii;
  * @property integer $active
  * @property integer $in_menu
  * @property integer $parent_id
- * @property integer $order
  * @property integer $product_id
  * @property string $title
  * @property string $description
@@ -28,9 +28,8 @@ use Yii;
  * @property integer $header_active
  * @property string $last_edit
  * @property integer $last_edit_user
- * @property integer $parsed
  * @property string $breadcrumbs
- * @property bool $reload
+ * @property bool $changed
  *
  * @property Portal $portal
  * @property User $lastEditUser
@@ -39,11 +38,10 @@ use Yii;
  * @property Section[] $sections
  * @property Product $product
  * @property SnippetVarValue[] $snippetVarValues
- *
- * @property Section[] $headerSections
- * @property Section[] $footerSections
- * @property Section $contentSections
- * @property Section $sidebarSections
+ * @property Area $header
+ * @property Area $footer
+ * @property Area $content
+ * @property Area $sidebar
  */
 class Page extends CustomModel implements ICacheable, IDuplicable
 {
@@ -65,7 +63,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $this->sidebar_active = 1;
         $this->header_active = 1;
         $this->footer_active = 1;
-        $this->parsed = 1;
         $this->color_scheme = 'inherit';
     }
 
@@ -96,7 +93,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                     'active',
                     'in_menu',
                     'parent_id',
-                    'order',
                     'product_id',
                     'sidebar_active',
                     'sidebar_size',
@@ -133,7 +129,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             'active' => 'Aktívna',
             'in_menu' => 'V Menu',
             'parent_id' => 'Predok',
-            'order' => 'Poradie',
             'product_id' => 'Produkt',
             'title' => 'Title',
             'description' => 'Description',
@@ -159,8 +154,9 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getUrl()
     {
-        if ($this->identifier == 'homepage' && !$this->parent)
+        if ($this->identifier == 'homepage' && !$this->parent) {
             return '/';
+        }
 
         if (isset($this->parent)) {
             $url = $this->parent->url;
@@ -244,75 +240,71 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     }
 
     /**
-     * @return Section[]
+     * @return Area
      */
-    public function getHeaderSections()
+    public function getHeader()
     {
-        if (!isset($this->headerSections)) {
-            $this->headerSections = $this->hasMany(Section::className(), ['page_id' => 'id'])
-                ->where(['type' => 'header'])
-                ->all();
+        if (!isset($this->header)) {
+            $this->header = $this->hasOne(Area::className(), ['page_id' => 'id'])
+                ->andWhere(['type' => 'header'])->one();
         }
-        return $this->headerSections;
+        return $this->header;
     }
 
-    public function setHeaderSections($value)
+    public function setHeader($value)
     {
-        $this->headerSections = $value;
+        $this->header = $value;
     }
 
     /**
-     * @return Section[]
+     * @return Area
      */
-    public function getFooterSections()
+    public function getContent()
     {
-        if (!isset($this->footerSections)) {
-            $this->footerSections = $this->hasMany(Section::className(), ['page_id' => 'id'])
-                ->where(['type' => 'footer'])
-                ->all();
+        if (!isset($this->content)) {
+            $this->content = $this->hasOne(Area::className(), ['page_id' => 'id'])
+                ->andWhere(['type' => 'content'])->one();
         }
-        return $this->footerSections;
+        return $this->content;
     }
 
-    public function setFooterSections($value)
+    public function setContent($value)
     {
-        $this->footerSections = $value;
+        $this->content = $value;
     }
 
     /**
-     * @return Section[]
+     * @return Area
      */
-    public function getContentSections()
+    public function getSidebar()
     {
-        if (!isset($this->contentSections)) {
-            $this->contentSections = $this->hasMany(Section::className(), ['page_id' => 'id'])
-                ->where(['type' => 'content'])
-                ->all();
+        if (!isset($this->sidebar)) {
+            $this->sidebar = $this->hasOne(Area::className(), ['page_id' => 'id'])
+                ->andWhere(['type' => 'sidebar'])->one();
         }
-        return $this->contentSections;
+        return $this->sidebar;
     }
 
-    public function setContentSections($value)
+    public function setSidebar($value)
     {
-        $this->contentSections = $value;
+        $this->sidebar = $value;
     }
 
     /**
-     * @return Section[]
+     * @return Area
      */
-    public function getSidebarSections()
+    public function getFooter()
     {
-        if (!isset($this->sidebarSections)) {
-            $this->sidebarSections = $this->hasMany(Section::className(), ['page_id' => 'id'])
-                ->where(['type' => 'sidebar'])
-                ->all();
+        if (!isset($this->footer)) {
+            $this->footer = $this->hasOne(Area::className(), ['page_id' => 'id'])
+                ->andWhere(['type' => 'footer'])->one();
         }
-        return $this->sidebarSections;
+        return $this->footer;
     }
 
-    public function setSidebarSections($value)
+    public function setFooter($value)
     {
-        $this->sidebarSections = $value;
+        $this->footer = $value;
     }
 
     /** Vrati cestu k farebnej scheme portalu
@@ -331,78 +323,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         } else {
             return $this->portal->template->getColorSchemeDirectoryPath($forWeb) . $this->color_scheme . '.min.css';
         }
-    }
-
-    public function getHeaderContent($reload = false)
-    {
-        $result = '<div id="page-header">';
-
-        if ($this->header_active) {
-            foreach ($this->headerSections as $section) {
-                $result .= $section->getContent($reload);
-            }
-        }
-
-        $result .= '</div> <!-- PageHeader end -->';
-
-        return $result;
-    }
-
-    public function getFooterContent($reload = false)
-    {
-        $result = '<div id="page-footer">';
-
-        if ($this->footer_active) {
-            foreach ($this->footerSections as $section) {
-                $result .= $section->getContent($reload);
-            }
-        }
-
-        $result .= '</div> <!-- PageFooter end -->';
-
-        return $result;
-    }
-
-    public function getMainContent($reload = false)
-    {
-        if (!$this->sidebar_active) {
-            $width = 12;
-        } else {
-            $width = 12 - $this->sidebar_size;
-        }
-
-        $result = '<div id="content" class="col-md-' . $width . '">';
-
-        if (isset($this->contentSections)) {
-            foreach ($this->contentSections as $section) {
-                foreach ($section->rows as $row) {
-                    $result .= $row->getContent($reload);
-                }
-            }
-        }
-
-        $result .= '</div> <!-- Content End -->';
-
-        return $result;
-    }
-
-    public function getSidebarContent($reload = false)
-    {
-        $result = '';
-
-        if ($this->sidebar_active) {
-            $result = '<div id="sidebar" class="col-md-' . $this->sidebar_size . '">';
-
-            foreach ($this->sidebarSections as $section) {
-                foreach ($section->rows as $row) {
-                    $result .= $row->getContent($reload);
-                }
-            }
-
-            $result .= '</div> <!-- Sidebar End -->';
-        }
-
-        return $result;
     }
 
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre danu podstranku
@@ -429,95 +349,62 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
         if (!file_exists($path) || $reload) {
 
-            $dataEngine = Yii::$app->dataEngine;
+            try {
+                $dataEngine = Yii::$app->dataEngine;
 
-            $buffer = '<?php ' . PHP_EOL;
+                $buffer = '<?php ' . PHP_EOL;
 
-            if (isset($this->parent)) {
-                $buffer .= 'include("' . $this->parent->getVarCacheFile() . '");' . PHP_EOL;
-            }
+                if (isset($this->parent)) {
+                    $buffer .= 'include("' . $this->parent->getVarCacheFile() . '");' . PHP_EOL;
+                }
 
-            if (isset($this->product)) {
-                $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
-            } else if (isset($this->parent)) {
-                $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
-            } else {
-                $buffer .= '$emptyProduct = (object) array();' . PHP_EOL;
-                $buffer .= '$product = new ObjectBridge($emptyProduct, \'\');' . PHP_EOL;
-            }
-            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+                if (isset($this->product)) {
+                    $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
+                } else if (isset($this->parent)) {
+                    $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
+                } else {
+                    $buffer .= '$emptyProduct = (object) array();' . PHP_EOL;
+                    $buffer .= '$product = new ObjectBridge($emptyProduct, \'\');' . PHP_EOL;
+                }
+                $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            $buffer .= '\'url\' => \'' . addslashes($dataEngine->normalizeString($this->url)) . '\',' . PHP_EOL;
-            $buffer .= '\'name\' => \'' . addslashes($dataEngine->normalizeString($this->name)) . '\',' . PHP_EOL;
-            $buffer .= '\'title\' => \'' . addslashes($dataEngine->normalizeString($this->title)) . '\',' . PHP_EOL;
-            $buffer .= '\'description\' => \'' . addslashes($dataEngine->normalizeString($this->description)) . '\',' . PHP_EOL;
-            $buffer .= '\'keywords\' => \'' . addslashes($dataEngine->normalizeString($this->keywords)) . '\',' . PHP_EOL;
-            $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
+                $buffer .= '\'url\' => \'' . addslashes($dataEngine->normalizeString($this->url)) . '\',' . PHP_EOL;
+                $buffer .= '\'name\' => \'' . addslashes($dataEngine->normalizeString($this->name)) . '\',' . PHP_EOL;
+                $buffer .= '\'title\' => \'' . addslashes($dataEngine->normalizeString($this->title)) . '\',' . PHP_EOL;
+                $buffer .= '\'description\' => \'' . addslashes($dataEngine->normalizeString($this->description)) . '\',' . PHP_EOL;
+                $buffer .= '\'keywords\' => \'' . addslashes($dataEngine->normalizeString($this->keywords)) . '\',' . PHP_EOL;
+                $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
 
-            if (isset($this->product)) {
-                $buffer .= '\'product\' => $product,' . PHP_EOL;
-            }
+                if (isset($this->product)) {
+                    $buffer .= '\'product\' => $product,' . PHP_EOL;
+                }
 
-            $buffer .= ');' . PHP_EOL;
+                $buffer .= ');' . PHP_EOL;
 
-            if ($this->parent) {
-                $buffer .= '$tempObject->parent = ' . $this->parent->cacheIdentifier . ';' . PHP_EOL;
+                if ($this->parent) {
+                    $buffer .= '$tempObject->parent = ' . $this->parent->cacheIdentifier . ';' . PHP_EOL;
 
-                $buffer .= '$tempObject->parents = array_merge_recursive($tempObject->parent->parents,
+                    $buffer .= '$tempObject->parents = array_merge_recursive($tempObject->parent->parents,
                     array($tempObject->parent));' . PHP_EOL;
+                } else {
+                    $buffer .= '$tempObject->parents = array();' . PHP_EOL;
+                }
+
+                $buffer .= $this->cacheIdentifier . ' = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
+
+                if (isset($this->color_scheme)) {
+                    $buffer .= '$color_scheme = \'' . $this->getColorSchemePath(true) . '\';' . PHP_EOL;
+                }
+
+                $buffer .= '$page = ' . $this->cacheIdentifier . ';' . PHP_EOL;
+
+                $buffer .= '?>';
+
+                $dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'page_var');
             }
-            else {
-                $buffer .= '$tempObject->parents = array();' . PHP_EOL;
-            }
-
-            $buffer .= $this->cacheIdentifier . ' = new ObjectBridge($tempObject, \'page' . $this->id . '\');' . PHP_EOL;
-
-            if (isset($this->color_scheme)) {
-                $buffer .= '$color_scheme = \'' . $this->getColorSchemePath(true) . '\';' . PHP_EOL;
-            }
-
-            $buffer .= '$page = ' . $this->cacheIdentifier . ';' . PHP_EOL;
-
-            $buffer .= '?>';
-
-            $dataEngine->writeToFile($path, 'w+', $buffer);
-        }
-
-        return $path;
-    }
-
-    /** Vrati cestu k suboru, v ktorom je ulozeny layout casti podstranky
-     * @param string $type - cast - header, footer, sidebar, content
-     * @param bool $reload
-     * @return string
-     */
-    public function getLayoutCacheFile($type, $reload = false)
-    {
-        $path = $this->getMainDirectory() . 'page_' . $type . '.php';
-
-        if (!file_exists($path) || $reload) {
-            $buffer = '';
-
-            switch ($type) {
-                case 'header':
-                    $buffer = $this->getHeaderContent($reload);
-
-                    break;
-                case 'footer':
-                    $buffer = $this->getFooterContent($reload);
-
-                    break;
-                case 'sidebar':
-                    $buffer = $this->getSidebarContent($reload);
-
-                    break;
-                case 'content':
-                    $buffer = $this->getMainContent($reload);
-
-                    break;
-            }
-
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -546,36 +433,43 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
         if (!file_exists($path) || $reload) {
-            $prefix = $this->getIncludePrefix();
 
-            $prefix .= '<?php' . PHP_EOL;
+            try {
+                $prefix = $this->getIncludePrefix();
 
-            $prefix .= '$global_header = executeScript("' . $this->portal->getLayoutCacheFile('header') . '");' . PHP_EOL;
-            $prefix .= '$global_footer = executeScript("' . $this->portal->getLayoutCacheFile('footer') . '");' . PHP_EOL;
+                $prefix .= '<?php' . PHP_EOL;
 
-            $prefix .= '$page_header = executeScript("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
-            $prefix .= '$page_footer = executeScript("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
+                $prefix .= '$global_header = executeScript("' . $this->portal->getLayoutCacheFile('header') . '");' . PHP_EOL;
+                $prefix .= '$global_footer = executeScript("' . $this->portal->getLayoutCacheFile('footer') . '");' . PHP_EOL;
 
-            $prefix .= '$page_sidebar = executeScript("' . $this->getLayoutCacheFile('sidebar') . '");' . PHP_EOL;
-            $prefix .= '$page_content = executeScript("' . $this->getLayoutCacheFile('content') . '");' . PHP_EOL;
+                $prefix .= '$page_header = executeScript("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
+                $prefix .= '$page_footer = executeScript("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
 
-            if ($this->sidebar_side == 'left') {
-                $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
-            } else {
-                $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
+                $prefix .= '$page_sidebar = executeScript("' . $this->getLayoutCacheFile('sidebar') . '");' . PHP_EOL;
+                $prefix .= '$page_content = executeScript("' . $this->getLayoutCacheFile('content') . '");' . PHP_EOL;
+
+                if ($this->sidebar_side == 'left') {
+                    $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
+                } else {
+                    $prefix .= '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
+                }
+
+                $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile(true) . '\';' . PHP_EOL;
+
+                $prefix .= '?>' . PHP_EOL;
+
+                $templateIndex = file_get_contents($this->portal->template->getIndexPath());
+
+                $pageContent = $prefix . $templateIndex;
+
+                $pageContent = html_entity_decode($pageContent);
+
+                Yii::$app->dataEngine->writeToFile($path, 'w+', $pageContent);
+                $this->removeException();
+
+            } catch (Exception $exception) {
+                $this->logException($exception, 'page_precache');
             }
-
-            $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile(true) . '\';' . PHP_EOL;
-
-            $prefix .= '?>' . PHP_EOL;
-
-            $templateIndex = file_get_contents($this->portal->template->getIndexPath());
-
-            $pageContent = $prefix . $templateIndex;
-
-            $pageContent = html_entity_decode($pageContent);
-
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $pageContent);
         }
 
         return $path;
@@ -584,20 +478,26 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     /** Vrati cestu k suboru, kde je ulozeny finalny obsah stranky po kompilacii
      * @param bool $reload
      * @return string
+     * @throws Exception
      */
     public function getMainCacheFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'page_compiled.html';
 
         if (!file_exists($path) || $reload) {
-            $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+            try {
+                $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
 
-            $result = html_entity_decode($result, ENT_QUOTES);
+                $result = html_entity_decode($result, ENT_QUOTES);
 
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $result);
+                Yii::$app->dataEngine->writeToFile($path, 'w+', $result);
 
-            $this->reload = 0;
-            $this->save();
+                $this->reload = 0;
+                $this->save();
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'page_final');
+            }
         }
 
         return $path;

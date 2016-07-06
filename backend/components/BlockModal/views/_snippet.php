@@ -1,9 +1,7 @@
 <?php
 use backend\models\Portal;
 use backend\models\Product;
-use backend\models\ProductVar;
 use backend\models\Snippet;
-use backend\models\Tag;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
@@ -37,6 +35,7 @@ use yii\helpers\BaseHtml;
                         [
                             'name' => $prefix . '[snippet_code_id]'
                         ]) ?>
+
 
                         <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                                 style="right: 60px; top: 13px;" data-toggle="modal"
@@ -96,12 +95,12 @@ use yii\helpers\BaseHtml;
     <div class="modal-body">
         <?php
         foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
-                echo $this->render('_snippet-var-value', [
-                    'snippetVarValue' => $snippetVarValue,
-                    'product' => $product,
-                    'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
-                    'parentId' => $model->parent_id
-                ]);
+            echo $this->render('_snippet-var-value', [
+                'snippetVarValue' => $snippetVarValue,
+                'product' => $product,
+                'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
+                'parentId' => $model->parent_id
+            ]);
         }
         ?>
     </div>

@@ -106,7 +106,7 @@ body.on(
 );
 
 body.on(
-    'click', '.btn-add-list-item', function (event)
+    'click', '.btn-add-list-item', function ()
     {
         var listPanel = $(this).parents('.list-panel').first();
 
@@ -124,8 +124,6 @@ body.on(
                 listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
             }
         );
-
-        event.stopPropagation();
     }
 );
 
@@ -158,12 +156,5 @@ body.on(
         modalWindow.modal('hide');
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
-    }
-);
-
-body.on(
-    'click', '.panel-heading', function ()
-    {
-        $(this).parents('.panel').first().find('.panel-body').first().collapse('toggle');
     }
 );

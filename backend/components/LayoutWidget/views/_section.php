@@ -9,11 +9,10 @@ use yii\helpers\BaseHtml;
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
 
     <div class="panel-heading">
         <h3 class="panel-title">
-            Sekcia
+            <span>Sekcia</span>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">

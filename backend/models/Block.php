@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use Exception;
 use Yii;
 
 /**
@@ -20,7 +21,7 @@ use Yii;
  * @property string $type
  * @property boolean $active
  * @property string $varIdentifier
- *
+ * @property bool $changed
  *
  * @property string $existing
  * @property string $name
@@ -171,12 +172,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
             if ($this->snippetCode) {
                 $snippetCode = $this->snippetCode;
-            }
-            else { //jedna sa o portalovy alebo produktovy snippet
+            } else { //jedna sa o portalovy alebo produktovy snippet
                 if ($this->parent) {
                     $snippetCode = $this->parent->snippetCode;
-                }
-                else {
+                } else {
                     return $this->snippetVarValues;
                 }
             }
@@ -287,19 +286,24 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
 
         if (!file_exists($path . '.php') || $reload) {
+            try {
+                if ($this->isSnippet()) {
+                    $blockData = $this->prepareSnippetData();
+                } else {
+                    $blockData = $this->data;
+                }
+                $buffer .= $blockData;
 
-            if ($this->isSnippet()) {
-                $blockData = $this->prepareSnippetData();
-            } else {
-                $blockData = $this->data;
+                Yii::$app->dataEngine->writeToFile($path . '.latte', 'w+', $buffer);
+                $result = stripcslashes(html_entity_decode(Yii::$app->dataEngine->latteRenderer->renderToString($path . '.latte',
+                    array())));
+
+                Yii::$app->dataEngine->writeToFile($path . '.php', 'w+', $result);
+                $this->removeException();
+
+            } catch (Exception $exception) {
+                $this->logException($exception, 'block');
             }
-            $buffer .= $blockData;
-
-            Yii::$app->dataEngine->writeToFile($path . '.latte', 'w+', $buffer);
-            $result = stripcslashes(html_entity_decode(Yii::$app->dataEngine->latteRenderer->renderToString($path . '.latte',
-                array())));
-
-            Yii::$app->dataEngine->writeToFile($path . '.php', 'w+', $result);
         }
 
         return $path . '.php';
@@ -407,10 +411,11 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function getVarIdentifier()
     {
-        if ($this->productVarValue)
+        if ($this->productVarValue) {
             return $this->productVarValue->var->name;
-        else if ($this->portalVarValue)
-           return $this->portalVarValue->var->name;
+        } else if ($this->portalVarValue) {
+            return $this->portalVarValue->var->name;
+        }
         return '';
     }
 }

@@ -1,7 +1,9 @@
 <?php
 /* @var $this yii\web\View */
+use backend\models\Area;
+
 /* @var $form yii\widgets\ActiveForm */
-/* @var $sections \backend\models\Section */
+/* @var $area Area */
 
 /* @var $allowAddingSection bool */
 
@@ -13,10 +15,10 @@
 
 <div class="layouts">
     <div class="children-list">
-        <?php foreach ($sections as $indexSection => $section) : ?>
+        <?php foreach ($area->sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,
-                'prefix' => $prefix . "[$indexSection]",
+                'prefix' => $area->type . "[$indexSection]",
                 'product' => $product
             ]); ?>
         <?php endforeach; ?>
@@ -24,7 +26,7 @@
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
         <button type="button" class="btn btn-success btn-sm btn-add-section"
-                data-prefix="<?= $prefix ?>" data-type="<?= $type ?>" data-product-id="<?= $product ? $product->id : '' ?>">
+                data-prefix="<?= $area->type ?>" data-product-id="<?= $product ? $product->id : '' ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
         <?php endif; ?>

@@ -87,20 +87,14 @@ use yii\widgets\ActiveForm;
         ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->template->getColorSchemes(), 'label',
             'label')); ?>
 
-    <?= $form->field($model, 'header_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX,
-        'pluginOptions' => [
-            'onText' => 'Aktívny',
-            'offText' => 'Neaktívny',
-        ]
-    ]) ?>
-
     <h3 class="page-header">Hlavička stránky</h3>
 
+    <?= $form->field($model->header, 'active')->widget(SwitchInput::classname(), [
+        'type' => SwitchInput::CHECKBOX
+    ]) ?>
+
     <?= LayoutWidget::widget([
-            'sections' => $model->headerSections,
-            'prefix' => 'headerSection',
-            'type' => 'header',
+            'area' => $model->header,
             'controllerUrl' => Url::to(['/page']),
             'product' => $model->product
         ]
@@ -109,9 +103,7 @@ use yii\widgets\ActiveForm;
     <h3 class="page-header">Hlavný obsah</h3>
 
     <?= LayoutWidget::widget([
-            'sections' => $model->contentSections,
-            'type' => 'content',
-            'prefix' => 'contentSection',
+            'area' => $model->content,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
             'product' => $model->product
@@ -120,12 +112,8 @@ use yii\widgets\ActiveForm;
 
     <h3 class="page-header">Sidebar</h3>
 
-    <?= $form->field($model, 'sidebar_active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX,
-        'pluginOptions' => [
-            'onText' => 'Aktívny',
-            'offText' => 'Neaktívny',
-        ]
+    <?= $form->field($model->sidebar, 'active')->widget(SwitchInput::classname(), [
+        'type' => SwitchInput::CHECKBOX
     ]) ?>
 
     <?= $form->field($model, 'sidebar_side')->radioList([
@@ -133,7 +121,7 @@ use yii\widgets\ActiveForm;
         'right' => 'Vpravo',
     ]) ?>
 
-    <?= $form->field($model, 'sidebar_size')->radioList([
+    <?= $form->field($model->sidebar, 'size')->radioList([
         '4' => '8:4',
         '5' => '7:5',
         '6' => '6:6',
@@ -142,25 +130,21 @@ use yii\widgets\ActiveForm;
     ]) ?>
 
     <?= LayoutWidget::widget([
-            'sections' => $model->sidebarSections,
-            'type' => 'sidebar',
-            'prefix' => 'sidebarSection',
+            'area' => $model->sidebar,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
             'product' => $model->product
         ]
     ) ?>
 
-    <h3 class="page-header">Patička stránky</h3>
+    <h3 class="page-footer">Patička stránky</h3>
 
-    <?= $form->field($model, 'footer_active')->widget(SwitchInput::classname(), [
+    <?= $form->field($model->footer, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
     <?= LayoutWidget::widget([
-            'sections' => $model->footerSections,
-            'prefix' => 'footerSection',
-            'type' => 'footer',
+            'area' => $model->footer,
             'controllerUrl' => Url::to(['/page']),
             'product' => $model->product
         ]
