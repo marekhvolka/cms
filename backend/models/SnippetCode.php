@@ -93,4 +93,13 @@ class SnippetCode extends CustomModel
             '#' => 'code' . $this->id
         ]);
     }
+
+    public function resetAfterUpdate()
+    {
+        $this->setChanged();
+
+        foreach ($this->blocks as $block) {
+            $block->resetAfterUpdate();
+        }
+    }
 }

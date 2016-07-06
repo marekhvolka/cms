@@ -226,6 +226,7 @@ class Area extends CustomModel
             $buffer = $this->getContent();
 
             Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+            $this->setActual();
         }
 
         return $path;

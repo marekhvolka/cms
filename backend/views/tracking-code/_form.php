@@ -40,7 +40,7 @@ use kartik\switchinput\SwitchInput;
     ) ?>
 
     <?= $form->field($model, 'place_id')->dropDownList(
-        ArrayHelper::map(TrackingCode::getPlaces(), 'id', 'description')
+        ArrayHelper::map(TrackingCode::getPlaces(), 'id', 'name')
     ) ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [

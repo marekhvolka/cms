@@ -51,10 +51,11 @@ class DataEngine extends Component
     {
         $this->dataDirectory = 'data';
 
-        if ($forWeb)
+        if ($forWeb) {
             return '/' . $this->dataDirectory . '/';
-        else
+        } else {
             return Yii::getAlias('@frontend') . '/web/' . $this->dataDirectory . '/';
+        }
     }
 
     public function getCommonDirectory($forWeb = false)
@@ -164,19 +165,30 @@ class DataEngine extends Component
         return $string;
     }
 
-    public function compileThanks($path, $relative_path)    
+    public function compileThanksFile($path, $relative_path)
     {
-        /** @var Portal $portal */
-        foreach (Portal::find()->all() as $portal) {
-            $compiled_path = $portal->getThanksDirectory() . $relative_path;
-
-            PathHelper::makePath($compiled_path, true);
-            $content = file_get_contents($this->getCommonCacheFile()) . PHP_EOL . file_get_contents($portal->getMainCacheFile()) . PHP_EOL . file_get_contents($path);
-            file_put_contents($compiled_path, $content);
-
-            /** @var Engine $renderer */
-            $renderer = Yii::$app->dataEngine->latteRenderer;
-            file_put_contents($compiled_path, $renderer->renderToString($compiled_path));
+        foreach(Portal::find()->all() as $portal) {
+            $this->compileThanksFileForPortal($path, $relative_path, $portal);
         }
+    }
+
+    /** Metoda na skompilovanie jednej dakovacky pre jeden portal
+     * @param $path
+     * @param $relative_path
+     * @param Portal $portal
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function compileThanksFileForPortal($path, $relative_path, Portal $portal)
+    {
+        $compiled_path = $portal->getThanksDirectory() . $relative_path;
+
+        PathHelper::makePath($compiled_path, true);
+
+        $content =  file_get_contents($this->getCommonCacheFile()) . PHP_EOL;
+        $content .= $portal->getTrackingCodesHead() . PHP_EOL;
+        $content .= file_get_contents($path) . PHP_EOL;
+
+        $this->writeToFile($compiled_path, 'w+', $content);
     }
 }

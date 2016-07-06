@@ -319,12 +319,9 @@ class Portal extends CustomModel implements ICacheable
                     }
                 }
 
-                $buffer .= '$include_head = stripcslashes("' . $this->getTrackingCodesAsString('head') . '");' . PHP_EOL;
-                $buffer .= '$include_head_end = stripcslashes("' . $this->getTrackingCodesAsString('head_end') . '");' . PHP_EOL;
-                $buffer .= '$include_body = stripcslashes("' . $this->getTrackingCodesAsString('body') . '");' . PHP_EOL;
-                $buffer .= '$include_body_end = stripcslashes("' . $this->getTrackingCodesAsString('body_end') . '");' . PHP_EOL;
-
                 $buffer .= '?>';
+
+                $buffer .= $this->getTrackingCodesHead();
 
                 $dataEngine->writeToFile($path, 'w+', $buffer);
                 $this->removeException();
@@ -334,6 +331,20 @@ class Portal extends CustomModel implements ICacheable
         }
 
         return $path;
+    }
+
+    public function getTrackingCodesHead()
+    {
+        $buffer = '<?php' . PHP_EOL;
+
+        $buffer .= '$include_head = stripcslashes("' . $this->getTrackingCodesAsString('head') . '");' . PHP_EOL;
+        $buffer .= '$include_head_end = stripcslashes("' . $this->getTrackingCodesAsString('head_end') . '");' . PHP_EOL;
+        $buffer .= '$include_body = stripcslashes("' . $this->getTrackingCodesAsString('body') . '");' . PHP_EOL;
+        $buffer .= '$include_body_end = stripcslashes("' . $this->getTrackingCodesAsString('body_end') . '");' . PHP_EOL;
+
+        $buffer .= '?>' . PHP_EOL;
+
+        return $buffer;
     }
 
     public function getMainCacheFile()
@@ -349,7 +360,7 @@ class Portal extends CustomModel implements ICacheable
                 $buffer .= '?>';
 
                 Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
-                $this->removeException();
+                $this->setActual();
             } catch (Exception $exception) {
                 $this->logException($exception, 'portal_main_file');
             }
@@ -413,6 +424,19 @@ class Portal extends CustomModel implements ICacheable
 
         foreach ($this->portalSnippets as $portalSnippet) {
             $portalSnippet->resetAfterUpdate();
+        }
+    }
+
+    public function compileThanksFiles()
+    {
+        $thanksCommonDirectory = Yii::$app->dataEngine->getThanksDirectory();
+
+        chdir($thanksCommonDirectory);
+
+        $files = glob('*.php');
+
+        foreach ($files as $file) {
+            Yii::$app->dataEngine->compileThanksFileForPortal($thanksCommonDirectory . $file, $file, $this);
         }
     }
 }

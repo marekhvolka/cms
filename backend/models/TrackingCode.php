@@ -115,5 +115,7 @@ class TrackingCode extends CustomModel
         $this->setChanged();
 
         $this->portal->resetAfterUpdate();
+
+        $this->portal->compileThanksFiles();
     }
 }

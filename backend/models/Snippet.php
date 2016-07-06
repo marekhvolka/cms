@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "snippet".
@@ -163,31 +164,36 @@ class Snippet extends CustomModel implements ICacheable
 
     /** Metoda na vratenie cesty k hlavnemu suboru pre dany snippet (obsahuje premenne snippetu
      * s default hodnotami a nastavenia snippetu)
-     * @param bool $reload
      * @return string
      */
-    public function getMainCacheFile($reload = false)
+    public function getMainCacheFile()
     {
         $path = $this->getMainDirectory() . 'snippet.php';
 
-        if (!file_exists($path) || $reload) {
-            $dataEngine = Yii::$app->dataEngine;
+        if (!file_exists($path) || $this->changed) {
 
-            $buffer = '<?php ' . PHP_EOL;
+            try {
+                $dataEngine = Yii::$app->dataEngine;
 
-            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+                $buffer = '<?php ' . PHP_EOL;
 
-            foreach ($this->snippetFirstLevelVars as $snippetVar) {
-                $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValueAsString() . ',' . PHP_EOL;
+                $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+
+                foreach ($this->snippetFirstLevelVars as $snippetVar) {
+                    $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValueAsString() . ',' . PHP_EOL;
+                }
+
+                $buffer .= ');' . PHP_EOL;
+
+                $buffer .= '$snippet = new ObjectBridge($tempObject, \'snippet' . $this->id . '\');' . PHP_EOL;
+
+                $buffer .= '?>' . PHP_EOL;
+
+                $dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->setActual();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'snippet');
             }
-
-            $buffer .= ');' . PHP_EOL;
-
-            $buffer .= '$snippet = new ObjectBridge($tempObject, \'snippet' . $this->id . '\');' . PHP_EOL;
-
-            $buffer .= '?>' . PHP_EOL;
-
-            $dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -197,24 +203,21 @@ class Snippet extends CustomModel implements ICacheable
     {
         $changed = false;
 
-        if ($this->hasChanged() || $this->snippetVarsHasChanged()) {
-            $this->getMainCacheFile(true);
+        if ($this->changed || $this->snippetVarsHasChanged()) {
+            $this->getMainCacheFile();
             $changed = true;
         }
         /* @var $snippetCode \backend\models\SnippetCode */
         foreach ($this->snippetCodes as $snippetCode) {
-            if ($snippetCode->hasChanged() || $changed) {
-                /* @var $block \backend\models\Block */
-                foreach ($snippetCode->blocks as $block) {
-                    $block->resetAfterUpdate();
-                }
+            if ($snippetCode->isAttributeChanged('code') || $changed) {
+                $snippetCode->resetAfterUpdate();
             }
         }
     }
 
     public function snippetVarsHasChanged()
     {
-        foreach($this->snippetFirstLevelVars as $snippetVar) {
+        foreach ($this->snippetFirstLevelVars as $snippetVar) {
             if ($snippetVar->hasChanged()) {
                 return true;
             }
@@ -267,7 +270,7 @@ class Snippet extends CustomModel implements ICacheable
                 throw new \yii\base\Exception;
             }
 
-            foreach($childModel->defaultValues as $defaultValue) {
+            foreach ($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
 
                 if ($defaultValue->removed) {

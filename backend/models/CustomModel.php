@@ -20,7 +20,6 @@ class CustomModel extends \yii\db\ActiveRecord
 {
     public $existing;
     public $removed = true;
-    public $changed;
 
     public function load($data, $formName = null)
     {

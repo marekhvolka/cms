@@ -2,10 +2,10 @@
 
 namespace backend\models\search;
 
+use backend\models\TrackingCode;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TrackingCode;
 
 /**
  * TrackingCodeSearch represents the model behind the search form about `backend\models\TrackingCode`.
@@ -42,6 +42,9 @@ class TrackingCodeSearch extends TrackingCode
     public function search($params)
     {
         $query = TrackingCode::find();
+
+        $portalID = Yii::$app->session->get('portal_id');
+        $query->where(['portal_id' => $portalID]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
