@@ -12,3 +12,10 @@ $('#radioBtn a').on('click', function(){
     $('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
     $('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
 });
+
+body.on(
+    'click', '.panel-heading > span', function ()
+    {
+        $(this).parents('.panel').first().find('.panel-body').first().collapse('toggle');
+    }
+);

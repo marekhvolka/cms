@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\SystemExceptionSearch */
+/* @var $model backend\models\search\SystemExceptionSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'identifier') ?>
+    <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'time') ?>
 

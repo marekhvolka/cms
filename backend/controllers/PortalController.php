@@ -169,22 +169,14 @@ class PortalController extends BaseController
     {
         $model = $this->findModel(Yii::$app->session->get('portal_id'));
 
-        if ($type == 'header') {
-            $propertyIdentifier = 'headerSections';
-        } else if ($type == 'footer') {
-            $propertyIdentifier = 'footerSections';
-        } else {
-            return '';
-        }
-
         if (Yii::$app->request->isPost) {
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $sectionsData = Yii::$app->request->post('section');
+                $sectionsData = Yii::$app->request->post($type);
 
-                $this->loadLayout($model, $sectionsData, $propertyIdentifier);
-                $this->saveLayout($model, $propertyIdentifier);
+                $this->loadLayout($model->{$type}, $sectionsData);
+                $this->saveLayout($model->{$type});
 
                 $transaction->commit();
             } catch (Exception $exc) {
@@ -192,14 +184,14 @@ class PortalController extends BaseController
 
                 return $this->render('layout-edit', [
                     'model' => $model,
-                    'propertyIdentifier' => $propertyIdentifier
+                    'type' => $type
                 ]);
             }
         }
 
         return $this->render('layout-edit', [
             'model' => $model,
-            'propertyIdentifier' => $propertyIdentifier
+            'type' => $type
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\components\BlockModal\BlockModalWidget;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\components\MultimediaWidget\MultimediaWidget;
+use backend\models\Area;
 use backend\models\Block;
 use backend\models\Column;
 use backend\models\CustomModel;
@@ -98,18 +99,13 @@ abstract class BaseController extends Controller
      */
     public function actionAppendSection()
     {
-        $type = Yii::$app->request->post('type');
+        $prefix = Yii::$app->request->post('prefix');
         $portalId = Yii::$app->request->post('portalId');
         $pageId = Yii::$app->request->post('pageId');
-
-        $prefix = Yii::$app->request->post('prefix');
 
         $product = Product::findOne(Yii::$app->request->post('productId'));
 
         $section = new Section();
-        $section->type = $type;
-        $section->portal_id = $portalId;
-        $section->page_id = $pageId;
 
         $indexSection = rand(1000, 10000000);
 
@@ -241,23 +237,22 @@ abstract class BaseController extends Controller
     }
 
     /** Metoda na nacitanie a ulozenie dat pre layout
-     * @param CustomModel $model
+     * @param Area $model
      * @param $sectionsData
-     * @param $propertyIdentifier
      * @throws \yii\base\Exception
      */
-    public function loadLayout(CustomModel $model, $sectionsData, $propertyIdentifier)
+    public function loadLayout(Area $model, $sectionsData)
     {
         $sectionOrderIndex = 1;
         foreach ($sectionsData as $indexSection => $itemSection) {
             $itemSection['order'] = $sectionOrderIndex++;
-            $model->loadFromData($propertyIdentifier, $itemSection, $indexSection, Section::className());
+            $model->loadFromData('sections', $itemSection, $indexSection, Section::className());
 
             if (!key_exists('Row', $itemSection)) {
                 continue;
             }
 
-            $section = $model->{$propertyIdentifier}[$indexSection];
+            $section = $model->sections[$indexSection];
 
             $rowOrderIndex = 1;
             foreach ($itemSection['Row'] as $indexRow => $itemRow) {
@@ -299,18 +294,16 @@ abstract class BaseController extends Controller
     }
 
     /** Metoda na ulozenie layoutu
-     * @param $model - objekt, portal/podstranka
-     * @param $propertyIdentifier - identifikator pola, obsahujuceho sekcie - headerSections, atd
+     * @param Area $model - objekt, portal/podstranka
      * @throws Exception
      */
-    public function saveLayout($model, $propertyIdentifier)
+    public function saveLayout($model)
     {
-        foreach ($model->{$propertyIdentifier} as $section) {
-            if (get_class($model) == Page::className()) {
-                $section->page_id = $model->id;
-            } else if (get_class($model) == Portal::className()) {
-                $section->portal_id = $model->id;
-            }
+        if (!($model->validate() && $model->save()))
+            throw new Exception;
+
+        foreach ($model->sections as $section) {
+            $section->area_id = $model->id;
 
             if ($section->removed) {
                 $section->delete();
@@ -355,8 +348,6 @@ abstract class BaseController extends Controller
                         if ($block->changed) {
                             $this->saveSnippetVarValues($block);
                         }
-
-                        $block->resetAfterUpdate();
                     }
                 }
             }

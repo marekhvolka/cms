@@ -14,10 +14,8 @@ use backend\models\Block;
 class LayoutWidget extends Widget
 {
     public $controllerUrl;
-    public $sections;
-    public $type;
+    public $area;
     public $formId;
-    public $prefix;
     public $product;
 
     public $allowAddingSection = true;
@@ -32,11 +30,9 @@ class LayoutWidget extends Widget
         AssetBundle::register($this->getView());
 
         return $this->render('layoutWidget', [
-            'sections' => $this->sections,
+            'area' => $this->area,
             'controllerUrl' => $this->controllerUrl,
-            'type' => $this->type,
             'formId' => $this->formId,
-            'prefix' => $this->prefix,
             'allowAddingSection' => $this->allowAddingSection,
             'product' => $this->product
         ]);

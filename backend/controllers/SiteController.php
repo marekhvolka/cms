@@ -76,6 +76,7 @@ class SiteController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
 
             Yii::$app->session->set('portal_id', $model->portal_id);
+            Yii::$app->session->set('develop', true);
             Yii::$app->params['portal'] = Portal::find()->where(['id' => $model->portal_id])->one();
 
             return $this->goBack();

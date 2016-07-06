@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "product".
@@ -18,7 +19,7 @@ use Yii;
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
- * @property int $parsed
+ * @property bool $changed
  *
  * @property ProductType $productType
  * @property string $productTypeName
@@ -130,52 +131,60 @@ class Product extends CustomModel implements ICacheable
         $path = $this->getMainDirectory() . 'product_var.php';
 
         if (!file_exists($path) || $reload) {
-            $buffer = '<?php ' . PHP_EOL;
 
-            if (isset($this->parent)) {
-                $buffer .= 'include("' . $this->parent->getProductVarsFile() . '");' . PHP_EOL;
+            try {
+                $buffer = '<?php ' . PHP_EOL;
+
+                if (isset($this->parent)) {
+                    $buffer .= 'include("' . $this->parent->getProductVarsFile() . '");' . PHP_EOL;
+                }
+
+                $buffer .= '$tempObject = (object) ';
+
+                if (isset($this->parent)) { // ak ma produkt rodica
+                    $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
+                }
+
+                $buffer .= 'array(' . PHP_EOL;
+
+                $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
+
+                foreach ($this->productProperties as $productVarValue) {
+                    $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
+                }
+
+                $buffer .= '\'tags\' => array(' . PHP_EOL;
+
+                foreach ($this->tags as $tag) {
+                    $buffer .= '\'' . $tag->identifier . '\' => $tags->' . $tag->identifier . ',' . PHP_EOL;
+                }
+
+                $buffer .= '),' . PHP_EOL;
+
+                $buffer .= '\'tagsAsString\' => \'';
+
+                foreach ($this->tags as $tag) {
+                    $buffer .= $tag->identifier . ',';
+                }
+
+                $buffer .= '\',' . PHP_EOL;
+
+                if (isset($this->parent)) // ak ma produkt rodica
+                {
+                    $buffer .= ')';
+                }
+
+                $buffer .= ');' . PHP_EOL;
+
+                $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \'' . $this->identifier . '\'); ' . PHP_EOL;
+
+                $buffer .= '?>' . PHP_EOL;
+
+                Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'product_var');
             }
-
-            $buffer .= '$tempObject = (object) ';
-
-            if (isset($this->parent)) { // ak ma produkt rodica
-                $buffer .= 'array_merge((array) $' . $this->parent->identifier . '->obj' . ', ' . PHP_EOL;
-            }
-
-            $buffer .= 'array(' . PHP_EOL;
-
-            foreach ($this->productProperties as $productVarValue) {
-                $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
-            }
-
-            $buffer .= '\'tags\' => array(' . PHP_EOL;
-
-            foreach ($this->tags as $tag) {
-                $buffer .= '\'' . $tag->identifier . '\' => $tags->' . $tag->identifier . ',' . PHP_EOL;
-            }
-
-            $buffer .= '),' . PHP_EOL;
-
-            $buffer .= '\'tagsAsString\' => \'';
-
-            foreach ($this->tags as $tag) {
-                $buffer .= $tag->identifier . ',';
-            }
-
-            $buffer .= '\',' . PHP_EOL;
-
-            if (isset($this->parent)) // ak ma produkt rodica
-            {
-                $buffer .= ')';
-            }
-
-            $buffer .= ');' . PHP_EOL;
-
-            $buffer .= '$' . $this->identifier . ' = new ObjectBridge($tempObject, \'' . $this->identifier . '\'); ' . PHP_EOL;
-
-            $buffer .= '?>' . PHP_EOL;
-
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -352,18 +361,24 @@ class Product extends CustomModel implements ICacheable
         $path = $this->getMainDirectory() . 'main_file.php';
 
         if (!file_exists($path) || $reload) {
-            $buffer = '<?php' . PHP_EOL;
 
-            $buffer .= 'include("' . $this->getProductVarsFile() . '");' . PHP_EOL;
+            try {
+                $buffer = '<?php' . PHP_EOL;
 
-            foreach ($this->productSnippets as $productVarValue) {
-                $buffer .= '$' . $this->identifier . '->' . $productVarValue->productVarValue->var->identifier .
-                    ' = file_get_contents("' . $productVarValue->getMainCacheFile() . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getProductVarsFile() . '");' . PHP_EOL;
+
+                foreach ($this->productSnippets as $productVarValue) {
+                    $buffer .= '$' . $this->identifier . '->' . $productVarValue->productVarValue->var->identifier .
+                        ' = file_get_contents("' . $productVarValue->getMainCacheFile() . '");' . PHP_EOL;
+                }
+
+                $buffer .= '?>';
+
+                Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'product_main_file');
             }
-
-            $buffer .= '?>';
-
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;

@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use backend\models\Area;
 use backend\models\Page;
 use backend\models\search\PageSearch;
+use backend\models\Section;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -59,6 +61,20 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
+
+            $model->header = new Area();
+            $model->header->type = 'header';
+
+            $model->footer = new Area();
+            $model->footer->type = 'footer';
+
+            $model->sidebar = new Area();
+            $model->sidebar->type = 'sidebar';
+            $model->sidebar->sections = array(new Section());
+
+            $model->content = new Area();
+            $model->content->type = 'content';
+            $model->content->sections = array(new Section());
         }
 
         if (Yii::$app->request->isPost) {
@@ -73,38 +89,40 @@ class PageController extends BaseController
 
                 $model->load(Yii::$app->request->post());
 
-                $headerData = Yii::$app->request->post('headerSection');
+                $headerData = Yii::$app->request->post('header');
 
                 if ($headerData != null) {
-                    $this->loadLayout($model, $headerData, 'headerSections');
+                    $this->loadLayout($model->header, $headerData);
                 }
 
-                $footerData = Yii::$app->request->post('footerSection');
+                $footerData = Yii::$app->request->post('footer');
 
                 if ($footerData != null) {
-                    $this->loadLayout($model, $footerData, 'footerSections');
+                    $this->loadLayout($model->footer, $footerData);
                 }
 
-                $contentData = Yii::$app->request->post('contentSection');
+                $contentData = Yii::$app->request->post('content');
 
                 if ($contentData != null) {
-                    $this->loadLayout($model, $contentData, 'contentSections');
+                    $this->loadLayout($model->content, $contentData);
                 }
 
-                $sidebarData = Yii::$app->request->post('sidebarSection');
+                $sidebarData = Yii::$app->request->post('sidebar');
 
                 if ($sidebarData != null) {
-                    $this->loadLayout($model, $sidebarData, 'sidebarSections');
+                    $this->loadLayout($model->sidebar, $sidebarData);
                 }
+
+                $model->portal_id = Yii::$app->session->get('portal_id');
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
 
-                $this->saveLayout($model, 'headerSections');
-                $this->saveLayout($model, 'footerSections');
-                $this->saveLayout($model, 'sidebarSections');
-                $this->saveLayout($model, 'contentSections');
+                $this->saveLayout($model->header);
+                $this->saveLayout($model->footer);
+                $this->saveLayout($model->sidebar);
+                $this->saveLayout($model->content);
 
                 $transaction->commit();
 

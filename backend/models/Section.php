@@ -8,16 +8,13 @@ use Yii;
  * This is the model class for table "section".
  *
  * @property integer $id
- * @property string $page_id
- * @property integer $portal_id
- * @property string $type
- * @property string css_class
- * @property string css_id
- * @property string css_style
+ * @property string $css_class
+ * @property string $css_id
+ * @property string $css_style
+ * @property int $area_id
  *
  * @property Row[] $rows
- * @property Page $page
- * @property Portal $portal
+ * @property Area $area
  */
 class Section extends CustomModel implements IDuplicable
 {
@@ -35,24 +32,15 @@ class Section extends CustomModel implements IDuplicable
     public function rules()
     {
         return [
-            [['type'], 'required'],
             [['id'], 'unique'],
-            [['page_id', 'portal_id'], 'integer'],
+            [['area_id'], 'integer'],
             [['css_class', 'css_style', 'css_id'], 'string'],
-            [['type'], 'string', 'max' => 10],
             [
-                ['page_id'],
+                ['area_id'],
                 'exist',
                 'skipOnError' => true,
-                'targetClass' => Page::className(),
-                'targetAttribute' => ['page_id' => 'id']
-            ],
-            [
-                ['portal_id'],
-                'exist',
-                'skipOnError' => true,
-                'targetClass' => Portal::className(),
-                'targetAttribute' => ['portal_id' => 'id']
+                'targetClass' => Area::className(),
+                'targetAttribute' => ['area_id' => 'id']
             ],
         ];
     }
@@ -64,9 +52,7 @@ class Section extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'page_id' => 'ID stránky',
-            'portal_id' => 'ID portálu',
-            'type' => 'Typ',
+            'area_id' => 'Area ID',
         ];
     }
 
@@ -92,17 +78,9 @@ class Section extends CustomModel implements IDuplicable
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPage()
+    public function getArea()
     {
-        return $this->hasOne(Page::className(), ['id' => 'page_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPortal()
-    {
-        return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
+        return $this->hasOne(Area::className(), ['id' => 'area_id']);
     }
 
     public function getPrefix()

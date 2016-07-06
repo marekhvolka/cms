@@ -13,11 +13,12 @@ namespace backend\models;
  * @property bool $removed Indicates if model has to be removed
  */
 
+use Yii;
+
 class CustomModel extends \yii\db\ActiveRecord
 {
     public $existing;
     public $removed = true;
-    public $changed = false;
 
     public function load($data, $formName = null)
     {
@@ -38,8 +39,7 @@ class CustomModel extends \yii\db\ActiveRecord
             $this->{$arrayProperty}[$index]->load($item, '');
             //$this->{$arrayProperty}[$index]->existing = $item['existing'];
             $this->{$arrayProperty}[$index]->removed = false;
-        }
-        else {
+        } else {
             $this->{$arrayProperty}[$index] = new $modelClassName();
             $this->{$arrayProperty}[$index]->load($item, '');
             $this->{$arrayProperty}[$index]->removed = false;
@@ -56,8 +56,9 @@ class CustomModel extends \yii\db\ActiveRecord
             $this->loadFromData($propertyIdentifier, $item, $index,
                 SnippetVar::className());
 
-            if (key_exists('Children', $item))
+            if (key_exists('Children', $item)) {
                 $this->{$propertyIdentifier}[$index]->loadChildren('children', $item['Children']);
+            }
         }
     }
 
@@ -69,7 +70,7 @@ class CustomModel extends \yii\db\ActiveRecord
      */
     public function saveChildren($propertyIdentifier, $globalParentPropertyIdentifier)
     {
-        foreach($this->{$propertyIdentifier} as $childModel) {
+        foreach ($this->{$propertyIdentifier} as $childModel) {
             $childModel->parent_id = $this->id;
 
             $childModel->{$globalParentPropertyIdentifier} = $this->{$globalParentPropertyIdentifier};
@@ -79,8 +80,9 @@ class CustomModel extends \yii\db\ActiveRecord
                 continue;
             }
 
-            if (!($childModel->validate() && $childModel->save()))
+            if (!($childModel->validate() && $childModel->save())) {
                 throw new \yii\base\Exception;
+            }
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);
         }
@@ -98,5 +100,67 @@ class CustomModel extends \yii\db\ActiveRecord
     public function hasChanged()
     {
         return !empty($this->dirtyAttributes);
+    }
+
+    public function logException($exception, $type)
+    {
+        $systemException = new SystemException();
+        $systemException->type = $type;
+        $systemException->source_code = $exception->sourceCode;
+        $systemException->source_name = $exception->getFile();
+        $systemException->message = $exception->getMessage();
+
+        switch ($this->className()) {
+            case Product::className() :
+                $systemException->product_id = $this->id;
+
+                break;
+
+            case Portal::className() :
+                $systemException->portal_id = $this->id;
+
+                break;
+
+            case Page::className() :
+                $systemException->page_id = $this->id;
+
+                break;
+
+            case Block::className() :
+                $systemException->block_id = $this->id;
+
+                break;
+        }
+
+        $systemException->save();
+
+        if (Yii::$app->session->has('develop')) {
+            throw $exception;
+        }
+    }
+
+    public function removeException()
+    {
+        switch ($this->className()) {
+            case Product::className() :
+                SystemException::deleteAll(['product_id' => $this->id]);
+
+                break;
+
+            case Portal::className() :
+                SystemException::deleteAll(['portal_id' => $this->id]);
+
+                break;
+
+            case Page::className() :
+                SystemException::deleteAll(['page_id' => $this->id]);
+
+                break;
+
+            case Block::className() :
+                SystemException::deleteAll(['block_id' => $this->id]);
+
+                break;
+        }
     }
 }

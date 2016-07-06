@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\search;
 
 use Yii;
 use yii\base\Model;
@@ -18,7 +18,7 @@ class SystemExceptionSearch extends SystemException
     public function rules()
     {
         return [
-            [['identifier'], 'integer'],
+            [['id'], 'integer'],
             [['time', 'message'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class SystemExceptionSearch extends SystemException
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'identifier' => $this->identifier,
+            'id' => $this->id,
             'time' => $this->time,
         ]);
 

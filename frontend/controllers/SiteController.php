@@ -112,7 +112,9 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $path = $page->getMainCacheFile($page->reload);
+
+            $reload = $page->reload && Yii::$app->session->has('develop');
+            $path = $page->getMainCacheFile($reload);
         }
 
         if (isset($path)) {

@@ -18,6 +18,7 @@ use common\models\User;
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
+ * @property bool $changed
  *
  * @property Portal $portal
  * @property User $lastEditUser

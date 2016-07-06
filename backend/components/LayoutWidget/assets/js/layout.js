@@ -16,7 +16,6 @@ body.on(
         var $this = $(this),
             layouts = $this.parents('.layouts'),
             postData = {
-                type: $this.data('type'),
                 prefix: $this.data('prefix'),
                 productId: $this.data('product-id')
             };

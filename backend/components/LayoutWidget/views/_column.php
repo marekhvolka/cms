@@ -24,7 +24,7 @@ use yii\helpers\BaseHtml;
 
     <div class="panel-heading">
         <h4>
-            <?php echo $model->order; ?>. stĺpec
+            <span><?php echo $model->order; ?>. stĺpec</span>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">

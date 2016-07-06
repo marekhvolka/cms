@@ -28,7 +28,6 @@ class PageSearch extends Page
                     'active',
                     'in_menu',
                     'parent_id',
-                    'order',
                     'product_id',
                     'sidebar_size',
                     'last_edit_user'

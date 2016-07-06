@@ -2,9 +2,10 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\SystemExceptionSearch */
+/* @var $searchModel backend\models\search\SystemExceptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Hlásenia';
@@ -23,8 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'identifier',
+            [
+                'label'=>'Názov',
+                'format' => 'raw',
+                'value'=>function ($dataProvider) {
+                    return Html::a($dataProvider->object->name, Url::to(['/system-exception/view/', 'id' => $dataProvider->id]));
+                },
+            ],
+            'type',
             'time',
             'message:ntext',
 

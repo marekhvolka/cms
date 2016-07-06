@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
@@ -17,14 +18,15 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property integer $published
+ * @property bool $changed
  *
  * @property string $templatePath
  * @property Page[] $pages
  * @property Language $language
  * @property Template $template
  * @property Block[] $portalSnippets
- * @property Section[] $headerSections
- * @property Section[] $footerSections
+ * @property Area $header
+ * @property Area $footer
  * @property PortalVarValue[] $portalVarValues
  */
 class Portal extends CustomModel implements ICacheable
@@ -158,43 +160,43 @@ class Portal extends CustomModel implements ICacheable
     /**
      * @return Section[]
      */
-    public function getHeaderSections()
+    public function getHeader()
     {
-        if (!isset($this->headerSections)) {
-            $this->headerSections = $this->hasMany(Section::className(), [
+        if (!isset($this->header)) {
+            $this->header = $this->hasOne(Area::className(), [
                 'portal_id' => 'id'
             ])
                 ->where(['type' => 'header'])
-                ->all();
+                ->one();
         }
 
-        return $this->headerSections;
+        return $this->header;
     }
 
-    public function setHeaderSections($value)
+    public function setHeader($value)
     {
-        $this->headerSections = $value;
+        $this->header = $value;
     }
 
     /**
      * @return Section[]
      */
-    public function getFooterSections()
+    public function getFooter()
     {
-        if (!isset($this->footerSections)) {
-            $this->footerSections = $this->hasMany(Section::className(), [
+        if (!isset($this->footer)) {
+            $this->footer = $this->hasOne(Area::className(), [
                 'portal_id' => 'id'
             ])
                 ->where(['type' => 'footer'])
-                ->all();
+                ->one();
         }
 
-        return $this->footerSections;
+        return $this->footer;
     }
 
-    public function setFooterSections($value)
+    public function setFooter($value)
     {
-        $this->footerSections = $value;
+        $this->footer = $value;
     }
 
     /**
@@ -256,54 +258,6 @@ class Portal extends CustomModel implements ICacheable
         return $this->template->getColorSchemeDirectoryPath($forWeb) . $this->color_scheme . '.min.css';
     }
 
-    /** Vrati cestu k suboru, v ktorom je ulozeny layout casti portalu
-     * @param string $type - cast - header, footer
-     * @return string
-     */
-    public function getLayoutCacheFile($type)
-    {
-        $path = $this->getMainDirectory() . 'portal_' . $type . '.php';
-
-        if (!file_exists($path)) {
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $this->getLayoutString($type));
-        }
-
-        return $path;
-    }
-
-    public function getLayoutString($type)
-    {
-        $result = '';
-
-        switch ($type) {
-            case 'header' :
-
-                $result .= '<header>';
-
-                foreach ($this->getHeaderSections() as $section) {
-                    $result .= $section->getContent();
-                }
-
-                $result .= '</header>';
-
-                break;
-
-            case 'footer' :
-
-                $result .= '<footer>';
-
-                foreach ($this->getFooterSections() as $section) {
-                    $result .= $section->getContent();
-                }
-
-                $result .= '</footer>';
-
-                break;
-        }
-
-        return $result;
-    }
-
     /** Vrati cestu k adresaru, kde su ulozene cache subory pre dany portal
      * @param bool $forWeb
      * @return string
@@ -331,48 +285,53 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->getMainDirectory() . 'portal_var.php';
 
         if (!file_exists($path) || $reload) {
-            $dataEngine = Yii::$app->dataEngine;
+            try {
+                $dataEngine = Yii::$app->dataEngine;
 
-            $buffer = '<?php ' . PHP_EOL;
+                $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= '$tempObject = (object) array(' . PHP_EOL;
+                $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
-            $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
-            $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
-            $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
-            $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
-            $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
+                $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
+                $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
+                $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
+                $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
+                $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
+                $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
 
-            $buffer .= ');' . PHP_EOL;
+                $buffer .= ');' . PHP_EOL;
 
-            $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+                $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
 
-            $buffer .= '/* Portal pages */' . PHP_EOL;
+                $buffer .= '/* Portal pages */' . PHP_EOL;
 
-            $buffer .= '$portal->pages = (object) array();' . PHP_EOL;
+                $buffer .= '$portal->pages = (object) array();' . PHP_EOL;
 
-            foreach ($this->pages as $page) {
-                $buffer .= 'include("' . $page->getVarCacheFile() . '");' . PHP_EOL;
-                $buffer .= '$portal->pages->page' . $page->id . ' = ' . $page->cacheIdentifier . ';' . PHP_EOL;
-            }
-
-            $buffer .= '/* Portal vars */' . PHP_EOL;
-
-            foreach ($this->portalVarValues as $portalVarValue) {
-                if (!$portalVarValue->var->isSnippet()) {
-                    $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
+                foreach ($this->pages as $page) {
+                    $buffer .= 'include("' . $page->getVarCacheFile() . '");' . PHP_EOL;
+                    $buffer .= '$portal->pages->page' . $page->id . ' = ' . $page->cacheIdentifier . ';' . PHP_EOL;
                 }
+
+                $buffer .= '/* Portal vars */' . PHP_EOL;
+
+                foreach ($this->portalVarValues as $portalVarValue) {
+                    if (!$portalVarValue->var->isSnippet()) {
+                        $buffer .= '$portal->' . $portalVarValue->var->identifier . ' = ' . $portalVarValue->getValue() . ';' . PHP_EOL;
+                    }
+                }
+
+                $buffer .= '$include_head = stripcslashes("' . $this->getTrackingCodesAsString('head') . '");' . PHP_EOL;
+                $buffer .= '$include_head_end = stripcslashes("' . $this->getTrackingCodesAsString('head_end') . '");' . PHP_EOL;
+                $buffer .= '$include_body = stripcslashes("' . $this->getTrackingCodesAsString('body') . '");' . PHP_EOL;
+                $buffer .= '$include_body_end = stripcslashes("' . $this->getTrackingCodesAsString('body_end') . '");' . PHP_EOL;
+
+                $buffer .= '?>';
+
+                $dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'portal_var');
             }
-
-            $buffer .= '$include_head = stripcslashes("' . $this->getTrackingCodesAsString('head') . '");' . PHP_EOL;
-            $buffer .= '$include_head_end = stripcslashes("' . $this->getTrackingCodesAsString('head_end') . '");' . PHP_EOL;
-            $buffer .= '$include_body = stripcslashes("' . $this->getTrackingCodesAsString('body') . '");' . PHP_EOL;
-            $buffer .= '$include_body_end = stripcslashes("' . $this->getTrackingCodesAsString('body_end') . '");' . PHP_EOL;
-
-            $buffer .= '?>';
-
-            $dataEngine->writeToFile($path, 'w+', $buffer);
         }
 
         return $path;
@@ -383,19 +342,24 @@ class Portal extends CustomModel implements ICacheable
         $path = $this->getMainDirectory() . 'main_file.php';
 
         if (!file_exists($path) || $reload) {
-            $buffer = '<?php' . PHP_EOL;
+            try {
+                $buffer = '<?php' . PHP_EOL;
 
-            $buffer .= 'include("' . $this->getPortalVarsFile() . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalVarsFile() . '");' . PHP_EOL;
 
-            /*foreach ($this->portalSnippets as $portalSnippet) {
-                $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents("' . $portalSnippet->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
-            }*/
+                /*foreach ($this->portalSnippets as $portalSnippet) {
+                    $buffer .= '$portal->' . $portalSnippet->var->identifier . ' = file_get_contents("' . $portalSnippet->valueBlock->getMainCacheFile() . '");' . PHP_EOL;
+                }*/
 
-            //TODO:: fix this
+                //TODO:: fix this
 
-            $buffer .= '?>';
+                $buffer .= '?>';
 
-            Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+                Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'portal_main_file');
+            }
         }
 
         return $path;
@@ -464,8 +428,8 @@ class Portal extends CustomModel implements ICacheable
     {
         $prefix = '<?php' . PHP_EOL;
 
-        $prefix .= '$global_header = file_get_contents("' . $this->getLayoutCacheFile('header') . '");' . PHP_EOL;
-        $prefix .= '$global_footer = file_get_contents("' . $this->getLayoutCacheFile('footer') . '");' . PHP_EOL;
+        $prefix .= '$global_header = file_get_contents("' . $this->header->getCacheFile() . '");' . PHP_EOL;
+        $prefix .= '$global_footer = file_get_contents("' . $this->footer->getCacheFile() . '");' . PHP_EOL;
 
         $prefix .= '?>' . PHP_EOL;
 
