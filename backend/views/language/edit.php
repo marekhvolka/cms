@@ -6,13 +6,11 @@ use yii\helpers\Html;
 /* @var $model backend\models\Language */
 
 $this->title = 'Editovať jazyk: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Languages', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Edit';
+$this->params['breadcrumbs'][] = ['label' => 'Jazyky', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Upraviť jazyk';
 ?>
 <div class="language-update">
 
-    
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

@@ -51,11 +51,11 @@ class SnippetCode extends CustomModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Meno',
             'code' => 'Kód',
             'description' => 'Popis',
             'portal' => 'Alternatívu je možné použiť na portály',
-            'snippet_id' => 'Snippet ID',
+            'snippet_id' => 'ID snippetu',
             'blocks' => 'Bloky'
         ];
     }

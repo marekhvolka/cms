@@ -31,6 +31,15 @@ return [
                 ],
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'yii' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'sourceLanguage' => 'en-US',
+                    'basePath' => '@yii/messages'
+                ],
+            ],
+        ],
 
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -46,4 +55,5 @@ return [
         ],
     ],
     'params' => $params,
+    'language' => 'sk'
 ];

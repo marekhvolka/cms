@@ -25,9 +25,7 @@ class PortalVar extends Variable
      */
     public function rules()
     {
-        return array_merge(parent::rules(), [
-
-        ]);
+        return parent::rules();
     }
 
     /**
@@ -35,9 +33,7 @@ class PortalVar extends Variable
      */
     public function attributeLabels()
     {
-        return array_merge(parent::attributeLabels(), [
-
-        ]);
+        return parent::attributeLabels();
     }
 
     public static function getPortalVarProperties()

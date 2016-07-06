@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Snippet */
 
-$this->title = 'Update Snippet: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Snippets', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Úprava snippetu: ' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Snippety', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Úprava snippetu';
 ?>
 <div class="snippet-update">
 

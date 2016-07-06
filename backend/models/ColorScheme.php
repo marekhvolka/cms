@@ -15,4 +15,16 @@ class ColorScheme extends CustomModel
     public $name;
     public $template_id;
 
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'label' => 'Popis',
+            'name' => 'Meno',
+            'template_id' => 'ID šablóny'
+        ];
+    }
 }

@@ -40,7 +40,6 @@ class Language extends \yii\db\ActiveRecord
             [['name', 'identifier', 'active'], 'required'],
             [['active'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['currency'], 'string', 'max' => 5],
             [['identifier'], 'string', 'max' => 2]
         ];
     }

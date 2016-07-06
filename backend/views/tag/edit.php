@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Tag */
 
-$this->title = 'Update Tag: ' . ' ' . $model->name;
+$this->title = 'Upraviť tag: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Tags', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Upraviť';
 ?>
 <div class="tag-update">
 

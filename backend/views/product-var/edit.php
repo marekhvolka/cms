@@ -7,8 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Upraviť premennú produktu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Premenné produktu', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Upraviť premennú produktu';
 ?>
 <div class="product-var-update">
 

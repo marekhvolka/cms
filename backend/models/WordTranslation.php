@@ -48,9 +48,9 @@ class WordTranslation extends \yii\db\ActiveRecord
     {
         return [
             'id'          => 'ID',
-            'word_id'     => 'Word ID',
-            'translation' => 'Translation',
-            'language_id' => 'Language ID',
+            'word_id'     => 'ID slova',
+            'translation' => 'Preklad',
+            'language_id' => 'ID jazyka',
         ];
     }
 

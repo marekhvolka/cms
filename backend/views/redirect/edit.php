@@ -6,9 +6,8 @@ use yii\helpers\Html;
 /* @var $model backend\models\Redirect */
 
 $this->title = 'Upraviť presmerovanie: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Redirects', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = ['label' => 'Presmerovania', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Upraviť presmerovanie';
 ?>
 <div class="redirect-update">
 

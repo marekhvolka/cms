@@ -49,10 +49,10 @@ class VarType extends \yii\db\ActiveRecord
             'id' => 'ID',
             'identifier' => 'Identifikátor',
             'description' => 'Popis',
-            'show_snippet' => 'Show Snippet',
-            'show_portal' => 'Show Portal',
-            'show_product' => 'Show Product',
-            'tbl_type' => 'Tbl Type',
+            'show_snippet' => 'Ukáž snippet',
+            'show_portal' => 'Ukáž portál',
+            'show_product' => 'Ukáž produkt',
+            'tbl_type' => 'Tbl typ',
         ];
     }
 }

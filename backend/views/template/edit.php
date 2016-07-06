@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Template */
 
-$this->title = 'Update Template: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Templates', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Upraviť šablónu' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Šablóny', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Upraviť šablónu';
 ?>
 <div class="template-update">
 
