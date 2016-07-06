@@ -11,7 +11,6 @@ namespace backend\components\LayoutWidget;
 
 class AssetBundle extends \yii\web\AssetBundle
 {
-
     // Disables assets caching.
     public $publishOptions = [
         'forceCopy' => true,
@@ -20,11 +19,12 @@ class AssetBundle extends \yii\web\AssetBundle
         'css/style.css'
     ];
     public $js = [
-        'js/layout.js'
+        'js/layout.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'backend\components\BlockModal\AssetBundle'
     ];
 
     public function init()

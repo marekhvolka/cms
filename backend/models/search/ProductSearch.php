@@ -2,6 +2,8 @@
 
 namespace backend\models\search;
 
+use backend\models\Portal;
+use backend\models\ProductVar;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -36,15 +38,20 @@ class ProductSearch extends Product
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Return the query to fetch all pages which satisfy the search term.
      *
-     * @param array $params
-     *
+     * @param $params array parameters
+     * @param bool $byLanguage indicates if the returned query is bound to current Language
      * @return Query
      */
-    public function search($params)
+    public function search($params, $byLanguage = null)
     {
         $query = Product::find();
+
+        if ($byLanguage) {
+            $language_id = Portal::findOne(Yii::$app->session->get('portal_id'))->language_id;
+            $query->where(['language_id' => $language_id]);
+        }
 
         $this->load($params);
 
@@ -56,8 +63,6 @@ class ProductSearch extends Product
 
         if (!empty($this->globalSearch)) {
             $query->andFilterWhere(['like', 'name', $this->globalSearch]);
-            $query->andFilterWhere(['like', 'identifier', $this->globalSearch]);
-            $query->andFilterWhere(['like', 'description', $this->globalSearch]);
         }
 
         return $query;

@@ -3,7 +3,7 @@
 use backend\models\Block;
 
 /* @var $model Block */
-/* @var $productType \backend\models\ProductType */
+/* @var $product \backend\models\Product */
 /* @var $prefix string */
 
 ?>
@@ -26,8 +26,8 @@ use backend\models\Block;
 
                         echo $this->render('_snippet', [
                             'model' => $model,
-                            'productType' => $productType,
-                            'prefix' => $prefix
+                            'prefix' => $prefix,
+                            'product' => $product
                         ]);
 
                         break;

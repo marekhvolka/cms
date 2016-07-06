@@ -69,14 +69,15 @@ if (!isset($model)) {
                     break;
                 case 'portal_snippet':
                 case 'product_snippet': ?>
-                    <div class="btn-group layout-block block-<?= $varValue->id ?>"
+                    <div class="btn-group layout-block block"
                          data-content="" role="group">
+                        <?= Html::hiddenInput($prefix . "[type]", $varValue->valueBlock->type, ['class' => 'type']); ?>
                         <?= Html::hiddenInput($prefix . "[existing]", !$varValue->isNewRecord,
                             ['class' => 'existing']); ?>
                         <?= Html::hiddenInput($prefix . "[id]", $varValue->id, ['class' => 'id']); ?>
 
                         <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
-                                data-id="<?= $varValue->id ?>" data-prefix="<?= $prefix ?>"
+                                data-id="<?= $varValue->valueBlock->id ?>" data-prefix="<?= $prefix ?>"
                                 data-target="#modal-<?= $varValue->id ?>">
                             <?php echo $varValue->valueBlock->name; ?>
                         </button>

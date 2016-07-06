@@ -61,7 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     return /*Html::a('<span class="glyphicon glyphicon-trash"></span>',
                         Url::to(['delete', 'id' => $data->id])) . */
-                    Html::a('<span class="fa fa-eye"></span>', Url::to(['show', 'id' => $data->id]));
+                    Html::a('<span class="fa fa-eye"></span>', Url::to(['show', 'id' => $data->id]), [
+                        'target' => '_blank'
+                    ]);
                 },
                 'size' => 1
             ]

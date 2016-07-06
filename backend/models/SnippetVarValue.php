@@ -23,6 +23,8 @@ use Yii;
  * @property ListItem[] $listItems
  * @property ListItem $listItem
  * @property Product $valueProduct
+ * @property Tag $valueTag
+ * @property ProductVar $valueProductVar
  * @property Page $valuePage
  * @property Block $block
  * @property SnippetVar $var
@@ -170,9 +172,9 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         switch ($this->var->type->identifier) {
             case 'list' :
 
-                $value = ' array(' . PHP_EOL;
-
+                $value = 'array(';
                 $index = 0;
+
                 foreach ($this->listItems as $listItem) {
                     if ($listItem->active) {
                         $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
@@ -183,6 +185,10 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 break;
 
+            case 'bool' :
+                $value = $this->value_text == 1 ? 'true' : 'false';
+
+                break;
             case 'page' :
 
                 if (isset($this->valuePage)) {
@@ -202,18 +208,31 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 break;
             case 'product_var' :
-                $value = '\'' . $this->valueProductVar->identifier . '\'';
-
+                if (isset($this->valueProductVar)) {
+                    $value = '\'' . $this->valueProductVar->identifier . '\'';
+                } else {
+                    $value = 'NULL';
+                }
                 break;
             case 'product_tag' :
 
-                $value = '$tags->' . $this->valueTag->identifier;
+                if ($this->valueTag) {
+                    $value = '$tags->' . $this->valueTag->identifier;
+                } else {
+                    $value = 'NULL';
+                }
 
-                //TODO: dokoncit
                 break;
             case 'dropdown' :
 
-                $value = '\'' . $this->valueDropdown->value . '\'';
+                if (!isset($this->valueDropdown)) {
+                    $this->value_dropdown_id = $this->var->defaultValue->valueDropdown->id;
+                    $this->save();
+
+                    $value = '\'' . $this->var->defaultValue->valueDropdown->value . '\'';
+                } else {
+                    $value = '\'' . $this->valueDropdown->value . '\'';
+                }
 
                 break;
             default:
@@ -225,8 +244,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                     if (isset($defaultValue)) {
                         $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) . '\'';
-                    }
-                    else {
+                    } else {
                         $value = '\'\'';
                     }
                 }

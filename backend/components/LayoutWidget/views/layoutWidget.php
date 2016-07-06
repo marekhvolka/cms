@@ -6,7 +6,7 @@
 /* @var $allowAddingSection bool */
 
 /* @var $prefix string */
-/* @var $productType \backend\models\ProductType */
+/* @var $product \backend\models\Product */
 /* @var $type string */
 
 ?>
@@ -17,14 +17,14 @@
             <?= $this->render('_section', [
                 'model' => $section,
                 'prefix' => $prefix . "[$indexSection]",
-                'productType' => $productType
+                'product' => $product
             ]); ?>
         <?php endforeach; ?>
     </div>
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
         <button type="button" class="btn btn-success btn-sm btn-add-section"
-                data-prefix="<?= $prefix ?>" data-type="<?= $type ?>">
+                data-prefix="<?= $prefix ?>" data-type="<?= $type ?>" data-product-id="<?= $product ? $product->id : '' ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
         <?php endif; ?>

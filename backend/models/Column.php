@@ -2,7 +2,6 @@
 
 namespace backend\models;
 
-use Exception;
 use Yii;
 
 /**
@@ -37,7 +36,13 @@ class Column extends CustomModel implements IDuplicable
         return [
             [['row_id', 'order', 'width'], 'integer'],
             [['css_style', 'css_class', 'css_id'], 'string'],
-            [['row_id'], 'exist', 'skipOnError' => true, 'targetClass' => Row::className(), 'targetAttribute' => ['row_id' => 'id']],
+            [
+                ['row_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Row::className(),
+                'targetAttribute' => ['row_id' => 'id']
+            ],
         ];
     }
 
@@ -70,10 +75,11 @@ class Column extends CustomModel implements IDuplicable
      */
     public function getBlocks()
     {
-        if (!isset($this->blocks))
+        if (!isset($this->blocks)) {
             $this->blocks = $this->hasMany(Block::className(), ['column_id' => 'id'])
                 ->orderBy(['order' => SORT_ASC])
                 ->all();
+        }
 
         return $this->blocks;
     }
@@ -162,5 +168,18 @@ class Column extends CustomModel implements IDuplicable
 
         $this->id = null;
         $this->row_id = null;
+    }
+
+    public function getBlocksCount()
+    {
+        $count = 0;
+
+        foreach ($this->blocks as $block) {
+            if ($block->active) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }

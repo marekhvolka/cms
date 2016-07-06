@@ -14,10 +14,12 @@ use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Product;
 use backend\models\ProductType;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
+use backend\models\Snippet;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use Yii;
@@ -102,6 +104,8 @@ abstract class BaseController extends Controller
 
         $prefix = Yii::$app->request->post('prefix');
 
+        $product = Product::findOne(Yii::$app->request->post('productId'));
+
         $section = new Section();
         $section->type = $type;
         $section->portal_id = $portalId;
@@ -109,7 +113,7 @@ abstract class BaseController extends Controller
 
         $indexSection = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection);
+        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $product);
     }
 
     /**
@@ -119,20 +123,20 @@ abstract class BaseController extends Controller
     public function actionAppendRow()
     {
         $prefix = Yii::$app->request->post('prefix');
-        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
+        $product = Product::findOne(Yii::$app->request->post('productId'));
 
         $row = new Row();
 
         $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $productType);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $product);
     }
 
     public function actionAppendColumns()
     {
         $width = Yii::$app->request->post('width');
         $prefix = Yii::$app->request->post('prefix');
-        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
+        $product = Product::findOne(Yii::$app->request->post('productId'));
 
         $columnsData = array();
 
@@ -143,7 +147,7 @@ abstract class BaseController extends Controller
 
             $indexColumn = rand(1000, 10000000);
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $productType);
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $product);
         }
         return json_encode($columnsData);
     }
@@ -154,85 +158,86 @@ abstract class BaseController extends Controller
      */
     public function actionAppendBlock()
     {
-        $columnId = Yii::$app->request->post('columnId');
         $prefix = Yii::$app->request->post('prefix');
 
-        $productType = ProductType::findOne(Yii::$app->request->post('productTypeId'));
+        $product = Product::findOne(Yii::$app->request->post('productId'));
 
         $indexBlock = rand(1000, 1000000);
 
         $block = new Block();
-        $block->column_id = $columnId;
         $block->type = Yii::$app->request->post('type');
 
-        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $productType);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $product);
     }
 
-    public function actionAppendBlockModal($id, $prefix)
+    public function actionAppendBlockModal()
     {
         //$blockId = Yii::$app->request->post('id');
         //$prefix = Yii::$app->request->post('prefix');
 
+        $id = Yii::$app->request->post('id');
+        $prefix = Yii::$app->request->post('prefix');
+        $type = Yii::$app->request->post('type');
+        $product = Product::findOne(Yii::$app->request->post('productId'));
+
         $block = Block::findOne(['id' => $id]);
 
-        return (new BlockModalWidget())->appendModal($block, $prefix);
+        if (!$block) {
+            $block = new Block();
+            $block->type = $type;
+        }
+
+
+        return (new BlockModalWidget())->appendModal($block, $prefix, $product);
     }
 
     public function actionAppendBlockModalContent()
     {
-        $snippetId = Yii::$app->request->post('snippetId');
+        $snippet = Snippet::findOne(Yii::$app->request->post('snippetId'));
+        $parent = Block::findOne(Yii::$app->request->post('parentId'));
 
         $block = new Block();
+        $block->type = Yii::$app->request->post('blockType');
 
-        $productType = ProductType::find()->where(['id' => Yii::$app->request->post('productTypeId')])->one();
+        if ($snippet) {
+            $block->snippet_code_id = $snippet->snippetCodes[0];
+        }
+        else if ($parent) {
+            $block->parent_id = $parent->id;
+        }
+
+        $product = Product::find()->where(['id' => Yii::$app->request->post('productId')])->one();
         $prefix = Yii::$app->request->post('prefix');
-
-        $block->initializeVarValues($snippetId);
 
         return (new BlockModalWidget())->render('_snippet', [
             'model' => $block,
-            'productType' => $productType,
+            'product' => $product,
             'prefix' => $prefix
         ]);
     }
 
-    public function actionAppendListItem($parentVarId, $prefix)
+    public function actionAppendListItem()
     {
+        $prefix = Yii::$app->request->post('prefix');
+
+        $parentVarId = Yii::$app->request->post('parentVarId');
+
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
+
+        $product = Product::findOne(Yii::$app->request->post('productId'));
+
+        $parentId = Yii::$app->request->post('parentId');
 
         $listItem = $parentVar->createNewListItem();
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $product, $parentId);
     }
 
     public function actionAppendMultimediaWindow()
     {
         return (new MultimediaWidget())->run();
-    }
-
-    public function actionCacheFromBuffer($limit = 20)
-    {
-        $query = 'SELECT * FROM cache_page ORDER BY priority DESC, added_at ASC LIMIT :limit';
-
-        $command = Yii::$app->db->createCommand($query);
-        $command->bindValue(':limit', $limit);
-
-        $results = $command->queryAll();
-
-        foreach ($results as $row) {
-            $page = Page::find()->where(['id' => $row['page_id']])->one();
-
-            $page->getMainCacheFile(true);
-
-            $removeQuery = 'DELETE FROM cache_page WHERE id = :id';
-
-            $removeCommand = Yii::$app->db->createCommand($removeQuery);
-            $removeCommand->bindValue(':id', $row['id']);
-
-            $removeCommand->execute();
-        }
     }
 
     /** Metoda na nacitanie a ulozenie dat pre layout
@@ -297,7 +302,6 @@ abstract class BaseController extends Controller
      * @param $model - objekt, portal/podstranka
      * @param $propertyIdentifier - identifikator pola, obsahujuceho sekcie - headerSections, atd
      * @throws Exception
-     * @internal param $type - typ objektu - portal/podstranka
      */
     public function saveLayout($model, $propertyIdentifier)
     {
@@ -351,13 +355,15 @@ abstract class BaseController extends Controller
                         if ($block->changed) {
                             $this->saveSnippetVarValues($block);
                         }
+
+                        $block->resetAfterUpdate();
                     }
                 }
             }
         }
     }
 
-    private function loadSnippetVarValues($data, $model)
+    public function loadSnippetVarValues($data, $model)
     {
         foreach ($data['SnippetVarValue'] as $indexVar => $itemVarValue) {
             $model->loadFromData('snippetVarValues', $itemVarValue, $indexVar, SnippetVarValue::className());
@@ -378,7 +384,7 @@ abstract class BaseController extends Controller
         }
     }
 
-    private function saveSnippetVarValues($model, $type = 'block')
+    public function saveSnippetVarValues($model, $type = 'block')
     {
         foreach ($model->snippetVarValues as $snippetVarValue) {
 

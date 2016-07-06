@@ -112,7 +112,7 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $path = $page->getMainCacheFile();
+            $path = $page->getMainCacheFile($page->reload);
         }
 
         if (isset($path)) {
@@ -279,5 +279,16 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    public function actionCacheFromBuffer($limit = 1)
+    {
+        $pages = Page::find()->where(['reload' => 1])
+                ->limit($limit)
+            ->all();
+
+        foreach ($pages as $page) {
+            $page->getMainCacheFile(true);
+        }
     }
 }

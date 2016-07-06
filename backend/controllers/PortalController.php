@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\VarManager\VarManagerWidget;
+use backend\models\Block;
 use backend\models\Model;
 use backend\models\Portal;
 use backend\models\PortalVar;
@@ -72,12 +73,37 @@ class PortalController extends BaseController
 
                 foreach ($portalVarValuesData as $index => $portalValueData) {
                     $model->loadFromData('portalVarValues', $portalValueData, $index, PortalVarValue::className());
+
+                    if (!key_exists('SnippetVarValue', $portalValueData)) {
+                        continue;
+                    }
+
+                    $model->portalVarValues[$index]->changed = true;
+
+                    if (!$model->portalVarValues[$index]->valueBlock) {
+                        $block = new Block();
+                        $block->type = 'snippet';
+                        $block->portal_var_value_id = $model->portalVarValues[$index]->id;
+
+                        $model->portalVarValues[$index]->valueBlock = $block;
+                    }
+
+                    $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
                 }
 
-                foreach ($model->portalVarValues as $portalVarValue) {
+                foreach($model->portalVarValues as $portalVarValue) {
                     $portalVarValue->portal_id = $model->id;
-                    if (!($portalVarValue->validate() && $portalVarValue->save())) {
+                    if (!($portalVarValue->validate() && $portalVarValue->save()))
                         throw new Exception;
+
+                    if ($portalVarValue->valueBlock) {
+                        if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
+                            throw new Exception;
+                        }
+
+                        if ($portalVarValue->changed) {
+                            $this->saveSnippetVarValues($portalVarValue->valueBlock);
+                        }
                     }
                 }
 

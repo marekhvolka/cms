@@ -32,10 +32,10 @@ class ObjectBridge extends ArrayObject
             // return an empty object in order to prevent errors with chain call
             $tmp = new stdClass();
 
-            $exception = new SystemException();
+            /*$exception = new SystemException();
             $exception->message = 'Chyba - nedefinovaná hodnota premennej ' . get_class($this->obj) . ' - ' . $a;
 
-            $exception->save();
+            $exception->save();*/
 
             return new ObjectBridge($tmp, '');
         }
@@ -59,6 +59,16 @@ class ObjectBridge extends ArrayObject
     public function __toString()
     {
         return '' . $this->string;
+    }
+
+    public function hasTag($tag)
+    {
+        if (!isset($this->obj->tags) || !isset($tag))
+            return false;
+
+        if (key_exists($tag->id, $this->obj->tags))
+            return true;
+        return false;
     }
 }
 

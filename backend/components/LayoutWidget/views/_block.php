@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
-/* @var $productType \backend\models\ProductType */
+/* @var $product \backend\models\Product */
 
 if (!isset($renderModal)) {
     $renderModal = false;
@@ -21,8 +21,8 @@ if (!isset($renderModal)) {
     </button>
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
-            data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
-            data-target="#modal-<?= $model->id ?>">
+            data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>" data-product-id="<?= $product ? $product->id : '' ?>"
+            data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
         <?php echo $model->name; ?>
     </button>
 
@@ -56,7 +56,7 @@ if (!isset($renderModal)) {
         <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
             echo BlockModalWidget::widget([
                 'block' => $model,
-                'productType' => $productType,
+                'product' => $product,
                 'prefix' => $prefix
             ]);
         } ?>

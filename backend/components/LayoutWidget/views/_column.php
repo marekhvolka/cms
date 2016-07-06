@@ -13,7 +13,7 @@ use yii\helpers\BaseHtml;
 /* @var $indexRow int */
 /* @var $indexColumn int */
 /* @var $prefix string */
-/* @var $productType \backend\models\ProductType */
+/* @var $product \backend\models\Product */
 
 ?>
 
@@ -35,14 +35,16 @@ use yii\helpers\BaseHtml;
                 <div class="dropdown dropdown-column-content inline-button add-block">
                     <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
                             title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
-                            data-product-type-id="<?= $productType ? $productType->id : '' ?>">
+                            data-product-id="<?= $product ? $product->id : '' ?>">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="column-option" data-type="text">Text</a></li>
                         <li><a class="column-option" data-type="html">HTML</a></li>
                         <li><a class="column-option" data-type="snippet">Snippet</a></li>
-                        <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
+                        <?php if ($product) : ?>
+                            <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
+                        <?php endif; ?>
                         <li><a class="column-option" data-type="portal_snippet">Portálový snippet</a></li>
                     </ul>
                 </div>
@@ -59,7 +61,7 @@ use yii\helpers\BaseHtml;
             <?= $this->render('_block', [
                 'model' => $block,
                 'prefix' => $prefix . "[Block][$indexBlock]",
-                'productType' => $productType
+                'product' => $product
             ]); ?>
         <?php endforeach; ?>
     </div>

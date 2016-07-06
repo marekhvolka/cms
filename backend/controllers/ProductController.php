@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Block;
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
 //use MongoDB\Driver\Exception\Exception;
@@ -43,7 +44,7 @@ class ProductController extends BaseController
     {
         $searchModel = new ProductSearch();
 
-        $products = $searchModel->search(Yii::$app->request->queryParams)
+        $products = $searchModel->search(Yii::$app->request->queryParams, true)
             ->andWhere('parent_id IS NULL')
             ->all();
 
@@ -79,12 +80,43 @@ class ProductController extends BaseController
 
                 foreach ($productVarValuesData as $index => $productValueData) {
                     $model->loadFromData('productVarValues', $productValueData, $index, ProductVarValue::className());
+
+                    if (!key_exists('SnippetVarValue', $productValueData)) {
+                        continue;
+                    }
+
+                    $model->productVarValues[$index]->changed = true;
+
+                    if (!$model->productVarValues[$index]->valueBlock) {
+                        $block = new Block();
+                        $block->type = 'snippet';
+                        $block->product_var_value_id = $model->productVarValues[$index]->id;
+
+                        $model->productVarValues[$index]->valueBlock = $block;
+                    }
+
+                    $this->loadSnippetVarValues($productValueData, $model->productVarValues[$index]->valueBlock);
                 }
 
                 foreach($model->productVarValues as $productVarValue) {
                     $productVarValue->product_id = $model->id;
+
+                    if ($productVarValue->removed) {
+                        $productVarValue->delete();
+                    }
+
                     if (!($productVarValue->validate() && $productVarValue->save()))
                         throw new Exception;
+
+                    if ($productVarValue->valueBlock) {
+                        if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
+                            throw new Exception;
+                        }
+
+                        if ($productVarValue->changed) {
+                            $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        }
+                    }
                 }
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.

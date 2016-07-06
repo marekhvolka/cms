@@ -177,7 +177,7 @@ class Snippet extends CustomModel implements ICacheable
 
             $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-            foreach ($this->snippetVariables as $snippetVar) {
+            foreach ($this->snippetFirstLevelVars as $snippetVar) {
                 $buffer .= '\'' . $snippetVar->identifier . '\' => ' . $snippetVar->getDefaultValueAsString() . ',' . PHP_EOL;
             }
 
@@ -195,15 +195,32 @@ class Snippet extends CustomModel implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $this->getMainCacheFile(true);
+        $changed = false;
 
+        if ($this->hasChanged() || $this->snippetVarsHasChanged()) {
+            $this->getMainCacheFile(true);
+            $changed = true;
+        }
         /* @var $snippetCode \backend\models\SnippetCode */
         foreach ($this->snippetCodes as $snippetCode) {
-            /* @var $block \backend\models\Block */
-            foreach ($snippetCode->blocks as $block) {
-                $block->resetAfterUpdate();
+            if ($snippetCode->hasChanged() || $changed) {
+                /* @var $block \backend\models\Block */
+                foreach ($snippetCode->blocks as $block) {
+                    $block->resetAfterUpdate();
+                }
             }
         }
+    }
+
+    public function snippetVarsHasChanged()
+    {
+        foreach($this->snippetFirstLevelVars as $snippetVar) {
+            if ($snippetVar->hasChanged()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** Metoda na nacitanie potomkovskych poloziek - obsahuje rekurziu

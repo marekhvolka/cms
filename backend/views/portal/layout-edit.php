@@ -23,7 +23,7 @@ use yii\helpers\Url;
         'formId' => 'form-layout',
         'type' => Yii::$app->request->get('type'),
         'prefix' => 'section',
-        'productType' => null
+        'product' => null
     ]
 )?>
 

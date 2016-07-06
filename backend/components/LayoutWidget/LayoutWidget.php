@@ -18,7 +18,7 @@ class LayoutWidget extends Widget
     public $type;
     public $formId;
     public $prefix;
-    public $productType;
+    public $product;
 
     public $allowAddingSection = true;
 
@@ -38,7 +38,7 @@ class LayoutWidget extends Widget
             'formId' => $this->formId,
             'prefix' => $this->prefix,
             'allowAddingSection' => $this->allowAddingSection,
-            'productType' => $this->productType
+            'product' => $this->product
         ]);
     }
 
@@ -46,14 +46,15 @@ class LayoutWidget extends Widget
      * @param Section $section
      * @param $prefix
      * @param int $indexSection
+     * @param $product
      * @return string
      */
-    public function appendSection(Section $section, $prefix, $indexSection, $productType)
+    public function appendSection(Section $section, $prefix, $indexSection, $product)
     {
         return $this->render('_section', [
             'model' => $section,
             'prefix' => $prefix . "[$indexSection]",
-            'productType' => $productType
+            'product' => $product
         ]);
     }
 
@@ -61,14 +62,15 @@ class LayoutWidget extends Widget
      * @param Row $row
      * @param $prefix
      * @param $indexRow
+     * @param $product
      * @return string
      */
-    public function appendRow(Row $row, $prefix, $indexRow, $productType)
+    public function appendRow(Row $row, $prefix, $indexRow, $product)
     {
         return $this->render('_row', [
             'model' => $row,
             'prefix' => $prefix . "[Row][$indexRow]",
-            'productType' => $productType
+            'product' => $product
         ]);
     }
 
@@ -76,14 +78,15 @@ class LayoutWidget extends Widget
      * @param Column $column
      * @param $prefix
      * @param $indexColumn
+     * @param $product
      * @return string
      */
-    public function appendColumn(Column $column, $prefix, $indexColumn, $productType)
+    public function appendColumn(Column $column, $prefix, $indexColumn, $product)
     {
         return $this->render('_column', [
             'model' => $column,
             'prefix' => $prefix . "[Column][$indexColumn]",
-            'productType' => $productType
+            'product' => $product
         ]);
     }
 
@@ -91,16 +94,16 @@ class LayoutWidget extends Widget
      * @param Block $block
      * @param $prefix
      * @param $indexBlock
-     * @param $productType
+     * @param $product
      * @return string
      */
-    public function appendBlock(Block $block, $prefix, $indexBlock, $productType)
+    public function appendBlock(Block $block, $prefix, $indexBlock, $product)
     {
         return $this->render('_block', [
             'model' => $block,
             'prefix' => $prefix . "[Block][$indexBlock]",
             'renderModal' => true,
-            'productType' => $productType
+            'product' => $product
         ]);
     }
 

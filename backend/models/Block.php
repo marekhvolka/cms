@@ -19,6 +19,7 @@ use Yii;
  * @property string $data
  * @property string $type
  * @property boolean $active
+ * @property string $varIdentifier
  *
  *
  * @property string $existing
@@ -35,8 +36,6 @@ use Yii;
  */
 class Block extends CustomModel implements ICacheable, IDuplicable
 {
-    public $changed = false;
-
     /**
      * @inheritdoc
      */
@@ -171,20 +170,30 @@ class Block extends CustomModel implements ICacheable, IDuplicable
             $this->snippetVarValues = array();
 
             if ($this->snippetCode) {
-                foreach ($this->snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
-                    $snippetVarValue = SnippetVarValue::find()->where([
-                        'block_id' => $this->id,
-                        'var_id' => $firstLevelVar->id
-                    ])->one();
+                $snippetCode = $this->snippetCode;
+            }
+            else { //jedna sa o portalovy alebo produktovy snippet
+                if ($this->parent) {
+                    $snippetCode = $this->parent->snippetCode;
+                }
+                else {
+                    return $this->snippetVarValues;
+                }
+            }
 
-                    if ($snippetVarValue) {
-                        $this->snippetVarValues[] = $snippetVarValue;
-                    } else {
-                        $snippetVarValue = new SnippetVarValue();
-                        $snippetVarValue->var_id = $firstLevelVar->id;
+            foreach ($snippetCode->snippet->snippetFirstLevelVars as $firstLevelVar) {
+                $snippetVarValue = SnippetVarValue::find()->where([
+                    'block_id' => $this->id,
+                    'var_id' => $firstLevelVar->id
+                ])->one();
 
-                        $this->snippetVarValues[] = $snippetVarValue;
-                    }
+                if ($snippetVarValue) {
+                    $this->snippetVarValues[] = $snippetVarValue;
+                } else {
+                    $snippetVarValue = new SnippetVarValue();
+                    $snippetVarValue->var_id = $firstLevelVar->id;
+
+                    $this->snippetVarValues[] = $snippetVarValue;
                 }
             }
         }
@@ -340,14 +349,16 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         $buffer .= '/* Var values  */' . PHP_EOL;
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
-            if (isset($snippetVarValue->value) && $snippetVarValue->value != '\'\'') {
-                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $snippetVarValue->getValue($productType) . ';' . PHP_EOL;
+
+            $value = $snippetVarValue->getValue($productType);
+            if (isset($value) && $value != '\'\'' && $value != 'NULL' && $value != 'array()') {
+                $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $value . ';' . PHP_EOL;
             }
         }
 
         $buffer .= '?>' . PHP_EOL;
 
-        $buffer .= file_get_contents($snippetCode->getMainFile($reload));
+        $buffer .= $snippetCode->code;
 
         return $buffer;
     }
@@ -394,19 +405,12 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $this->type == 'snippet' || $this->type == 'portal_snippet' || $this->type == 'product_snippet';
     }
 
-    public function initializeVarValues($snippetId)
+    public function getVarIdentifier()
     {
-        $this->snippetVarValues = array();
-
-        $snippet = Snippet::findOne($snippetId);
-
-        $this->snippet_code_id = $snippet->snippetCodes[0];
-
-        foreach ($snippet->snippetVariables as $snippetVar) {
-            $snippetVarValue = new SnippetVarValue();
-            $snippetVarValue->var_id = $snippetVar->id;
-
-            $this->snippetVarValues[rand(1000, 10000)] = $snippetVarValue;
-        }
+        if ($this->productVarValue)
+            return $this->productVarValue->var->name;
+        else if ($this->portalVarValue)
+           return $this->portalVarValue->var->name;
+        return '';
     }
 }

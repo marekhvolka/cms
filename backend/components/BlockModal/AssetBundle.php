@@ -10,8 +10,6 @@ namespace backend\components\BlockModal;
 
 class AssetBundle extends \yii\web\AssetBundle
 {
-  //  public $basePath = '@app/components/BlockModal/assets';
-
     public $css = [
         'css/style.css'
     ];
@@ -23,6 +21,8 @@ class AssetBundle extends \yii\web\AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        //'kartik\select2\Select2',
+        //'kartik\switchinput\SwitchInput'
     ];
 
     public function init()

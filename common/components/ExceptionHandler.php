@@ -13,9 +13,9 @@ class ExceptionHandler
     {
         //VarDumper::dump($exception);
 
-        $systemException = new \backend\models\SystemException();
+        /*$systemException = new \backend\models\SystemException();
         $systemException->message = $exception->getMessage();
 
-        $systemException->save();
+        $systemException->save();*/
     }
 }
