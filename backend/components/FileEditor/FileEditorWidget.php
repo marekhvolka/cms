@@ -33,6 +33,9 @@ use yii\web\UploadedFile;
  * Note that if you want to compile scss files, set the 'compileScss' to true and the css files will get compiled
  * after saving / uploading and this compiled and minified version will be saved next to the original file.
  *
+ * If you want to do some another compilation (will be performed only if SCSS compilation is disabled), specify
+ * the callback for `extraCompileBy`. The callback will be called with one argument - path to the file to be compiled.
+ *
  * 2) the editor has some its actions that need to be performed, like to return the content of the file when
  * requested by AJAX ... that is done by method performActions(); ... you need to store the return value
  *
@@ -68,6 +71,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
      */
     public $directory;
     public $compileScss = true;
+    public $generatedUrlPrefix = '';
+    public $extraCompileBy = null;
 
     /**
      * Perform internal actions. In case that it returns something apart from false, return the response to the Yii 2
@@ -121,6 +126,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             if ($this->compileScss && PathHelper::isSCSSFile($new_file_path)) {
                 $compiled_path = mb_substr($new_file_path, 0, count($new_file_path) - 5) . "min.css"; // so that we remove .scss
                 $this->compileScss($new_file_path, $compiled_path);
+            } else if(is_callable($this->extraCompileBy)){
+                call_user_func_array($this->extraCompileBy, [$new_file_path, $new_file_form->getRelativePath()]);
             }
 
             $edit_file_form->text = $new_file_form->text;
@@ -134,6 +141,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             if ($this->compileScss && PathHelper::isSCSSFile($edited_file_path)) {
                 $compiled_path = mb_substr($edited_file_path, 0, count($edited_file_path) - 5) . "min.css";;
                 $this->compileScss($edited_file_path, $compiled_path);
+            } else if (is_callable($this->extraCompileBy)) {
+                call_user_func_array($this->extraCompileBy, [$edited_file_path, $edit_file_form->getRelativePath()]);
             }
         }
 
@@ -154,6 +163,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
                         $compiled_path = $this->directory . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
                         $compiled_path = mb_substr($compiled_path, 0, count($compiled_path) - 5) . "min.css";
                         $this->compileScss($path, $compiled_path);
+                    } else if (is_callable($this->extraCompileBy)) {
+                        call_user_func_array($this->extraCompileBy, [$path, $edit_file_form->getRelativePath()]);
                     }
                 }
             }
@@ -176,7 +187,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             'uploadFileForm' => $upload_file_form,
             'newFileForm' => $new_file_form,
             'createDirectoryForm' => $create_directory_form,
-            'isImageLoaded' => $is_image_loaded
+            'isImageLoaded' => $is_image_loaded,
+            'generatedUrlPrefix' => $this->generatedUrlPrefix
         ], $this);
     }
 

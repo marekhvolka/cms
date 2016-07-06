@@ -31,7 +31,8 @@ $(function () {
             file_editor.find('.image').hide();
 
             $.get(url, function (data) {
-                $("#url").val("{$portal->template|escapeUrl}" + directory + "/" + name);
+                var url = $("#url");
+                url.val(url.attr('data-prefix') + encodeURIComponent(directory + "/" + name));
                 file_editor.find('.file-name').text(name);
                 code_mirror.getDoc().setValue(data);
                 code_mirror.setOption('readOnly', false);
@@ -49,7 +50,7 @@ $(function () {
 
     // confirmation of deleting
     file_editor.find(".delete").click(function (e) {
-        if (!window.confirm("Skutočne chcete zmazať '" + $(this).attr("data-path") + "'?")){
+        if (!window.confirm("Skutočne chcete zmazať '" + $(this).attr("data-path") + "'?")) {
             e.preventDefault();
         }
     });
@@ -73,7 +74,7 @@ $(function () {
         e.preventDefault();
     });
 
-    $("#url").on("keydown keypress keyup paste", function(e){
+    $("#url").on("keydown keypress keyup paste", function (e) {
         e.preventDefault();
     });
 });

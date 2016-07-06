@@ -86,7 +86,11 @@ class NewFileForm extends Model
      */
     public function getFullPath()
     {
-        return DIRECTORY_SEPARATOR . $this->baseDir . DIRECTORY_SEPARATOR . trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim
-        ($this->name, "/");
+        return DIRECTORY_SEPARATOR . $this->baseDir . DIRECTORY_SEPARATOR . $this->getRelativePath();
+    }
+
+    public function getRelativePath()
+    {
+        return trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
     }
 }

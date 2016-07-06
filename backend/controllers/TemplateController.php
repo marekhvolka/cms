@@ -18,7 +18,7 @@ class TemplateController extends BaseController
     {
         return array_merge(parent::behaviors(), [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -36,7 +36,7 @@ class TemplateController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel'  => $searchModel,
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -71,8 +71,9 @@ class TemplateController extends BaseController
          * @var $file_editor FileEditorWidget
          */
         $file_editor = Yii::createObject([
-            'class'     => FileEditorWidget::className(),
-            'directory' => $template->getMainDirectory()
+            'class' => FileEditorWidget::className(),
+            'directory' => $template->getMainDirectory(),
+            'generatedUrlPrefix' => '{$portal->template|escapeUrl}'
         ]);
         $state = $file_editor->performActions();
 

@@ -3,6 +3,8 @@
 namespace common\components;
 
 
+use backend\components\PathHelper;
+use backend\models\Portal;
 use Latte\Engine;
 use Latte\Loaders\FileLoader;
 use Yii;
@@ -75,6 +77,8 @@ class DataEngine extends Component
             $buffer .= '$jquery = "//code.jquery.com/jquery-1.10.2.min.js";' . PHP_EOL;
             $buffer .= '$font_awesome = "http://www.hyperfinance.cz/fonts/font-awesome-4.3.0/css/font-awesome.min.css";' . PHP_EOL;
 
+            $buffer .= '?>' . PHP_EOL;
+
             $this->writeToFile($path, 'w+', $buffer);
         }
 
@@ -124,6 +128,11 @@ class DataEngine extends Component
         return $this->getCommonDirectory($forWeb) . 'multimedia/';
     }
 
+    public function getThanksDirectory()
+    {
+        return $this->getCommonDirectory(false) . 'thanks';
+    }
+
     //endregion
 
     /** Funkcia na zapis do suboru
@@ -153,5 +162,21 @@ class DataEngine extends Component
             }
         }
         return $string;
+    }
+
+    public function compileThanks($path, $relative_path)    
+    {
+        /** @var Portal $portal */
+        foreach (Portal::find()->all() as $portal) {
+            $compiled_path = $portal->getThanksDirectory() . $relative_path;
+
+            PathHelper::makePath($compiled_path, true);
+            $content = file_get_contents($this->getCommonCacheFile()) . PHP_EOL . file_get_contents($portal->getMainCacheFile()) . PHP_EOL . file_get_contents($path);
+            file_put_contents($compiled_path, $content);
+
+            /** @var Engine $renderer */
+            $renderer = Yii::$app->dataEngine->latteRenderer;
+            file_put_contents($compiled_path, $renderer->renderToString($compiled_path));
+        }
     }
 }

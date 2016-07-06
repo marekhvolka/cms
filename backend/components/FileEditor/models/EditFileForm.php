@@ -86,6 +86,11 @@ class EditFileForm extends Model
      */
     public function getFullPath()
     {
-        return $this->baseDir . DIRECTORY_SEPARATOR . trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
+        return $this->baseDir . DIRECTORY_SEPARATOR . $this->getRelativePath();
+    }
+
+    public function getRelativePath()
+    {
+        return trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
     }
 }

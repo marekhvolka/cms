@@ -125,9 +125,10 @@ function build_file_tree($data, $from_dir = '')
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
 
                 <div class="url-address-to-copy">
-                    <input class="form-control" id="url" value="{$portal->template|escapeUrl}<?= $editFileForm->directory . "/" . $editFileForm->name ?>">
+                    <input class="form-control" id="url" data-prefix="<?= $generatedUrlPrefix ?>"
+                           value="<?= $generatedUrlPrefix ?><?= urlencode($editFileForm->directory . "/" . $editFileForm->name) ?>">
                     <button class="clippy" data-clipboard-target="#url">
-                        <img src="/images/clippy.svg" alt="Copy to clipboard">
+                        <img src="<?= Url::to(['/images/clippy.svg']); ?>" alt="Copy to clipboard">
                     </button>
                 </div>
 
