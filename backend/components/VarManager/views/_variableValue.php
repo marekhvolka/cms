@@ -1,5 +1,6 @@
 <?php
 use backend\models\Portal;
+use kartik\color\ColorInput;
 use kartik\date\DatePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -107,6 +108,15 @@ if (!isset($model)) {
                             'format' => 'dd/mm/yyyy'
                         ],
                         'class' => 'form-control'
+                    ]);
+                    break;
+                case 'color':
+                    echo ColorInput::widget([
+                        'name' => $prefix . "[value_text]",
+                        'value' => $varValue->value_text,
+                        'pluginOptions' => [
+                            'showAlpha' => false,
+                        ]
                     ]);
                     break;
                 default:
