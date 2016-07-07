@@ -368,6 +368,8 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function resetAfterUpdate()
     {
+        $this->setOutdated();
+
         if (isset($this->column)) {
             $area = $this->column->row->section->area;
 

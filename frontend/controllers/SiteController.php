@@ -76,14 +76,14 @@ class SiteController extends Controller
         ])
             ->one();
 
-        $portalPreviewId = Yii::$app->session->get('portal_preview');
+        $portalId = Yii::$app->session->get('portal_id');
 
-        if (isset($portalPreviewId)) {
-            $portalId = $portalPreviewId;
-        } else if (isset($portal)) {
-            $portalId = $portal->id;
-        } else {
-            $portalId = 3;
+        if (!isset($portalId)) {
+            if (isset($portal)) {
+                $portalId = $portal->id;
+            } else {
+                $portalId = 3;
+            }
         }
 
         if ($identifiers[0] == '') { //homepage
@@ -285,7 +285,7 @@ class SiteController extends Controller
     public function actionCacheFromBuffer($limit = 1)
     {
         $pages = Page::find()->where(['changed' => 1])
-                ->limit($limit)
+            ->limit($limit)
             ->all();
 
         foreach ($pages as $page) {
