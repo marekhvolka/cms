@@ -9,6 +9,7 @@ use backend\models\Product;
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
 use backend\models\search\ProductSearch;
+use common\components\Alert;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -163,7 +164,14 @@ class ProductController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->getProducts()->count() == 0) {
+            $model->delete();
+        } else {
+            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

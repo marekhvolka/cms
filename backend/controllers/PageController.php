@@ -6,6 +6,7 @@ use backend\models\Area;
 use backend\models\Page;
 use backend\models\search\PageSearch;
 use backend\models\Section;
+use common\components\Alert;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -159,7 +160,13 @@ class PageController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if($model->getPages()->count() == 0){
+            $model->delete();
+        } else {
+            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');
+        }
 
         return $this->redirect(['index']);
     }
