@@ -23,24 +23,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $searchModel,
     ]) ?>
     <?= TreeGridWidget::widget([
-        'rows'    => $products,
+        'rows' => $products,
         'columns' => [
             [
                 'label' => 'Produkt',
                 'value' => function ($data) {
                     return Html::a($data->name, Url::to(['edit', 'id' => $data->id]));
                 },
-                'size'  => '4'
+                'size' => '4'
             ],
             [
                 'label' => 'Typ produktu',
                 'value' => 'productTypeName',
-                'size'  => '3',
+                'size' => '3',
             ],
             [
                 'label' => 'Aktívna',
                 'value' => 'active',
-                'size'  => '1',
+                'size' => '1',
             ],
             [
                 'label' => 'Posledná zmena',
@@ -48,12 +48,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $data->last_edit . ' (' .
                     (isset($data->lastEditUser) ? $data->lastEditUser->username : '') . ')';
                 },
-                'size'  => '3',
+                'size' => '3',
             ],
             [
                 'label' => 'Akcie',
-                'value' => function($data) {
-                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', Url::to(['delete', 'id' => $data->id]));
+                'value' => function ($data) {
+                    if ($data->getProducts()->count() == 0) {
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', Url::to(['delete', 'id' => $data->id]));
+                    } else {
+                        return '&nbsp;';
+                    }
                 },
                 'size' => 1
             ]

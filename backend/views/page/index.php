@@ -54,11 +54,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Akcie',
                 'value' => function ($data) {
-                    return /*Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                        Url::to(['delete', 'id' => $data->id])) . */
-                    Html::a('<span class="fa fa-eye"></span>', Url::to(['show', 'id' => $data->id]), [
+                    $result = '';
+
+                    $result .= Html::a('<span class="fa fa-eye"></span>', Url::to(['show', 'id' => $data->id]), [
                         'target' => '_blank'
                     ]);
+
+                    if ($data->getPages()->count() == 0) {
+                        $result .= ' ' . Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                                Url::to(['delete', 'id' => $data->id]));
+                    }
+
+                    return $result;
                 },
                 'size' => 1
             ]
