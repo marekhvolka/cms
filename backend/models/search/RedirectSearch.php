@@ -2,16 +2,18 @@
 
 namespace backend\models\search;
 
+use backend\models\Redirect;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Redirect;
 
 /**
  * RedirectSearch represents the model behind the search form about `backend\models\Redirect`.
  */
 class RedirectSearch extends Redirect
 {
+    public $globalSearch;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class RedirectSearch extends Redirect
     {
         return [
             [['id', 'redirect_type'], 'integer'],
-            [['source_url', 'target_url'], 'safe'],
+            [['globalSearch', 'source_url', 'target_url'], 'safe'],
         ];
     }
 
@@ -57,15 +59,10 @@ class RedirectSearch extends Redirect
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'redirect_type' => $this->redirect_type,
-        ]);
-
-        $query->andFilterWhere(['like', 'source_url', $this->source_url])
-            ->andFilterWhere(['like', 'target_url', $this->target_url]);
-
+        if (!empty($this->globalSearch)) {
+            $query->andFilterWhere(['like', 'source_url', $this->globalSearch])
+                ->andFilterWhere(['like', 'target_url', $this->globalSearch]);
+        }
         return $dataProvider;
     }
 }

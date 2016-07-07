@@ -57,10 +57,16 @@ class TrackingCodeController extends BaseController
         }
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->portal_id = Yii::$app->session->get('portal_id');
             if ($model->save()) {
                 $model->portal->resetAfterUpdate();
                 Alert::success('Položka bola úspešne uložená.');
-                return $this->redirect(Url::current());
+
+                if (isset($continue)) {
+                    return $this->redirect(['edit', 'id' => $model->id]);
+                } else {
+                    return $this->redirect(['index']);
+                }
             } else {
                 Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
             }

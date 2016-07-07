@@ -11,7 +11,7 @@ use backend\components\MultimediaWidget\MultimediaWidgetAsset;
 MultimediaWidgetAsset::register($this);
 ?>
 
-<div class="company-crossing multimedia-widget">
+<div class="multimedia-widget">
     <ul class="nav nav-tabs">
         <li role="presentation" class="tab-label active">
             <a href="#tab_new" data-toggle="tab">Nahrať nový obrázok</a>

@@ -8,6 +8,8 @@
 
 use backend\components\MultimediaWidget\MultimediaWidgetAsset;
 
+/* @var $categories \backend\models\MultimediaCategory[] */
+
 MultimediaWidgetAsset::register($this);
 ?>
 
@@ -28,7 +30,8 @@ MultimediaWidgetAsset::register($this);
 </div>
 
 <script type="text/javascript">
-    var getMultimediaSelectCallback = function(){
+    var getMultimediaSelectCallback = function ()
+    {
         return <?= $selectCallbackName ?>; // it can be defined later
     };
 </script>

@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     return Url::toRoute($params);
                 },
-                'template' => '{update} {delete}'
+                'template' => '{delete}'
             ],
         ],
     ]); ?>

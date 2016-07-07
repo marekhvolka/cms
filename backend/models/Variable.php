@@ -16,8 +16,6 @@ use yii\helpers\ArrayHelper;
  * @property VarType $type
  * @property string $product_type
  * @property integer $last_edit_user
- * @property bool $existing
- *
  * @property User $lastEditUser
  */
 abstract class Variable extends CustomModel
@@ -114,5 +112,18 @@ abstract class Variable extends CustomModel
         }
 
         return $value;
+    }
+
+    /**
+     * Event fired before save model. User id is set as last user who edits model.
+     * @param bool $insert true if save is insert type, false if update.
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        $userId = Yii::$app->user->identity->id;
+        $this->last_edit_user = $userId;
+
+        return parent::beforeSave($insert);
     }
 }

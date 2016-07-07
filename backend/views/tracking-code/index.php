@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\TrackingCodeSearch */
+/* @var $searchModel backend\models\search\TrackingCodeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Meracie kódy';
@@ -45,16 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'urlCreator' => function ($action, $model, $key, $index) {
-                    if ($action == 'update') {
-                        $action = 'edit';
-                    }
-                    $params = is_array($key) ? $key : ['id' => (string)$key];
-                    $params[0] = $action;
-
-                    return Url::toRoute($params);
-                },
-                'template' => '{update} {delete}'
+                'template' => '{delete}'
             ],
         ],
     ]); ?>

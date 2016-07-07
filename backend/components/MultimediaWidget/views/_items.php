@@ -2,6 +2,8 @@
 use backend\components\PathHelper;
 use yii\helpers\Url;
 
+/* @var $categories \backend\models\MultimediaCategory[] */
+
 foreach ($categories as $multimediaCategory) {
     if (count($multimediaCategory->items) > 0) {
         ?>
@@ -23,9 +25,10 @@ foreach ($categories as $multimediaCategory) {
                 <?php foreach ($multimediaCategory->items as $item) {
                     $is_image = PathHelper::isImageFile($item->name);
                     ?>
-                    <div class="col-md-2 multimedia-item <?php if ($is_image) {
+                    <div class="col-md-3 multimedia-item <?php if ($is_image) {
                         echo 'multimedia-image';
-                    } ?>" data-name="<?= $item->name ?>" data-path-for-web="<?= $multimediaCategory->pathForWeb . $item->name?>">
+                    } ?>" data-name="<?= $item->name ?>"
+                         data-path-for-web="<?= $multimediaCategory->pathForWeb . $item->name ?>">
                         <div class="thumbnail">
                             <div class="caption">
                                 <?= $item->name ?>

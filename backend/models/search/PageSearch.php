@@ -29,7 +29,6 @@ class PageSearch extends Page
                     'in_menu',
                     'parent_id',
                     'product_id',
-                    'sidebar_size',
                     'last_edit_user'
                 ],
                 'integer'

@@ -17,9 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Html::a('Pridať presmerovanie', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
     <?php $this->endBlock(); ?>
 
+    <?= $this->render('_search', [
+        'model' => $searchModel,
+    ]) ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 

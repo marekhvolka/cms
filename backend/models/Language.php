@@ -58,6 +58,19 @@ class Language extends \yii\db\ActiveRecord
     }
 
     /**
+     * Event fired before save model. User id is set as last user who edits model.
+     * @param bool $insert true if save is insert type, false if update.
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        $userId = Yii::$app->user->identity->id;
+        $this->last_edit_user = $userId;
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getPortals()
@@ -89,8 +102,8 @@ class Language extends \yii\db\ActiveRecord
             $buffer .= '$tempObject = ';
 
             $query = 'SELECT identifier, translation FROM word
-          JOIN word_translation ON (word.id = word_id)
-          WHERE language_id = :language_id';
+                  JOIN word_translation ON (word.id = word_id)
+                  WHERE language_id = :language_id';
 
             $words = (object)ArrayHelper::map(Yii::$app->db->createCommand($query,
                 [':language_id' => $this['id']])

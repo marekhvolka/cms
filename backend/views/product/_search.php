@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProductSearch */
+/* @var $model backend\models\search\ProductSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -16,11 +16,6 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
     <?= $form->field($model, 'globalSearch') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Hľadať', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-    </div>
 
     <?php ActiveForm::end(); ?>
 

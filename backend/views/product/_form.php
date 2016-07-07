@@ -1,7 +1,9 @@
 <?php
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
+use backend\models\Portal;
 use backend\models\Product;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -31,11 +33,15 @@ use yii\helpers\Url;
         'delimiter' => '_',
     ]) ?>
 
-    <?= $form->field($model, 'parent_id')->dropDownList(
-        ArrayHelper::map(Product::find()->all(), 'id', 'breadcrumbs'), [
-            'prompt' => 'Vyber predka'
-        ]
-    ) ?>
+    <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
+        'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id',
+            'breadcrumbs'),
+        'language' => 'en',
+        'options' => ['placeholder' => 'Výber predka ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')

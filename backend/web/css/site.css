@@ -330,3 +330,7 @@ a.anchor {
 .global-search .suggest-page {
     background-color: #d1ffcd;
 }
+
+.search-multimedia {
+    width: 400px !important;
+}

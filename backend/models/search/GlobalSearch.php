@@ -64,7 +64,7 @@ class GlobalSearch
                     'id' => $snippet_code['snippet_id'],
                     '#' => 'code' . $snippet_code['id'],
                 ]),
-                'name' => $snippet_code->getSnippet()->one()->name . ' >> ' . $snippet_code->name,
+                'name' => $snippet_code->getSnippet()->one()->name . ' -> ' . $snippet_code->name,
                 'id' => $snippet_code->id,
                 'class' => 'suggest-snippet-code'
             ];

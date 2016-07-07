@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProductVarSearch */
+/* @var $model backend\models\search\ProductVarSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -14,16 +14,6 @@ use yii\widgets\ActiveForm;
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
-
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'value') ?>
-
-    <?= $form->field($model, 'identifier') ?>
-
-    <?= $form->field($model, 'description') ?>
 
     <?php // echo $form->field($model, 'type_id') ?>
 
