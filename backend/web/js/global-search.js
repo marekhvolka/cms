@@ -91,7 +91,9 @@ $(
                             items.forEach(
                                 function (i)
                                 {
-                                    dataInDOM.append($("<li><a href='" + i.link + "'>" + i.name + " (" + type + ")</a></li>"));
+                                    var liItem = '<li class="' + i.class + '"><a href="' + i.link + '">' + i.name + ' (' + type + ')</a></li>';
+
+                                    dataInDOM.append($(liItem));
                                 }
                             );
                         }

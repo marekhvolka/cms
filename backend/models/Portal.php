@@ -428,6 +428,21 @@ class Portal extends CustomModel implements ICacheable
         }
     }
 
+    public function isChanged()
+    {
+        if (parent::isChanged()) {
+            return true;
+        }
+
+        foreach ($this->portalVarValues as $portalVarValue) {
+            if ($portalVarValue->isChanged()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function compileThanksFiles()
     {
         $thanksCommonDirectory = Yii::$app->dataEngine->getThanksDirectory();

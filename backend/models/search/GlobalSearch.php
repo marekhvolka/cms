@@ -38,7 +38,15 @@ class GlobalSearch
             ->limit(10)->all();
 
         foreach ($snippets as $snippet) {
-            $results['snippet'][] = ['link' => Url::to(['/snippet/edit', 'id' => $snippet['id']])] + $snippet;
+            $results['snippet'][] = [
+                'link' => Url::to([
+                    '/snippet/edit',
+                    'id' => $snippet['id']
+                ]),
+                'name' => $snippet['name'],
+                'id' => $snippet['id'],
+                'class' => 'suggest-snippet'
+            ];
         }
 
         // SNIPPET CODES / ALTERNATIVES
@@ -51,15 +59,15 @@ class GlobalSearch
 
         foreach ($snippet_codes as $snippet_code) {
             $results['snippet_code'][] = [
-                    'link' => Url::to([
-                        '/snippet/edit',
-                        'id' => $snippet_code['snippet_id'],
-                        '#' => 'code' . $snippet_code['id'],
-                    ])
-                ] + [
-                    'name' => $snippet_code->getSnippet()->one()->name . ' >> ' . $snippet_code->name,
-                    'id' => $snippet_code->id
-                ];
+                'link' => Url::to([
+                    '/snippet/edit',
+                    'id' => $snippet_code['snippet_id'],
+                    '#' => 'code' . $snippet_code['id'],
+                ]),
+                'name' => $snippet_code->getSnippet()->one()->name . ' >> ' . $snippet_code->name,
+                'id' => $snippet_code->id,
+                'class' => 'suggest-snippet-code'
+            ];
         }
 
         // PAGES
@@ -77,10 +85,12 @@ class GlobalSearch
             ->all();
 
         foreach ($pages as $page) {
-            $results['page'][] = ['link' => Url::to(['/page/edit', 'id' => $page['id']])] + [
-                    'id' => $page->id,
-                    'name' => $page->breadcrumbs
-                ];
+            $results['page'][] = [
+                'link' => Url::to(['/page/edit', 'id' => $page['id']]),
+                'id' => $page->id,
+                'name' => $page->breadcrumbs,
+                'class' => 'suggest-page'
+            ];
         }
 
         // PRODUCTS
@@ -100,11 +110,14 @@ class GlobalSearch
 
         foreach ($products as $product) {
             $results['product'][] = [
-                    'link' => Url::to([
-                        '/product/edit',
-                        'id' => $product['id']
-                    ])
-                ] + ['name' => $product->breadcrumbs, 'id' => $product->id];
+                'link' => Url::to([
+                    '/product/edit',
+                    'id' => $product['id']
+                ]),
+                'name' => $product->breadcrumbs,
+                'id' => $product->id,
+                'class' => 'suggest-product'
+            ];
         }
 
         return $results;

@@ -315,3 +315,19 @@ a.anchor {
     max-height: 600px;
     overflow-y: scroll;
 }
+
+.global-search .suggest-snippet {
+    background-color: #ffffec;
+}
+
+.global-search .suggest-product {
+    background-color: #dce8ed;
+}
+
+.global-search .suggest-snippet-code {
+    background-color: #fadedd;
+}
+
+.global-search .suggest-page {
+    background-color: #d1ffcd;
+}

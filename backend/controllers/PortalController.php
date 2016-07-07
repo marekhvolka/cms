@@ -80,8 +80,6 @@ class PortalController extends BaseController
                         continue;
                     }
 
-                    $model->portalVarValues[$index]->changed = true;
-
                     if (!$model->portalVarValues[$index]->valueBlock) {
                         $block = new Block();
                         $block->type = 'snippet';
@@ -103,7 +101,7 @@ class PortalController extends BaseController
                             throw new Exception;
                         }
 
-                        if ($portalVarValue->changed) {
+                        if ($portalVarValue->isChanged()) {
                             $this->saveSnippetVarValues($portalVarValue->valueBlock);
                         }
                     }
