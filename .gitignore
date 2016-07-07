@@ -33,5 +33,6 @@ phpunit.phar
 # log files and debug
 backend/runtime
 /common/components/tmp/
-/frontend/web/data/
+/frontend/web/data/*
+!/frontend/web/data/.htaccess
 /.htaccess

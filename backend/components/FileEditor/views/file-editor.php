@@ -129,7 +129,7 @@ function build_file_tree($data, $from_dir = '')
                 <div class="url-address-to-copy">
                     <input class="form-control"
                            id="url"
-                        <?php if ($removeExtensionFromGeneratedUrl) { ?> data-remove-extension <?php } ?>
+                        <?php if ($removeExtensionFromGeneratedUrl)  { ?> data-remove-extension <?php } ?>
                            data-prefix="<?= $generatedUrlPrefix ?>"
                            value="<?= $generatedUrlPrefix ?><?= urlencode($editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl)) ?>">
                     <button class="clippy" data-clipboard-target="#url">
