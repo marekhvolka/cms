@@ -423,7 +423,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             try {
                 $prefix = $this->getIncludePrefix();
 
-                if ($this->product->outdated)
+                if ($this->product && $this->product->outdated)
                     $reload = true;
 
                 $prefix .= '<?php' . PHP_EOL;
