@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\UserSearch */
@@ -26,7 +27,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
             'role',
 
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    if ($action == 'update') {
+                        $action = 'edit';
+                    }
+                    $params = is_array($key) ? $key : ['id' => (string)$key];
+                    $params[0] = $action;
+
+                    return Url::toRoute($params);
+                },
+                'template' => '{update} {delete}'
+            ],
         ],
     ]); ?>
 
