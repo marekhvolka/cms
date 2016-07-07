@@ -13,7 +13,7 @@ use Yii;
  * @property integer $portal_id
  * @property integer $active
  * @property integer $size
- * @property bool $changed
+ * @property bool $outdated
  *
  * @property Page $page
  * @property Portal $portal
@@ -113,7 +113,7 @@ class Area extends CustomModel
         $this->sections = $value;
     }
 
-    public function getContent()
+    public function getContent($reload = false)
     {
         $result = '';
 
@@ -124,7 +124,7 @@ class Area extends CustomModel
 
                     if ($this->active) {
                         foreach ($this->sections as $section) {
-                            $result .= $section->getContent();
+                            $result .= $section->getContent($reload);
                         }
                     }
 
@@ -136,7 +136,7 @@ class Area extends CustomModel
 
                     if ($this->active) {
                         foreach ($this->sections as $section) {
-                            $result .= $section->getContent();
+                            $result .= $section->getContent($reload);
                         }
                     }
 
@@ -154,7 +154,7 @@ class Area extends CustomModel
 
                     foreach ($this->sections as $section) {
                         foreach ($section->rows as $row) {
-                            $result .= $row->getContent();
+                            $result .= $row->getContent($reload);
                         }
                     }
 
@@ -168,7 +168,7 @@ class Area extends CustomModel
 
                         foreach ($this->sections as $section) {
                             foreach ($section->rows as $row) {
-                                $result .= $row->getContent();
+                                $result .= $row->getContent($reload);
                             }
                         }
 
@@ -184,7 +184,7 @@ class Area extends CustomModel
                     $result .= '<header>';
 
                     foreach ($this->sections as $section) {
-                        $result .= $section->getContent();
+                        $result .= $section->getContent($reload);
                     }
 
                     $result .= '</header>';
@@ -196,7 +196,7 @@ class Area extends CustomModel
                     $result .= '<footer>';
 
                     foreach ($this->sections as $section) {
-                        $result .= $section->getContent();
+                        $result .= $section->getContent($reload);
                     }
 
                     $result .= '</footer>';
@@ -208,11 +208,10 @@ class Area extends CustomModel
     }
 
     /** Vrati cestu k suboru, v ktorom je ulozeny layout casti podstranky
+     * @param bool $reload
      * @return string
-     * @internal param string $type - cast - header, footer, sidebar, content
-     * @internal param bool $reload
      */
-    public function getCacheFile()
+    public function getCacheFile($reload = false)
     {
         $path = '';
 
@@ -222,8 +221,8 @@ class Area extends CustomModel
             $path = $this->portal->getMainDirectory() . 'portal_' . $this->type . '.php';
         }
 
-        if (!file_exists($path) || $this->changed) {
-            $buffer = $this->getContent();
+        if (!file_exists($path) || $this->outdated || $reload) {
+            $buffer = $this->getContent($reload);
 
             Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
             $this->setActual();
@@ -234,12 +233,15 @@ class Area extends CustomModel
 
     public function resetAfterUpdate()
     {
-        $this->setChanged();
+        $this->setOutdated();
 
         if ($this->portal) {
-            $this->portal->resetAfterUpdate();
-        } else if ($this->page) {
-            $this->page->resetAfterUpdate();
+            foreach ($this->portal->pages as $page) {
+                $page->setOutdated();
+            }
+        }
+        else if ($this->page) {
+            $this->page->setOutdated();
         }
     }
 
@@ -262,5 +264,14 @@ class Area extends CustomModel
         }
 
         return $path;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->sections as $section) {
+            $section->prepareToDuplicate();
+        }
+
+        unset($this->id);
     }
 }

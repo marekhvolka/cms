@@ -12,7 +12,10 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'session'
+    ],
     'modules' => [],
     'components' => [
         'authManager' => [

@@ -21,6 +21,7 @@ use Yii;
  * @property string $type
  * @property boolean $active
  * @property string $varIdentifier
+ * @property bool $outdated
  *
  * @property string $existing
  * @property string $name
@@ -234,7 +235,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $name;
     }
 
-    public function getMainCacheFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = '';
         $buffer = '';
@@ -279,7 +280,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         }
 
 
-        if (!file_exists($path . '.php') || $this->changed) {
+        if (!file_exists($path . '.php') || $this->outdated || $reload) {
             try {
                 if ($this->isSnippet()) {
                     $blockData = $this->prepareSnippetData();

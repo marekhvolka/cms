@@ -2,21 +2,19 @@
 
 namespace backend\controllers;
 
+use backend\components\VarManager\VarManagerWidget;
 use backend\models\Block;
+use backend\models\Model;
+use backend\models\Product;
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
-//use MongoDB\Driver\Exception\Exception;
-use yii\base\Exception;
-use Yii;
-use backend\models\Product;
 use backend\models\search\ProductSearch;
-use yii\helpers\ArrayHelper;
-use backend\models\Model;
-use yii\web\NotFoundHttpException;
+use Yii;
+use yii\base\Exception;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
-use backend\components\VarManager\VarManagerWidget;
+use yii\web\NotFoundHttpException;
+
+//use MongoDB\Driver\Exception\Exception;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -64,8 +62,7 @@ class ProductController extends BaseController
     {
         if ($id) {
             $model = $this->findModel($id); // Product model retrieved by id.
-        }
-        else {
+        } else {
             $model = new Product();
         }
 
@@ -75,8 +72,9 @@ class ProductController extends BaseController
             try {
                 $productVarValuesData = Yii::$app->request->post('Var');
 
-                if (!($model->validate() && $model->save()))
+                if (!($model->validate() && $model->save())) {
                     throw new Exception;
+                }
 
                 foreach ($productVarValuesData as $index => $productValueData) {
                     $model->loadFromData('productVarValues', $productValueData, $index, ProductVarValue::className());
@@ -98,24 +96,24 @@ class ProductController extends BaseController
                     $this->loadSnippetVarValues($productValueData, $model->productVarValues[$index]->valueBlock);
                 }
 
-                foreach($model->productVarValues as $productVarValue) {
+                foreach ($model->productVarValues as $indexProductVarValue => $productVarValue) {
                     $productVarValue->product_id = $model->id;
 
                     if ($productVarValue->removed) {
                         $productVarValue->delete();
+                        unset($model->productVarValues[$indexProductVarValue]);
                     }
 
-                    if (!($productVarValue->validate() && $productVarValue->save()))
+                    if (!($productVarValue->validate() && $productVarValue->save())) {
                         throw new Exception;
+                    }
 
                     if ($productVarValue->valueBlock) {
                         if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
                             throw new Exception;
                         }
 
-                        if ($productVarValue->changed) {
-                            $this->saveSnippetVarValues($productVarValue->valueBlock);
-                        }
+                        $this->saveSnippetVarValues($productVarValue->valueBlock);
                     }
                 }
 

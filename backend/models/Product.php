@@ -19,6 +19,7 @@ use yii\base\Exception;
  * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
+ * @property bool $outdated
  *
  * @property ProductType $productType
  * @property string $productTypeName
@@ -105,10 +106,11 @@ class Product extends CustomModel implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $this->setChanged();
+        $this->setOutdated();
+        $this->getProductVarsFile();
 
         foreach ($this->pages as $page) {
-            $page->resetAfterUpdate();
+            $page->setOutdated();
         }
 
         /* @var $productSnippet SnippetVarValue */
@@ -128,7 +130,7 @@ class Product extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'product_var.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
 
             try {
                 $buffer = '<?php ' . PHP_EOL;
@@ -357,7 +359,7 @@ class Product extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
 
             try {
                 $buffer = '<?php' . PHP_EOL;

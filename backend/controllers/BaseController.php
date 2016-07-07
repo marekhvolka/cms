@@ -58,6 +58,8 @@ abstract class BaseController extends Controller
 
         $change_portal = Yii::$app->request->get('change-portal');
 
+        Yii::$app->session->set('develop', true);
+
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
             Yii::$app->session->set('portal_id', $change_portal);
         }
@@ -305,50 +307,54 @@ abstract class BaseController extends Controller
         if (!($model->validate() && $model->save()))
             throw new Exception;
 
-        foreach ($model->sections as $section) {
+        foreach ($model->sections as $indexSection => $section) {
             $section->area_id = $model->id;
 
             if ($section->removed) {
                 $section->delete();
+                unset($model->sections[$indexSection]);
                 continue;
             } else if (!($section->validate() && $section->save())) {
                 throw new Exception;
             }
 
-            foreach ($section->rows as $row) {
+            foreach ($section->rows as $indexRow => $row) {
                 $row->section_id = $section->id;
 
                 if ($row->removed) {
                     $row->delete();
+                    unset($section->rows[$indexRow]);
                     continue;
                 }
                 if (!($row->validate() && $row->save())) {
                     throw new Exception;
                 }
 
-                foreach ($row->columns as $column) {
+                foreach ($row->columns as $indexColumn => $column) {
                     $column->row_id = $row->id;
 
                     if ($column->removed) {
                         $column->delete();
+                        unset($row->columns[$indexColumn]);
                         continue;
                     }
                     if (!($column->validate() && $column->save())) {
                         throw new Exception;
                     }
 
-                    foreach ($column->blocks as $block) {
+                    foreach ($column->blocks as $indexBlock => $block) {
                         $block->column_id = $column->id;
 
                         if ($block->removed) {
                             $block->delete();
+                            unset($column->blocks[$indexBlock]);
                             continue;
                         }
                         if (!($block->validate() && $block->save())) {
                             throw new Exception;
                         }
 
-                        if ($block->changed) {
+                        if ($block->isChanged()) {
                             $this->saveSnippetVarValues($block);
                         }
                     }

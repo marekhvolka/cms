@@ -3,7 +3,6 @@
 namespace backend\models;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /**
@@ -15,6 +14,7 @@ use yii\helpers\Url;
  * @property string $description
  * @property string $portal
  * @property integer $snippet_id
+ * @property bool $outdated
  *
  * @property Block[] $blocks
  * @property string $url
@@ -40,7 +40,12 @@ class SnippetCode extends CustomModel
             [['code', 'description'], 'string'],
             [['snippet_id'], 'integer'],
             [['name', 'portal'], 'string', 'max' => 50],
-            [['name', 'snippet_id'], 'unique', 'targetAttribute' => ['name', 'snippet_id'], 'message' => 'The combination of Name and Snippet ID has already been taken.']
+            [
+                ['name', 'snippet_id'],
+                'unique',
+                'targetAttribute' => ['name', 'snippet_id'],
+                'message' => 'The combination of Name and Snippet ID has already been taken.'
+            ]
         ];
     }
 
@@ -87,16 +92,16 @@ class SnippetCode extends CustomModel
     public function getUrl()
     {
         return Url::to(
-        [
-            '/snippet/edit/',
-            'id' => $this->snippet_id,
-            '#' => 'code' . $this->id
-        ]);
+            [
+                '/snippet/edit/',
+                'id' => $this->snippet_id,
+                '#' => 'code' . $this->id
+            ]);
     }
 
     public function resetAfterUpdate()
     {
-        $this->setChanged();
+        $this->setOutdated();
 
         foreach ($this->blocks as $block) {
             $block->resetAfterUpdate();

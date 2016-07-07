@@ -54,6 +54,7 @@ class TrackingCodeController extends BaseController
             $model = new TrackingCode();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->portal->resetAfterUpdate();
             return $this->redirect(['index']);
         } else {
             return $this->render('edit', [

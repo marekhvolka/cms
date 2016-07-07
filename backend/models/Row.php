@@ -93,7 +93,7 @@ class Row extends CustomModel implements IDuplicable
         return '</div> <!-- row end -->' . PHP_EOL;
     }
 
-    public function getContent()
+    public function getContent($reload = false)
     {
         if ($this->getBlocksCount() == 0)
             return '';
@@ -101,7 +101,7 @@ class Row extends CustomModel implements IDuplicable
         $result = $this->getPrefix();
 
         foreach ($this->columns as $column) {
-            $result .= $column->getContent();
+            $result .= $column->getContent($reload);
         }
 
         $result .= $this->getPostfix();

@@ -21,6 +21,7 @@ use yii\base\Exception;
  * @property string $last_edit
  * @property bool $type
  * @property integer $last_edit_user
+ * @property bool $outdated
  *
  * @property User $lastEditUser
  * @property SnippetCode[] $snippetCodes
@@ -170,7 +171,7 @@ class Snippet extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'snippet.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
 
             try {
                 $dataEngine = Yii::$app->dataEngine;
@@ -203,13 +204,12 @@ class Snippet extends CustomModel implements ICacheable
     {
         $changed = false;
 
-        if ($this->changed || $this->snippetVarsHasChanged()) {
-            $this->getMainCacheFile();
+        if ($this->isChanged() || $this->snippetVarsHasChanged()) {
             $changed = true;
         }
         /* @var $snippetCode \backend\models\SnippetCode */
         foreach ($this->snippetCodes as $snippetCode) {
-            if ($snippetCode->isAttributeChanged('code') || $changed) {
+            if ($snippetCode->isChanged() || $changed) {
                 $snippetCode->resetAfterUpdate();
             }
         }
@@ -218,7 +218,7 @@ class Snippet extends CustomModel implements ICacheable
     public function snippetVarsHasChanged()
     {
         foreach ($this->snippetFirstLevelVars as $snippetVar) {
-            if ($snippetVar->hasChanged()) {
+            if ($snippetVar->isChanged()) {
                 return true;
             }
         }

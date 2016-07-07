@@ -181,6 +181,8 @@ class PortalController extends BaseController
                 $model->{$type}->portal_id = $model->id;
                 $this->saveLayout($model->{$type});
 
+                $model->{$type}->resetAfterUpdate();
+
                 $transaction->commit();
             } catch (Exception $exc) {
                 $transaction->rollBack();

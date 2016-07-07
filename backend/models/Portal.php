@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property integer $published
+ * @property bool $outdated
  *
  * @property string $templatePath
  * @property Page[] $pages
@@ -283,7 +284,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'portal_var.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -351,7 +352,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
             try {
                 $buffer = '<?php' . PHP_EOL;
 
@@ -416,7 +417,7 @@ class Portal extends CustomModel implements ICacheable
 
     public function resetAfterUpdate()
     {
-        $this->setChanged();
+        $this->setOutdated();
 
         foreach ($this->pages as $page) {
             $page->resetAfterUpdate();

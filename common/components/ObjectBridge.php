@@ -1,5 +1,4 @@
 <?php
-use backend\models\SystemException;
 
 /**
  * Created by PhpStorm.
@@ -63,12 +62,26 @@ class ObjectBridge extends ArrayObject
 
     public function hasTag($tag)
     {
-        if (!isset($this->obj->tags) || !isset($tag))
+        if (!isset($this->obj->tags) || !isset($tag)) {
             return false;
+        }
 
-        if (key_exists($tag->id, $this->obj->tags))
+        if (key_exists($tag->id, $this->obj->tags)) {
             return true;
+        }
         return false;
+    }
+
+    public function hasDiscount()
+    {
+        if (!isset($this->obj) || !isset($this->obj->platnost_akcie)) {
+            return false;
+        }
+        if (time() < strtotime($this->obj->platnost_akcie)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

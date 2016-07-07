@@ -112,7 +112,7 @@ class TrackingCode extends CustomModel
 
     public function resetAfterUpdate()
     {
-        $this->setChanged();
+        $this->setOutdated();
 
         $this->portal->resetAfterUpdate();
 

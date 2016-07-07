@@ -19,8 +19,6 @@ use Yii;
  */
 class ProductVarValue extends Variable
 {
-    public $existing;
-    
     /**
      * @inheritdoc
      */

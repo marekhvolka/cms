@@ -29,6 +29,7 @@ use yii\base\Exception;
  * @property string $last_edit
  * @property integer $last_edit_user
  * @property string $breadcrumbs
+ * @property bool $outdated
  *
  * @property Portal $portal
  * @property User $lastEditUser
@@ -346,7 +347,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     {
         $path = $this->getMainDirectory() . 'page_var.php';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
 
             try {
                 $dataEngine = Yii::$app->dataEngine;
@@ -414,23 +415,27 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getMainPreCacheFile()
     {
+        $reload = false;
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $this->changed) {
+        if (!file_exists($path) || $this->outdated) {
 
             try {
                 $prefix = $this->getIncludePrefix();
+
+                if ($this->product->outdated)
+                    $reload = true;
 
                 $prefix .= '<?php' . PHP_EOL;
 
                 $prefix .= '$global_header = executeScript("' . $this->portal->header->getCacheFile() . '");' . PHP_EOL;
                 $prefix .= '$global_footer = executeScript("' . $this->portal->footer->getCacheFile() . '");' . PHP_EOL;
 
-                $prefix .= '$page_header = executeScript("' . $this->header->getCacheFile() . '");' . PHP_EOL;
-                $prefix .= '$page_footer = executeScript("' . $this->footer->getCacheFile() . '");' . PHP_EOL;
+                $prefix .= '$page_header = executeScript("' . $this->header->getCacheFile($reload) . '");' . PHP_EOL;
+                $prefix .= '$page_footer = executeScript("' . $this->footer->getCacheFile($reload) . '");' . PHP_EOL;
 
-                $prefix .= '$page_sidebar = executeScript("' . $this->sidebar->getCacheFile() . '");' . PHP_EOL;
-                $prefix .= '$page_content = executeScript("' . $this->content->getCacheFile() . '");' . PHP_EOL;
+                $prefix .= '$page_sidebar = executeScript("' . $this->sidebar->getCacheFile($reload) . '");' . PHP_EOL;
+                $prefix .= '$page_content = executeScript("' . $this->content->getCacheFile($reload) . '");' . PHP_EOL;
 
                 if ($this->sidebar_side == 'left') {
                     $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
@@ -500,9 +505,9 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         return $prefix;
     }
 
-    public function resetAfterUpdate()
+    public function resetAfterUpdate($type = 'all')
     {
-        $this->setChanged();
+        $this->setOutdated();
 
         foreach ($this->pages as $page) {
             $page->resetAfterUpdate();
@@ -515,21 +520,10 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
     public function prepareToDuplicate()
     {
-        foreach ($this->headerSections as $section) {
-            $section->prepareToDuplicate();
-        }
-
-        foreach ($this->footerSections as $section) {
-            $section->prepareToDuplicate();
-        }
-
-        foreach ($this->contentSections as $section) {
-            $section->prepareToDuplicate();
-        }
-
-        foreach ($this->sidebarSections as $section) {
-            $section->prepareToDuplicate();
-        }
+        $this->header->prepareToDuplicate();
+        $this->footer->prepareToDuplicate();
+        $this->sidebar->prepareToDuplicate();
+        $this->content->prepareToDuplicate();
 
         unset($this->id);
     }
