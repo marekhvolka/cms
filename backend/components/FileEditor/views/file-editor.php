@@ -19,6 +19,8 @@ use yii\helpers\Url;
 /* @var $fileTree array list of files / subdirectories */
 /* @var $directoryTree array list of directories (as strings with whole relative paths */
 /* @var $isImageLoaded boolean is an image shown by default? */
+/* @var $removeExtensionFromGeneratedUrl boolean should the extension be removed from the file name when generating url? */
+/* @var $generatedUrlPrefix string prefix for URL generating */
 
 FileEditorAsset::register($this);
 
@@ -125,8 +127,11 @@ function build_file_tree($data, $from_dir = '')
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
 
                 <div class="url-address-to-copy">
-                    <input class="form-control" id="url" data-prefix="<?= $generatedUrlPrefix ?>"
-                           value="<?= $generatedUrlPrefix ?><?= urlencode($editFileForm->directory . "/" . $editFileForm->name) ?>">
+                    <input class="form-control"
+                           id="url"
+                        <?php if ($removeExtensionFromGeneratedUrl) { ?> data-remove-extension <?php } ?>
+                           data-prefix="<?= $generatedUrlPrefix ?>"
+                           value="<?= $generatedUrlPrefix ?><?= urlencode($editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl)) ?>">
                     <button class="clippy" data-clipboard-target="#url">
                         <img src="<?= Url::to(['/images/clippy.svg']); ?>" alt="Copy to clipboard">
                     </button>

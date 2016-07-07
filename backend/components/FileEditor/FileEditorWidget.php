@@ -72,6 +72,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
     public $directory;
     public $compileScss = true;
     public $generatedUrlPrefix = '';
+    public $removeExtensionFromGeneratedUrl = false;
     public $extraCompileBy = null;
 
     /**
@@ -188,7 +189,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
             'newFileForm' => $new_file_form,
             'createDirectoryForm' => $create_directory_form,
             'isImageLoaded' => $is_image_loaded,
-            'generatedUrlPrefix' => $this->generatedUrlPrefix
+            'generatedUrlPrefix' => $this->generatedUrlPrefix,
+            'removeExtensionFromGeneratedUrl' => $this->removeExtensionFromGeneratedUrl
         ], $this);
     }
 

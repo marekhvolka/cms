@@ -32,8 +32,11 @@ $(function () {
 
             $.get(url, function (data) {
                 var url = $("#url");
-                url.val(url.attr('data-prefix') + encodeURIComponent(directory + "/" + name));
                 file_editor.find('.file-name').text(name);
+                if (url.is('[data-remove-extension]')){
+                    name = name.replace(/\.[^/.]+$/, "");
+                }
+                url.val(url.attr('data-prefix') + encodeURIComponent(directory + "/" + name));
                 code_mirror.getDoc().setValue(data);
                 code_mirror.setOption('readOnly', false);
                 code_mirror.refresh();
