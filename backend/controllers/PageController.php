@@ -11,6 +11,8 @@ use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PageController implements the CRUD actions for Page model.
@@ -109,6 +111,12 @@ class PageController extends BaseController
                 $this->loadLayout($model->sidebar, $sidebarData);
 
                 $model->portal_id = Yii::$app->session->get('portal_id');
+
+                if (Yii::$app->request->isAjax) { // ajax validácia
+                    $transaction->rollBack();
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
+                }
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;

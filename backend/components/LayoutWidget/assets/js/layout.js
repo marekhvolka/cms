@@ -162,6 +162,6 @@ function getColumnsWidths(rowType)
 
  */
 
-$('.dropdown-toggle').dropdown();
+//$('.dropdown-toggle').dropdown();
 
 
