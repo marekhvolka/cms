@@ -9,9 +9,11 @@ use backend\models\Portal;
 use backend\models\PortalVar;
 use backend\models\PortalVarValue;
 use backend\models\search\PortalSearch;
+use common\components\Alert;
 use Exception;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -111,8 +113,11 @@ class PortalController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                return $this->redirect(['index']);
+                Alert::success('Položka bola úspešne uložená.');
+
+                return $this->redirect(Url::current());
             } catch (Exception $e) {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky. Skontrolujte dáta.');
                 // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
                 return $this->render('edit', [
@@ -160,7 +165,11 @@ class PortalController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if($this->findModel($id)->delete()){
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -184,7 +193,10 @@ class PortalController extends BaseController
                 $model->{$type}->resetAfterUpdate();
 
                 $transaction->commit();
+
+                Alert::success('Položka bola úspešne uložená.');
             } catch (Exception $exc) {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
                 $transaction->rollBack();
 
                 return $this->render('layout-edit', [
@@ -212,7 +224,7 @@ class PortalController extends BaseController
         if (($model = Portal::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 }

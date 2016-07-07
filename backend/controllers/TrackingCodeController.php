@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\components\Alert;
 use Yii;
 use backend\models\TrackingCode;
 use backend\models\search\TrackingCodeSearch;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -15,7 +17,7 @@ class TrackingCodeController extends BaseController
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -48,19 +50,25 @@ class TrackingCodeController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id)
+        if ($id) {
             $model = $this->findModel($id);
-        else
-            $model = new TrackingCode();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->portal->resetAfterUpdate();
-            return $this->redirect(['index']);
         } else {
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+            $model = new TrackingCode();
         }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                $model->portal->resetAfterUpdate();
+                Alert::success('Položka bola úspešne uložená.');
+                return $this->redirect(Url::current());
+            } else {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            }
+        }
+
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -71,7 +79,11 @@ class TrackingCodeController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if ($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -88,7 +100,7 @@ class TrackingCodeController extends BaseController
         if (($model = TrackingCode::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 }

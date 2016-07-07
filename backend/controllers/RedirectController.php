@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\components\Alert;
 use Yii;
 use backend\models\Redirect;
 use backend\models\search\RedirectSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -52,18 +54,23 @@ class RedirectController extends Controller
      */
     public function actionEdit($id = null)
     {
-        if ($id)
+        if ($id) {
             $model = $this->findModel($id);
-        else
-            $model = new Redirect();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+            $model = new Redirect();
         }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                Alert::success('Položka bola úspešne uložená.');
+                return $this->redirect(Url::current());
+            } else {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            }
+        }
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -74,7 +81,11 @@ class RedirectController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne zmazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -91,7 +102,7 @@ class RedirectController extends Controller
         if (($model = Redirect::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 }

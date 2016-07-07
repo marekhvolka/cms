@@ -87,9 +87,9 @@ class WordController extends BaseController
                     $translation->save();
                 }
 
-                Alert::success('Uložené');
+                Alert::success('Položka bola úspešne uložená.');
             } else {
-                Alert::danger('Nastala chyba.');
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
             }
 
             $continue = Yii::$app->request->post('continue');
@@ -115,7 +115,11 @@ class WordController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if ($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -132,7 +136,7 @@ class WordController extends BaseController
         if (($model = Word::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 }

@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\components\Alert;
 use Yii;
 use common\models\User;
 use backend\models\search\UserSearch;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -15,7 +17,7 @@ class UserController extends BaseController
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -60,15 +62,21 @@ class UserController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id)
+        if ($id) {
             $model = $this->findModel($id);
-        else
-            $model = new User();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            $model = new User();
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                Alert::success('Položka bola úspešne uložená.');
+                return $this->redirect(Url::current());
+            } else {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            }
+        } else {
+            return $this->render('edit', [
                 'model' => $model,
             ]);
         }
@@ -82,7 +90,11 @@ class UserController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if ($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -99,7 +111,7 @@ class UserController extends BaseController
         if (($model = User::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 }
