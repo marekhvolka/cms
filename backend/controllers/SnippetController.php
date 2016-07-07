@@ -7,6 +7,7 @@ use backend\models\Snippet;
 use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarDefaultValue;
+use common\components\Alert;
 use Exception;
 use Yii;
 use yii\filters\VerbFilter;
@@ -100,7 +101,7 @@ class SnippetController extends BaseController
                 $transaction->commit();
 
                 $continue = Yii::$app->request->post('continue');
-
+                Alert::success('Položka bola úspešne uložená.');
                 if (isset($continue)) {
                     return $this->redirect(['edit', 'id' => $model->id]);
                 } else {
@@ -108,6 +109,7 @@ class SnippetController extends BaseController
                 }
 
             } catch (Exception $e) {
+                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
                 $transaction->rollBack();
                 return $this->render('edit', [
                     'model' => $model,
@@ -203,7 +205,11 @@ class SnippetController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if($this->findModel($id)->delete()){
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -220,7 +226,7 @@ class SnippetController extends BaseController
         if (($model = Snippet::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
 

@@ -44,18 +44,6 @@ class SystemExceptionController extends BaseController
     }
 
     /**
-     * Displays a single SystemException model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new SystemException model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
