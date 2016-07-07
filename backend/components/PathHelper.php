@@ -28,7 +28,7 @@ class PathHelper
             return true;
         } else {
             if (self::makePath($dir, true)) {
-                if (mkdir($dir)) {
+                if (mkdir($dir, 0777, true)) {
                     chmod($dir, 0777);
 
                     return true;
