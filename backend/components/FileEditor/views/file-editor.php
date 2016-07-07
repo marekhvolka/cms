@@ -131,7 +131,7 @@ function build_file_tree($data, $from_dir = '')
                            id="url"
                         <?php if ($removeExtensionFromGeneratedUrl)  { ?> data-remove-extension <?php } ?>
                            data-prefix="<?= $generatedUrlPrefix ?>"
-                           value="<?= $generatedUrlPrefix ?><?= urlencode($editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl)) ?>">
+                           value="<?= $generatedUrlPrefix ?><?= $editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl) ?>">
                     <button class="clippy" data-clipboard-target="#url">
                         <img src="<?= Url::to(['/images/clippy.svg']); ?>" alt="Copy to clipboard">
                     </button>

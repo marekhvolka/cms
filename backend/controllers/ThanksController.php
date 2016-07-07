@@ -14,7 +14,7 @@ class ThanksController extends BaseController
         $file_editor = Yii::createObject([
             'class' => FileEditorWidget::className(),
             'directory' => Yii::$app->dataEngine->getThanksDirectory(),
-            'generatedUrlPrefix' => '{$portal->url|escapeUrl}' . urlencode('/thanks/'),
+            'generatedUrlPrefix' => '{$portal->url|escapeUrl}' . '/thanks/',
             'removeExtensionFromGeneratedUrl' => true,
             'extraCompileBy' => array(Yii::$app->dataEngine, 'compileThanksFile')
         ]);

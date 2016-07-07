@@ -81,7 +81,7 @@ class TemplateController extends BaseController
         $file_editor = Yii::createObject([
             'class' => FileEditorWidget::className(),
             'directory' => $template->getMainDirectory(),
-            'generatedUrlPrefix' => '{$portal->template|escapeUrl}'
+            'generatedUrlPrefix' => '{$portal->template}'
         ]);
         $state = $file_editor->performActions();
 

@@ -36,7 +36,7 @@ $(function () {
                 if (url.is('[data-remove-extension]')) {
                     name = name.replace(/\.[^/.]+$/, "");
                 }
-                url.val(url.attr('data-prefix') + encodeURIComponent(directory + "/" + name));
+                url.val(url.attr('data-prefix') + directory + "/" + name);
                 code_mirror.getDoc().setValue(data);
                 code_mirror.setOption('readOnly', false);
                 code_mirror.refresh();
