@@ -31,6 +31,12 @@ use yii\helpers\Url;
                 'class' => 'btn btn-primary',
                 'id' => 'submit-btn'
             ]) ?>
+
+            <?= Html::submitButton('Uložiť a pokračovať', [
+                'class' => 'btn btn-info',
+                'id' => 'submit-btn',
+                'name' => 'continue'
+            ]) ?>
         </div>
     </div>
 </div>

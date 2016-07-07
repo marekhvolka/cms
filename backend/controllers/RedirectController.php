@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * RedirectController implements the CRUD actions for Redirect model.
  */
-class RedirectController extends Controller
+class RedirectController extends BaseController
 {
     /**
      * @inheritdoc

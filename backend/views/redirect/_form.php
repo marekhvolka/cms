@@ -35,8 +35,14 @@ use yii\widgets\ActiveForm;
         <div class="col-sm-10 col-sm-offset-2">
             <div class="form-group">
                 <?= Html::submitButton('Uložiť', [
-                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'class' => 'btn btn-primary',
                     'id' => 'submit-btn'
+                ]) ?>
+
+                <?= Html::submitButton('Uložiť a pokračovať', [
+                    'class' => 'btn btn-info',
+                    'id' => 'submit-btn',
+                    'name' => 'continue'
                 ]) ?>
             </div>
         </div>

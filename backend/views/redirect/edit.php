@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Upraviť presmerovanie: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Presmerovania', 'url' => ['index']];
-$this->params['breadcrumbs'][] = 'Upraviť presmerovanie';
+$this->params['breadcrumbs'][] = 'Upraviť';
 ?>
 <div class="redirect-update">
 

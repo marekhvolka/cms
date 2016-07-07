@@ -418,9 +418,10 @@ class Portal extends CustomModel implements ICacheable
     public function resetAfterUpdate()
     {
         $this->setOutdated();
+        $this->getPortalVarsFile();
 
         foreach ($this->pages as $page) {
-            $page->resetAfterUpdate();
+            $page->setOutdated();
         }
 
         foreach ($this->portalSnippets as $portalSnippet) {

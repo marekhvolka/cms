@@ -41,7 +41,7 @@ use yii\widgets\ActiveForm;
             ]) ?>
 
             <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id', 'name'),
+                'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->pages, 'id', 'breadcrumbs'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber rodiča ...'],
                 'pluginOptions' => [
@@ -61,7 +61,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id',
-            'name'),
+            'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber produktu ...'],
         'pluginOptions' => [
@@ -157,12 +157,12 @@ use yii\widgets\ActiveForm;
         <div class="col-sm-10 col-sm-offset-2">
             <div class="form-group">
                 <?= Html::submitButton('Uložiť', [
-                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'class' => 'btn btn-primary',
                     'id' => 'submit-btn'
                 ]) ?>
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
-                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+                    'class' => 'btn btn-info',
                     'id' => 'submit-btn',
                     'name' => 'continue'
                 ]) ?>

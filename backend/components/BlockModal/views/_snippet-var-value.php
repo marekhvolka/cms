@@ -77,7 +77,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
                         ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products,
-                            'id', 'name')
+                            'id', 'breadcrumbs')
                         ,
                         [
                             'name' => $prefix . '[value_product_id]',

@@ -225,7 +225,7 @@ ul {
 
 .global-search {
     display: inline-block;
-    min-width: 600px;
+    min-width: 500px;
     position: relative;
 }
 
@@ -246,7 +246,6 @@ ul {
     border: 1px solid #C9C9C9;
     border-top: none;
     z-index: 1;
-    padding-left: 0;
     margin-bottom: 0;
 }
 

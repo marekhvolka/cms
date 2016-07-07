@@ -73,10 +73,10 @@ class DataEngine extends Component
             $buffer .= 'require_once("' . $this->getObjectBridgeClassPath() . '");' . PHP_EOL;
             $buffer .= 'require_once("' . $this->getExceptionHandlerClassPath() . '");' . PHP_EOL;
 
-            $buffer .= '$bootstrap_css = "http://www.hyperfinance.cz/css/bootstrap.min.css";' . PHP_EOL;
-            $buffer .= '$bootstrap_js = "http://www.hyperfinance.cz/js/bootstrap.min.js";' . PHP_EOL;
+            $buffer .= '$bootstrap_css = "/css/bootstrap.min.css";' . PHP_EOL;
+            $buffer .= '$bootstrap_js = "/js/bootstrap.min.js";' . PHP_EOL;
             $buffer .= '$jquery = "//code.jquery.com/jquery-1.10.2.min.js";' . PHP_EOL;
-            $buffer .= '$font_awesome = "http://www.hyperfinance.cz/fonts/font-awesome-4.3.0/css/font-awesome.min.css";' . PHP_EOL;
+            $buffer .= '$font_awesome = "/fonts/font-awesome-4.3.0/css/font-awesome.min.css";' . PHP_EOL;
 
             $buffer .= '?>' . PHP_EOL;
 

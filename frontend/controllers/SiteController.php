@@ -284,7 +284,7 @@ class SiteController extends Controller
 
     public function actionCacheFromBuffer($limit = 1)
     {
-        $pages = Page::find()->where(['changed' => 1])
+        $pages = Page::find()->where(['outdated' => 1])
             ->limit($limit)
             ->all();
 

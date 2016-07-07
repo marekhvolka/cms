@@ -70,16 +70,15 @@ function generate_form_for_language($index, $translation, $form)
         <div class="col-sm-10 col-sm-offset-2">
             <div class="form-group">
                 <?= Html::submitButton('Uložiť', [
-                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-                    'id'    => 'submit-btn'
+                    'class' => 'btn btn-primary',
+                    'id' => 'submit-btn'
                 ]) ?>
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
-                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-                    'id'    => 'submit-btn',
+                    'class' => 'btn btn-info',
+                    'id' => 'submit-btn',
                     'name' => 'continue'
                 ]) ?>
-
             </div>
         </div>
     </div>

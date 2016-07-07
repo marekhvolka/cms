@@ -1950,6 +1950,11 @@ ul.alert-dropdown {
     background: #293846;
 }
 
+.navbar-nav > li > .dropdown-menu {
+    background: #293846;
+    color: #fff;
+}
+
 .navbar-inverse .navbar-nav > li > a {
     color: #A7B1C2;
 }

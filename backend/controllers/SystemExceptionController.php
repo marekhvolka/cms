@@ -2,11 +2,11 @@
 
 namespace backend\controllers;
 
-use Yii;
-use backend\models\SystemException;
 use backend\models\search\SystemExceptionSearch;
-use yii\web\NotFoundHttpException;
+use backend\models\SystemException;
+use Yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * SystemExceptionController implements the CRUD actions for SystemException model.
@@ -78,6 +78,18 @@ class SystemExceptionController extends BaseController
                 'model' => $model,
             ]);
         }
+    }
+
+    /**
+     * Displays a single Template model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
