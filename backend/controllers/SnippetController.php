@@ -96,9 +96,9 @@ class SnippetController extends BaseController
                     $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
                 }
 
-                $model->resetAfterUpdate();
-
                 $transaction->commit();
+
+                $model->resetAfterUpdate();
 
                 $continue = Yii::$app->request->post('continue');
                 Alert::success('Položka bola úspešne uložená.');

@@ -154,7 +154,7 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function setOutdated()
     {
-        $this->outdated = true;
+        $this->outdated = 1;
         $this->save();
     }
 
@@ -168,7 +168,7 @@ class CustomModel extends \yii\db\ActiveRecord
     public function isChanged()
     {
         foreach($this->myOldAttributes as $index => $oldAttribute) {
-            if ($oldAttribute != $this->{$index}) {
+            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user') {
                 return true;
             }
         }
