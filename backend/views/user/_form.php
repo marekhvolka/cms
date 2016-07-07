@@ -18,8 +18,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
     <?= $form->field($model, 'active')->textInput() ?>
 
     <?= $form->field($model, 'allowPortal')->textInput(['maxlength' => true]) ?>

@@ -50,6 +50,7 @@ class SnippetVar extends Variable
                 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
                 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'
             ],
+            [['identifier'], 'match', 'pattern' => '/^[_a-zA-Z][a-zA-Z0-9_]*$/i', 'message' => 'Identifikátor musí začínať znakom alebo _, pokračovať smie len znakom, číslom alebo _.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [
                 ['snippet_id'],

@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin([
         'id' => 'form',
-        //'enableAjaxValidation' => true, //TODO: think about it :)
+        'enableAjaxValidation' => true,
     ]); ?>
 
     <div class="panel panel-default">

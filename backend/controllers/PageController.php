@@ -6,10 +6,13 @@ use backend\models\Area;
 use backend\models\Page;
 use backend\models\search\PageSearch;
 use backend\models\Section;
+use common\components\Alert;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PageController implements the CRUD actions for Page model.
@@ -109,6 +112,12 @@ class PageController extends BaseController
 
                 $model->portal_id = Yii::$app->session->get('portal_id');
 
+                if (Yii::$app->request->isAjax) { // ajax validácia
+                    $transaction->rollBack();
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
+                }
+
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
@@ -159,7 +168,13 @@ class PageController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if($model->getPages()->count() == 0){
+            $model->delete();
+        } else {
+            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');
+        }
 
         return $this->redirect(['index']);
     }

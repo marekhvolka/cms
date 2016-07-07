@@ -93,4 +93,12 @@ class EditFileForm extends Model
     {
         return trim($this->directory, "/") . DIRECTORY_SEPARATOR . trim($this->name, "/");
     }
+
+    public function getFileName($withoutExtension = false){
+        if($withoutExtension){
+            return pathinfo($this->name, PATHINFO_FILENAME);
+        } else {
+            return $this->name;
+        }
+    }
 }

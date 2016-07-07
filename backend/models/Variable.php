@@ -30,7 +30,8 @@ abstract class Variable extends CustomModel
         return [
             [['identifier', 'type_id'], 'required'],
             [['type_id', 'description'], 'string'],
-            [['identifier'], 'string', 'max' => 50]
+            [['identifier'], 'string', 'max' => 50],
+            [['identifier'], 'match', 'pattern' => '/^[_a-zA-Z][a-zA-Z0-9_]*$/i', 'message' => 'Identifikátor musí začínať znakom alebo _, pokračovať smie len znakom, číslom alebo _.']
         ];
     }
 

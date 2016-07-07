@@ -43,7 +43,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    if ($action == 'update') {
+                        $action = 'edit';
+                    }
+                    $params = is_array($key) ? $key : ['id' => (string)$key];
+                    $params[0] = $action;
+
+                    return Url::toRoute($params);
+                },
+                'template' => '{update} {delete}'
+            ],
         ],
     ]); ?>
 
