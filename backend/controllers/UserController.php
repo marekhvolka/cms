@@ -2,13 +2,13 @@
 
 namespace backend\controllers;
 
-use common\components\Alert;
-use Yii;
-use common\models\User;
 use backend\models\search\UserSearch;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
+use common\components\Alert;
+use common\models\User;
+use Exception;
+use Yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -62,24 +62,29 @@ class UserController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new User();
-        }
+        $model = $id ? $this->findModel($id) : new User();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                Alert::success('Položka bola úspešne uložená.');
-                return $this->redirect(Url::current());
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
             }
-        } else {
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
+            }
         }
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
     }
 
     /**

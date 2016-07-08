@@ -52,10 +52,6 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
-
-            <?= $form->field($model, 'in_menu')->widget(SwitchInput::classname(), [
-                'type' => SwitchInput::CHECKBOX
-            ]) ?>
         </div>
     </div>
 

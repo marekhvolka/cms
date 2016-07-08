@@ -21,7 +21,10 @@ use yii\helpers\Url;
 
 <div class="product-form">
 
-    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 

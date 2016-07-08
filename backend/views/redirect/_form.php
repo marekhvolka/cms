@@ -12,7 +12,10 @@ use yii\widgets\ActiveForm;
 
 <div class="redirect-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'source_url')->textInput() ?>
 

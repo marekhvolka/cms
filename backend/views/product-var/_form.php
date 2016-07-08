@@ -15,7 +15,10 @@ use kartik\select2\Select2;
 
 <div class="product-var-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -49,7 +52,7 @@ use kartik\select2\Select2;
         'data' => $productTypesData,
         'id' => 'product_types',
         'options' => [
-            'placeholder' => 'Select or type cover url ...',
+            'placeholder' => 'Vyber pre ake typy produktov sa má zobrazovať',
             'multiple' => true,
         ],
         'pluginOptions' => [

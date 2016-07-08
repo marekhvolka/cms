@@ -10,10 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Šablóny', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Upraviť šablónu';
 ?>
 <div class="template-update">
-
-    
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
-
 </div>

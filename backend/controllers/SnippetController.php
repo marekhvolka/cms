@@ -66,6 +66,10 @@ class SnippetController extends BaseController
         }
 
         if ($model->load(Yii::$app->request->post())) {
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if (!($model->validate() && $model->save())) {
@@ -100,20 +104,10 @@ class SnippetController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                $continue = Yii::$app->request->post('continue');
-                Alert::success('Položka bola úspešne uložená.');
-                if (isset($continue)) {
-                    return $this->redirect(['edit', 'id' => $model->id]);
-                } else {
-                    return $this->redirect(['index']);
-                }
-
+                return $this->redirectAfterSave($model);
             } catch (Exception $e) {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
                 $transaction->rollBack();
-                return $this->render('edit', [
-                    'model' => $model,
-                ]);
+                return $this->redirectAfterFail($model);
             }
         } else {
             return $this->render('edit', [

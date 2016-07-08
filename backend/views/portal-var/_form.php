@@ -13,7 +13,10 @@ use yii\widgets\ActiveForm;
 
 <div class="portal-var-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 

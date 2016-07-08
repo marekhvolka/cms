@@ -8,27 +8,26 @@ use backend\components\MultimediaWidget\MultimediaWidget;
 use backend\models\Area;
 use backend\models\Block;
 use backend\models\Column;
-use backend\models\CustomModel;
 use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
-use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Product;
-use backend\models\ProductType;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
 use backend\models\Snippet;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
+use common\components\Alert;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\widgets\ActiveForm;
 
 /**
  * WordController implements the CRUD actions for Word model.
@@ -86,7 +85,11 @@ abstract class BaseController extends Controller
         $item->upload();
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return ["state" => "ok", 'path' => $item->path, 'pathForWeb' => MultimediaCategory::fromPath($item->path)->pathForWeb];
+        return [
+            "state" => "ok",
+            'path' => $item->path,
+            'pathForWeb' => MultimediaCategory::fromPath($item->path)->pathForWeb
+        ];
     }
 
     public function actionMultimediaRefresh()
@@ -199,8 +202,7 @@ abstract class BaseController extends Controller
 
         if ($snippet) {
             $block->snippet_code_id = $snippet->snippetCodes[0];
-        }
-        else if ($parent) {
+        } else if ($parent) {
             $block->parent_id = $parent->id;
         }
 
@@ -245,8 +247,9 @@ abstract class BaseController extends Controller
      */
     public function loadLayout(Area $model, $data)
     {
-        if (!key_exists('Section', $data))
+        if (!key_exists('Section', $data)) {
             return;
+        }
 
         $sectionOrderIndex = 1;
         foreach ($data['Section'] as $indexSection => $itemSection) {
@@ -304,8 +307,9 @@ abstract class BaseController extends Controller
      */
     public function saveLayout($model)
     {
-        if (!($model->validate() && $model->save()))
+        if (!($model->validate() && $model->save())) {
             throw new Exception;
+        }
 
         foreach ($model->sections as $indexSection => $section) {
             $section->area_id = $model->id;
@@ -414,5 +418,35 @@ abstract class BaseController extends Controller
                 $this->saveSnippetVarValues($listItem, 'list');
             }
         }
+    }
+
+    protected function redirectAfterSave($model, $editOptions = null)
+    {
+        Alert::success('Položka bola úspešne uložená.');
+
+        $continue = Yii::$app->request->post('continue');
+        if (isset($continue)) {
+            return $this->redirect([
+                'edit',
+                'id' => $model->id,
+                $editOptions]);
+        } else {
+            return $this->redirect(['index']);
+        }
+    }
+
+    protected function redirectAfterFail($model, $editOptions = null)
+    {
+        Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+        return $this->render('edit', [
+            'model' => $model,
+            $editOptions
+        ]);
+    }
+
+    protected function ajaxValidation($model)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return ActiveForm::validate($model);
     }
 }

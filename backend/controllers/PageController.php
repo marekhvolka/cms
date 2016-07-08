@@ -64,6 +64,7 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
+            
 
             $model->header = new Area();
             $model->header->type = 'header';
@@ -73,6 +74,7 @@ class PageController extends BaseController
 
             $model->sidebar = new Area();
             $model->sidebar->type = 'sidebar';
+            $model->sidebar->size = 4;
             $model->sidebar->sections = array(new Section());
 
             $model->content = new Area();
@@ -81,6 +83,10 @@ class PageController extends BaseController
         }
 
         if (Yii::$app->request->isPost) {
+
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
 
             if ($duplicate) {
                 $model = new Page();
@@ -112,12 +118,6 @@ class PageController extends BaseController
 
                 $model->portal_id = Yii::$app->session->get('portal_id');
 
-                if (Yii::$app->request->isAjax) { // ajax validácia
-                    $transaction->rollBack();
-                    Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validate($model);
-                }
-
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
@@ -136,19 +136,11 @@ class PageController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                $continue = Yii::$app->request->post('continue');
-
-                if (isset($continue)) {
-                    return $this->redirect(['edit', 'id' => $model->id]);
-                } else {
-                    return $this->redirect(['index']);
-                }
+                return $this->redirectAfterSave($model);
             } catch (Exception $exc) {
                 $transaction->rollBack();
 
-                return $this->render('edit', [
-                    'model' => $model
-                ]);
+                return $this->redirectAfterFail($model);
             }
         }
 
@@ -170,7 +162,7 @@ class PageController extends BaseController
     {
         $model = $this->findModel($id);
 
-        if($model->getPages()->count() == 0){
+        if ($model->getPages()->count() == 0) {
             $model->delete();
         } else {
             Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');

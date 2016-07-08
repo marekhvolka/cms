@@ -12,8 +12,12 @@ use Yii;
  * @property string $target_url
  * @property integer $redirect_type
  * @property bool $active
+ * @property int $last_edit_user
+ * @property string $last_edit
+ * @property int $portal_id
+ * @property Portal $portal
  */
-class Redirect extends \yii\db\ActiveRecord
+class Redirect extends CustomModel
 {
     public function init()
     {
@@ -37,7 +41,7 @@ class Redirect extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source_url', 'target_url', 'redirect_type'], 'required'],
+            [['source_url', 'target_url', 'redirect_type', 'portal_id'], 'required'],
             [['source_url', 'target_url'], 'string'],
             [['redirect_type'], 'integer'],
         ];
@@ -52,10 +56,19 @@ class Redirect extends \yii\db\ActiveRecord
             'id' => 'ID',
             'source_url' => 'Zdrojová url',
             'target_url' => 'Cieľová Url',
-            'redirect_type' => 'Typ presmerovania',
+            'redirect_type' => 'Typ',
             'active' => 'Aktívne',
             'last_edit' => 'Posledná zmena',
-            'last_edit_user' => 'Naposledy editoval'
+            'last_edit_user' => 'Naposledy editoval',
+            'portal_id' => 'Portál'
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPortal()
+    {
+        return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
     }
 }

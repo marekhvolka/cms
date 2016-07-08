@@ -8,7 +8,6 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Word */
-/* @var $translations backend\models\WordTranslation[] */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -34,12 +33,15 @@ function generate_form_for_language($index, $translation, $form)
 
 <div class="dictionary-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
     <h3>Preklad</h3>
 
 <?php
 
-    foreach ($translations as $index => $translation) {
+    foreach ($model->translations as $index => $translation) {
         if ($translation->language->identifier == 'sk') {
             generate_form_for_language($index, $translation, $form);
         }
@@ -59,7 +61,7 @@ function generate_form_for_language($index, $translation, $form)
     <h3>Ostatné preklady</h3>
 
     <?php
-    foreach ($translations as $index => $translation) {
+    foreach ($model->translations as $index => $translation) {
         if ($translation->language->identifier != 'sk') {
             generate_form_for_language($index, $translation, $form);
         }

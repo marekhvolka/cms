@@ -61,21 +61,20 @@ class ProductController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id); // Product model retrieved by id.
-        } else {
-            $model = new Product();
-        }
+        $model = $id ? $this->findModel($id) : new Product();
+        $allVariables = ProductVar::find()->all();
 
         if ($model->load(Yii::$app->request->post())) {
-            $transaction = \Yii::$app->db->beginTransaction();
-
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
             try {
-                $productVarValuesData = Yii::$app->request->post('Var');
-
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
+
+                $productVarValuesData = Yii::$app->request->post('Var');
 
                 foreach ($productVarValuesData as $index => $productValueData) {
                     $model->loadFromData('productVarValues', $productValueData, $index, ProductVarValue::className());
@@ -122,19 +121,15 @@ class ProductController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                return $this->redirect(['index']);
+                return $this->redirectAfterSave($model, ['allVariables' => $allVariables]);
             } catch (Exception $e) {
-                // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
-                return $this->render('edit', [
-                    'model' => $model,
-                    'allVariables' => ProductVar::find()->all(),
-                ]);
+                return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'allVariables' => ProductVar::find()->all(),
+                'allVariables' => $allVariables
             ]);
         }
     }

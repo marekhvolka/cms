@@ -2,14 +2,16 @@
 
 namespace backend\controllers;
 
+use backend\components\IdentifierComponent;
 use backend\models\PortalVar;
 use common\components\Alert;
+use Exception;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\components\IdentifierComponent;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 
 /**
@@ -50,22 +52,38 @@ class PortalVarController extends BaseController
      * @param integer $id
      * @return mixed
      */
+    /**
+     * Updates an existing Language model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new PortalVar();
-        }
+        $model = $id ? $this->findModel($id) : new PortalVar();
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if ($model->save()) {
-                Alert::success('Položka bola úspešne uložená.');
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
 
-                return $this->redirect(Url::current());
-            } else {
-                Alert::danger('Položku sa nepodarilo vymazať.');
+                if (Yii::$app->request->isAjax) { // ajax validácia
+                    $transaction->rollBack();
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
+                }
+
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+
+                return $this->redirectAfterFail($model);
             }
         }
 
@@ -82,7 +100,7 @@ class PortalVarController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()) {
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Položku sa nepodarilo vymazať.');

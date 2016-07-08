@@ -57,14 +57,14 @@ class PortalController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id); // Portal model retrieved by id
-        } else {
-            $model = new Portal();
-        }
+        $model = $id ? $this->findModel($id) : new Portal();
+        $allVariables = PortalVar::find()->all();
 
         if ($model->load(Yii::$app->request->post())) {
-            $transaction = \Yii::$app->db->beginTransaction();
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
 
             try {
                 $portalVarValuesData = Yii::$app->request->post('Var');
@@ -111,22 +111,15 @@ class PortalController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                Alert::success('Položka bola úspešne uložená.');
-
-                return $this->redirect(Url::current()); //TODO change
+                return $this->redirectAfterSave($model, ['allVariables' => $allVariables]);
             } catch (Exception $e) {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky. Skontrolujte dáta.');
-                // There was problem with validation or saving models or another exception was thrown.
                 $transaction->rollBack();
-                return $this->render('edit', [
-                    'model' => $model,
-                    'allVariables' => PortalVar::find()->all(),
-                ]);
+                return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);
             }
         } else {
             return $this->render('edit', [
                 'model' => $model,
-                'allVariables' => PortalVar::find()->all()
+                'allVariables' => $allVariables
             ]);
         }
     }

@@ -14,7 +14,6 @@ use yii\base\Exception;
  * @property string $identifier
  * @property integer $portal_id
  * @property integer $active
- * @property integer $in_menu
  * @property integer $parent_id
  * @property integer $product_id
  * @property string $title
@@ -70,7 +69,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                     'identifier',
                     'portal_id',
                     'active',
-                    'in_menu',
                     'color_scheme',
                     'sidebar_side',
                 ],
@@ -80,7 +78,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 [
                     'portal_id',
                     'active',
-                    'in_menu',
                     'parent_id',
                     'product_id',
                     'last_edit_user'
@@ -112,7 +109,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
             'url' => 'Url',
             'portal_id' => 'Portál',
             'active' => 'Aktívna',
-            'in_menu' => 'V menu',
             'parent_id' => 'Predok',
             'product_id' => 'Produkt',
             'title' => 'Titulok',

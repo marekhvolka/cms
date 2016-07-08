@@ -3,12 +3,15 @@
 namespace backend\controllers;
 
 use common\components\Alert;
+use Exception;
 use Yii;
 use backend\models\TrackingCode;
 use backend\models\search\TrackingCodeSearch;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * TrackingCodeController implements the CRUD actions for TrackingCode model.
@@ -50,25 +53,27 @@ class TrackingCodeController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new TrackingCode();
-        }
+        $model = $id ? $this->findModel($id) : new TrackingCode();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->portal_id = Yii::$app->session->get('portal_id');
-            if ($model->save()) {
-                $model->portal->resetAfterUpdate();
-                Alert::success('Položka bola úspešne uložená.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
 
-                if (isset($continue)) {
-                    return $this->redirect(['edit', 'id' => $model->id]);
-                } else {
-                    return $this->redirect(['index']);
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model->portal_id = Yii::$app->session->get('portal_id');
+
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
                 }
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
         }
 

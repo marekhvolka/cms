@@ -58,6 +58,31 @@ class Word extends \yii\db\ActiveRecord
      */
     public function getTranslations()
     {
-        return $this->hasMany(WordTranslation::className(), ['word_id' => 'id']);
+        if (!isset($this->translations)) {
+            $this->translations = array();
+
+            foreach (Language::find()->all() as $language) {
+                $wordTranslation = WordTranslation::find()->where([
+                    'word_id' => $this->id,
+                    'language_id' => $language->id
+                ])->one();
+
+                if ($wordTranslation) {
+                    $this->translations[] = $wordTranslation;
+                } else {
+                    $wordTranslation = new WordTranslation();
+                    $wordTranslation->language_id = $language->id;
+
+                    $this->translations[] = $wordTranslation;
+                }
+            }
+        }
+
+        return $this->translations;
+    }
+
+    public function setTranslations($value)
+    {
+        $this->translations = $value;
     }
 }

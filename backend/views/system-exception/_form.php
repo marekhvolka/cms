@@ -10,7 +10,10 @@ use yii\widgets\ActiveForm;
 
 <div class="system-exception-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'time')->textInput() ?>
 

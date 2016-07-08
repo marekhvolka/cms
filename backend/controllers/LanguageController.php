@@ -3,12 +3,15 @@
 namespace backend\controllers;
 
 use common\components\Alert;
+use Exception;
 use Yii;
 use backend\models\Language;
 use backend\models\search\LanguageSearch;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * LanguageController implements the CRUD actions for Language model.
@@ -50,21 +53,26 @@ class LanguageController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new Language();
-        }
+        $model = $id ? $this->findModel($id) : new Language();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                Alert::success('Položka bola úspešne uložená.');
-                return $this->redirect(Url::current());
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky. Skontrolujte dáta.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
         }
-
         return $this->render('edit', [
             'model' => $model,
         ]);

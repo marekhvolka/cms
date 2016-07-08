@@ -2,10 +2,8 @@
 
 namespace backend\controllers;
 
-use backend\models\Language;
 use backend\models\search\WordSearch;
 use backend\models\Word;
-use backend\models\WordTranslation;
 use common\components\Alert;
 use Yii;
 use yii\base\Exception;
@@ -50,61 +48,42 @@ class WordController extends BaseController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws Exception
      * @throws NotFoundHttpException
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-            $translations = $model->translations;
-        } else {
-            $model = new Word();
-            $translations = [];
-
-            foreach (Language::find()->all() as $language) {
-                $translation = new WordTranslation();
-                $translation->language_id = $language->id;
-
-                $translations[] = $translation;
-            }
-        }
-
-        //TODO: dokoncit funkcionalitu pri pridani noveho jazyka
+        $model = $id ? $this->findModel($id) : new Word();
 
         if ($model->load(Yii::$app->request->post())) {
-            Model::loadMultiple($translations, Yii::$app->request->post());
-
-            if (!$model->validate() || !$model->save()) {
-                throw new Exception();
+            if (Yii::$app->request->isAjax) {
+                return $this->ajaxValidation($model);
             }
 
-            foreach ($translations as $translation) {
-                $translation->word_id = $model->id;
-            }
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                Model::loadMultiple($model->translations, Yii::$app->request->post());
 
-            if (Model::validateMultiple($translations)) {
-                foreach ($translations as $translation) {
+                if (!$model->validate() || !$model->save() || !Model::validateMultiple($model->translations)) {
+                    throw new Exception();
+                }
+
+                foreach ($model->translations as $translation) {
+                    $translation->word_id = $model->id;
                     $translation->save();
                 }
 
-                Alert::success('Položka bola úspešne uložená.');
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
-            }
+                $transaction->commit();
 
-            $continue = Yii::$app->request->post('continue');
-
-            if (isset($continue)) {
-                return $this->redirect(['edit', 'id' => $model->id]);
-            } else {
-                return $this->redirect(['index']);
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exc) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
-        } else {
-            return $this->render('edit', [
-                'model' => $model,
-                'translations' => $translations,
-            ]);
         }
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -113,8 +92,10 @@ class WordController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public
+    function actionDelete(
+        $id
+    ) {
         if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
@@ -131,8 +112,10 @@ class WordController extends BaseController
      * @return Word the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected
+    function findModel(
+        $id
+    ) {
         if (($model = Word::findOne($id)) !== null) {
             return $model;
         } else {

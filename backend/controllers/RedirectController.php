@@ -2,14 +2,13 @@
 
 namespace backend\controllers;
 
-use common\components\Alert;
-use Yii;
 use backend\models\Redirect;
 use backend\models\search\RedirectSearch;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use common\components\Alert;
+use Yii;
+use yii\base\Exception;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * RedirectController implements the CRUD actions for Redirect model.
@@ -54,18 +53,24 @@ class RedirectController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new Redirect();
-        }
+        $model = $id ? $this->findModel($id) : new Redirect();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                Alert::success('Položka bola úspešne uložená.');
-                return $this->redirect(Url::current());
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+
+                $transaction->commit();
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exc) {
+                $transaction->rollBack();
+                $this->redirectAfterFail($model);
             }
         }
         return $this->render('edit', [
@@ -81,7 +86,7 @@ class RedirectController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()) {
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne zmazaná.');
         } else {
             Alert::danger('Vyskytla sa chyba pri vymazaní položky.');

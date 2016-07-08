@@ -159,7 +159,7 @@ class CustomModel extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if (property_exists($this, 'last_edit_user')) {
+        if (key_exists('last_edit_user', $this->attributes)) {
             $userId = Yii::$app->user->identity->id;
             $this->last_edit_user = $userId;
         }

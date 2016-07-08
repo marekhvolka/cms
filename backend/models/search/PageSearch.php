@@ -26,7 +26,6 @@ class PageSearch extends Page
                     'id',
                     'portal_id',
                     'active',
-                    'in_menu',
                     'parent_id',
                     'product_id',
                     'last_edit_user'
