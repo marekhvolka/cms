@@ -64,7 +64,7 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
-            
+
 
             $model->header = new Area();
             $model->header->type = 'header';
