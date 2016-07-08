@@ -66,12 +66,11 @@ abstract class BaseController extends Controller
             $this->changeCurrentPortal($change_portal);
         }
 
-        if (Yii::$app->session->has('portal_id')) {
-            self::$portal = Portal::findOne(Yii::$app->session->get('portal_id'));
-        } else {
-            Yii::$app->user->logout();
-            $this->redirect(['site/login']);
+        if (!Yii::$app->session->has('portal_id')) {
+            $this->changeCurrentPortal(3);
         }
+
+        self::$portal = Portal::findOne(Yii::$app->session->get('portal_id'));
     }
 
     public function changeCurrentPortal($portalId)
