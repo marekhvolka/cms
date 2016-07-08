@@ -111,3 +111,15 @@ body.on(
         );
     }
 );
+
+body.on('click', '.btn-alternative-usage', function (e) {
+    e.preventDefault();
+
+    var id = $(this).parents(".panel-heading").first().next(".panel-body").find(".snippet-code-id").val();
+
+    $.get(snippetCodeUsageUrl.replace("code-id", id), function (data) {
+        var modal = $("#alternativeUsedIn");
+        modal.find(".modal-body").empty().append($(data));
+        modal.modal("show");
+    });
+});

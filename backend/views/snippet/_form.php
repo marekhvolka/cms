@@ -98,11 +98,13 @@ use yii\widgets\ActiveForm;
 
 $controllerUrl = Url::to(['/snippet']);
 $listIdJs = VarType::find()->where(['identifier' => 'list'])->one()->id;
+$snippetCodeUsageUrl = Url::to(['/snippet/code-usage', 'id' => 'code-id']);
 
 $js = <<<JS
 
 var listId = $listIdJs;
 var controllerUrl = '$controllerUrl';
+var snippetCodeUsageUrl = '$snippetCodeUsageUrl';
 
 JS;
 
@@ -112,3 +114,18 @@ $this->registerJsFile('@web/js/snippets.js', [
 ]);
 ?>
 
+<div class="modal fade" id="alternativeUsedIn" tabindex="-1" role="dialog" aria-labelledby="alternativeUsedInLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Zavrieť">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="alternativeUsedInLabel">Použitie alternatívy</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>

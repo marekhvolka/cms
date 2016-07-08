@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\controllers\BaseController;
 use backend\models\TrackingCode;
 use Yii;
 use yii\base\Model;
@@ -43,7 +44,7 @@ class TrackingCodeSearch extends TrackingCode
     {
         $query = TrackingCode::find();
 
-        $portalID = Yii::$app->session->get('portal_id');
+        $portalID = BaseController::$portalId;
         $query->where(['portal_id' => $portalID]);
 
         $dataProvider = new ActiveDataProvider([

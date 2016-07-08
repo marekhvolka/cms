@@ -407,6 +407,53 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return '';
     }
 
+    public function getOwner()
+    {
+        // TODO: rewrite using join
+        if ($this->column_id != null) {
+            /** @var Column $column */
+            $column = $this->getColumn()->one();
+            /** @var Row $row */
+            $row = $column->getRow()->one();
+
+            if ($row) {
+                /** @var Section $section */
+                $section = $row->getSection()->one();
+
+                if ($section) {
+                    /** @var Area $area */
+                    $area = $section->getArea()->one();
+
+                    if ($area) {
+                        return $area;
+                    }
+                }
+            }
+        } else if ($this->product_var_value_id != null) {
+            /** @var ProductVarValue $product_var_value */
+            $product_var_value = $this->getProductVarValue()->one();
+
+            $product = $product_var_value->getProduct()->one();
+
+            if ($product) {
+                return $product;
+            }
+        } else if ($this->portal_var_value_id != null) {
+            /** @var PortalVarValue $portal_var_value */
+            $portal_var_value = $this->getPortalVarValue()->one();
+
+            if ($portal_var_value) {
+                $portal = $portal_var_value->getPortal()->one();
+
+                if ($portal) {
+                    return $portal;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function isChanged()
     {
         if (parent::isChanged())

@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\controllers\BaseController;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -72,7 +73,7 @@ class PageSearch extends Page
         $query = Page::find();
 
         if ($byPortal) {
-            $portalID = Yii::$app->session->get('portal_id');
+            $portalID = BaseController::$portalId;
             $query->where(['portal_id' => $portalID]);
         }
 

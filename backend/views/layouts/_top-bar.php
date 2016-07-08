@@ -1,4 +1,5 @@
 <?php
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use yii\bootstrap\Html;
 use yii\bootstrap\Nav;
@@ -8,10 +9,9 @@ use yii\widgets\Breadcrumbs;
 
 /* @var $this \yii\web\View */
 
-$session = Yii::$app->session;
 
 $portal = Portal::find()
-    ->where(['id' => $session->get('portal_id')])
+    ->where(['id' => BaseController::$portalId])
     ->one();
 $portalName = isset($portal->name) ? $portal->name : '';
 

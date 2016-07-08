@@ -26,6 +26,9 @@ use yii\helpers\BaseHtml;
         <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">
             <i class="glyphicon glyphicon-minus"></i>
         </button>
+        <button type="button" class="btn-alternative-usage btn btn-primary btn-xs pull-right">
+            <i class="glyphicon glyphicon-question-sign"></i>
+        </button>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -91,6 +94,6 @@ use yii\helpers\BaseHtml;
         </div>
         <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true',
             ['class' => 'existing']); ?>
-        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id); ?>
+        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'snippet-code-id']); ?>
     </div>
 </div>

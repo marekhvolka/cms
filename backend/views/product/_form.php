@@ -1,6 +1,7 @@
 <?php
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use backend\models\Product;
 use kartik\select2\Select2;
@@ -37,7 +38,7 @@ use yii\helpers\Url;
     ]) ?>
 
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->language->products, 'id',
+        'data' => ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber predka ...'],

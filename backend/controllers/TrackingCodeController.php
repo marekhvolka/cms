@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\components\Alert;
 use Exception;
+use Faker\Provider\Base;
 use Yii;
 use backend\models\TrackingCode;
 use backend\models\search\TrackingCodeSearch;
@@ -62,7 +63,7 @@ class TrackingCodeController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $model->portal_id = Yii::$app->session->get('portal_id');
+                $model->portal_id = BaseController::$portalId;
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;

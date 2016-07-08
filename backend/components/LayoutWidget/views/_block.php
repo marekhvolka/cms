@@ -12,7 +12,7 @@ if (!isset($renderModal)) {
 }
 ?>
 
-<div class="btn-group layout-block block" data-content="" role="group">
+<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>">
     <?= Html::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= Html::hiddenInput($prefix . "[column_id]", $model->column_id, ['class' => 'column_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>

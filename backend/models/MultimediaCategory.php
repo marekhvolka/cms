@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use backend\components\PathHelper;
+use backend\controllers\BaseController;
 use Yii;
 use yii\base\Model;
 
@@ -149,7 +150,7 @@ class MultimediaCategory extends Model
 
         $multimediaCategories = [];
 
-        $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
+        $portal = Portal::findOne(BaseController::$portalId);
 
         if ($portal) {
             chdir($portal->getMultimediaDirectory()); // so that we get only directory name as result of glob

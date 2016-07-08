@@ -1,4 +1,5 @@
 <?php
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use kartik\color\ColorInput;
 use kartik\date\DatePicker;
@@ -11,13 +12,13 @@ use yii\helpers\Html;
 /* @var $prefix string */
 
 if (!isset($model)) {
-    $model = Portal::findOne(Yii::$app->request->get('portal_id'));
+    $model = Portal::findOne(BaseController::$portalId);
 }
 ?>
 
 <div class="form-group variable-value active-field">
     <label class="col-sm-2 control-label label-var"><?= $varValue->var->name ?></label>
-    <div class="col-sm-10 var-value">
+    <div class="col-sm-10 var-value" id="var-<?= $varValue->id ?>">
         <div class="input-group">
             <?= Html::activeHiddenInput($varValue, 'id', [
                 'name' => $prefix . '[id]'

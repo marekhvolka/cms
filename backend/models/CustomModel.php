@@ -14,6 +14,7 @@ namespace backend\models;
  * @property bool $outdated
  */
 
+use backend\controllers\BaseController;
 use Yii;
 
 class CustomModel extends \yii\db\ActiveRecord
@@ -122,7 +123,7 @@ class CustomModel extends \yii\db\ActiveRecord
 
         $systemException->save();
 
-        if (Yii::$app->session->has('develop')) {
+        if (BaseController::$develop) {
             throw $exception;
         }
     }

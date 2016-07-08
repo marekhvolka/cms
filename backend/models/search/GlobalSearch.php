@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\controllers\BaseController;
 use backend\models\Model;
 use backend\models\Page;
 use backend\models\Portal;
@@ -79,7 +80,7 @@ class GlobalSearch
             ['like', 'title', $searchTerm],
         ])
             ->andWhere([
-                'portal_id' => Yii::$app->session->get('portal_id')
+                'portal_id' => BaseController::$portalId
             ])
             ->limit(10)
             ->all();
@@ -94,7 +95,7 @@ class GlobalSearch
         }
 
         // PRODUCTS
-        $portal = Portal::findOne(Yii::$app->session->get('portal_id'));
+        $portal = Portal::findOne(BaseController::$portalId);
 
         $products = Product::find()
             ->filterWhere([

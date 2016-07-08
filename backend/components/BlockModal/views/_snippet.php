@@ -1,4 +1,5 @@
 <?php
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Snippet;
@@ -76,7 +77,7 @@ use yii\helpers\BaseHtml;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
                     <?php else : ?>
                         <?= Html::activeDropDownList($model, 'parent_id',
-                            ArrayHelper::map(Portal::findOne(Yii::$app->session->get('portal_id'))->portalSnippets,
+                            ArrayHelper::map(Portal::findOne(BaseController::$portalId)->portalSnippets,
                                 'id', 'varIdentifier'),
                             [
                                 'name' => $prefix . '[parent_id]',
