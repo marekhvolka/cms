@@ -80,7 +80,7 @@ class GlobalSearch
             ['like', 'title', $searchTerm],
         ])
             ->andWhere([
-                'portal_id' => BaseController::$portal
+                'portal_id' => BaseController::$portal->id
             ])
             ->limit(10)
             ->all();
@@ -95,7 +95,6 @@ class GlobalSearch
         }
 
         // PRODUCTS
-        $portal = Portal::findOne(BaseController::$portal);
 
         $products = Product::find()
             ->filterWhere([
@@ -104,7 +103,7 @@ class GlobalSearch
                 ['like', 'identifier', $searchTerm],
             ])
             ->andWhere([
-                'language_id' => $portal->language_id
+                'language_id' => BaseController::$portal->language_id
             ])
             ->limit(10)
             ->all();

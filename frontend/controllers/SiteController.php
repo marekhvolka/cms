@@ -72,14 +72,14 @@ class SiteController extends Controller
     {
         $identifiers = explode("/", strtolower($url));
 
-        $portal = Portal::find()->where([
-            'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
-        ])
-            ->one();
+        if (isset(BaseController::$portal)) {
+            $portalId = BaseController::$portal->id;
+        } else {
+            $portal = Portal::find()->where([
+                'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
+            ])
+                ->one();
 
-        $portalId = BaseController::$portal;
-
-        if (!isset($portalId)) {
             if (isset($portal)) {
                 $portalId = $portal->id;
             } else {

@@ -73,8 +73,7 @@ class PageSearch extends Page
         $query = Page::find();
 
         if ($byPortal) {
-            $portalID = BaseController::$portal;
-            $query->where(['portal_id' => $portalID]);
+            $query->where(['portal_id' => BaseController::$portal->id]);
         }
 
         $this->load($params);

@@ -60,19 +60,26 @@ abstract class BaseController extends Controller
 
         Yii::$app->session->setTimeout(3600 * 24 * 30);
 
-        self::$portal = Portal::findOne(Yii::$app->request->cookies->get('portal_id'));
-
         $change_portal = Yii::$app->request->get('change-portal');
 
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
-            Yii::$app->response->cookies->add(new Cookie([
-                'name' => 'portal_id',
-                'value' => $change_portal,
-                'expire' => 2147483647 // maximum value
-            ]));
-
-            self::$portal = $change_portal;
+            $this->changeCurrentPortal($change_portal);
         }
+    }
+
+    public function changeCurrentPortal($portalId)
+    {
+        if (Yii::$app->response->cookies->has('portal_id')) {
+            Yii::$app->response->cookies->remove('portal_id');
+        }
+
+        Yii::$app->response->cookies->add(new Cookie([
+            'name' => 'portal_id',
+            'value' => $portalId,
+            'expire' => 2147483647 // maximum value
+        ]));
+
+        self::$portal = Portal::findOne(Yii::$app->request->cookies->get('portal_id'));
     }
 
     /**

@@ -167,7 +167,7 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
-        $model = $this->findModel(BaseController::$portal);
+        $model = BaseController::$portal;
 
         if (Yii::$app->request->isPost) {
 

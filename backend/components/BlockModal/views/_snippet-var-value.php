@@ -16,11 +16,7 @@ use yii\helpers\Html;
 ?>
 
 <?php
-if ($product) {
-    $productType = $product->productType;
-} else {
-    $productType = null;
-}
+$productType = $product ? $product->productType : null;
 $defaultValue = $snippetVarValue->var->getDefaultValue($productType);
 
 if ($snippetVarValue->typeName != 'list') : ?>
@@ -77,7 +73,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 case 'product' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map(Portal::findOne(BaseController::$portal)->language->products,
+                        ArrayHelper::map(BaseController::$portal->language->products,
                             'id', 'breadcrumbs')
                         ,
                         [
@@ -91,7 +87,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 case 'page' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(Portal::findOne(BaseController::$portal)->pages, 'id',
+                        ArrayHelper::map(BaseController::$portal->pages, 'id',
                             'breadcrumbs')
                         ,
                         [

@@ -38,7 +38,7 @@ use yii\helpers\Url;
     ]) ?>
 
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Portal::findOne(BaseController::$portal)->language->products, 'id',
+        'data' => ArrayHelper::map(BaseController::$portal->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber predka ...'],
