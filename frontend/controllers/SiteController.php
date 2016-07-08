@@ -72,9 +72,11 @@ class SiteController extends Controller
     {
         $identifiers = explode("/", strtolower($url));
 
-        if (isset(BaseController::$portal)) {
-            $portalId = BaseController::$portal->id;
-        } else {
+        $portalId = Yii::$app->session->get('portal_id');
+
+        $portal = Portal::findOne($portalId);
+        if (!isset($portal)) {
+
             $portal = Portal::find()->where([
                 'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
             ])

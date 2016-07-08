@@ -65,21 +65,26 @@ abstract class BaseController extends Controller
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
             $this->changeCurrentPortal($change_portal);
         }
+
+        if (Yii::$app->session->has('portal_id')) {
+            self::$portal = Portal::findOne(Yii::$app->session->get('portal_id'));
+        } else {
+            Yii::$app->user->logout();
+            $this->redirect(['site/login']);
+        }
     }
 
     public function changeCurrentPortal($portalId)
     {
-        if (Yii::$app->response->cookies->has('portal_id')) {
-            Yii::$app->response->cookies->remove('portal_id');
-        }
-
-        Yii::$app->response->cookies->add(new Cookie([
+        /*Yii::$app->response->cookies->add(new Cookie([
             'name' => 'portal_id',
             'value' => $portalId,
             'expire' => 2147483647 // maximum value
-        ]));
+        ]));*/
 
-        self::$portal = Portal::findOne(Yii::$app->request->cookies->get('portal_id'));
+        Yii::$app->session->set('portal_id', $portalId);
+
+        self::$portal = Portal::findOne($portalId);
     }
 
     /**
