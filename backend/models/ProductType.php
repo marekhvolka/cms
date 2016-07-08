@@ -17,7 +17,7 @@ use Yii;
  * @property Product[] $products
  * @property User $lastEditUser
  */
-class ProductType extends \yii\db\ActiveRecord
+class ProductType extends CustomModel
 {
     /**
      * @inheritdoc

@@ -113,7 +113,7 @@ class PortalController extends BaseController
 
                 Alert::success('Položka bola úspešne uložená.');
 
-                return $this->redirect(Url::current());
+                return $this->redirect(Url::current()); //TODO change
             } catch (Exception $e) {
                 Alert::danger('Vyskytla sa chyba pri ukladaní položky. Skontrolujte dáta.');
                 // There was problem with validation or saving models or another exception was thrown.

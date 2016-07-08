@@ -58,17 +58,4 @@ class Redirect extends \yii\db\ActiveRecord
             'last_edit_user' => 'Naposledy editoval'
         ];
     }
-
-    /**
-     * Event fired before save model. User id is set as last user who edits model.
-     * @param bool $insert true if save is insert type, false if update.
-     * @return bool
-     */
-    public function beforeSave($insert)
-    {
-        $userId = Yii::$app->user->identity->id;
-        $this->last_edit_user = $userId;
-
-        return parent::beforeSave($insert);
-    }
 }

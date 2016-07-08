@@ -93,17 +93,6 @@ class Product extends CustomModel implements ICacheable
         ];
     }
 
-    public function beforeSave($insert)
-    {
-        $userIdentity = Yii::$app->user->identity;
-
-        if (isset($userIdentity)) {
-            $this->last_edit_user = $userIdentity->id;
-        }
-
-        return parent::beforeSave($insert);
-    }
-
     public function resetAfterUpdate()
     {
         $this->setOutdated();
