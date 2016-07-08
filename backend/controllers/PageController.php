@@ -64,7 +64,7 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
-
+            $model->portal_id = BaseController::$portal->id;
 
             $model->header = new Area();
             $model->header->type = 'header';
@@ -82,7 +82,7 @@ class PageController extends BaseController
             $model->content->sections = array(new Section());
         }
 
-        if (Yii::$app->request->isPost) {
+        if ($model->load(Yii::$app->request->post())) {
 
             if (Yii::$app->request->isAjax) { // ajax validácia
                 return $this->ajaxValidation($model);
@@ -90,23 +90,18 @@ class PageController extends BaseController
 
             if ($duplicate) {
                 $model = new Page();
-                $model->portal_id = Yii::$app->session->get('portal_id');
             }
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
 
-                $model->load(Yii::$app->request->post());
-
                 $headerData = Yii::$app->request->post('header');
                 $model->header->load($headerData);
                 $this->loadLayout($model->header, $headerData);
 
-
                 $footerData = Yii::$app->request->post('footer');
                 $model->footer->load($footerData);
                 $this->loadLayout($model->footer, $footerData);
-
 
                 $contentData = Yii::$app->request->post('content');
                 $model->content->load($contentData);
@@ -115,8 +110,6 @@ class PageController extends BaseController
                 $sidebarData = Yii::$app->request->post('sidebar');
                 $model->sidebar->load($sidebarData);
                 $this->loadLayout($model->sidebar, $sidebarData);
-
-                $model->portal_id = Yii::$app->session->get('portal_id');
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;

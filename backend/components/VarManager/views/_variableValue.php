@@ -12,7 +12,7 @@ use yii\helpers\Html;
 /* @var $prefix string */
 
 if (!isset($model)) {
-    $model = Portal::findOne(BaseController::$portalId);
+    $model = Portal::findOne(BaseController::$portal);
 }
 ?>
 

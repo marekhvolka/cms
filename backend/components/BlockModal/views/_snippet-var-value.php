@@ -77,7 +77,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 case 'product' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products,
+                        ArrayHelper::map(Portal::findOne(BaseController::$portal)->language->products,
                             'id', 'breadcrumbs')
                         ,
                         [
@@ -91,7 +91,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 case 'page' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(Portal::findOne(BaseController::$portalId)->pages, 'id',
+                        ArrayHelper::map(Portal::findOne(BaseController::$portal)->pages, 'id',
                             'breadcrumbs')
                         ,
                         [

@@ -36,7 +36,8 @@ use yii\widgets\ActiveForm;
 abstract class BaseController extends Controller
 {
     public static $develop = true;
-    public static $portalId = null;
+    /** @var $portal Portal  */
+    public static $portal = null;
     
     public function behaviors()
     {
@@ -59,7 +60,7 @@ abstract class BaseController extends Controller
 
         Yii::$app->session->setTimeout(3600 * 24 * 30);
 
-        self::$portalId = Yii::$app->request->cookies->get('portal_id');
+        self::$portal = Portal::findOne(Yii::$app->request->cookies->get('portal_id'));
 
         $change_portal = Yii::$app->request->get('change-portal');
 
@@ -70,7 +71,7 @@ abstract class BaseController extends Controller
                 'expire' => 2147483647 // maximum value
             ]));
 
-            self::$portalId = $change_portal;
+            self::$portal = $change_portal;
         }
     }
 

@@ -50,7 +50,7 @@ class ProductSearch extends Product
         $query = Product::find();
 
         if ($byLanguage) {
-            $language_id = Portal::findOne(BaseController::$portalId)->language_id;
+            $language_id = Portal::findOne(BaseController::$portal)->language_id;
             $query->where(['language_id' => $language_id]);
         }
 

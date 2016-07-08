@@ -77,7 +77,7 @@ class SiteController extends Controller
         ])
             ->one();
 
-        $portalId = BaseController::$portalId;
+        $portalId = BaseController::$portal;
 
         if (!isset($portalId)) {
             if (isset($portal)) {
