@@ -17,7 +17,7 @@ if (!isset($model)) {
 
 <div class="form-group variable-value active-field">
     <label class="col-sm-2 control-label label-var"><?= $varValue->var->name ?></label>
-    <div class="col-sm-10 var-value">
+    <div class="col-sm-10 var-value" id="var-<?= $varValue->id ?>">
         <div class="input-group">
             <?= Html::activeHiddenInput($varValue, 'id', [
                 'name' => $prefix . '[id]'

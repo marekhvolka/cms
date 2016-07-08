@@ -2,6 +2,10 @@
 
 namespace backend\controllers;
 
+use backend\models\Area;
+use backend\models\Block;
+use backend\models\Portal;
+use backend\models\Product;
 use backend\models\search\SnippetSearch;
 use backend\models\Snippet;
 use backend\models\SnippetCode;
@@ -205,13 +209,44 @@ class SnippetController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()){
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
         }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionCodeUsage($id)
+    {
+        $code = SnippetCode::findOne(['id' => $id]);
+
+        if ($code == null) {
+            throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
+        } else {
+            /** @var Block[] $blocks */
+            $blocks = $code->getBlocks()->all();
+            $areas = [];
+            $portals = [];
+            $products = [];
+
+            foreach ($blocks as $block) {
+                $owner = $block->getOwner();
+                if ($owner instanceof Portal) {
+                    $portals[] = [$owner, $block];
+                } else if ($owner instanceof Area) {
+                    $areas[] = [$owner, $block, $owner->getPage()->one()];
+                } else if ($owner instanceof Product) {
+                    $products[] = [$owner, $block];
+                }
+            }
+            return $this->renderPartial("_code-usage", [
+                'areas' => $areas,
+                'portals' => $portals,
+                'products' => $products
+            ]);
+        }
     }
 
     /**
@@ -229,5 +264,4 @@ class SnippetController extends BaseController
             throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         }
     }
-
 }

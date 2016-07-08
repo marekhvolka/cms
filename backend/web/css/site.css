@@ -334,3 +334,13 @@ a.anchor {
 .search-multimedia {
     width: 400px !important;
 }
+.btn-alternative-usage {
+    margin-right: 5px;
+}
+
+#alternativeUsedIn ul {
+    margin: 0;
+    padding-left: 10px;
+
+    list-style-type: square;
+}
