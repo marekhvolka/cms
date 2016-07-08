@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use backend\models\ProductVar;
 use Yii;
@@ -49,7 +50,7 @@ class ProductSearch extends Product
         $query = Product::find();
 
         if ($byLanguage) {
-            $language_id = Portal::findOne(Yii::$app->session->get('portal_id'))->language_id;
+            $language_id = Portal::findOne(BaseController::$portalId)->language_id;
             $query->where(['language_id' => $language_id]);
         }
 

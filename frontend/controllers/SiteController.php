@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use backend\controllers\BaseController;
 use backend\models\Page;
 use backend\models\Portal;
 use common\models\LoginForm;
@@ -76,7 +77,7 @@ class SiteController extends Controller
         ])
             ->one();
 
-        $portalId = Yii::$app->session->get('portal_id');
+        $portalId = BaseController::$portalId;
 
         if (!isset($portalId)) {
             if (isset($portal)) {

@@ -84,7 +84,7 @@ class PageController extends BaseController
 
             if ($duplicate) {
                 $model = new Page();
-                $model->portal_id = Yii::$app->session->get('portal_id');
+                $model->portal_id = BaseController::$portalId;
             }
 
             $transaction = Yii::$app->db->beginTransaction();
@@ -110,7 +110,7 @@ class PageController extends BaseController
                 $model->sidebar->load($sidebarData);
                 $this->loadLayout($model->sidebar, $sidebarData);
 
-                $model->portal_id = Yii::$app->session->get('portal_id');
+                $model->portal_id = BaseController::$portalId;
 
                 if (Yii::$app->request->isAjax) { // ajax validácia
                     $transaction->rollBack();

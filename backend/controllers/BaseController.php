@@ -27,6 +27,7 @@ use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Cookie;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
@@ -35,6 +36,9 @@ use yii\web\UploadedFile;
  */
 abstract class BaseController extends Controller
 {
+    public static $develop = true;
+    public static $portalId = null;
+    
     public function behaviors()
     {
         return [
@@ -56,12 +60,18 @@ abstract class BaseController extends Controller
 
         Yii::$app->session->setTimeout(3600 * 24 * 30);
 
+        self::$portalId = Yii::$app->request->cookies->get('portal_id');
+
         $change_portal = Yii::$app->request->get('change-portal');
 
-        Yii::$app->session->set('develop', true);
-
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
-            Yii::$app->session->set('portal_id', $change_portal);
+            Yii::$app->response->cookies->add(new Cookie([
+                'name' => 'portal_id',
+                'value' => $change_portal,
+                'expire' => 2147483647 // maximum value
+            ]));
+
+            self::$portalId = $change_portal;
         }
     }
 
@@ -199,8 +209,7 @@ abstract class BaseController extends Controller
 
         if ($snippet) {
             $block->snippet_code_id = $snippet->snippetCodes[0];
-        }
-        else if ($parent) {
+        } else if ($parent) {
             $block->parent_id = $parent->id;
         }
 

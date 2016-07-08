@@ -57,7 +57,7 @@ class TrackingCodeController extends BaseController
         }
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->portal_id = Yii::$app->session->get('portal_id');
+            $model->portal_id = BaseController::$portalId;
             if ($model->save()) {
                 $model->portal->resetAfterUpdate();
                 Alert::success('Položka bola úspešne uložená.');

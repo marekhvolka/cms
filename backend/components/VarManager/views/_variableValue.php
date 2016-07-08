@@ -1,4 +1,5 @@
 <?php
+use backend\controllers\BaseController;
 use backend\models\Portal;
 use kartik\color\ColorInput;
 use kartik\date\DatePicker;
@@ -11,7 +12,7 @@ use yii\helpers\Html;
 /* @var $prefix string */
 
 if (!isset($model)) {
-    $model = Portal::findOne(Yii::$app->request->get('portal_id'));
+    $model = Portal::findOne(BaseController::$portalId);
 }
 ?>
 
