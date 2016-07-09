@@ -441,7 +441,7 @@ abstract class BaseController extends Controller
         }
     }
 
-    protected function redirectAfterSave($model, $editOptions = null)
+    protected function redirectAfterSave($model, $editOptions = array())
     {
         Alert::success('Položka bola úspešne uložená.');
 
@@ -456,7 +456,7 @@ abstract class BaseController extends Controller
         }
     }
 
-    protected function redirectAfterFail($model, $editOptions = null)
+    protected function redirectAfterFail($model, $editOptions = array())
     {
         Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
         return $this->render('edit', array_merge([

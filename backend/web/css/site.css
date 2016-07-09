@@ -255,6 +255,7 @@ ul {
 
 .global-search .data li {
     list-style-type: none;
+    border-bottom: 1px solid #fff
 }
 
 .global-search .data li a {

@@ -1810,7 +1810,7 @@ video {
 
 @media (min-width: 768px) {
     #wrapper {
-        padding-left: 215px;
+        padding-left: 165px;
     }
 
     #page-wrapper {
@@ -1901,16 +1901,16 @@ ul.alert-dropdown {
     .side-nav {
         position: fixed;
         top: 51px;
-        left: 215px;
-        width: 215px;
-        margin-left: -215px;
+        left: 165px;
+        width: 165px;
+        margin-left: -165px;
         border: none;
         border-radius: 0;
         overflow-y: auto;
     }
 
     .side-nav > li > a {
-        width: 215px;
+        width: 165px;
     }
 }
 

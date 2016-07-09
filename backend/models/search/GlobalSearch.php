@@ -31,7 +31,8 @@ class GlobalSearch
             'snippet' => [],
             'snippet_code' => [],
             'page' => [],
-            'product' => []
+            'product' => [],
+            'actions' => []
         );
 
         // SNIPPETS
@@ -119,6 +120,15 @@ class GlobalSearch
                 'class' => 'suggest-product'
             ];
         }
+
+        /*$results['actions'][] = [
+            'link' => Url::to([
+                '/product/',
+            ]),
+            'name' => 'Zoznam produktov',
+            'id' => '',
+            'class' => 'suggest-action'
+        ];*/
 
         return $results;
     }
