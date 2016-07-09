@@ -101,7 +101,7 @@ class PortalController extends BaseController
                             throw new Exception;
                         }
 
-                        if ($portalVarValue->isChanged()) {
+                        if ($portalVarValue->valueBlock->isChanged()) {
                             $this->saveSnippetVarValues($portalVarValue->valueBlock);
                         }
                     }

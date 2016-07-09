@@ -115,7 +115,7 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $reload = $page->outdated && Yii::$app->session->has('develop');
+            $reload = $page->outdated && Yii::$app->session->has('portal_id');
             $path = $page->getMainCacheFile($reload);
         }
 

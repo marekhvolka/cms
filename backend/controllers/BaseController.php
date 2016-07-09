@@ -25,7 +25,6 @@ use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Cookie;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
@@ -36,9 +35,9 @@ use yii\widgets\ActiveForm;
 abstract class BaseController extends Controller
 {
     public static $develop = true;
-    /** @var $portal Portal  */
+    /** @var $portal Portal */
     public static $portal = null;
-    
+
     public function behaviors()
     {
         return [
@@ -314,7 +313,7 @@ abstract class BaseController extends Controller
                         }
 
                         $block = $column->blocks[$indexBlock];
-                        $block->changed = true;
+                        $block->setOutdated();
 
                         $this->loadSnippetVarValues($itemBlock, $block);
                     }
@@ -448,10 +447,10 @@ abstract class BaseController extends Controller
 
         $continue = Yii::$app->request->post('continue');
         if (isset($continue)) {
-            return $this->redirect([
-                'edit',
-                'id' => $model->id,
-                $editOptions]);
+            return $this->render('edit', array_merge([
+                'model' => $model
+            ],
+                $editOptions));
         } else {
             return $this->redirect(['index']);
         }
@@ -460,10 +459,9 @@ abstract class BaseController extends Controller
     protected function redirectAfterFail($model, $editOptions = null)
     {
         Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
-        return $this->render('edit', [
-            'model' => $model,
-            $editOptions
-        ]);
+        return $this->render('edit', array_merge([
+            'model' => $model
+        ], $editOptions));
     }
 
     protected function ajaxValidation($model)

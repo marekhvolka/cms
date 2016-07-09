@@ -186,7 +186,7 @@ class CustomModel extends \yii\db\ActiveRecord
     public function isChanged()
     {
         foreach($this->myOldAttributes as $index => $oldAttribute) {
-            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user') {
+            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user' && $index != 'outdated') {
                 return true;
             }
         }

@@ -113,7 +113,9 @@ class ProductController extends BaseController
                             throw new Exception;
                         }
 
-                        $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        if ($productVarValue->valueBlock->isChanged()) {
+                            $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        }
                     }
                 }
 

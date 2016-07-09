@@ -158,7 +158,7 @@ class PageController extends BaseController
         if ($model->getPages()->count() == 0) {
             $model->delete();
         } else {
-            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');
+            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstránky.');
         }
 
         return $this->redirect(['index']);
