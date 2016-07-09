@@ -10,17 +10,17 @@ use yii\helpers\Url;
 
 ?>
 <?php if (count($areas)) { ?>
-    <h2>Stránky</h2>
+    <h2>Podstránky</h2>
     <ul>
         <?php foreach ($areas as $area) { ?>
             <li>
-                <a href="<?= Url::to(['/page/edit', 'id' => $area[2]->id]) ?>#block-<?= $area[1]->id ?>"><?= $area[2]->name ?> (<?= $area[0]->type ?>)</a>
+                <a href="<?= Url::to(['/page/edit', 'id' => $area[2]->id]) ?>#block-<?= $area[1]->id ?>"><?= $area[2]->name ?> (<?= $area[0]->type ?>) - <?= $area[2]->portal->name ?></a>
             </li>
         <?php } ?>
     </ul>
 <?php } ?>
 <?php if (count($portals)) { ?>
-    <h2>Portály</h2>
+    <h2>Portálové snippety</h2>
     <ul>
         <?php foreach ($portals as $portal) { ?>
             <li>
@@ -30,7 +30,7 @@ use yii\helpers\Url;
     </ul>
 <?php } ?>
 <?php if (count($products)) { ?>
-    <h2>Produkty</h2>
+    <h2>Produktové snippety</h2>
     <ul>
         <?php foreach ($products as $product) { ?>
             <li>

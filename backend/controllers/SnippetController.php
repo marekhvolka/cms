@@ -214,23 +214,22 @@ class SnippetController extends BaseController
 
     public function actionCodeUsage($id)
     {
-        $code = SnippetCode::findOne(['id' => $id]);
+        $code = SnippetCode::findOne($id);
 
         if ($code == null) {
             throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         } else {
             /** @var Block[] $blocks */
-            $blocks = $code->getBlocks()->all();
             $areas = [];
             $portals = [];
             $products = [];
 
-            foreach ($blocks as $block) {
+            foreach ($code->blocks as $block) {
                 $owner = $block->getOwner();
                 if ($owner instanceof Portal) {
                     $portals[] = [$owner, $block];
                 } else if ($owner instanceof Area) {
-                    $areas[] = [$owner, $block, $owner->getPage()->one()];
+                    $areas[] = [$owner, $block, $owner->page];
                 } else if ($owner instanceof Product) {
                     $products[] = [$owner, $block];
                 }
