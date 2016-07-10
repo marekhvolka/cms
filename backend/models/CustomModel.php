@@ -96,7 +96,8 @@ class CustomModel extends \yii\db\ActiveRecord
 
         if (property_exists($exception, 'sourceCode'))
             $systemException->source_code = $exception->sourceCode;
-        $systemException->source_name = $exception->getFile();
+        $systemException->source_name = $exception->sourceName;
+        $systemException->source_line = $exception->sourceLine;
         $systemException->message = $exception->getMessage();
 
         switch ($this->className()) {

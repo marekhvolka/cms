@@ -167,7 +167,7 @@ class DataEngine extends Component
 
     public function compileThanksFile($path, $relative_path)
     {
-        foreach(Portal::find()->all() as $portal) {
+        foreach (Portal::find()->all() as $portal) {
             $this->compileThanksFileForPortal($path, $relative_path, $portal);
         }
     }
@@ -185,10 +185,28 @@ class DataEngine extends Component
 
         PathHelper::makePath($compiled_path, true);
 
-        $content =  file_get_contents($this->getCommonCacheFile()) . PHP_EOL;
+        $content = file_get_contents($this->getCommonCacheFile()) . PHP_EOL;
         $content .= $portal->getTrackingCodesHead() . PHP_EOL;
         $content .= file_get_contents($path) . PHP_EOL;
 
         $this->writeToFile($compiled_path, 'w+', $content);
+    }
+
+    public function printCode($source_code, $highlight_line)
+    {
+        $lines = explode(PHP_EOL, $source_code);
+        $output = '';
+
+        $i = 1;
+
+        foreach ($lines as $line) {
+            $class = $i == $highlight_line ? 'highlight' : '';
+
+            $output .= '<div class="syntax-highlight-line ' . $class . '">' . sprintf('%02d.', $i) . ' </div>' . PHP_EOL;
+            $output .= '<div class="syntax-highlight-code ' . $class . '">' . highlight_string($line, true) . '</div><br />' . PHP_EOL;
+            $i++;
+        }
+
+        return $output;
     }
 }

@@ -173,7 +173,7 @@ ul {
 }
 
 .navbar-fixed-bottom {
-    left: 225px;
+    left: 165px;
     border-top: 1px solid #ccc;
     background: #fff;
     padding-top: 5px;
@@ -344,4 +344,20 @@ a.anchor {
     padding-left: 10px;
 
     list-style-type: square;
+}
+
+.syntax-highlight-line {
+    color: #000000;
+    font-size: 13px;
+    float: left;
+    padding-right: 5px;
+}
+
+.syntax-highlight-code {
+    padding-left: 5px;
+    display: inline-block
+}
+
+.syntax-highlight-code.highlight {
+    border: 1px red solid
 }

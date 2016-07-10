@@ -1,7 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-use backend\controllers\BaseController;
 use backend\models\Page;
 use backend\models\Portal;
 use common\models\LoginForm;

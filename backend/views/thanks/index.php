@@ -9,6 +9,6 @@ use yii\helpers\Html;
 $this->title = 'Ďakovačky';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="thanks">
+<div class="thanks" style="margin-left: -20px">
     <?php $fileEditor->display() ?>
 </div>
