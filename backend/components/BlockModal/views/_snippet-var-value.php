@@ -32,6 +32,10 @@ if ($snippetVarValue->typeName != 'list') : ?>
                            name="<?= $prefix . '[value_text]' ?>"
                            placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
                            value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
+                    <span class="input-group-btn">
+                    <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
+                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']) ?>
+                    </span>
                     <?php
                     break;
                 case 'url' :

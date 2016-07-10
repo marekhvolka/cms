@@ -35,6 +35,7 @@ use yii\helpers\BaseHtml;
             <div class="col-sm-12">
                 <?= CodemirrorWidget::widget([
                         'name' => $prefix . "[code]",
+                        'id' => $prefix . "[code]",
                         'value' => $model->code,
                         'assets' => [
                             CodemirrorAsset::MODE_CLIKE,

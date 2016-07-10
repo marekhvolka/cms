@@ -87,8 +87,14 @@ class SnippetController extends BaseController
                         $model->loadFromData('snippetCodes', $snippetCodeData, $index, SnippetCode::className());
                     }
 
-                    foreach ($model->snippetCodes as $snippetCode) {
+                    foreach ($model->snippetCodes as $indexCode => $snippetCode) {
                         $snippetCode->snippet_id = $model->id;
+
+                        if ($snippetCode->removed) {
+                            $snippetCode->delete();
+                            unset($model->snippetCodes[$indexCode]);
+                            continue;
+                        }
 
                         if (!($snippetCode->validate() && $snippetCode->save())) {
                             throw new \yii\base\Exception;
