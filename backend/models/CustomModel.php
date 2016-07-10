@@ -16,6 +16,7 @@ namespace backend\models;
 
 use backend\controllers\BaseController;
 use Yii;
+use yii\console\Exception;
 
 class CustomModel extends \yii\db\ActiveRecord
 {
@@ -89,15 +90,20 @@ class CustomModel extends \yii\db\ActiveRecord
         }
     }
 
-    public function logException($exception, $type)
+    public function logException(Exception $exception, $type)
     {
         $systemException = new SystemException();
         $systemException->type = $type;
 
-        if (property_exists($exception, 'sourceCode'))
+        if (property_exists($exception, 'sourceCode')) {
             $systemException->source_code = $exception->sourceCode;
-        $systemException->source_name = $exception->sourceName;
-        $systemException->source_line = $exception->sourceLine;
+        }
+        if (property_exists($exception, 'sourceName')) {
+            $systemException->source_name = $exception->sourceName;
+        }
+        if (property_exists($exception, 'sourceLine')) {
+            $systemException->source_line = $exception->sourceLine;
+        }
         $systemException->message = $exception->getMessage();
 
         switch ($this->className()) {
@@ -186,7 +192,7 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function isChanged()
     {
-        foreach($this->myOldAttributes as $index => $oldAttribute) {
+        foreach ($this->myOldAttributes as $index => $oldAttribute) {
             if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user' && $index != 'outdated') {
                 return true;
             }
