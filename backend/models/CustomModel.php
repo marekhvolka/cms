@@ -90,7 +90,7 @@ class CustomModel extends \yii\db\ActiveRecord
         }
     }
 
-    public function logException(Exception $exception, $type)
+    public function logException($exception, $type)
     {
         $systemException = new SystemException();
         $systemException->type = $type;
