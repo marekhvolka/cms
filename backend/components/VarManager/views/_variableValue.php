@@ -54,9 +54,16 @@ if (!isset($model)) {
                         ArrayHelper::map($model->pages, 'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control',
+                            'class' => 'form-control select2',
                             'prompt' => 'Vyber podstránku'
                         ]);
+
+                    ?>
+                    <script type="text/javascript">
+                        $(".select2").select2();
+                    </script>
+                    <?php
+
                     break;
                 case 'image':
                     echo Html::activeTextInput($varValue, 'value_text', [

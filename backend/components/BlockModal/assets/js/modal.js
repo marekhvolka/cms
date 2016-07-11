@@ -92,7 +92,10 @@ body.on(
 
                     modalContainer.append(modalWindow);
 
-                    modalWindow.modal();
+                    modalWindow.modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
                 }
             );
         }

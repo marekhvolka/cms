@@ -26,7 +26,7 @@ class BlockModalWidget extends Widget
     public function run()
     {
         AssetBundle::register($this->getView());
-
+        
         return $this->render('view', [
             'model' => $this->block,
             'product' => $this->product,

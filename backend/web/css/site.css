@@ -344,3 +344,7 @@ a.anchor {
 
     list-style-type: square;
 }
+
+.snippet-dropdown + .select2 {
+    min-width: 400px;
+}

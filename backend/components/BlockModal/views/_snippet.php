@@ -52,6 +52,10 @@ use yii\helpers\BaseHtml;
                                 'data-prefix' => $prefix,
                                 'data-product-id' => $product ? $product->id : ''
                             ]) ?>
+
+                        <script type="text/javascript">
+                            $(".snippet-dropdown").select2();
+                        </script>
                     <?php endif;
                     break;
 
