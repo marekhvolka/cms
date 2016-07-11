@@ -50,6 +50,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'url' :
                 case 'icon' :
+
                 case 'textinput' : ?>
 
             <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
@@ -78,10 +79,15 @@ if ($snippetVarValue->typeName != 'list') : ?>
             <?php
             break;
             case 'editor' : ?>
-                <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="" rows="3"
+                <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>" name="" rows="3"
                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
                         <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
                     </textarea>
+
+                <script type="text/javascript">
+                    CKEDITOR.replace("ckeditor<?= $snippetVarValue->id ?>", ckeditorConfig);
+                </script>
+
             <?php
             break;
             case 'product' : ?>
@@ -108,15 +114,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 break;
             case 'page' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(BaseController::$portal->pages, 'id',
-                            'breadcrumbs')
-                        ,
-                        [
-                            'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control',
-                            'prompt' => 'Vyber podstránku'
-                        ]) ?>
+
                 <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
                     ArrayHelper::map(BaseController::$portal->pages, 'id',
                         'breadcrumbs'),
