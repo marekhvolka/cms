@@ -3,9 +3,9 @@ IndexIgnore */*
 
 RewriteEngine on
 
-RewriteCond %{REQUEST_URI}  !\.(php|html?|jpg|gif)$]
-RewriteCond %{REQUEST_URI} !thanks
-RewriteRule ^(.*)([^/])$ http://%{HTTP_HOST}/$1$2/ [L,R=301]
+#RewriteCond %{REQUEST_URI}  !\.(php|html?|jpg|gif)$]
+#RewriteCond %{REQUEST_URI} !thanks
+#RewriteRule ^(.*)([^/])$ http://%{HTTP_HOST}/$1$2/ [L,R=301]
 
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.+)$ $1.php [L]

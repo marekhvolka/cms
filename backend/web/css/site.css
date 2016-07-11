@@ -373,3 +373,7 @@ a.anchor {
 .modal-dialog {
     margin-top: 63px;
 }
+
+div#ui-datepicker-div.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all {
+    z-index: 100 !important;
+}

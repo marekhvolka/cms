@@ -96,7 +96,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                             'prompt' => 'Vyber produkt'
                         ]) ?>
                 <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                    ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products,
+                    ArrayHelper::map(BaseController::$portal->language->products,
                         'id', 'breadcrumbs'),
                     [
                         'name' => $prefix . '[value_product_id]',
@@ -118,7 +118,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                             'prompt' => 'Vyber podstránku'
                         ]) ?>
                 <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                    ArrayHelper::map(Portal::findOne(BaseController::$portalId)->pages, 'id',
+                    ArrayHelper::map(BaseController::$portal->pages, 'id',
                         'breadcrumbs'),
                     [
                         'name' => $prefix . '[value_page_id]',
