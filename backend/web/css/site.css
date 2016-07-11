@@ -264,6 +264,10 @@ ul {
     color: black;
 }
 
+.global-search .data li.active a {
+    text-decoration: underline;
+}
+
 .global-search .data li a:hover {
     background-color: rgba(27, 206, 176, 0.31);
 }

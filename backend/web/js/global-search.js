@@ -6,7 +6,7 @@ $(
         var lastChanged = new Date(),
             timeout,
             input = $("#global-search-input"),
-            itemsFocused = false;
+            selectedIndex = -1;
 
         input.focus(
             function () {
@@ -21,24 +21,41 @@ $(
                 setTimeout(
                     function () {
                         $(".global-search .data").hide();
-                    }, 100
+                    }, 200
                 );
             }
         );
 
         input.keydown(function (e) {
+            var items = $(".global-search .data li");
             if (e.keyCode == 40) {
-                itemsFocused = true;
-                $(".global-search .data li:first").focus();
-            }
-        });
+                e.preventDefault();
 
-        $("body").on("keydown", ".global-search .data", function (e) {
-            
+                if (items.length - 1 > selectedIndex) {
+                    selectedIndex++;
+                    items.filter('.active').removeClass('active');
+
+                    $(items[selectedIndex]).addClass('active');
+                }
+            } else if (e.keyCode == 38) {
+                e.preventDefault();
+
+                if (selectedIndex > -0) {
+                    selectedIndex--;
+                    items.filter('.active').removeClass('active');
+
+                    $(items[selectedIndex]).addClass('active');
+                }
+            } else if (e.keyCode == 13) {
+                e.preventDefault();
+                console.log("ok");
+                window.location.href = $(items[selectedIndex]).find('a').attr('href');
+            }
         });
 
         input.on(
             'input', function () {
+                selectedIndex = -1;
                 var now = new Date(),
                     value = $(this).val();
 
