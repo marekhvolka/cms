@@ -24,7 +24,7 @@ use yii\helpers\BaseHtml;
 
     <div class="panel-heading">
         <h4>
-            <span><?php echo $model->order; ?>. stĺpec</span>
+            <span class="row-drag-by"><?php echo $model->order; ?>. stĺpec</span>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">
@@ -56,7 +56,7 @@ use yii\helpers\BaseHtml;
             </div>
         </h4>
     </div>
-    <div class="panel-body children-list">
+    <div class="panel-body children-list blocks">
         <?php foreach ($model->blocks as $indexBlock => $block) : ?>
             <?= $this->render('_block', [
                 'model' => $block,

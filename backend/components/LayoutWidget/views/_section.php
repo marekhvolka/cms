@@ -12,7 +12,7 @@ use yii\helpers\BaseHtml;
 
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span>Sekcia</span>
+            <span class="section-drag-by">Sekcia</span>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">
@@ -46,7 +46,7 @@ use yii\helpers\BaseHtml;
         </h3>
     </div>
     <div class="panel-body">
-        <div class="col-sm-12 children-list">
+        <div class="col-sm-12 children-list rows">
             <?php foreach ($model->rows as $indexRow => $row) : ?>
                 <?= $this->render('_row', [
                     'model' => $row,
