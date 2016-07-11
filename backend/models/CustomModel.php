@@ -95,14 +95,22 @@ class CustomModel extends \yii\db\ActiveRecord
         $systemException = new SystemException();
         $systemException->type = $type;
 
-        if (property_exists($exception, 'sourceCode')) {
-            $systemException->source_code = $exception->sourceCode;
-        }
         if (property_exists($exception, 'sourceName')) {
             $systemException->source_name = $exception->sourceName;
+        } else {
+            $systemException->source_name = $exception->getFile();
         }
+
+        if (property_exists($exception, 'sourceCode')) {
+            $systemException->source_code = $exception->sourceCode;
+        } else {
+            $systemException->source_code = file_get_contents($systemException->source_name);
+        }
+
         if (property_exists($exception, 'sourceLine')) {
             $systemException->source_line = $exception->sourceLine;
+        } else {
+            $systemException->source_line = $exception->getLine();
         }
         $systemException->message = $exception->getMessage();
 
