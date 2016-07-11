@@ -16,7 +16,7 @@ if (!isset($model)) {
 }
 ?>
 
-<div class="form-group variable-value active-field">
+<div class="form-group active-field">
     <label class="col-sm-2 control-label label-var"><?= $varValue->var->name ?></label>
     <div class="col-sm-10 var-value" id="var-<?= $varValue->id ?>">
         <div class="input-group">

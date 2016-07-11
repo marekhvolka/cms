@@ -19,7 +19,7 @@ use yii\helpers\BaseHtml;
         <span>
             <?= $listItem->order ?>
         </span>
-        položka
+        . položka
         <a class="btn btn-danger btn-xs pull-right btn-remove-list-item">
             <span class="glyphicon glyphicon-remove"></span>
         </a>

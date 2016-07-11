@@ -96,6 +96,10 @@ body.on(
                         backdrop: 'static',
                         keyboard: false
                     });
+
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip()
+                    });
                 }
             );
         }

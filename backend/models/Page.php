@@ -341,11 +341,12 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 }
                 $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
-                $buffer .= '\'url\' => \'' . addslashes($dataEngine->normalizeString($this->url)) . '\',' . PHP_EOL;
-                $buffer .= '\'name\' => \'' . addslashes($dataEngine->normalizeString($this->name)) . '\',' . PHP_EOL;
-                $buffer .= '\'title\' => \'' . addslashes($dataEngine->normalizeString($this->title)) . '\',' . PHP_EOL;
-                $buffer .= '\'description\' => \'' . addslashes($dataEngine->normalizeString($this->description)) . '\',' . PHP_EOL;
-                $buffer .= '\'keywords\' => \'' . addslashes($dataEngine->normalizeString($this->keywords)) . '\',' . PHP_EOL;
+                $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
+                $buffer .= '\'url\' => \'' . $dataEngine->normalizeString($this->url) . '\',' . PHP_EOL;
+                $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
+                $buffer .= '\'title\' => \'' . $dataEngine->normalizeString($this->title) . '\',' . PHP_EOL;
+                $buffer .= '\'description\' => \'' . $dataEngine->normalizeString($this->description) . '\',' . PHP_EOL;
+                $buffer .= '\'keywords\' => \'' . $dataEngine->normalizeString($this->keywords) . '\',' . PHP_EOL;
                 $buffer .= '\'active\' => ' . $this->active . ',' . PHP_EOL;
 
                 if (isset($this->product)) {

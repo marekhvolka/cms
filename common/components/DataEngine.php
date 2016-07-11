@@ -151,6 +151,8 @@ class DataEngine extends Component
     public function normalizeString($string)
     {
         if (isset($string)) {
+            $string = addslashes($string);
+
             $re = '/{\$[\w->]+}/';
 
             preg_match_all($re, $string, $matches);
