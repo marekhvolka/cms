@@ -112,7 +112,7 @@ if (!isset($model)) {
                         //'language' => 'ru',
                         'dateFormat' => 'yyyy/MM/dd',
                         'class' => 'form-control',
-                        'name' => $prefix . "[value_text",
+                        'name' => $prefix . "[value_text]",
                     ]);
                     /*echo DatePicker::widget([
                         'name' => $prefix . "[value_text]",
