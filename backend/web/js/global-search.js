@@ -110,10 +110,10 @@ $(
                             );
                         }
 
-                        appendOneTypeOfData(data.snippet, "snippet");
-                        appendOneTypeOfData(data.snippet_code, "varianta snippetu");
                         appendOneTypeOfData(data.page, "stránka");
                         appendOneTypeOfData(data.product, "produkt");
+                        appendOneTypeOfData(data.snippet, "snippet");
+                        appendOneTypeOfData(data.snippet_code, "varianta snippetu");
                     }
                     else {
                         dataInDOM.append($("<li>Žiadne výsledky</li>"));
