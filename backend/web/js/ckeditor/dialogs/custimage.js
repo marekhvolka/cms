@@ -14,7 +14,7 @@ CKEDITOR.dialog.add('custimageDialog', function (editor) {
             }, {type: 'text', id: 'alt', label: 'Alternative'}]
         }],
         onShow: function () {
-            showMultimedia(function (url) {
+            Multimedia.get().show(function (url) {
                 var custimage = editor.document.createElement('img');
                 custimage.setAttribute('src', url);
                 custimage.setAttribute('alt', url);

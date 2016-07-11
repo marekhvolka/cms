@@ -48,7 +48,7 @@ $("body").on('click', ".variable-value a.open-multimedia", function (e) {
     e.preventDefault();
     var assigningTo = $(this).parents('.var-value').first().find('.value');
 
-    showMultimedia(function (path) {
+    Multimedia.get().show(function (path) {
         assigningTo.val(path);
     });
 });
