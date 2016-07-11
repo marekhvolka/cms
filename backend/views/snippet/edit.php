@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Úprava snippetu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Snippety', 'url' => ['index']];
-$this->params['breadcrumbs'][] = 'Úprava snippetu';
+$this->params['breadcrumbs'][] = $model->name;
 ?>
 <div class="snippet-update">
 

@@ -20,22 +20,31 @@ $productType = $product ? $product->productType : null;
 $defaultValue = $snippetVarValue->var->getDefaultValue($productType);
 
 if ($snippetVarValue->typeName != 'list') : ?>
-    <div class="form-group">
+    <div class="form-group var-value">
         <label class="col-sm-2 control-label"
-               for="<?= $snippetVarValue->id ?>"><?= $snippetVarValue->var->identifier ?></label>
+               for="<?= $snippetVarValue->id ?>"><?= $snippetVarValue->var->identifier ?>
+            <?php if (!empty($snippetVarValue->var->description)) : ?>
+            <a id="tooltip<?= hash('md5', $prefix) ?>" class="popover-btn pull-right" data-toggle="tooltip" data-placement="bottom"
+               title="<?= $snippetVarValue->var->description ?>">
+                <i class="fa fa-question-circle"></i>
+            </a>
+            <?php endif; ?>
+        </label>
         <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="col-sm-10">
             <?php
             switch ($snippetVarValue->typeName) {
                 case 'image': ?>
-                    <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
-                           name="<?= $prefix . '[value_text]' ?>"
-                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
-                    <span class="input-group-btn">
-                    <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
-                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']) ?>
-                    </span>
+                    <div class="input-group">
+                        <input type="text" class="form-control value" id="<?= $snippetVarValue->id ?>"
+                               name="<?= $prefix . '[value_text]' ?>"
+                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                               value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
+                        <span class="input-group-btn">
+                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
+                            'data-toggle' => "modal", 'data-target' => '#multimediaWidget']) ?>
+                        </span>
+                    </div>
                     <?php
                     break;
                 case 'url' :
