@@ -169,6 +169,10 @@ class MultimediaCategory extends Model
             Yii::$app->dataEngine->getMultimediaDirectory(true)
         ));
 
+        usort($multimediaCategories, function ($a, $b) {
+            return strcmp($a->name, $b->name);
+        });
+
         return $multimediaCategories;
     }
 
@@ -192,6 +196,10 @@ class MultimediaCategory extends Model
                     $this->items[] = $item;
                 }
             }
+
+            usort($this->items, function ($a, $b) {
+                return strcmp($a->name, $b->name);
+            });
         }
 
         return $this->items;
