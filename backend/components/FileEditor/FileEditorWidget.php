@@ -119,17 +119,15 @@ class FileEditorWidget extends Component implements ViewContextInterface
         $upload_file_form = new UploadFileForm($this->directory);
         $create_directory_form = new CreateDirectoryForm($this->directory);
 
+        $original_path = null;
+        $original_relative_path = null;
+
         // creating file
         if ($new_file_form->load(Yii::$app->request->post()) && $new_file_form->validate()) {
             $new_file_form->save(false);
 
-            $new_file_path = $new_file_form->getFullPath();
-            if ($this->compileScss && PathHelper::isSCSSFile($new_file_path)) {
-                $compiled_path = mb_substr($new_file_path, 0, count($new_file_path) - 5) . "min.css"; // so that we remove .scss
-                $this->compileScss($new_file_path, $compiled_path);
-            } else if(is_callable($this->extraCompileBy)){
-                call_user_func_array($this->extraCompileBy, [$new_file_path, $new_file_form->getRelativePath()]);
-            }
+            $original_path = $new_file_form->getFullPath();
+            $original_relative_path = $new_file_form->getRelativePath();
 
             $edit_file_form->text = $new_file_form->text;
             $edit_file_form->name = $new_file_form->name;
@@ -138,36 +136,18 @@ class FileEditorWidget extends Component implements ViewContextInterface
         } else if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) { // editing file
             $edit_file_form->save(false);
 
-            $edited_file_path = $edit_file_form->getFullPath();
-            if ($this->compileScss && PathHelper::isSCSSFile($edited_file_path)) {
-                $compiled_path = mb_substr($edited_file_path, 0, count($edited_file_path) - 5) . "min.css";;
-                $this->compileScss($edited_file_path, $compiled_path);
-            } else if (is_callable($this->extraCompileBy)) {
-                call_user_func_array($this->extraCompileBy, [$edited_file_path, $edit_file_form->getRelativePath()]);
-            }
+            $original_path = $edit_file_form->getFullPath();
+            $original_relative_path = $edit_file_form->getRelativePath();
         }
 
         // uploading a new file
         if ($upload_file_form->load(Yii::$app->request->post())) {
             $upload_file_form->file = UploadedFile::getInstance($upload_file_form, 'file');
             if ($upload_file_form->validate()) {
-                $path = $upload_file_form->upload(false);
+                $original_path = $upload_file_form->upload(false);
                 $edit_file_form->directory = $upload_file_form->directory;
                 $edit_file_form->name = $upload_file_form->file->getBaseName() . '.' . $upload_file_form->file->getExtension();
-
-                if (PathHelper::isImageFile($edit_file_form->name)) {
-                    $is_image_loaded = true;
-                } else {
-                    $edit_file_form->text = file_get_contents($path);
-
-                    if ($this->compileScss && PathHelper::isSCSSFile($edit_file_form->name)) {
-                        $compiled_path = $this->directory . DIRECTORY_SEPARATOR . trim($edit_file_form->directory) . DIRECTORY_SEPARATOR . trim($edit_file_form->name, "/");
-                        $compiled_path = mb_substr($compiled_path, 0, count($compiled_path) - 5) . "min.css";
-                        $this->compileScss($path, $compiled_path);
-                    } else if (is_callable($this->extraCompileBy)) {
-                        call_user_func_array($this->extraCompileBy, [$path, $edit_file_form->getRelativePath()]);
-                    }
-                }
+                $edit_file_form->text = file_get_contents($original_path);
             }
         }
 
@@ -175,6 +155,20 @@ class FileEditorWidget extends Component implements ViewContextInterface
         if ($create_directory_form->load(Yii::$app->request->post()) && $create_directory_form->validate()) {
             $create_directory_form->create(false);
             $create_directory_form = new CreateDirectoryForm($this->directory);
+        }
+
+        // Processing the edited file
+        if (!empty($original_path)) {
+            if (PathHelper::isImageFile($original_path)) {
+                $is_image_loaded = true;
+            } else {
+                if (PathHelper::isSCSSFile($original_path)) {
+                    $compiled_path = mb_substr($original_path, 0, count($original_path) - 5) . "min.css";
+                    $this->compileScss($original_path, $compiled_path);
+                } else if(is_callable($this->extraCompileBy)) {
+                    call_user_func_array($this->extraCompileBy, [$original_path, $original_relative_path]);
+                }
+            }
         }
 
         // building tree
@@ -202,13 +196,14 @@ class FileEditorWidget extends Component implements ViewContextInterface
      */
     private function compileScss($from, $to)
     {
-        $to = preg_replace('/\\.[^.\\s]{3,4}$/', '', $to) . ".css";
-        $scss_compiler = new Compiler();
-        PathHelper::makePath($to, true);
-        $scss_compiler->setFormatter(new Compressed());
-        $scss_compiler->setImportPaths(pathinfo($from, PATHINFO_DIRNAME));
+        if ($this->compileScss) {
+            $scss_compiler = new Compiler();
+            PathHelper::makePath($to, true);
+            $scss_compiler->setFormatter(new Compressed());
+            $scss_compiler->setImportPaths(pathinfo($from, PATHINFO_DIRNAME));
 
-        file_put_contents($to, $scss_compiler->compile(file_get_contents($from)));
+            file_put_contents($to, $scss_compiler->compile(file_get_contents($from)));
+        }
     }
 
     /**
