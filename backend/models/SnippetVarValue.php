@@ -280,4 +280,17 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         $this->id = null;
         $this->block_id = null;
     }
+
+    public function isChanged()
+    {
+        if (parent::isChanged())
+            return true;
+
+        foreach($this->listItems as $listItem) {
+            if ($listItem->isChanged()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

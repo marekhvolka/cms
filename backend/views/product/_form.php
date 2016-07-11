@@ -22,7 +22,10 @@ use yii\helpers\Url;
 
 <div class="product-form">
 
-    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -35,7 +38,7 @@ use yii\helpers\Url;
     ]) ?>
 
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products, 'id',
+        'data' => ArrayHelper::map(BaseController::$portal->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber predka ...'],

@@ -17,11 +17,7 @@ use yii\helpers\Html;
 ?>
 
 <?php
-if ($product) {
-    $productType = $product->productType;
-} else {
-    $productType = null;
-}
+$productType = $product ? $product->productType : null;
 $defaultValue = $snippetVarValue->var->getDefaultValue($productType);
 
 if ($snippetVarValue->typeName != 'list') : ?>
@@ -32,16 +28,20 @@ if ($snippetVarValue->typeName != 'list') : ?>
         <div class="col-sm-10">
             <?php
             switch ($snippetVarValue->typeName) {
-            case 'image': ?>
-            <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
-                   name="<?= $prefix . '[value_text]' ?>"
-                   placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                   value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
-            <?php
-            break;
-            case 'url' :
-            case 'icon' :
-            case 'textinput' : ?>
+                case 'image': ?>
+                    <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
+                           name="<?= $prefix . '[value_text]' ?>"
+                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
+                    <span class="input-group-btn">
+                    <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
+                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']) ?>
+                    </span>
+                    <?php
+                    break;
+                case 'url' :
+                case 'icon' :
+                case 'textinput' : ?>
 
             <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
                    name="<?= $prefix . '[value_text]' ?>"
@@ -77,6 +77,15 @@ if ($snippetVarValue->typeName != 'list') : ?>
             break;
             case 'product' : ?>
 
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                        ArrayHelper::map(BaseController::$portal->language->products,
+                            'id', 'breadcrumbs')
+                        ,
+                        [
+                            'name' => $prefix . '[value_product_id]',
+                            'class' => 'form-control',
+                            'prompt' => 'Vyber produkt'
+                        ]) ?>
                 <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
                     ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products,
                         'id', 'breadcrumbs'),
@@ -90,6 +99,15 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 break;
             case 'page' : ?>
 
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
+                        ArrayHelper::map(BaseController::$portal->pages, 'id',
+                            'breadcrumbs')
+                        ,
+                        [
+                            'name' => $prefix . '[value_page_id]',
+                            'class' => 'form-control',
+                            'prompt' => 'Vyber podstránku'
+                        ]) ?>
                 <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
                     ArrayHelper::map(Portal::findOne(BaseController::$portalId)->pages, 'id',
                         'breadcrumbs'),

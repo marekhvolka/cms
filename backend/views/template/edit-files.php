@@ -12,6 +12,6 @@ $this->title = 'Editovať súbory šablóny';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="edit-files">
+<div class="edit-files" style="margin-left: -20px">
     <?php $fileEditor->display() ?>
 </div>

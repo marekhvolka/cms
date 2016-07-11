@@ -1,7 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-use backend\controllers\BaseController;
 use backend\models\Page;
 use backend\models\Portal;
 use common\models\LoginForm;
@@ -72,14 +71,16 @@ class SiteController extends Controller
     {
         $identifiers = explode("/", strtolower($url));
 
-        $portal = Portal::find()->where([
-            'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
-        ])
-            ->one();
+        $portalId = Yii::$app->session->get('portal_id');
 
-        $portalId = BaseController::$portalId;
+        $portal = Portal::findOne($portalId);
+        if (!isset($portal)) {
 
-        if (!isset($portalId)) {
+            $portal = Portal::find()->where([
+                'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
+            ])
+                ->one();
+
             if (isset($portal)) {
                 $portalId = $portal->id;
             } else {
@@ -113,7 +114,7 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $reload = $page->outdated && Yii::$app->session->has('develop');
+            $reload = $page->outdated && Yii::$app->session->has('portal_id');
             $path = $page->getMainCacheFile($reload);
         }
 

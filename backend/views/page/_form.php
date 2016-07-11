@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
             ]) ?>
 
             <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map(Portal::findOne(BaseController::$portalId)->pages, 'id', 'breadcrumbs'),
+                'data' => ArrayHelper::map(BaseController::$portal->pages, 'id', 'breadcrumbs'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber rodiča ...'],
                 'pluginOptions' => [
@@ -53,15 +53,11 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
-
-            <?= $form->field($model, 'in_menu')->widget(SwitchInput::classname(), [
-                'type' => SwitchInput::CHECKBOX
-            ]) ?>
         </div>
     </div>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products, 'id',
+        'data' => ArrayHelper::map(BaseController::$portal->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber produktu ...'],
@@ -85,7 +81,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?= $form->field($model, 'color_scheme')->dropDownList(
-        ArrayHelper::map(Portal::findOne(BaseController::$portalId)->template->getColorSchemes(), 'label',
+        ArrayHelper::map(BaseController::$portal->template->getColorSchemes(), 'label',
             'label')); ?>
 
     <h3 class="page-header">Hlavička stránky</h3>

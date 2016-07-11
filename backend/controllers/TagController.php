@@ -3,11 +3,14 @@
 namespace backend\controllers;
 
 use common\components\Alert;
+use Exception;
 use Yii;
 use backend\models\Tag;
 use backend\models\search\TagSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * TagController implements the CRUD actions for Tag model.
@@ -49,28 +52,29 @@ class TagController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new Tag();
-        }
+        $model = $id ? $this->findModel($id) : new Tag();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
 
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
                 $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
                 $productTypesIds = !$productTypeIdsArray ?: implode($productTypeIdsArray, ',');
                 $model->product_type = $productTypesIds;
 
-                if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                    $model->resetAfterUpdate();
-                    Alert::success('Položka bola úspešne uložená.');
-                    return $this->redirect(['index']);
-                } else {
-                    Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
                 }
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
         }
 

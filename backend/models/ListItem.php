@@ -65,19 +65,22 @@ class ListItem extends CustomModel implements IDuplicable
     public function getSnippetVarValues()
     {
         if (!isset($this->snippetVarValues)) {
-            foreach($this->list->var->children as $snippetVar) {
-                $snippetVarValue = SnippetVarValue::find()->where([
-                    'list_item_id' => $this->id,
-                    'var_id' => $snippetVar->id
-                ])->one();
+            $this->snippetVarValues = array();
+            if ($this->list) {
+                foreach ($this->list->var->children as $snippetVar) {
+                    $snippetVarValue = SnippetVarValue::find()->where([
+                        'list_item_id' => $this->id,
+                        'var_id' => $snippetVar->id
+                    ])->one();
 
-                if ($snippetVarValue)
-                    $this->snippetVarValues[] = $snippetVarValue;
-                else {
-                    $snippetVarValue = new SnippetVarValue();
-                    $snippetVarValue->var_id = $snippetVar->id;
+                    if ($snippetVarValue) {
+                        $this->snippetVarValues[] = $snippetVarValue;
+                    } else {
+                        $snippetVarValue = new SnippetVarValue();
+                        $snippetVarValue->var_id = $snippetVar->id;
 
-                    $this->snippetVarValues[] = $snippetVarValue;
+                        $this->snippetVarValues[] = $snippetVarValue;
+                    }
                 }
             }
         }
@@ -117,5 +120,18 @@ class ListItem extends CustomModel implements IDuplicable
 
         $this->id = null;
         $this->list_id = null;
+    }
+
+    public function isChanged()
+    {
+        if (parent::isChanged())
+            return true;
+
+        foreach($this->snippetVarValues as $snippetVarValue) {
+            if ($snippetVarValue->isChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

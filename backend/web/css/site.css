@@ -173,7 +173,7 @@ ul {
 }
 
 .navbar-fixed-bottom {
-    left: 225px;
+    left: 165px;
     border-top: 1px solid #ccc;
     background: #fff;
     padding-top: 5px;
@@ -255,6 +255,7 @@ ul {
 
 .global-search .data li {
     list-style-type: none;
+    border-bottom: 1px solid #fff
 }
 
 .global-search .data li a {
@@ -347,4 +348,20 @@ a.anchor {
 
 .snippet-dropdown + .select2 {
     min-width: 400px;
+}
+
+.syntax-highlight-line {
+    color: #000000;
+    font-size: 13px;
+    float: left;
+    padding-right: 5px;
+}
+
+.syntax-highlight-code {
+    padding-left: 5px;
+    display: inline-block
+}
+
+.syntax-highlight-code.highlight {
+    border: 1px red solid
 }

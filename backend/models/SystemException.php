@@ -12,6 +12,7 @@ use Yii;
  * @property string $message
  * @property string $source_code
  * @property string $source_name
+ * @property int $source_line
  * @property int $page_id
  * @property int $portal_id
  * @property int $block_id

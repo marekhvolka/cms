@@ -70,6 +70,10 @@ class SnippetController extends BaseController
         }
 
         if ($model->load(Yii::$app->request->post())) {
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if (!($model->validate() && $model->save())) {
@@ -83,8 +87,14 @@ class SnippetController extends BaseController
                         $model->loadFromData('snippetCodes', $snippetCodeData, $index, SnippetCode::className());
                     }
 
-                    foreach ($model->snippetCodes as $snippetCode) {
+                    foreach ($model->snippetCodes as $indexCode => $snippetCode) {
                         $snippetCode->snippet_id = $model->id;
+
+                        if ($snippetCode->removed) {
+                            $snippetCode->delete();
+                            unset($model->snippetCodes[$indexCode]);
+                            continue;
+                        }
 
                         if (!($snippetCode->validate() && $snippetCode->save())) {
                             throw new \yii\base\Exception;
@@ -104,20 +114,10 @@ class SnippetController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                $continue = Yii::$app->request->post('continue');
-                Alert::success('Položka bola úspešne uložená.');
-                if (isset($continue)) {
-                    return $this->redirect(['edit', 'id' => $model->id]);
-                } else {
-                    return $this->redirect(['index']);
-                }
-
+                return $this->redirectAfterSave($model);
             } catch (Exception $e) {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
                 $transaction->rollBack();
-                return $this->render('edit', [
-                    'model' => $model,
-                ]);
+                return $this->redirectAfterFail($model);
             }
         } else {
             return $this->render('edit', [
@@ -220,23 +220,22 @@ class SnippetController extends BaseController
 
     public function actionCodeUsage($id)
     {
-        $code = SnippetCode::findOne(['id' => $id]);
+        $code = SnippetCode::findOne($id);
 
         if ($code == null) {
             throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         } else {
             /** @var Block[] $blocks */
-            $blocks = $code->getBlocks()->all();
             $areas = [];
             $portals = [];
             $products = [];
 
-            foreach ($blocks as $block) {
+            foreach ($code->blocks as $block) {
                 $owner = $block->getOwner();
                 if ($owner instanceof Portal) {
                     $portals[] = [$owner, $block];
                 } else if ($owner instanceof Area) {
-                    $areas[] = [$owner, $block, $owner->getPage()->one()];
+                    $areas[] = [$owner, $block, $owner->page];
                 } else if ($owner instanceof Product) {
                     $products[] = [$owner, $block];
                 }

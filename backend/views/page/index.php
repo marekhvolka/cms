@@ -39,8 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'size' => '3',
             ],
             [
-                'label' => 'Aktívna',
-                'value' => 'active',
+                'label' => 'Neaktuálna',
+                'value' => 'outdated',
                 'size' => '1',
             ],
             [

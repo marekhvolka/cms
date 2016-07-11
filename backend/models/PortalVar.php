@@ -25,7 +25,11 @@ class PortalVar extends Variable
      */
     public function rules()
     {
-        return parent::rules();
+        return array_merge(parent::rules(), [
+            [['name'], 'required'],
+            [['name'], 'string', 'max' => 50],
+            [['name'], 'unique']
+        ]);
     }
 
     /**

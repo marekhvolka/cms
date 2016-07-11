@@ -3,13 +3,15 @@
 namespace backend\controllers;
 
 use backend\components\FileEditor\FileEditorWidget;
-use common\components\Alert;
-use Yii;
-use backend\models\Template;
 use backend\models\search\TemplateSearch;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
+use backend\models\Template;
+use common\components\Alert;
+use Exception;
+use Yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * TemplateController implements the CRUD actions for Template model.
@@ -51,18 +53,25 @@ class TemplateController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new Template();
-        }
+        $model = $id ? $this->findModel($id) : new Template();
 
         if ($model->load(Yii::$app->request->post())) {
-            if($model->save()){
-                Alert::success('Položka bola úspešne uložená.');
-                return $this->redirect(Url::current());
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
         }
 

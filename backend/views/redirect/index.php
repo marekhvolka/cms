@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'target_url:ntext',
             'redirect_type',
             'active:boolean',
-
+            [
+                'label' => 'Posledná zmena',
+                'value' => function ($dataProvider) {
+                    return $dataProvider->last_edit . ' (' .
+                    (isset($dataProvider->lastEditUser) ? $dataProvider->lastEditUser->username : '') . ')';
+                }
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'urlCreator' => function ($action, $model, $key, $index) {

@@ -31,7 +31,8 @@ class GlobalSearch
             'snippet' => [],
             'snippet_code' => [],
             'page' => [],
-            'product' => []
+            'product' => [],
+            'actions' => []
         );
 
         // SNIPPETS
@@ -80,7 +81,7 @@ class GlobalSearch
             ['like', 'title', $searchTerm],
         ])
             ->andWhere([
-                'portal_id' => BaseController::$portalId
+                'portal_id' => BaseController::$portal->id
             ])
             ->limit(10)
             ->all();
@@ -95,7 +96,6 @@ class GlobalSearch
         }
 
         // PRODUCTS
-        $portal = Portal::findOne(BaseController::$portalId);
 
         $products = Product::find()
             ->filterWhere([
@@ -104,7 +104,7 @@ class GlobalSearch
                 ['like', 'identifier', $searchTerm],
             ])
             ->andWhere([
-                'language_id' => $portal->language_id
+                'language_id' => BaseController::$portal->language_id
             ])
             ->limit(10)
             ->all();
@@ -120,6 +120,15 @@ class GlobalSearch
                 'class' => 'suggest-product'
             ];
         }
+
+        /*$results['actions'][] = [
+            'link' => Url::to([
+                '/product/',
+            ]),
+            'name' => 'Zoznam produktov',
+            'id' => '',
+            'class' => 'suggest-action'
+        ];*/
 
         return $results;
     }

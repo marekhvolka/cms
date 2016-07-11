@@ -150,7 +150,7 @@ class MultimediaCategory extends Model
 
         $multimediaCategories = [];
 
-        $portal = Portal::findOne(BaseController::$portalId);
+        $portal = BaseController::$portal;
 
         if ($portal) {
             chdir($portal->getMultimediaDirectory()); // so that we get only directory name as result of glob

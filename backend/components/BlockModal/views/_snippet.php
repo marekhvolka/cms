@@ -81,7 +81,7 @@ use yii\helpers\BaseHtml;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
                     <?php else : ?>
                         <?= Html::activeDropDownList($model, 'parent_id',
-                            ArrayHelper::map(Portal::findOne(BaseController::$portalId)->portalSnippets,
+                            ArrayHelper::map(BaseController::$portal->portalSnippets,
                                 'id', 'varIdentifier'),
                             [
                                 'name' => $prefix . '[parent_id]',

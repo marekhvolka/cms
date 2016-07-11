@@ -11,7 +11,7 @@ use yii\widgets\Breadcrumbs;
 
 
 $portal = Portal::find()
-    ->where(['id' => BaseController::$portalId])
+    ->where(['id' => BaseController::$portal->id])
     ->one();
 $portalName = isset($portal->name) ? $portal->name : '';
 

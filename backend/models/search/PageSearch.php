@@ -27,7 +27,6 @@ class PageSearch extends Page
                     'id',
                     'portal_id',
                     'active',
-                    'in_menu',
                     'parent_id',
                     'product_id',
                     'last_edit_user'
@@ -74,8 +73,7 @@ class PageSearch extends Page
         $query = Page::find();
 
         if ($byPortal) {
-            $portalID = BaseController::$portalId;
-            $query->where(['portal_id' => $portalID]);
+            $query->where(['portal_id' => BaseController::$portal->id]);
         }
 
         $this->load($params);

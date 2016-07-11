@@ -10,7 +10,10 @@ use yii\widgets\ActiveForm;
 
 <div class="user-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
 
@@ -29,8 +32,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'isLog')->textInput() ?>
 
     <?= $form->field($model, 'cookie_hash')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">

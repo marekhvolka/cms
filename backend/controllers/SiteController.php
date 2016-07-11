@@ -10,6 +10,7 @@ use common\models\LoginForm;
 use yii\filters\VerbFilter;
 
 use backend\components\IdentifierComponent;
+use yii\web\Cookie;
 
 /**
  * Site controller
@@ -75,9 +76,7 @@ class SiteController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
 
-            Yii::$app->session->set('portal_id', $model->portal_id);
-            Yii::$app->session->set('develop', true);
-            Yii::$app->params['portal'] = Portal::find()->where(['id' => $model->portal_id])->one();
+            $this->changeCurrentPortal($model->portal_id);
 
             return $this->goBack();
         } else {

@@ -2,13 +2,15 @@
 
 namespace backend\controllers;
 
-use common\components\Alert;
-use Yii;
 use backend\models\ProductType;
 use backend\models\search\ProductTypeSearch;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
+use common\components\Alert;
+use Yii;
+use yii\base\Exception;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * ProductTypeController implements the CRUD actions for ProductType model.
@@ -50,19 +52,25 @@ class ProductTypeController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new ProductType();
-        }
+        $model = $id ? $this->findModel($id) : new ProductType();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                Alert::success('Položka bola úspešne uložená.');
-            } else {
-                Alert::success('Vyskytla sa chyba pri ukladaní položky.');
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
             }
-            return $this->redirect(Url::current());
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
+                }
+
+                $transaction->commit();
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
+            }
         }
 
         return $this->render('edit', [
@@ -78,7 +86,7 @@ class ProductTypeController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()) {
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');

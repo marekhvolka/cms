@@ -5,10 +5,10 @@ namespace backend\controllers;
 use backend\models\ProductVar;
 use common\components\Alert;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 
 /**
@@ -51,32 +51,31 @@ class ProductVarController extends BaseController
      */
     public function actionEdit($id = null)
     {
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new ProductVar();
-        }
+        $model = $id ? $this->findModel($id) : new ProductVar();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
+            }
 
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
                 $productTypeIdsArray = Yii::$app->request->post('product_type_ids');
                 $productTypesIds = !$productTypeIdsArray ?: implode($productTypeIdsArray, ',');
                 $model->product_type = $productTypesIds;
 
-                if ($model->load(Yii::$app->request->post())) {
-                    if ($model->save()) {
-                        Alert::success('Položka bola úspešne uložená.');
-                        return $this->redirect(Url::current());
-                    } else {
-                        Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
-                    }
+                if (!($model->validate() && $model->save())) {
+                    throw new Exception;
                 }
-            } else {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+
+                $transaction->commit();
+
+                return $this->redirectAfterSave($model);
+            } catch (Exception $exc) {
+                $transaction->rollBack();
+                return $this->redirectAfterFail($model);
             }
         }
-
         return $this->render('edit', [
             'model' => $model,
         ]);
@@ -90,7 +89,7 @@ class ProductVarController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()){
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
@@ -106,8 +105,10 @@ class ProductVarController extends BaseController
      * @return ProductVar the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected
+    function findModel(
+        $id
+    ) {
         if (($model = ProductVar::findOne($id)) !== null) {
             return $model;
         } else {

@@ -16,6 +16,7 @@ namespace backend\models;
 
 use backend\controllers\BaseController;
 use Yii;
+use yii\console\Exception;
 
 class CustomModel extends \yii\db\ActiveRecord
 {
@@ -94,9 +95,15 @@ class CustomModel extends \yii\db\ActiveRecord
         $systemException = new SystemException();
         $systemException->type = $type;
 
-        if (property_exists($exception, 'sourceCode'))
+        if (property_exists($exception, 'sourceCode')) {
             $systemException->source_code = $exception->sourceCode;
-        $systemException->source_name = $exception->getFile();
+        }
+        if (property_exists($exception, 'sourceName')) {
+            $systemException->source_name = $exception->sourceName;
+        }
+        if (property_exists($exception, 'sourceLine')) {
+            $systemException->source_line = $exception->sourceLine;
+        }
         $systemException->message = $exception->getMessage();
 
         switch ($this->className()) {
@@ -160,9 +167,12 @@ class CustomModel extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if (property_exists($this, 'last_edit_user')) {
-            $userId = Yii::$app->user->identity->id;
-            $this->last_edit_user = $userId;
+        if (key_exists('last_edit_user', $this->attributes)) {
+
+            if (isset(Yii::$app->user) && isset(Yii::$app->user->identity)) {
+                $userId = Yii::$app->user->identity->id;
+                $this->last_edit_user = $userId;
+            }
         }
         return parent::beforeSave($insert);
     }
@@ -182,8 +192,8 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function isChanged()
     {
-        foreach($this->myOldAttributes as $index => $oldAttribute) {
-            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user') {
+        foreach ($this->myOldAttributes as $index => $oldAttribute) {
+            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user' && $index != 'outdated') {
                 return true;
             }
         }

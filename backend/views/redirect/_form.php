@@ -1,7 +1,9 @@
 <?php
 
+use backend\models\Portal;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,11 +14,24 @@ use yii\widgets\ActiveForm;
 
 <div class="redirect-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form',
+        'enableAjaxValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'source_url')->textInput() ?>
 
     <?= $form->field($model, 'target_url')->textInput() ?>
+
+    <?= $form->field($model, 'portal_id')->widget(Select2::classname(), [
+        'data' => ArrayHelper::map(Portal::find()->all(), 'id',
+            'name'),
+        'language' => 'en',
+        'options' => ['placeholder' => 'Vyber portál ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'redirect_type')->widget(Select2::classname(), [
         'data' => [301 => "301", 302 => "302"],

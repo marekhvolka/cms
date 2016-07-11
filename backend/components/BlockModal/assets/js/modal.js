@@ -161,3 +161,10 @@ body.on(
         $('.modal-backdrop').remove();
     }
 );
+
+function appendElement(parentElement, dataToAppend)
+{
+    parentElement.find('.children-list:first').append(dataToAppend);
+
+    return dataToAppend;
+}
