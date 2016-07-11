@@ -260,6 +260,7 @@ ul {
 
 .global-search .data li a {
     display: block;
+    outline: none;
     padding: 3px 5px;
     color: black;
 }
