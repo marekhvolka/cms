@@ -346,6 +346,10 @@ a.anchor {
     list-style-type: square;
 }
 
+.snippet-dropdown + .select2 {
+    min-width: 400px;
+}
+
 .syntax-highlight-line {
     color: #000000;
     font-size: 13px;
@@ -360,4 +364,8 @@ a.anchor {
 
 .syntax-highlight-code.highlight {
     border: 1px red solid
+}
+
+.modal-dialog {
+    margin-top: 63px;
 }

@@ -12,7 +12,7 @@ use backend\models\Block;
         width: 1000px !important;
     }
 </style>
-<div class="modal fade" id="modal" tabindex="-1" role="dialog">
+<div class="modal" id="modal" role="dialog">
     <div class="modal-dialog modal-xlg">
         <div class="modal-content">
             <div class="modal-main-content">

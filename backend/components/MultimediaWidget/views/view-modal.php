@@ -28,10 +28,3 @@ MultimediaWidgetAsset::register($this);
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    var getMultimediaSelectCallback = function ()
-    {
-        return <?= $selectCallbackName ?>; // it can be defined later
-    };
-</script>

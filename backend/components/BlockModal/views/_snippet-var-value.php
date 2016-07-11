@@ -3,6 +3,7 @@ use backend\controllers\BaseController;
 use backend\models\Portal;
 use backend\models\ProductVar;
 use backend\models\Tag;
+use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 use yii\helpers\Html;
@@ -51,39 +52,39 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 case 'icon' :
                 case 'textinput' : ?>
 
-                    <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
-                           name="<?= $prefix . '[value_text]' ?>"
-                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
-                    <?php
-                    break;
-                case 'textarea' : ?>
+            <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
+                   name="<?= $prefix . '[value_text]' ?>"
+                   placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                   value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
+            <?php
+            break;
+            case 'textarea' : ?>
 
-                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>"
-                              name="<?= $prefix . '[value_text]' ?>"
-                              rows="3" placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                    ><?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?></textarea>
+                <textarea class="form-control" id="<?= $snippetVarValue->id ?>"
+                          name="<?= $prefix . '[value_text]' ?>"
+                          rows="3" placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                ><?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?></textarea>
 
-                    <?php
-                    break;
-                case 'color' : ?>
-                    <div class="input-group">
-                        <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name=""
-                               value="<?= $snippetVarValue->value_text ?>"
-                               placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
-                        <span class="input-group-addon"><i></i></span>
-                    </div>
+            <?php
+            break;
+            case 'color' : ?>
+                <div class="input-group">
+                    <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name=""
+                           value="<?= $snippetVarValue->value_text ?>"
+                           placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
+                    <span class="input-group-addon"><i></i></span>
+                </div>
 
-                    <?php
-                    break;
-                case 'editor' : ?>
-                    <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="" rows="3"
-                              placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
+            <?php
+            break;
+            case 'editor' : ?>
+                <textarea class="form-control" id="<?= $snippetVarValue->id ?>" name="" rows="3"
+                          placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
                         <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
                     </textarea>
-                    <?php
-                    break;
-                case 'product' : ?>
+            <?php
+            break;
+            case 'product' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
                         ArrayHelper::map(BaseController::$portal->language->products,
@@ -94,10 +95,18 @@ if ($snippetVarValue->typeName != 'list') : ?>
                             'class' => 'form-control',
                             'prompt' => 'Vyber produkt'
                         ]) ?>
+                <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                    ArrayHelper::map(Portal::findOne(BaseController::$portalId)->language->products,
+                        'id', 'breadcrumbs'),
+                    [
+                        'name' => $prefix . '[value_product_id]',
+                        'class' => 'form-control select2',
+                        'prompt' => 'Vyber produkt'
+                    ]) ?>
 
-                    <?php
-                    break;
-                case 'page' : ?>
+                <?php
+                break;
+            case 'page' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
                         ArrayHelper::map(BaseController::$portal->pages, 'id',
@@ -108,63 +117,78 @@ if ($snippetVarValue->typeName != 'list') : ?>
                             'class' => 'form-control',
                             'prompt' => 'Vyber podstránku'
                         ]) ?>
-
-
-                    <?php
-                    break;
-                case 'product_var' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id',
-                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'name')
-                        ,
-                        [
-                            'name' => $prefix . '[value_product_var_id]',
-                            'class' => 'form-control',
-                            'prompt' => 'Vyber produktovú premennú'
-                        ]) ?>
-
-                    <?php
-                    break;
-                case 'product_tag' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id',
-                        ArrayHelper::map(Tag::find()->all(), 'id', 'label')
-                        ,
-                        [
-                            'name' => $prefix . '[value_tag_id]',
-                            'class' => 'form-control',
-                            'prompt' => 'Vyber tag'
-                        ]) ?>
-
-                    <?php
-                    break;
-
-                case 'dropdown' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_dropdown_id',
-                        ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
-                        [
-                            'name' => $prefix . '[value_dropdown_id]',
-                            'class' => 'form-control'
-                        ]) ?>
-
-                    <?php
-                    break;
-
-                case 'bool' : ?>
-
-                    <?= Html::activeCheckbox($snippetVarValue, 'value_text', [
-                        'name' => $prefix . '[value_text]',
+                <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
+                    ArrayHelper::map(Portal::findOne(BaseController::$portalId)->pages, 'id',
+                        'breadcrumbs'),
+                    [
+                        'name' => $prefix . '[value_page_id]',
+                        'class' => 'form-control select2',
+                        'prompt' => 'Vyber podstránku'
                     ]) ?>
 
-                    <?php
-                    break;
+
+                <?php
+                break;
+            case 'product_var' : ?>
+
+                <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id',
+                    ArrayHelper::map(ProductVar::find()->all(), 'id', 'name'),
+                    [
+                        'name' => $prefix . '[value_product_var_id]',
+                        'class' => 'form-control select2',
+                        'prompt' => 'Vyber produktovú premennú'
+                    ]) ?>
+
+                <?php
+                break;
+            case 'product_tag' : ?>
+
+                <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id',
+                    ArrayHelper::map(Tag::find()->all(), 'id', 'label'),
+                    [
+                        'name' => $prefix . '[value_tag_id]',
+                        'class' => 'form-control select2',
+                        'prompt' => 'Vyber tag'
+                    ]) ?>
+
+                <?php
+                break;
+
+            case 'dropdown' : ?>
+
+                <?= Html::activeDropDownList($snippetVarValue, 'value_dropdown_id',
+                    ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
+                    [
+                        'name' => $prefix . '[value_dropdown_id]',
+                        'class' => 'form-control select2'
+                    ]) ?>
+
+                <?php
+                break;
+
+            case 'bool' : ?>
+
+            <?= SwitchInput::widget([
+                'id' => 'switch-input' . $snippetVarValue->id,
+                'name' => $prefix . '[value_text]',
+                'value' => $snippetVarValue->value_text,
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+                <script type="text/javascript">
+                    $("#switch-input<?= $snippetVarValue->id ?>").bootstrapSwitch();
+                </script>
+
+                <?php
+                break;
             } ?>
             <?php if (!empty($defaultValue)) : ?>
                 <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je
                     <strong><?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?></strong></p>
             <?php endif; ?>
         </div>
+        <script type="text/javascript">
+            $(".select2").select2();
+        </script>
         <div class="clearfix"></div>
     </div>
 <?php elseif (!isset($parentId)) : ?>
@@ -179,7 +203,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
             </span>
             <a class="btn btn-success btn-xs pull-right btn-add-list-item"
                data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                data-parent-id="<?= $parentId ?>">
+               data-parent-id="<?= $parentId ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>

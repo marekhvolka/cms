@@ -54,9 +54,16 @@ if (!isset($model)) {
                         ArrayHelper::map($model->pages, 'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control',
+                            'class' => 'form-control select2',
                             'prompt' => 'Vyber podstránku'
                         ]);
+
+                    ?>
+                    <script type="text/javascript">
+                        $(".select2").select2();
+                    </script>
+                    <?php
+
                     break;
                 case 'image':
                     echo Html::activeTextInput($varValue, 'value_text', [
@@ -65,8 +72,7 @@ if (!isset($model)) {
                     ]);
 
                     echo '<span class="input-group-btn">';
-                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
-                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']);
+                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success open-multimedia']);
                     echo '</span>';
                     break;
                 case 'portal_snippet':

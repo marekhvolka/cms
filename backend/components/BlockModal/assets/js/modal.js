@@ -92,7 +92,10 @@ body.on(
 
                     modalContainer.append(modalWindow);
 
-                    modalWindow.modal();
+                    modalWindow.modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
 
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
@@ -168,12 +171,4 @@ function appendElement(parentElement, dataToAppend)
     parentElement.find('.children-list:first').append(dataToAppend);
 
     return dataToAppend;
-}
-
-$("body").on('click', ".var-value a[data-target='#multimediaWidget']", function () {
-    assigningTo = $(this).parents('.var-value').first().find('.value');
-});
-
-function assignMultimediaItemToVariable(path) {
-    assigningTo.val(path);
 }

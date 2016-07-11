@@ -2,66 +2,66 @@
 // programmed by Juraj Mlich
 
 $(
-    function ()
-    {
+    function () {
         var lastChanged = new Date(),
             timeout,
-            input = $("#global-search-input");
+            input = $("#global-search-input"),
+            itemsFocused = false;
 
         input.focus(
-            function ()
-            {
-                if (input.val() != "")
-                {
+            function () {
+                if (input.val() != "") {
                     $(".global-search .data").stop().show();
                 }
             }
         );
 
         input.blur(
-            function ()
-            {
+            function () {
                 setTimeout(
-                    function ()
-                    {
+                    function () {
                         $(".global-search .data").hide();
                     }, 100
                 );
             }
         );
 
+        input.keydown(function (e) {
+            if (e.keyCode == 40) {
+                itemsFocused = true;
+                $(".global-search .data li:first").focus();
+            }
+        });
+
+        $("body").on("keydown", ".global-search .data", function (e) {
+            
+        });
+
         input.on(
-            'input', function ()
-            {
+            'input', function () {
                 var now = new Date(),
                     value = $(this).val();
 
-                if (timeout != null)
-                {
+                if (timeout != null) {
                     clearTimeout(timeout);
                     timeout = null;
                 }
 
                 // so that we refresh after 300ms, not every user's stroke
-                if (value != "")
-                {
-                    if (now.getTime() - lastChanged.getTime() < 300)
-                    {
+                if (value != "") {
+                    if (now.getTime() - lastChanged.getTime() < 300) {
                         lastChanged = now;
                         refresh(value);
                     }
-                    else
-                    {
+                    else {
                         timeout = setTimeout(
-                            function ()
-                            {
+                            function () {
                                 refresh(value);
                             }, 500 - now.getTime() + lastChanged.getTime()
                         );
                     }
                 }
-                else
-                {
+                else {
                     $(".global-search .data").hide();
                 }
             }
@@ -72,11 +72,9 @@ $(
          *
          * @param val
          */
-        function refresh(val)
-        {
+        function refresh(val) {
             $.get(
-                globalSearchUrl + "?q=" + encodeURI(val), function (data)
-                {
+                globalSearchUrl + "?q=" + encodeURI(val), function (data) {
                     $(".global-search .data li").remove();
 
                     var dataInDOM = $(".global-search .data"),
@@ -84,14 +82,11 @@ $(
 
                     dataInDOM.show();
 
-                    if (totalCount > 0)
-                    {
-                        function appendOneTypeOfData(items, type)
-                        {
+                    if (totalCount > 0) {
+                        function appendOneTypeOfData(items, type) {
                             items.forEach(
-                                function (i)
-                                {
-                                    var liItem = '<li class="' + i.class + '"><a href="' + i.link + '">' + i.name + ' (' + type + ')</a></li>';
+                                function (i) {
+                                    var liItem = '<li tabindex="-1" class="' + i.class + '"><a href="' + i.link + '">' + i.name + ' (' + type + ')</a></li>';
 
                                     dataInDOM.append($(liItem));
                                 }
@@ -103,8 +98,7 @@ $(
                         appendOneTypeOfData(data.page, "stránka");
                         appendOneTypeOfData(data.product, "produkt");
                     }
-                    else
-                    {
+                    else {
                         dataInDOM.append($("<li>Žiadne výsledky</li>"));
                     }
                 }

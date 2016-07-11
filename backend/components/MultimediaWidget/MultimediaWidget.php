@@ -15,7 +15,6 @@ class MultimediaWidget extends Widget
 {
     public $renderAsModal = false;
     public $onlyItems = false;
-    public $selectCallbackName = null;
 
     public function init()
     {
@@ -35,7 +34,6 @@ class MultimediaWidget extends Widget
         return $this->render($this->renderAsModal ? 'view-modal' : 'view', [
             'categories' => $categories,
             'modal' => $this->renderAsModal,
-            'selectCallbackName' => $this->selectCallbackName
         ]);
     }
 }

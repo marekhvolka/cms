@@ -13,7 +13,7 @@ use kartik\select2\Select2;
 
 ?>
 
-<?= MultimediaWidget::widget(['renderAsModal' => true, 'selectCallbackName' => 'assignMultimediaItemToVariable']) ?>
+<?= MultimediaWidget::widget(['renderAsModal' => true]) ?>
 
     <h3>Premenné</h3>
 
