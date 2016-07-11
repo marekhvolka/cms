@@ -50,6 +50,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     break;
                 case 'url' :
                 case 'icon' :
+
                 case 'textinput' : ?>
 
             <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
@@ -113,15 +114,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                 break;
             case 'page' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(BaseController::$portal->pages, 'id',
-                            'breadcrumbs')
-                        ,
-                        [
-                            'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control',
-                            'prompt' => 'Vyber podstránku'
-                        ]) ?>
+
                 <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
                     ArrayHelper::map(BaseController::$portal->pages, 'id',
                         'breadcrumbs'),
