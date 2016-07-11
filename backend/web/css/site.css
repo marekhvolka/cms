@@ -365,3 +365,7 @@ a.anchor {
 .syntax-highlight-code.highlight {
     border: 1px red solid
 }
+
+.modal-dialog {
+    margin-top: 63px;
+}

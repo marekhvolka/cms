@@ -22,9 +22,12 @@
 }
 
 #multimediaWidget > .modal-dialog {
-    margin-top: 63px;
     width: 85%;
     height: 85%;
+}
+
+#multimediaWidget {
+    z-index: 10000;
 }
 
 #multimediaWidget > .modal-dialog > .modal-content {

@@ -1,4 +1,6 @@
 <?php
+use backend\assets\CKEditorAsset;
+use backend\components\MultimediaWidget\MultimediaWidget;
 use backend\components\TreeGrid\TreeGridWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -10,6 +12,7 @@ use yii\helpers\Url;
 
 $this->title = 'Podstránky';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <?php $this->beginBlock('button'); ?>

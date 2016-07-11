@@ -25,6 +25,7 @@ class AssetBundle extends \yii\web\AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'backend\components\BlockModal\AssetBundle',
+        'backend\assets\CKEditorAsset'
     ];
 
     public function init()

@@ -1,4 +1,12 @@
 $(function () {
+    var toCall = null;
+
+    window.showMultimedia = function (callback) {
+        toCall = callback;
+
+        $("#multimediaWidget").modal("show");
+    };
+
     $("body").on('click', '.multimedia-image', function (e) {
         e.preventDefault();
         var $this = $(this);
@@ -62,7 +70,7 @@ $(function () {
                     success: function (response) {
                         if (response.state == "ok") {
                             refreshMultimedia();
-                            if (!select(response.pathForWeb + "/" + files[0].name)){
+                            if (!select(response.pathForWeb + "/" + files[0].name)) {
                                 $('.multimedia-widget .nav-tabs a:last').tab('show');
                             }
                             $("#multimediaitem-files").fileinput('reset');
@@ -92,9 +100,8 @@ $(function () {
     }
 
     function select(path) {
-        var multimediaSelect = getMultimediaSelectCallback();
-        if (typeof multimediaSelect === 'function') {
-            multimediaSelect(path);
+        if (typeof toCall === 'function') {
+            toCall(path);
 
             $("#multimediaWidget").modal("hide");
 

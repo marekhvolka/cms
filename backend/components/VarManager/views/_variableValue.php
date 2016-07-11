@@ -72,8 +72,7 @@ if (!isset($model)) {
                     ]);
 
                     echo '<span class="input-group-btn">';
-                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
-                        'data-toggle' => "modal", 'data-target' => '#multimediaWidget']);
+                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success open-multimedia']);
                     echo '</span>';
                     break;
                 case 'portal_snippet':

@@ -44,12 +44,11 @@ function attachRemove(button)
 
 attachRemove($('.remove-btn'));
 
-var assigningTo = null;
+$("body").on('click', ".variable-value a.open-multimedia", function (e) {
+    e.preventDefault();
+    var assigningTo = $(this).parents('.var-value').first().find('.value');
 
-$("body").on('click', ".variable-value a[data-target='#multimediaWidget']", function () {
-     assigningTo = $(this).parents('.var-value').first().find('.value');
+    showMultimedia(function (path) {
+        assigningTo.val(path);
+    });
 });
-
-function assignMultimediaItemToVariable(path) {
-    assigningTo.val(path);
-}
