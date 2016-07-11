@@ -35,6 +35,3 @@ backend/runtime
 /common/components/tmp/
 /frontend/web/data/*
 !/frontend/web/data/.htaccess
-/.htaccess
-/frontend/web/.htaccess
-/frontend/web/data/.htaccess
