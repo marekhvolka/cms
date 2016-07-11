@@ -38,16 +38,18 @@ Multimedia.prototype.init = function () {
         var items = $(".multimedia-category .multimedia-item");
         items.show();
         items.each(function () {
-            if (_this.searchInput.attr("data-name").indexOf(searchFor) == -1) {
-                _this.searchInput.hide();
+            var $this = $(this);
+            if ($this.attr("data-name").indexOf(searchFor) == -1) {
+                $this.hide();
             }
         });
 
         var categories = $(".multimedia-category");
         categories.show();
         categories.each(function () {
-            if (_this.searchInput.find(".multimedia-item:visible").length == 0) {
-                _this.searchInput.hide();
+            var $this = $(this);
+            if ($this.find(".multimedia-item:visible").length == 0) {
+                $this.hide();
             }
         });
     });
