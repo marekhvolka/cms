@@ -103,7 +103,7 @@ $(
                         function appendOneTypeOfData(items, type) {
                             items.forEach(
                                 function (i) {
-                                    var liItem = '<li tabindex="-1" class="' + i.class + '"><a href="' + i.link + '">' + i.name + ' (' + type + ')</a></li>';
+                                    var liItem = '<li class="' + i.class + '"><a tabindex="-1" href="' + i.link + '">' + i.name + ' (' + type + ')</a></li>';
 
                                     dataInDOM.append($(liItem));
                                 }
