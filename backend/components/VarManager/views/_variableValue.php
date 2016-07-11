@@ -2,9 +2,9 @@
 use backend\controllers\BaseController;
 use backend\models\Portal;
 use kartik\color\ColorInput;
-use kartik\date\DatePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model */
@@ -107,15 +107,24 @@ if (!isset($model)) {
                     break;
                 case 'date':
                     echo DatePicker::widget([
+                        'value' => $varValue->value_text,
+                        'attribute' => 'from_date',
+                        //'language' => 'ru',
+                        'dateFormat' => 'yyyy/MM/dd',
+                        'class' => 'form-control',
+                        'name' => $prefix . "[value_text",
+                    ]);
+                    /*echo DatePicker::widget([
                         'name' => $prefix . "[value_text]",
                         'type' => DatePicker::TYPE_INPUT,
                         'value' => $varValue->value_text,
+                        'dateFormat' => 'YYYY/mm/dd',
                         'pluginOptions' => [
                             'autoclose' => true,
-                            'format' => 'dd/mm/yyyy'
+                            //'format' => 'yyyy/mm/dd'
                         ],
                         'class' => 'form-control'
-                    ]);
+                    ]);*/
                     break;
                 case 'color':
                     echo ColorInput::widget([
