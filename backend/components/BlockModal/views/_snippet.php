@@ -129,7 +129,6 @@ use yii\helpers\Url;
                 var _this = $(this);
                 if (data.indexOf(_this.attr('data-identifier')) == -1) {
                     _this.hide();
-                    console.log("hiding " + _this.attr('data-identifier'));
                 }
             });
         });
