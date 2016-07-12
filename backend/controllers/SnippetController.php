@@ -86,19 +86,19 @@ class SnippetController extends BaseController
                     foreach ($snippetCodesData as $index => $snippetCodeData) {
                         $model->loadFromData('snippetCodes', $snippetCodeData, $index, SnippetCode::className());
                     }
+                }
 
-                    foreach ($model->snippetCodes as $indexCode => $snippetCode) {
-                        $snippetCode->snippet_id = $model->id;
+                foreach ($model->snippetCodes as $indexCode => $snippetCode) {
+                    $snippetCode->snippet_id = $model->id;
 
-                        if ($snippetCode->removed) {
-                            $snippetCode->delete();
-                            unset($model->snippetCodes[$indexCode]);
-                            continue;
-                        }
+                    if ($snippetCode->removed) {
+                        $snippetCode->delete();
+                        unset($model->snippetCodes[$indexCode]);
+                        continue;
+                    }
 
-                        if (!($snippetCode->validate() && $snippetCode->save())) {
-                            throw new \yii\base\Exception;
-                        }
+                    if (!($snippetCode->validate() && $snippetCode->save())) {
+                        throw new \yii\base\Exception;
                     }
                 }
 
@@ -107,8 +107,9 @@ class SnippetController extends BaseController
                 if ($snippetVarsData != null) {
 
                     $model->loadChildren('snippetFirstLevelVars', $snippetVarsData);
-                    $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
                 }
+
+                $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
 
                 $transaction->commit();
 
