@@ -16,7 +16,7 @@ use yii\helpers\BaseHtml;
 
 <div class="layouts">
     <?= BaseHtml::hiddenInput($prefix . "[type]", $area->type); ?>
-    <div class="children-list">
+    <div class="children-list sections">
         <?php foreach ($area->sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,

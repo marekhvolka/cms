@@ -378,3 +378,7 @@ a.anchor {
 div#ui-datepicker-div.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all {
     z-index: 100 !important;
 }
+
+span.row-drag-by, span.section-drag-by {
+    cursor: move;
+}

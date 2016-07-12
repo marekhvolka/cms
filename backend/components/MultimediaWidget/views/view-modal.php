@@ -23,7 +23,7 @@ MultimediaWidgetAsset::register($this);
                 <h4 class="modal-title" id="multimediaModalLabel">Vybrať súbor z multimédii</h4>
             </div>
             <div class="modal-body">
-                <?= $this->render('view', ['categories' => $categories, 'modal' => true]) ?>
+                <?= $this->render('view', ['categories' => $categories, 'modal' => true, 'onlyImages' => $onlyImages]) ?>
             </div>
         </div>
     </div>

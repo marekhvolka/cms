@@ -16,10 +16,12 @@ class AssetBundle extends \yii\web\AssetBundle
         'forceCopy' => true,
     ];
     public $css = [
-        'css/style.css'
+        'css/style.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.css'
     ];
     public $js = [
-        'js/layout.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
+        'js/layout.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
