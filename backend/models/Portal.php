@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\controllers\BaseController;
 use Yii;
 use yii\base\Exception;
 use yii\db\Query;
@@ -459,5 +460,15 @@ class Portal extends CustomModel implements ICacheable
         foreach ($files as $file) {
             Yii::$app->dataEngine->compileThanksFileForPortal($thanksCommonDirectory . $file, $file, $this);
         }
+    }
+
+    public function getOutdatedPageCount()
+    {
+        $query = 'SELECT SUM(outdated) outdated, COUNT(*) count FROM page WHERE portal_id = :portal_id';
+
+        return Yii::$app->db->createCommand($query, [
+            'portal_id' => BaseController::$portal->id
+        ])
+            ->queryOne();
     }
 }

@@ -447,7 +447,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
      */
     public function getMainCacheFile($reload = false)
     {
-        $path = $this->getMainDirectory() . 'page_compiled.html';
+        $path = $this->getMainDirectory() . 'page_compiled.php';
 
         if (!file_exists($path) || $reload) {
             try {

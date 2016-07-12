@@ -21,6 +21,7 @@ class AssetBundle extends \yii\web\AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'yii\jui\JuiAsset',
         //'kartik\select2\Select2',
         //'kartik\switchinput\SwitchInput'
     ];

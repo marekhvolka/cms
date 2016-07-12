@@ -226,15 +226,15 @@ use yii\helpers\Html;
                 </a>
             </div>
 
-            <div class="panel-body panel-collapse collapse in children-list fixed-panel">
-                <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
-                    <?= $this->render('_list-item', [
-                        'listItem' => $listItem,
-                        'product' => $product,
-                        'prefix' => $prefix . "[ListItem][$indexItem]",
-                        'parentId' => $parentId
-                    ]); ?>
-                <?php endforeach; ?>
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
+            <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
+                <?= $this->render('_list-item', [
+                    'listItem' => $listItem,
+                    'product' => $product,
+                    'prefix' => $prefix . "[ListItem][$indexItem]",
+                    'parentId' => $parentId
+                ]); ?>
+            <?php endforeach; ?>
             </div>
         </div>
     <?php endif; ?>

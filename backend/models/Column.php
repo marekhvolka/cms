@@ -149,7 +149,7 @@ class Column extends CustomModel implements IDuplicable
 
                 $result .= '<?php' . PHP_EOL;
 
-                $result .= 'include("' . $block->getMainCacheFile($reload) . '");' . PHP_EOL;
+                $result .= 'echo file_get_contents("' . $block->getMainCacheFile($reload) . '");' . PHP_EOL;
 
                 $result .= '?>' . PHP_EOL;
             }

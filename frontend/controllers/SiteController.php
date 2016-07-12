@@ -119,7 +119,13 @@ class SiteController extends Controller
         }
 
         if (isset($path)) {
-            echo file_get_contents($path);
+            //echo file_get_contents($path);
+
+            ob_start();
+            include $path;
+            $html = ob_get_contents();
+            ob_end_clean();
+            echo $html;
         }
     }
 

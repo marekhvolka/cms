@@ -433,14 +433,12 @@ abstract class BaseController extends Controller
                 throw new Exception;
             }
 
-            $listItemOrder = 1;
             foreach ($snippetVarValue->listItems as $listItem) {
                 if ($listItem->removed) {
                     $listItem->delete();
                     continue;
                 }
                 $listItem->list_id = $snippetVarValue->id;
-                $listItem->order = $listItemOrder++;
 
                 if (!($listItem->validate() && $listItem->save())) {
                     throw new Exception;
@@ -457,10 +455,12 @@ abstract class BaseController extends Controller
 
         $continue = Yii::$app->request->post('continue');
         if (isset($continue)) {
-            return $this->render('edit', array_merge([
+            /*return $this->render('edit', array_merge([
                 'model' => $model
             ],
-                $editOptions));
+                $editOptions));*/
+
+            return $this->redirect(['edit', 'id' => $model->id]);
         } else {
             return $this->redirect(['index']);
         }
