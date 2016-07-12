@@ -192,7 +192,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
                     if (o.id.match(/fa-[a-z\-]+/)) {
                         return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace('-', ' ') + ' [font awesome]';
                     } else if (o.id.match(/glyphicon\-[a-z\-]+/)) {
-                        return '<span class="glyphicon ' + o.id + '"></span> ' + o.text + ' [glyphicon]';
+                        return '<span class="' + o.id + '"></span> ' + o.text + ' [glyphicon]';
                     }
                 }
 
