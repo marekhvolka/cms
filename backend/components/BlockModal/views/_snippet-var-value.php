@@ -81,7 +81,7 @@ use yii\helpers\Html;
                 break;
                 case 'color' : ?>
                     <div class="input-group">
-                        <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name=""
+                        <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
                                value="<?= $snippetVarValue->value_text ?>"
                                placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
                         <span class="input-group-addon"><i></i></span>
@@ -90,7 +90,7 @@ use yii\helpers\Html;
                 <?php
                 break;
                 case 'editor' : ?>
-                    <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>" name="" rows="3"
+                    <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
                         <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
                     </textarea>
