@@ -104,7 +104,7 @@ class SnippetVar extends Variable
             $this->defaultValues[] = $default;
 
             $this->defaultValues = array_merge($this->defaultValues, $this->hasMany(SnippetVarDefaultValue::className(),
-                ['snippet_var_id' => 'id'])->orderBy('product_type_id')->all());
+                ['snippet_var_id' => 'id'])->where('product_type_id IS NOT NULL')->orderBy('product_type_id')->all());
         }
 
         return $this->defaultValues;

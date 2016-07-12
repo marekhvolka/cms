@@ -302,10 +302,15 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionCacheFromBuffer($limit = 1)
+    public function actionCacheFromBuffer($limit = 10, $portalId = null)
     {
-        $pages = Page::find()->where(['outdated' => 1])
-            ->limit($limit)
+        $query = Page::find()->where(['outdated' => 1]);
+
+        if ($portalId) {
+            $query->andWhere(['portal_id' => $portalId]);
+        }
+
+        $pages = $query->limit($limit)
             ->all();
 
         foreach ($pages as $page) {
