@@ -382,3 +382,7 @@ div#ui-datepicker-div.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearf
 span.row-drag-by, span.section-drag-by {
     cursor: move;
 }
+
+div.CodeMirror-hscrollbar {
+    display: none !important;
+}

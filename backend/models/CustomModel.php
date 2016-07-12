@@ -11,7 +11,6 @@ namespace backend\models;
 /**
  * @property bool $existing Indicates if model already exists.
  * @property bool $removed Indicates if model has to be removed
- * @property bool $outdated
  */
 
 use backend\controllers\BaseController;
@@ -187,15 +186,19 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function setOutdated()
     {
-        $this->outdated = 1;
-        $this->save();
+        if (property_exists($this, 'outdated')) {
+            $this->outdated = 1;
+            $this->save();
+        }
     }
 
     public function setActual()
     {
-        $this->outdated = 0;
-        $this->save();
-        $this->removeException();
+        if (property_exists($this, 'outdated')) {
+            $this->outdated = 0;
+            $this->save();
+            $this->removeException();
+        }
     }
 
     public function isChanged()
