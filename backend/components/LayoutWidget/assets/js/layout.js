@@ -62,12 +62,12 @@ body.on(
 
                 $.post(
                     appendUrl.column, postColumnData, function (columnsData) {
-                        $.each(
-                            JSON.parse(columnsData), function () {
-                                var column = appendElement(row, this);
-                                enableDragBy(column.find(".children-list.blocks").toArray());
-                            }
-                        );
+                        var parsed = JSON.parse(columnsData);
+
+                        for (var i = 0; i < parsed.length; i++) {
+                            var column = appendElement(row, $(parsed[i]));
+                            enableDragBy(column.find(".children-list.blocks").toArray());
+                        }
                     }
                 );
             }
