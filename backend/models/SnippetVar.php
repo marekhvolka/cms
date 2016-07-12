@@ -86,15 +86,6 @@ class SnippetVar extends Variable
         ];
     }
 
-    public function beforeSave($insert)
-    {
-        if (!$this->parent_id) {
-            $this->parent_id = null;
-        }
-
-        return parent::beforeSave($insert);
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */

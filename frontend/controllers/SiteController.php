@@ -3,6 +3,7 @@ namespace frontend\controllers;
 
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Redirect;
 use common\models\LoginForm;
 use frontend\models\ContactForm;
 use frontend\models\PasswordResetRequestForm;
@@ -96,6 +97,17 @@ class SiteController extends Controller
             ])
                 ->one();
         } else {
+
+            $redirect = Redirect::find()
+                ->where([
+                    'portal_id' => $portalId,
+                    'source_url' => '/' . $url
+                ])
+                ->one();
+
+            if ($redirect) {
+                return $this->redirect($redirect->target_url, $redirect->redirect_type);
+            }
 
             $pages = Page::find()
                 ->where([

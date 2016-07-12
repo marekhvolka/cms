@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\controllers\BaseController;
 use backend\models\Redirect;
 use Yii;
 use yii\base\Model;
@@ -45,7 +46,7 @@ class RedirectSearch extends Redirect
     {
         $query = Redirect::find();
 
-        // add conditions that should always apply here
+        $query->where(['portal_id' => BaseController::$portal->id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

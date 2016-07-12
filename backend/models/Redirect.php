@@ -26,7 +26,6 @@ class Redirect extends CustomModel
 
         $this->redirect_type = 301;
         $this->active = 1;
-        $this->portal_id = BaseController::$portal->id;
     }
 
     /**

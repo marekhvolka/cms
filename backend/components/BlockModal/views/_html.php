@@ -12,7 +12,4 @@ $id = rand(0, 100000000);
     <textarea class="form-control editor" id="ckeditor<?= $id ?>" rows="3"
               name="<?= $prefix . '[data]' ?>"><?= $model->data ?></textarea>
 </div>
-<script type="text/javascript">
-    CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
-</script>
 

@@ -22,7 +22,7 @@ class AssetBundle extends \yii\web\AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\jui\JuiAsset',
-        //'kartik\select2\Select2',
+        'kartik\select2\Select2Asset',
         //'kartik\switchinput\SwitchInput'
     ];
 
