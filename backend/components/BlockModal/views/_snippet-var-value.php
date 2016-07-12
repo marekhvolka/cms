@@ -1,8 +1,8 @@
 <?php
 use backend\controllers\BaseController;
-use backend\models\Portal;
 use backend\models\ProductVar;
 use backend\models\Tag;
+use common\components\Icons;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
@@ -25,33 +25,44 @@ if ($snippetVarValue->typeName != 'list') : ?>
         <label class="col-sm-2 control-label"
                for="<?= $snippetVarValue->id ?>"><?= $snippetVarValue->var->identifier ?>
             <?php if (!empty($snippetVarValue->var->description)) : ?>
-            <a id="tooltip<?= hash('md5', $prefix) ?>" class="popover-btn pull-right" data-toggle="tooltip" data-placement="bottom"
-               title="<?= $snippetVarValue->var->description ?>">
-                <i class="fa fa-question-circle"></i>
-            </a>
+                <a id="tooltip<?= hash('md5', $prefix) ?>" class="popover-btn pull-right" data-toggle="tooltip"
+                   data-placement="bottom"
+                   title="<?= $snippetVarValue->var->description ?>">
+                    <i class="fa fa-question-circle"></i>
+                </a>
             <?php endif; ?>
         </label>
         <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
         <div class="col-sm-10">
             <?php
             switch ($snippetVarValue->typeName) {
-                case 'image': ?>
-                    <div class="input-group">
-                        <input type="text" class="form-control value" id="<?= $snippetVarValue->id ?>"
-                               name="<?= $prefix . '[value_text]' ?>"
-                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
-                               value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
+            case 'image': ?>
+                <div class="input-group">
+                    <input type="text" class="form-control value" id="<?= $snippetVarValue->id ?>"
+                           name="<?= $prefix . '[value_text]' ?>"
+                           placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
+                           value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
                         <span class="input-group-btn">
                         <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success',
                             'data-toggle' => "modal", 'data-target' => '#multimediaWidget']) ?>
                         </span>
-                    </div>
-                    <?php
-                    break;
-                case 'url' :
-                case 'icon' :
+                </div>
+            <?php
+            break;
+            case 'icon' :
+                ?>
+                <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                Icons::all(),
+                [
+                    'name' => $prefix . '[value_product_id]',
+                    'class' => 'form-control select2',
+                    'prompt' => 'Vyber ikonku'
+                ]) ?>
+                <?php
+                break;
 
-                case 'textinput' : ?>
+            case 'url' :
+            case 'textinput' : ?>
 
             <input type="text" class="form-control" id="<?= $snippetVarValue->id ?>"
                    name="<?= $prefix . '[value_text]' ?>"
@@ -92,15 +103,6 @@ if ($snippetVarValue->typeName != 'list') : ?>
             break;
             case 'product' : ?>
 
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map(BaseController::$portal->language->products,
-                            'id', 'breadcrumbs')
-                        ,
-                        [
-                            'name' => $prefix . '[value_product_id]',
-                            'class' => 'form-control',
-                            'prompt' => 'Vyber produkt'
-                        ]) ?>
                 <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
                     ArrayHelper::map(BaseController::$portal->language->products,
                         'id', 'breadcrumbs'),
@@ -185,7 +187,25 @@ if ($snippetVarValue->typeName != 'list') : ?>
             <?php endif; ?>
         </div>
         <script type="text/javascript">
-            $(".select2").select2();
+            function format(o) {
+                if (o.id != null) {
+                    if (o.id.match(/fa-[a-z\-]+/)) {
+                        return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace('-', ' ') + ' [font awesome]';
+                    } else if (o.id.match(/glyphicon\-[a-z\-]+/)) {
+                        return '<span class="glyphicon ' + o.id + '"></span> ' + o.text + ' [glyphicon]';
+                    }
+                }
+
+                return o.text;
+            }
+
+            $(".select2").select2({
+                templateResult: format,
+                templateSelection: format,
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
         </script>
         <div class="clearfix"></div>
     </div>

@@ -2,6 +2,7 @@
 use backend\assets\CKEditorAsset;
 use backend\components\MultimediaWidget\MultimediaWidget;
 use backend\components\TreeGrid\TreeGridWidget;
+use common\components\Icons;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -18,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php $this->beginBlock('button'); ?>
 <?= Html::a('Pridať podstránku', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
-
 
 <div class="page-index">
 
