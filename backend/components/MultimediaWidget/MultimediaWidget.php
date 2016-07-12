@@ -15,6 +15,7 @@ class MultimediaWidget extends Widget
 {
     public $renderAsModal = false;
     public $onlyItems = false;
+    public $onlyImages = false;
 
     public function init()
     {
@@ -26,7 +27,7 @@ class MultimediaWidget extends Widget
         $categories = MultimediaCategory::loadAll();
 
         if ($this->onlyItems) {
-            return $this->render('_items', ['categories' => $categories]);
+            return $this->render('_items', ['categories' => $categories, 'onlyImages' => $this->onlyImages]);
         }
 
         MultimediaWidgetAsset::register($this->getView());
@@ -34,6 +35,7 @@ class MultimediaWidget extends Widget
         return $this->render($this->renderAsModal ? 'view-modal' : 'view', [
             'categories' => $categories,
             'modal' => $this->renderAsModal,
+            'onlyImages' => $this->onlyImages
         ]);
     }
 }

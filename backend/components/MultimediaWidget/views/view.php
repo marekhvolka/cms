@@ -25,7 +25,7 @@ MultimediaWidgetAsset::register($this);
             <?= $this->render('_new', ['categories' => $categories, 'modal' => $modal]) ?>
         </div>
         <div class="tab-pane" id="tab_existing">
-            <?= $this->render('_existing', ['categories' => $categories]) ?>
+            <?= $this->render('_existing', ['categories' => $categories, 'onlyImages' => $onlyImages]) ?>
         </div>
     </div>
     <div class="clearfix"></div>

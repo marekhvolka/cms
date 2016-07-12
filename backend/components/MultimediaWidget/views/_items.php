@@ -5,7 +5,7 @@ use yii\helpers\Url;
 /* @var $categories \backend\models\MultimediaCategory[] */
 
 foreach ($categories as $multimediaCategory) {
-    if (count($multimediaCategory->items) > 0) {
+    if (count($multimediaCategory->getItems($onlyImages)) > 0) {
         ?>
         <div class="panel panel-default multimedia-category">
             <div class="panel-heading">

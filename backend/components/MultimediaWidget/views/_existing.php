@@ -16,5 +16,5 @@ use yii\widgets\ActiveForm;
 </div>
 
 <div class="multimedia-categories">
-    <?= $this->render('_items', ['categories' => $categories]) ?>
+    <?= $this->render('_items', ['categories' => $categories, 'onlyImages' => $onlyImages]) ?>
 </div>
