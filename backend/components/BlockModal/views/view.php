@@ -9,7 +9,7 @@ use backend\models\Block;
 ?>
 <style>
     .modal-dialog {
-        width: 1000px !important;
+        width: 80% !important;
     }
 </style>
 <div class="modal" id="modal" role="dialog">
