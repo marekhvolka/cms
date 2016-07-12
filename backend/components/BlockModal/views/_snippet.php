@@ -6,6 +6,7 @@ use backend\models\Snippet;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
+use yii\helpers\Url;
 
 /* @var $product Product */
 /* @var $prefix string */
@@ -27,72 +28,75 @@ use yii\helpers\BaseHtml;
             </span>
 
             <?php switch ($model->type) {
-                case 'snippet' :
-                    if ($model->snippetCode) : ?>
-                        <span><?= $model->snippetCode->snippet->name ?></span>
+            case 'snippet' :
+            if ($model->snippetCode) : ?>
+                <span><?= $model->snippetCode->snippet->name ?></span>
 
                         <?= Html::activeDropDownList($model, 'snippet_code_id',
-                        ArrayHelper::map($model->snippetCode->snippet->snippetCodes, 'id', 'name'),
-                        [
-                            'name' => $prefix . '[snippet_code_id]'
-                        ]) ?>
+                ArrayHelper::map($model->snippetCode->snippet->snippetCodes, 'id', 'name'),
+                [
+                    'name' => $prefix . '[snippet_code_id]',
+                    'class' => 'change-snippet-code not-applied'
+                ]) ?>
 
 
-                        <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
-                                style="right: 60px; top: 13px;" data-toggle="modal"
-                                data-target="#supportModal" title="Nápoveda">
+
+                <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
+                        style="right: 60px; top: 13px;" data-toggle="modal"
+                        data-target="#supportModal" title="Nápoveda">
                             <span class="fa fa-question"></span>
                         </button>
                     <?php else : ?>
                         <?= Html::dropDownList('snippet_id', null,
-                            ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
-                                'prompt' => 'Výber snippetu',
-                                'class' => 'snippet-dropdown',
-                                'data-type' => $model->type,
-                                'data-prefix' => $prefix,
-                                'data-product-id' => $product ? $product->id : ''
-                            ]) ?>
+                    ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
+                        'prompt' => 'Výber snippetu',
+                        'class' => 'snippet-dropdown',
+                        'data-type' => $model->type,
+                        'data-prefix' => $prefix,
+                        'data-product-id' => $product ? $product->id : ''
+                    ]) ?>
 
-                        <script type="text/javascript">
+
+                <script type="text/javascript">
                             $(".snippet-dropdown").select2();
                         </script>
                     <?php endif;
-                    break;
+            break;
 
-                case 'product_snippet' :
-                    if ($model->parent && $product) : ?>
+            case 'product_snippet' :
+            if ($model->parent && $product) : ?>
                         <span>Produktový snippet <?= $model->parent->productVarValue->var->name ?></span>
                     <?php else : ?>
-                        <?= Html::activeDropDownList($model, 'parent_id',
-                            ArrayHelper::map($product->productSnippets, 'id', 'varIdentifier'),
-                            [
-                                'name' => $prefix . '[parent_id]',
-                                'class' => 'parent-dropdown form-control',
-                                'data-prefix' => $prefix,
-                                'data-type' => $model->type,
-                                'prompt' => 'Vyber produktový snippet'
-                            ]) ?>
-                    <?php endif;
+                <?= Html::activeDropDownList($model, 'parent_id',
+                    ArrayHelper::map($product->productSnippets, 'id', 'varIdentifier'),
+                    [
+                        'name' => $prefix . '[parent_id]',
+                        'class' => 'parent-dropdown form-control',
+                        'data-prefix' => $prefix,
+                        'data-type' => $model->type,
+                        'prompt' => 'Vyber produktový snippet'
+                    ]) ?>
+            <?php endif;
 
-                    break;
+            break;
 
-                case 'portal_snippet' :
-                    if ($model->parent) : ?>
+            case 'portal_snippet' :
+            if ($model->parent) : ?>
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
-                    <?php else : ?>
-                        <?= Html::activeDropDownList($model, 'parent_id',
-                            ArrayHelper::map(BaseController::$portal->portalSnippets,
-                                'id', 'varIdentifier'),
-                            [
-                                'name' => $prefix . '[parent_id]',
-                                'class' => 'parent-dropdown form-control',
-                                'data-prefix' => $prefix,
-                                'data-type' => $model->type,
-                                'prompt' => 'Vyber portálový snippet',
-                            ]) ?>
-                    <?php endif;
+            <?php else : ?>
+                <?= Html::activeDropDownList($model, 'parent_id',
+                    ArrayHelper::map(BaseController::$portal->portalSnippets,
+                        'id', 'varIdentifier'),
+                    [
+                        'name' => $prefix . '[parent_id]',
+                        'class' => 'parent-dropdown form-control',
+                        'data-prefix' => $prefix,
+                        'data-type' => $model->type,
+                        'prompt' => 'Vyber portálový snippet',
+                    ]) ?>
+            <?php endif;
 
-                    break;
+                break;
             } ?>
         </span>
     </div>
@@ -110,5 +114,26 @@ use yii\helpers\BaseHtml;
         ?>
     </div>
 </div>
+
+<script type="text/javascript">
+    var changeUrl = '<?= Url::to(['/snippet/get-snippet-code-variables', 'id' => '1']) ?>';
+
+    $(".change-snippet-code.not-applied").bind('change', function (e) {
+        var $this = $(this);
+
+        $.get(changeUrl.replace('1', $(this).val()), function (data) {
+            var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
+            console.log(data);
+            items.show();
+            items.each(function () {
+                var _this = $(this);
+                if (data.indexOf(_this.attr('data-identifier')) == -1) {
+                    _this.hide();
+                    console.log("hiding " + _this.attr('data-identifier'));
+                }
+            });
+        });
+    }).trigger('change').removeClass('not-applied');
+</script>
 
 
