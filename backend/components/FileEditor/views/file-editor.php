@@ -109,7 +109,13 @@ function build_file_tree($data, $from_dir = '')
                         'name' => $editFileForm->formName() . '[text]',
                         'value' => $editFileForm->text,
                         'assets' => [
+                            CodemirrorAsset::MODE_XML,
+                            CodemirrorAsset::MODE_HTMLMIXED,
+                            CodemirrorAsset::MODE_CSS,
+                            CodemirrorAsset::MODE_CSS_SCSS,
+                            CodemirrorAsset::MODE_JAVASCRIPT,
                             CodemirrorAsset::MODE_CLIKE,
+                            CodemirrorAsset::MODE_PHP,
                             CodemirrorAsset::KEYMAP_EMACS,
                             CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
                             CodemirrorAsset::ADDON_COMMENT,
