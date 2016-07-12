@@ -90,7 +90,7 @@ function build_file_tree($data, $from_dir = '')
     'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
 
 
-<?= Html::a('Skompiluj všetky', Url::current(['fileAction' => 'refreshAll']), ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Skompiluj všetky SCSS', Url::current(['fileAction' => 'refreshAll']), ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">

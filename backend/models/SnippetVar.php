@@ -101,8 +101,19 @@ class SnippetVar extends Variable
     public function getDefaultValues()
     {
         if (!isset($this->defaultValues)) {
-            $this->defaultValues = $this->hasMany(SnippetVarDefaultValue::className(),
-                ['snippet_var_id' => 'id'])->orderBy('product_type_id')->all();
+            $this->defaultValues = [];
+            $default = $this->hasMany(SnippetVarDefaultValue::className(),
+                ['snippet_var_id' => 'id'])->where(['product_type_id' => null])->one();
+
+            if($default == null){
+                $default = new SnippetVarDefaultValue();
+                $default->snippet_var_id = $this->id;
+            }
+
+            $this->defaultValues[] = $default;
+
+            $this->defaultValues = array_merge($this->defaultValues, $this->hasMany(SnippetVarDefaultValue::className(),
+                ['snippet_var_id' => 'id'])->orderBy('product_type_id')->all());
         }
 
         return $this->defaultValues;
