@@ -14,7 +14,7 @@ RewriteRule ^(.+)$ $1.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteCond %{REQUEST_URI} !thanks
+RewriteCond %{REQUEST_URI} !^/thanks(/|$)
 RewriteRule (.*)/?$ index.php?url=$1 [QSA]
 
 
