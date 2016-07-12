@@ -10,6 +10,8 @@ use DirectoryIterator;
 use InvalidArgumentException;
 use Leafo\ScssPhp\Compiler;
 use Leafo\ScssPhp\Formatter\Compressed;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ReflectionClass;
 use yii;
 use yii\base\Component;
@@ -103,6 +105,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
 
                 return file_get_contents($this->directory . '/' . $file);
             }
+        } else if(Yii::$app->request->get('fileAction') == 'refreshAll'){
+            $this->compileAll();
         }
 
         return false;
@@ -163,9 +167,8 @@ class FileEditorWidget extends Component implements ViewContextInterface
                 $is_image_loaded = true;
             } else {
                 if (PathHelper::isSCSSFile($original_path)) {
-                    $compiled_path = mb_substr($original_path, 0, count($original_path) - 5) . "min.css";
-                    $this->compileScss($original_path, $compiled_path);
-                } else if(is_callable($this->extraCompileBy)) {
+                    $this->compileScss($original_path);
+                } else if (is_callable($this->extraCompileBy)) {
                     call_user_func_array($this->extraCompileBy, [$original_path, $original_relative_path]);
                 }
             }
@@ -188,15 +191,26 @@ class FileEditorWidget extends Component implements ViewContextInterface
         ], $this);
     }
 
+    private function compileAll()
+    {
+        $path = realpath($this->directory);
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
+            if(PathHelper::isSCSSFile($filename)){
+                $this->compileScss($filename);
+            }
+        }
+    }
+
     /**
      * Compile css file determined by its path
      *
      * @param $from string path of the file to be compiled
      * @param $to string save the compiled script to (extension will be replaced by 'css')
      */
-    private function compileScss($from, $to)
+    private function compileScss($from)
     {
         if ($this->compileScss) {
+            $to = mb_substr($from, 0, count($from) - 5) . "min.css";
             $scss_compiler = new Compiler();
             PathHelper::makePath($to, true);
             $scss_compiler->setFormatter(new Compressed());

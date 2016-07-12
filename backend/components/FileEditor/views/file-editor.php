@@ -88,6 +88,9 @@ function build_file_tree($data, $from_dir = '')
 
 <?= Html::a('Vytvoriť priečinok', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
     'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
+
+
+<?= Html::a('Skompiluj všetky', Url::current(['fileAction' => 'refreshAll']), ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">
