@@ -106,7 +106,7 @@ class SiteController extends Controller
                 ->one();
 
             if ($redirect) {
-                return $this->redirect($redirect->target_url);
+                return $this->redirect($redirect->target_url, $redirect->redirect_type);
             }
 
             $pages = Page::find()
