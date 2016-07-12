@@ -1,5 +1,6 @@
 <?php
 /* @var $this yii\web\View */
+use backend\components\LayoutWidget\AssetBundle;
 use backend\models\Area;
 use yii\helpers\BaseHtml;
 
@@ -11,6 +12,8 @@ use yii\helpers\BaseHtml;
 /* @var $prefix string */
 /* @var $product \backend\models\Product */
 /* @var $type string */
+
+AssetBundle::register($this);
 
 ?>
 

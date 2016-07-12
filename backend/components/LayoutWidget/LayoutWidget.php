@@ -27,8 +27,6 @@ class LayoutWidget extends Widget
 
     public function run()
     {
-        AssetBundle::register($this->getView());
-
         return $this->render('layoutWidget', [
             'area' => $this->area,
             'controllerUrl' => $this->controllerUrl,

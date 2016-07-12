@@ -29,6 +29,7 @@ use yii\helpers\ArrayHelper;
  * @property Area $header
  * @property Area $footer
  * @property PortalVarValue[] $portalVarValues
+ * @property Redirect[] $redirects
  */
 class Portal extends CustomModel implements ICacheable
 {
@@ -470,5 +471,13 @@ class Portal extends CustomModel implements ICacheable
             'portal_id' => BaseController::$portal->id
         ])
             ->queryOne();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRedirects()
+    {
+        return $this->hasMany(Redirect::class, ['portal_id' => 'id']);
     }
 }
