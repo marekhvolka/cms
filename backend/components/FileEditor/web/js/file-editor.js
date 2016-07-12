@@ -31,8 +31,23 @@ $(function () {
             file_editor.find('.image').hide();
 
             $.get(url, function (data) {
-                var url = $("#url");
+                var url = $("#url"),
+                    mode = /\.([^/.]+)$/.exec(name)[1];
+
+                switch (mode){
+                    case "scss":
+                        mode = "text/x-scss";
+                        break;
+                    case "php":
+                        mode = "application/x-httpd-php";
+                        break;
+                    case "css":
+                        mode = "text/css";
+                        break;
+                }
+
                 file_editor.find('.file-name').text(name);
+                code_mirror.setOption("mode", mode);
                 if (url.is('[data-remove-extension]')) {
                     name = name.replace(/\.[^/.]+$/, "");
                 }

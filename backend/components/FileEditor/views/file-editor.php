@@ -88,6 +88,9 @@ function build_file_tree($data, $from_dir = '')
 
 <?= Html::a('Vytvoriť priečinok', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
     'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
+
+
+<?= Html::a('Skompiluj všetky SCSS', Url::current(['fileAction' => 'refreshAll']), ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">
@@ -109,7 +112,13 @@ function build_file_tree($data, $from_dir = '')
                         'name' => $editFileForm->formName() . '[text]',
                         'value' => $editFileForm->text,
                         'assets' => [
+                            CodemirrorAsset::MODE_XML,
+                            CodemirrorAsset::MODE_HTMLMIXED,
+                            CodemirrorAsset::MODE_CSS,
+                            CodemirrorAsset::MODE_CSS_SCSS,
+                            CodemirrorAsset::MODE_JAVASCRIPT,
                             CodemirrorAsset::MODE_CLIKE,
+                            CodemirrorAsset::MODE_PHP,
                             CodemirrorAsset::KEYMAP_EMACS,
                             CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
                             CodemirrorAsset::ADDON_COMMENT,

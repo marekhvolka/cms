@@ -18,6 +18,7 @@ use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
 use backend\models\Snippet;
+use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use common\components\Alert;
@@ -116,6 +117,14 @@ abstract class BaseController extends Controller
     public function actionMultimediaRefresh()
     {
         return MultimediaWidget::widget(['onlyItems' => true]);
+    }
+
+    public function actionGetSnippetCodeVariables($id)
+    {
+        preg_match_all('/([a-zA-Z0-9_]+)->([a-zA-Z0-9_]+)/i', SnippetCode::findOne(['id' => $id])->code, $matches);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $matches[2];
     }
 
     /**
