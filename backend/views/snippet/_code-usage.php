@@ -1,35 +1,43 @@
 <?php
-use backend\models\Area;
-use backend\models\Portal;
-use backend\models\Product;
 use yii\helpers\Url;
 
-/* @var $areas */
+/* @var $pageAreas */
+/* @var $portalAreas */
 /* @var $products */
 /* @var $portals */
 
 ?>
-<?php if (count($areas)) { ?>
+<?php if (count($pageAreas)) : ?>
     <h2>Podstránky</h2>
     <ul>
-        <?php foreach ($areas as $area) { ?>
+        <?php foreach ($pageAreas as $area) : ?>
             <li>
                 <a href="<?= Url::to(['/page/edit', 'id' => $area[2]->id]) ?>#block-<?= $area[1]->id ?>"><?= $area[2]->name ?> (<?= $area[0]->type ?>) - <?= $area[2]->portal->name ?></a>
             </li>
-        <?php } ?>
+        <?php endforeach; ?>
     </ul>
-<?php } ?>
-<?php if (count($portals)) { ?>
+<?php endif; ?>
+<?php if (count($portalAreas)) : ?>
+    <h2>Portálový layout</h2>
+    <ul>
+        <?php foreach ($portalAreas as $area) : ?>
+            <li>
+                <a href=""><?= $area[2]->name ?> (<?= $area[0]->type ?>) - <?= $area[2]->name ?></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+<?php if (count($portals)) : ?>
     <h2>Portálové snippety</h2>
     <ul>
-        <?php foreach ($portals as $portal) { ?>
+        <?php foreach ($portals as $portal) : ?>
             <li>
                 <a href="<?= Url::to(['/portal/edit', 'id' => $portal[0]->id]) ?>#var-<?= $portal[1]->portal_var_value_id ?>"><?= $portal[0]->name ?></a>
             </li>
-        <?php } ?>
+        <?php endforeach; ?>
     </ul>
-<?php } ?>
-<?php if (count($products)) { ?>
+<?php endif; ?>
+<?php if (count($products)) : ?>
     <h2>Produktové snippety</h2>
     <ul>
         <?php foreach ($products as $product) { ?>
@@ -38,4 +46,4 @@ use yii\helpers\Url;
             </li>
         <?php } ?>
     </ul>
-<?php } ?>
+<?php endif; ?>

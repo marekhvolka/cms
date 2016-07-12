@@ -116,6 +116,14 @@ class Portal extends CustomModel implements ICacheable
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getRedirects()
+    {
+        return $this->hasMany(Redirect::class, ['portal_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTemplate()
     {
         return $this->hasOne(Template::className(), ['id' => 'template_id']);
@@ -294,6 +302,7 @@ class Portal extends CustomModel implements ICacheable
 
                 $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
+                $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
                 $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
                 $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
                 $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
@@ -471,13 +480,5 @@ class Portal extends CustomModel implements ICacheable
             'portal_id' => BaseController::$portal->id
         ])
             ->queryOne();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRedirects()
-    {
-        return $this->hasMany(Redirect::class, ['portal_id' => 'id']);
     }
 }

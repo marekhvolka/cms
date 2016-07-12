@@ -25,8 +25,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'allowPortal')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'actualPortal')->textInput() ?>
-
     <?= $form->field($model, 'role')->textInput() ?>
 
     <?= $form->field($model, 'isLog')->textInput() ?>

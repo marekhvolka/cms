@@ -226,7 +226,8 @@ class SnippetController extends BaseController
             throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         } else {
             /** @var Block[] $blocks */
-            $areas = [];
+            $pageAreas = [];
+            $portalAreas = [];
             $portals = [];
             $products = [];
 
@@ -235,13 +236,18 @@ class SnippetController extends BaseController
                 if ($owner instanceof Portal) {
                     $portals[] = [$owner, $block];
                 } else if ($owner instanceof Area) {
-                    $areas[] = [$owner, $block, $owner->page];
+                    if ($owner->page) {
+                        $pageAreas[] = [$owner, $block, $owner->page];
+                    } else if ($owner->portal) {
+                        $portalAreas[] = [$owner, $block, $owner->portal];
+                    }
                 } else if ($owner instanceof Product) {
                     $products[] = [$owner, $block];
                 }
             }
             return $this->renderPartial("_code-usage", [
-                'areas' => $areas,
+                'pageAreas' => $pageAreas,
+                'portalAreas' => $portalAreas,
                 'portals' => $portals,
                 'products' => $products
             ]);
