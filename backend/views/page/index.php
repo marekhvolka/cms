@@ -1,13 +1,10 @@
 <?php
-use backend\assets\CKEditorAsset;
-use backend\components\MultimediaWidget\MultimediaWidget;
 use backend\components\TreeGrid\TreeGridWidget;
-use common\components\Icons;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\PageSearch */
+/* @var $searchModel backend\models\search\PageSearch */
 /* @var $pages \backend\models\Page */
 /* @var $pagination \yii\data\Pagination */
 
@@ -17,6 +14,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $this->beginBlock('button'); ?>
+
+<?php $result = \backend\controllers\BaseController::$portal->getOutdatedPageCount(); ?>
+
+<strong> Počet neaktuálných: <?= $result['outdated'] ?>/<?= $result['count'] ?></strong>
 <?= Html::a('Pridať podstránku', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
