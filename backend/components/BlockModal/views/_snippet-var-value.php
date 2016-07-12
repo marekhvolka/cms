@@ -206,7 +206,7 @@ if ($snippetVarValue->typeName != 'list') : ?>
             </a>
         </div>
 
-        <div class="panel-body panel-collapse collapse in children-list fixed-panel">
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
             <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
                 <?= $this->render('_list-item', [
                     'listItem' => $listItem,

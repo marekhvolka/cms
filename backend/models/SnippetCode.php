@@ -15,6 +15,7 @@ use yii\helpers\Url;
  * @property string $portal
  * @property integer $snippet_id
  * @property bool $outdated
+ * @property bool $dynamic
  *
  * @property Block[] $blocks
  * @property string $url

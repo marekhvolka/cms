@@ -424,14 +424,12 @@ abstract class BaseController extends Controller
                 throw new Exception;
             }
 
-            $listItemOrder = 1;
             foreach ($snippetVarValue->listItems as $listItem) {
                 if ($listItem->removed) {
                     $listItem->delete();
                     continue;
                 }
                 $listItem->list_id = $snippetVarValue->id;
-                $listItem->order = $listItemOrder++;
 
                 if (!($listItem->validate() && $listItem->save())) {
                     throw new Exception;

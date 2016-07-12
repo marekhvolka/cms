@@ -3,6 +3,10 @@
 namespace backend\models;
 
 use Exception;
+use Latte\Compiler;
+use Latte\Engine;
+use Latte\Loaders\FileLoader;
+use Latte\Loaders\StringLoader;
 use Yii;
 
 /**
@@ -282,6 +286,9 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         if (!file_exists($path . '.php') || $this->outdated || $reload) {
             try {
+                /* @var $latteEngine Engine */
+                $latteEngine = Yii::$app->dataEngine->latteRenderer;
+
                 if ($this->isSnippet()) {
                     $blockData = $this->prepareSnippetData();
                 } else {
@@ -290,10 +297,24 @@ class Block extends CustomModel implements ICacheable, IDuplicable
                 $buffer .= $blockData;
 
                 Yii::$app->dataEngine->writeToFile($path . '.latte', 'w+', $buffer);
-                $result = stripcslashes(html_entity_decode(Yii::$app->dataEngine->latteRenderer->renderToString($path . '.latte',
-                    array())));
+
+                if ($this->snippetCode && $this->snippetCode->dynamic) {
+
+                    $oldLoader = $latteEngine->getLoader();
+
+                    $latteEngine->setLoader(new StringLoader());
+
+                    $result = $latteEngine->compileWithoutTemplate($buffer);
+
+                    $latteEngine->setLoader($oldLoader);
+
+                } else {
+                    $result = stripcslashes(html_entity_decode($latteEngine->renderToString($path . '.latte',
+                        array())));
+                }
 
                 Yii::$app->dataEngine->writeToFile($path . '.php', 'w+', $result);
+
                 $this->setActual();
             } catch (Exception $exception) {
                 $this->logException($exception, 'block');
@@ -456,12 +477,14 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function isChanged()
     {
-        if (parent::isChanged())
+        if (parent::isChanged()) {
             return true;
+        }
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
-            if ($snippetVarValue->isChanged())
+            if ($snippetVarValue->isChanged()) {
                 return true;
+            }
         }
 
         return false;

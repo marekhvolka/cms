@@ -100,6 +100,10 @@ body.on(
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
+                    $( function() {
+                        $(".sortable").sortable();
+                        $(".sortable").disableSelection();
+                    } );
                 }
             );
         }
