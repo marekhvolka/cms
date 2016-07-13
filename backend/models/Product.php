@@ -152,8 +152,12 @@ class Product extends CustomModel implements ICacheable
 
                 $buffer .= '\'tagsAsString\' => \'';
 
-                foreach ($this->tags as $tag) {
-                    $buffer .= $tag->identifier . ',';
+                if (sizeof($this->tags) > 0) {
+                    foreach ($this->tags as $tag) {
+                        $buffer .= $tag->identifier . ',';
+                    }
+
+                    $buffer = substr($buffer, 0, strlen($buffer) - 1);
                 }
 
                 $buffer .= '\',' . PHP_EOL;

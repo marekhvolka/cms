@@ -88,6 +88,8 @@ class PortalController extends BaseController
                         $model->portalVarValues[$index]->valueBlock = $block;
                     }
 
+                    $model->portalVarValues[$index]->valueBlock->snippet_code_id = $portalValueData['snippet_code_id'];
+
                     $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
                 }
 

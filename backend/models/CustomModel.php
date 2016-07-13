@@ -15,7 +15,6 @@ namespace backend\models;
 
 use backend\controllers\BaseController;
 use Yii;
-use yii\console\Exception;
 
 class CustomModel extends \yii\db\ActiveRecord
 {
@@ -194,11 +193,9 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function setActual()
     {
-        if (property_exists($this, 'outdated')) {
-            $this->outdated = 0;
-            $this->save();
-            $this->removeException();
-        }
+        $this->outdated = 0;
+        $this->save();
+        $this->removeException();
     }
 
     public function isChanged()
