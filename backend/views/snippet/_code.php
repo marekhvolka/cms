@@ -1,8 +1,6 @@
 <?php
 
 use backend\models\Portal;
-use conquer\codemirror\CodemirrorAsset;
-use conquer\codemirror\CodemirrorWidget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
@@ -33,35 +31,19 @@ use yii\helpers\BaseHtml;
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-12">
-                <?= CodemirrorWidget::widget([
+                <?= trntv\aceeditor\AceEditor::widget([
+                    // You can either use it for model attribute
+                    'model' => $model,
+                    'attribute' => 'code',
+
+                    'mode' => 'html', // programing language mode. Default "html"
+                    'theme' => 'github', // editor theme. Default "github"
+                    'options' => [
                         'name' => $prefix . "[code]",
-                        'id' => $prefix . "[code]",
-                        'value' => $model->code,
-                        'assets' => [
-                            CodemirrorAsset::MODE_CLIKE,
-                            CodemirrorAsset::KEYMAP_EMACS,
-                            CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
-                            CodemirrorAsset::ADDON_COMMENT,
-                            CodemirrorAsset::ADDON_DIALOG,
-                            CodemirrorAsset::ADDON_SEARCHCURSOR,
-                            CodemirrorAsset::ADDON_SEARCH,
-                            CodemirrorAsset::ADDON_DISPLAY_FULLSCREEN,
-                            CodemirrorAsset::ADDON_DISPLAY_RULERS,
-                            CodemirrorAsset::ADDON_FOLD_BRACE_FOLD
-                        ],
-                        'settings' => [
-                            'lineNumbers' => true,
-                            'mode' => 'text/x-csrc',
-                        ],
-                        'options' => [
-                            'class' => 'html-editor form-control code-code attribute',
-                            'data-attribute-name' => 'code',
-                            'autofocus' => 'true',
-                            'name' => $prefix . "[code]",
-                            'rows' => 40
-                        ]
+                        'value' => $model->code
                     ]
-                ) ?>
+                ])
+                ?>
             </div>
         </div><!-- .row -->
         <div class="row">

@@ -93,8 +93,16 @@ class PortalController extends BaseController
                     $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
                 }
 
-                foreach($model->portalVarValues as $portalVarValue) {
+                foreach($model->portalVarValues as $indexPortalVarValue => $portalVarValue) {
                     $portalVarValue->portal_id = $model->id;
+
+                    if ($portalVarValue->removed) {
+                        $portalVarValue->valueBlock->delete();
+                        $portalVarValue->delete();
+                        unset($model->portalVarValues[$indexPortalVarValue]);
+                        continue;
+                    }
+
                     if (!($portalVarValue->validate() && $portalVarValue->save()))
                         throw new Exception;
 
