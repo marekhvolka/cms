@@ -158,8 +158,7 @@ class Section extends CustomModel implements IDuplicable
         }
 
         $this->id = null;
-        unset($this->page_id);
-        unset($this->portal_id);
+        unset($this->area_id);
     }
 
     public function getBlocksCount()

@@ -185,10 +185,8 @@ class CustomModel extends \yii\db\ActiveRecord
 
     public function setOutdated()
     {
-        if (property_exists($this, 'outdated')) {
-            $this->outdated = 1;
-            $this->save();
-        }
+        $this->outdated = 1;
+        $this->save();
     }
 
     public function setActual()

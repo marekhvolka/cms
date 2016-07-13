@@ -431,12 +431,6 @@ class Portal extends CustomModel implements ICacheable
         $this->setOutdated();
         $this->getPortalVarsFile();
 
-        if ($this->isChanged()) {
-            foreach ($this->pages as $page) {
-                $page->setOutdated();
-            }
-        }
-
         foreach ($this->portalSnippets as $portalSnippet) {
             if ($portalSnippet->isChanged() || $this->isChanged()) {
                 $portalSnippet->resetAfterUpdate();
