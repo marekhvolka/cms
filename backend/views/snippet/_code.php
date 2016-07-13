@@ -23,6 +23,18 @@ use yii\helpers\BaseHtml;
             'name' => $prefix . "[name]",
         ]); ?>
 
+        <?= \kartik\switchinput\SwitchInput::widget([
+            'type' => \kartik\switchinput\SwitchInput::CHECKBOX,
+            'name' => $prefix . "[dynamic]",
+            'value' => $model->dynamic,
+            'id' => hash('md5', $prefix),
+            'class' => 'form-control ',
+            'pluginOptions' => [
+                'onText' => 'Dynamický',
+                'offText' => 'Statický',
+                ]
+        ]) ?>
+
         <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">
             <i class="glyphicon glyphicon-minus"></i>
         </button>

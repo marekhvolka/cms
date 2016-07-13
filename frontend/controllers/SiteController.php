@@ -123,6 +123,8 @@ class SiteController extends Controller
                     'identifier' => '404',
                     'portal_id' => $portalId
                 ])->one();
+
+            http_response_code(404);
         }
 
         if (isset($page)) {

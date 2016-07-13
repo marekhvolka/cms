@@ -102,7 +102,10 @@ class ProductController extends BaseController
                     $productVarValue->product_id = $model->id;
 
                     if ($productVarValue->removed) {
-                        $productVarValue->valueBlock->delete();
+
+                        if ($productVarValue->valueBlock) {
+                            $productVarValue->valueBlock->delete();
+                        }
                         $productVarValue->delete();
                         unset($model->productVarValues[$indexProductVarValue]);
                         continue;
