@@ -34,7 +34,7 @@ use yii\base\Exception;
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
  */
-class Product extends CustomModel implements ICacheable
+class Product extends CustomModel implements ICacheable, IDuplicable
 {
     /**
      * @inheritdoc
@@ -388,5 +388,18 @@ class Product extends CustomModel implements ICacheable
         }
 
         return $breadcrumbs . $this->name;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->productVarValues as $productVarValue) {
+            $productVarValue->prepareToDuplicate();
+        }
+
+        foreach ($this->tags as $tag) {
+            $tag->prepareToDuplicate();
+        }
+
+        unset($this->id);
     }
 }
