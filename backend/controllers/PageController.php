@@ -176,6 +176,6 @@ class PageController extends BaseController
 
         Yii::$app->session->set('portal_preview', $page->portal->id);
 
-        $this->redirect($page->getUrl());
+        return $this->redirect('http://www.' . $page->portal->domain . $page->getUrl());
     }
 }
