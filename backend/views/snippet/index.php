@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\SnippetSearch */
+/* @var $searchModel backend\models\search\SnippetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Snippety';

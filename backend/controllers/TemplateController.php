@@ -96,7 +96,7 @@ class TemplateController extends BaseController
 
         if ($state === false) {
             return $this->render('edit-files', [
-                'template' => $template,
+                'model' => $template,
                 'fileEditor' => $file_editor
             ]);
         } else {

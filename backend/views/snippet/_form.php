@@ -26,7 +26,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <div class="panel panel-default">
+        <div class="panel panel-success">
             <div class="panel-heading">
                 <h4>
                     Alternatívy
@@ -53,7 +53,7 @@ use yii\widgets\ActiveForm;
     <?= $this->render('_blocks-and-sections', ['model' => $model]); ?>
 
     <div class="form-group snippet-vars">
-        <div class="panel panel-default">
+        <div class="panel panel-success">
             <div class="panel-heading form-inline">
                 <h4>
                     Premenné

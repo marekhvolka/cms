@@ -5,14 +5,14 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\PortalSearch */
+/* @var $searchModel backend\models\search\PortalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Portály';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
 <?php $this->beginBlock('button'); ?>
+<?= Html::a('Premenné', Url::to(['portal-var/index']), ['class' => 'btn btn-primary pull-right']) ?>
 <?= Html::a('Pridať portál', ['edit'], ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 

@@ -65,32 +65,22 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
-            $model->portal_id = BaseController::$portal->id;
 
-            $model->header = new Area();
-            $model->header->type = 'header';
-
-            $model->footer = new Area();
-            $model->footer->type = 'footer';
-
-            $model->sidebar = new Area();
-            $model->sidebar->type = 'sidebar';
-            $model->sidebar->size = 4;
-            $model->sidebar->sections = array(new Section());
-
-            $model->content = new Area();
-            $model->content->type = 'content';
-            $model->content->sections = array(new Section());
+            $model->initializeNew();
         }
 
-        if ($model->load(Yii::$app->request->post())) {
-
-            if (Yii::$app->request->isAjax) { // ajax validácia
-                return $this->ajaxValidation($model);
-            }
+        if (Yii::$app->request->isPost) {
 
             if ($duplicate) {
                 $model = new Page();
+
+                $model->initializeNew();
+            }
+
+            $model->load(Yii::$app->request->post());
+
+            if (Yii::$app->request->isAjax) { // ajax validácia
+                return $this->ajaxValidation($model);
             }
 
             $transaction = Yii::$app->db->beginTransaction();
@@ -200,6 +190,6 @@ class PageController extends BaseController
 
         Yii::$app->session->set('portal_preview', $page->portal->id);
 
-        $this->redirect($page->getUrl());
+        return $this->redirect('http://www.' . $page->portal->domain . $page->getUrl());
     }
 }

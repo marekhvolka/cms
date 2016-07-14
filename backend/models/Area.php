@@ -19,7 +19,7 @@ use Yii;
  * @property Portal $portal
  * @property Section[] $sections
  */
-class Area extends CustomModel
+class Area extends CustomModel implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -273,5 +273,7 @@ class Area extends CustomModel
         }
 
         unset($this->id);
+        unset($this->page_id);
+        unset($this->portal_id);
     }
 }

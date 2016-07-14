@@ -33,7 +33,6 @@ return [
         'children' => [
             ['title' => 'Portály', 'controller' => 'portal', 'action' => 'index'],
             ['title' => 'Používatelia', 'controller' => 'user', 'action' => 'index'],
-            ['title' => 'Portálové premenné', 'controller' => 'portal-var', 'action' => 'index'],
             ['title' => 'Krajiny', 'controller' => 'language', 'action' => 'index'],
             //['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
             //['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],

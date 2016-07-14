@@ -39,6 +39,7 @@ class SnippetCode extends CustomModel
         return [
             [['name', 'snippet_id'], 'required'],
             [['code', 'description'], 'string'],
+            [['dynamic'], 'boolean'],
             [['snippet_id'], 'integer'],
             [['name', 'portal'], 'string', 'max' => 50],
             [
@@ -62,7 +63,8 @@ class SnippetCode extends CustomModel
             'description' => 'Popis',
             'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'ID snippetu',
-            'blocks' => 'Bloky'
+            'blocks' => 'Bloky',
+            'dynamic' => 'Dynamický'
         ];
     }
 

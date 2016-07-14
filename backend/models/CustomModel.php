@@ -11,12 +11,10 @@ namespace backend\models;
 /**
  * @property bool $existing Indicates if model already exists.
  * @property bool $removed Indicates if model has to be removed
- * @property bool $outdated
  */
 
 use backend\controllers\BaseController;
 use Yii;
-use yii\console\Exception;
 
 class CustomModel extends \yii\db\ActiveRecord
 {

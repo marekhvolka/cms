@@ -82,7 +82,7 @@ class ProductController extends BaseController
                         continue;
                     }
 
-                    $model->productVarValues[$index]->changed = true;
+                    $model->productVarValues[$index]->setOutdated();
 
                     if (!$model->productVarValues[$index]->valueBlock) {
                         $block = new Block();
@@ -92,6 +92,8 @@ class ProductController extends BaseController
                         $model->productVarValues[$index]->valueBlock = $block;
                     }
 
+                    $model->productVarValues[$index]->valueBlock->snippet_code_id = $productValueData['snippet_code_id'];
+
                     $this->loadSnippetVarValues($productValueData, $model->productVarValues[$index]->valueBlock);
                 }
 
@@ -99,8 +101,13 @@ class ProductController extends BaseController
                     $productVarValue->product_id = $model->id;
 
                     if ($productVarValue->removed) {
+
+                        if ($productVarValue->valueBlock) {
+                            $productVarValue->valueBlock->delete();
+                        }
                         $productVarValue->delete();
                         unset($model->productVarValues[$indexProductVarValue]);
+                        continue;
                     }
 
                     if (!($productVarValue->validate() && $productVarValue->save())) {

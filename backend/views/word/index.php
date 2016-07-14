@@ -6,7 +6,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\WordSearch */
+/* @var $searchModel backend\models\search\WordSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Slovník';

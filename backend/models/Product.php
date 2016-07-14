@@ -35,7 +35,7 @@ use yii\db\Query;
  * @property ProductVarValue[] $productVarValues
  * @property SnippetVarValue[] $snippedVarValues
  */
-class Product extends CustomModel implements ICacheable
+class Product extends CustomModel implements ICacheable, IDuplicable
 {
     public $_tags;
 
@@ -155,8 +155,12 @@ class Product extends CustomModel implements ICacheable
 
                 $buffer .= '\'tagsAsString\' => \'';
 
-                foreach ($this->tags as $tag) {
-                    $buffer .= $tag->identifier . ',';
+                if (sizeof($this->tags) > 0) {
+                    foreach ($this->tags as $tag) {
+                        $buffer .= $tag->identifier . ',';
+                    }
+
+                    $buffer = substr($buffer, 0, strlen($buffer) - 1);
                 }
 
                 $buffer .= '\',' . PHP_EOL;
@@ -419,5 +423,18 @@ class Product extends CustomModel implements ICacheable
         }
 
         return $breadcrumbs . $this->name;
+    }
+
+    public function prepareToDuplicate()
+    {
+        foreach ($this->productVarValues as $productVarValue) {
+            $productVarValue->prepareToDuplicate();
+        }
+
+        foreach ($this->tags as $tag) {
+            $tag->prepareToDuplicate();
+        }
+
+        unset($this->id);
     }
 }

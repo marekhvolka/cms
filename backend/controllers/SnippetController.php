@@ -86,19 +86,19 @@ class SnippetController extends BaseController
                     foreach ($snippetCodesData as $index => $snippetCodeData) {
                         $model->loadFromData('snippetCodes', $snippetCodeData, $index, SnippetCode::className());
                     }
+                }
 
-                    foreach ($model->snippetCodes as $indexCode => $snippetCode) {
-                        $snippetCode->snippet_id = $model->id;
+                foreach ($model->snippetCodes as $indexCode => $snippetCode) {
+                    $snippetCode->snippet_id = $model->id;
 
-                        if ($snippetCode->removed) {
-                            $snippetCode->delete();
-                            unset($model->snippetCodes[$indexCode]);
-                            continue;
-                        }
+                    if ($snippetCode->removed) {
+                        $snippetCode->delete();
+                        unset($model->snippetCodes[$indexCode]);
+                        continue;
+                    }
 
-                        if (!($snippetCode->validate() && $snippetCode->save())) {
-                            throw new \yii\base\Exception;
-                        }
+                    if (!($snippetCode->validate() && $snippetCode->save())) {
+                        throw new \yii\base\Exception;
                     }
                 }
 
@@ -107,8 +107,9 @@ class SnippetController extends BaseController
                 if ($snippetVarsData != null) {
 
                     $model->loadChildren('snippetFirstLevelVars', $snippetVarsData);
-                    $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
                 }
+
+                $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
 
                 $transaction->commit();
 
@@ -226,7 +227,8 @@ class SnippetController extends BaseController
             throw new NotFoundHttpException('Požadovaná stránka neexistuje.');
         } else {
             /** @var Block[] $blocks */
-            $areas = [];
+            $pageAreas = [];
+            $portalAreas = [];
             $portals = [];
             $products = [];
 
@@ -235,13 +237,18 @@ class SnippetController extends BaseController
                 if ($owner instanceof Portal) {
                     $portals[] = [$owner, $block];
                 } else if ($owner instanceof Area) {
-                    $areas[] = [$owner, $block, $owner->page];
+                    if ($owner->page) {
+                        $pageAreas[] = [$owner, $block, $owner->page];
+                    } else if ($owner->portal) {
+                        $portalAreas[] = [$owner, $block, $owner->portal];
+                    }
                 } else if ($owner instanceof Product) {
                     $products[] = [$owner, $block];
                 }
             }
             return $this->renderPartial("_code-usage", [
-                'areas' => $areas,
+                'pageAreas' => $pageAreas,
+                'portalAreas' => $portalAreas,
                 'portals' => $portals,
                 'products' => $products
             ]);

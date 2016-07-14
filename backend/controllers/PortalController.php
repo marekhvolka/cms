@@ -13,7 +13,6 @@ use common\components\Alert;
 use Exception;
 use Yii;
 use yii\filters\VerbFilter;
-use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -88,13 +87,27 @@ class PortalController extends BaseController
                         $model->portalVarValues[$index]->valueBlock = $block;
                     }
 
+                    $model->portalVarValues[$index]->valueBlock->snippet_code_id = $portalValueData['snippet_code_id'];
+
                     $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
                 }
 
-                foreach($model->portalVarValues as $portalVarValue) {
+                foreach ($model->portalVarValues as $indexPortalVarValue => $portalVarValue) {
                     $portalVarValue->portal_id = $model->id;
-                    if (!($portalVarValue->validate() && $portalVarValue->save()))
+
+                    if ($portalVarValue->removed) {
+
+                        if ($portalVarValue->valueBlock) {
+                            $portalVarValue->valueBlock->delete();
+                        }
+                        $portalVarValue->delete();
+                        unset($model->portalVarValues[$indexPortalVarValue]);
+                        continue;
+                    }
+
+                    if (!($portalVarValue->validate() && $portalVarValue->save())) {
                         throw new Exception;
+                    }
 
                     if ($portalVarValue->valueBlock) {
                         if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
@@ -156,7 +169,7 @@ class PortalController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()){
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');

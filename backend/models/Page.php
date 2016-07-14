@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\controllers\BaseController;
 use common\models\User;
 use Yii;
 use yii\base\Exception;
@@ -42,6 +43,26 @@ use yii\base\Exception;
 class Page extends CustomModel implements ICacheable, IDuplicable
 {
     public $cacheIdentifier;
+
+    public function initializeNew()
+    {
+        $this->portal_id = BaseController::$portal->id;
+
+        $this->header = new Area();
+        $this->header->type = 'header';
+
+        $this->footer = new Area();
+        $this->footer->type = 'footer';
+
+        $this->sidebar = new Area();
+        $this->sidebar->type = 'sidebar';
+        $this->sidebar->size = 4;
+        $this->sidebar->sections = array(new Section());
+
+        $this->content = new Area();
+        $this->content->type = 'content';
+        $this->content->sections = array(new Section());
+    }
 
     /**
      * @inheritdoc
@@ -527,5 +548,11 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         }
 
         return false;
+    }
+
+    public function isOutdated()
+    {
+        return $this->outdated || ($this->product && $this->product->outdated) ||
+        $this->portal->outdated || ($this->parent && $this->parent->head_outdated);
     }
 }

@@ -124,10 +124,12 @@ class SiteController extends Controller
                     'identifier' => '404',
                     'portal_id' => $portalId
                 ])->one();
+
+            http_response_code(404);
         }
 
         if (isset($page)) {
-            $reload = $page->outdated && Yii::$app->session->has('portal_id');
+            $reload = $page->isOutdated() && Yii::$app->session->has('portal_id');
             $path = $page->getMainCacheFile($reload);
         }
 
@@ -307,10 +309,15 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionCacheFromBuffer($limit = 1)
+    public function actionCacheFromBuffer($limit = 10, $portalId = null)
     {
-        $pages = Page::find()->where(['outdated' => 1])
-            ->limit($limit)
+        $query = Page::find()->where(['outdated' => 1]);
+
+        if ($portalId) {
+            $query->andWhere(['portal_id' => $portalId]);
+        }
+
+        $pages = $query->limit($limit)
             ->all();
 
         foreach ($pages as $page) {
