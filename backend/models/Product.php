@@ -355,8 +355,13 @@ class Product extends CustomModel implements ICacheable, IDuplicable
             return !in_array($item, $saved_tags);
         }));
 
-        (new Query())->createCommand()->delete('product_tag', ['product_id' => $this->id, 'tag_id' => $to_remove])->execute();
-        (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
+        if (count($to_remove) > 0) {
+            (new Query())->createCommand()->delete('product_tag', ['product_id' => $this->id, 'tag_id' => $to_remove])->execute();
+        }
+
+        if (count($to_add) > 0) {
+            (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
+        }
     }
 
     public function relations()
