@@ -78,6 +78,10 @@ class SiteController extends Controller
         ])
             ->one();
 
+        if (!$portal) {
+            $portal = Yii::$app->user->identity->portal;
+        }
+
         if ($identifiers[0] == '') { //homepage
             $page = Page::find()->where([
                 'parent_id' => null,
@@ -116,7 +120,7 @@ class SiteController extends Controller
         }
 
         if (isset($page)) {
-            $reload = $page->isOutdated() && Yii::$app->session->has('portal_id');
+            $reload = $page->isOutdated() && !Yii::$app->user->isGuest;;
             $path = $page->getMainCacheFile($reload);
         }
 
