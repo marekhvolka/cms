@@ -1,9 +1,11 @@
 <?php
+use backend\models\Portal;
 use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
 /* @var $prefix string */
-/* @var $product \backend\models\Product */
+/* @var $page \backend\models\Page */
+/* @var $portal Portal */
 
 ?>
 <!--SECTION TO ADD-->
@@ -21,8 +23,8 @@ use yii\helpers\BaseHtml;
                     </button>
                 </div>
                 <div class="dropdown dropdown-cols inline-button">
-                    <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
-                            data-prefix="<?= $prefix ?>" data-product-id="<?= $product ? $product->id : '' ?>"
+                    <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs" data-prefix="<?= $prefix ?>"
+                            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
                             title="Vložiť nový riadok" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
@@ -51,7 +53,8 @@ use yii\helpers\BaseHtml;
                 <?= $this->render('_row', [
                     'model' => $row,
                     'prefix' => $prefix . "[Row][$indexRow]",
-                    'product' => $product
+                    'page' => $page,
+                    'portal' => $portal
                 ]); ?>
             <?php endforeach; ?>
         </div>

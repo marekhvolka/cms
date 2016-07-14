@@ -1,5 +1,6 @@
 <?php
 use backend\controllers\BaseController;
+use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Snippet;
@@ -8,9 +9,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 use yii\helpers\Url;
 
-/* @var $product Product */
+/* @var $page Page */
+/* @var $portal Portal */
 /* @var $prefix string */
-/* @var $productId int */
 /* @var $model backend\models\Block */
 
 ?>
@@ -53,7 +54,8 @@ use yii\helpers\Url;
                         'class' => 'snippet-dropdown',
                         'data-type' => $model->type,
                         'data-prefix' => $prefix,
-                        'data-product-id' => $product ? $product->id : ''
+                        'data-page-id' => $page ? $page->id : '',
+                        'data-portal-id' => $portal ? $portal->id : ''
                     ]) ?>
 
 
@@ -106,7 +108,8 @@ use yii\helpers\Url;
         foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'snippetVarValue' => $snippetVarValue,
-                'product' => $product,
+                'page' => $page,
+                'portal' => $portal,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
                 'parentId' => $model->parent_id
             ]);

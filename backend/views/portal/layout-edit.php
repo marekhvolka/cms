@@ -20,7 +20,8 @@ use yii\helpers\Url;
         'area' => $model->{$type},
         'controllerUrl' => Url::to(['/portal']),
         'formId' => 'form-layout',
-        'product' => null
+        'page' => null,
+        'portal'=> $model
     ]
 )?>
 

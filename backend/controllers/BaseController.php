@@ -12,6 +12,7 @@ use backend\models\ListItem;
 use backend\models\ListVar;
 use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
+use backend\models\Page;
 use backend\models\Portal;
 use backend\models\Product;
 use backend\models\Row;
@@ -118,16 +119,15 @@ abstract class BaseController extends Controller
     public function actionAppendSection()
     {
         $prefix = Yii::$app->request->post('prefix');
-        $portalId = Yii::$app->request->post('portalId');
-        $pageId = Yii::$app->request->post('pageId');
 
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $section = new Section();
 
         $indexSection = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $product);
+        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $page, $portal);
     }
 
     /**
@@ -137,20 +137,24 @@ abstract class BaseController extends Controller
     public function actionAppendRow()
     {
         $prefix = Yii::$app->request->post('prefix');
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $row = new Row();
 
         $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $product);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $page, $portal);
     }
 
     public function actionAppendColumns()
     {
         $width = Yii::$app->request->post('width');
         $prefix = Yii::$app->request->post('prefix');
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $columnsData = array();
 
@@ -161,7 +165,7 @@ abstract class BaseController extends Controller
 
             $indexColumn = rand(1000, 10000000);
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $product);
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $page, $portal);
         }
         return json_encode($columnsData);
     }
@@ -174,14 +178,15 @@ abstract class BaseController extends Controller
     {
         $prefix = Yii::$app->request->post('prefix');
 
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $indexBlock = rand(1000, 1000000);
 
         $block = new Block();
         $block->type = Yii::$app->request->post('type');
 
-        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $product);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $page, $portal);
     }
 
     public function actionAppendBlockModal()
@@ -192,7 +197,8 @@ abstract class BaseController extends Controller
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+        $page = Product::findOne(Yii::$app->request->post('pageId'));
+        $portal = Product::findOne(Yii::$app->request->post('portalId'));
 
         $block = Block::findOne(['id' => $id]);
 
@@ -202,7 +208,7 @@ abstract class BaseController extends Controller
         }
 
 
-        return (new BlockModalWidget())->appendModal($block, $prefix, $product);
+        return (new BlockModalWidget())->appendModal($block, $prefix, $page, $portal);
     }
 
     public function actionAppendBlockModalContent()
@@ -219,12 +225,14 @@ abstract class BaseController extends Controller
             $block->parent_id = $parent->id;
         }
 
-        $product = Product::find()->where(['id' => Yii::$app->request->post('productId')])->one();
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
         $prefix = Yii::$app->request->post('prefix');
 
         return (new BlockModalWidget())->render('_snippet', [
             'model' => $block,
-            'product' => $product,
+            'page' => $page,
+            'portal' => $portal,
             'prefix' => $prefix
         ]);
     }
@@ -237,15 +245,17 @@ abstract class BaseController extends Controller
 
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
-        $product = Product::findOne(Yii::$app->request->post('productId'));
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
 
         $parentId = Yii::$app->request->post('parentId');
+
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $listItem = $parentVar->createNewListItem();
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $product, $parentId);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $page, $portal, $parentId);
     }
 
     public function actionAppendMultimediaWindow()

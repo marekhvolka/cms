@@ -2,8 +2,6 @@
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
-use backend\controllers\BaseController;
-use backend\models\Portal;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
@@ -102,7 +100,8 @@ if ($model->portal) {
     <?= LayoutWidget::widget([
             'area' => $model->header,
             'controllerUrl' => Url::to(['/page']),
-            'product' => $model->product
+            'page' => $model,
+            'portal'=> null
         ]
     ) ?>
 
@@ -112,7 +111,8 @@ if ($model->portal) {
             'area' => $model->content,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'product' => $model->product
+            'page' => $model,
+            'portal'=> null
         ]
     ) ?>
 
@@ -140,7 +140,8 @@ if ($model->portal) {
             'area' => $model->sidebar,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'product' => $model->product
+            'page' => $model,
+            'portal'=> null
         ]
     ) ?>
 
@@ -154,7 +155,8 @@ if ($model->portal) {
     <?= LayoutWidget::widget([
             'area' => $model->footer,
             'controllerUrl' => Url::to(['/page']),
-            'product' => $model->product
+            'page' => $model,
+            'portal'=> null
         ]
     ) ?>
 

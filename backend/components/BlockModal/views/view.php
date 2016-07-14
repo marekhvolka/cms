@@ -1,9 +1,11 @@
 <?php
 
 use backend\models\Block;
+use backend\models\Portal;
 
 /* @var $model Block */
-/* @var $product \backend\models\Product */
+/* @var $page \backend\models\Page */
+/* @var $portal Portal */
 /* @var $prefix string */
 
 ?>
@@ -22,7 +24,8 @@ use backend\models\Block;
                         echo $this->render('_snippet', [
                             'model' => $model,
                             'prefix' => $prefix,
-                            'product' => $product
+                            'page' => $page,
+                            'portal' => $portal
                         ]);
 
                         break;

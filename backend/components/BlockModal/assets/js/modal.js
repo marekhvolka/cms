@@ -124,6 +124,7 @@ body.on(
         var postData = {
             prefix: $(this).data('prefix'),
             parentVarId: $(this).data('parent-var-id'),
+            pageId: $(this).data('page-id'),
             productId: $(this).data('product-id'),
             parentId: $(this).data('parent-id')
         };
