@@ -9,6 +9,7 @@ use backend\models\Section;
 use common\components\Alert;
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -142,6 +143,19 @@ class PageController extends BaseController
         }
         return $this->render('edit', [
             'model' => $model
+        ]);
+    }
+
+    public function actionSearch()
+    {
+        $searchModel = new PageSearch();
+        $dataProvider = new ActiveDataProvider([
+            'query' => $searchModel->search(Yii::$app->request->queryParams)
+        ]);
+
+        return $this->render('search', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

@@ -57,7 +57,7 @@ class PageSearch extends Page
      */
     public function attributeLabels()
     {
-        return ['globalSearch' => 'Vyhľadávať hlavné stránky (ignoruje podstránky)'] + parent::attributeLabels();
+        return ['globalSearch' => 'Vyhľadávať'] + parent::attributeLabels();
     }
 
 

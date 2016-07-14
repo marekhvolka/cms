@@ -11,11 +11,16 @@ use yii\widgets\ActiveForm;
 <div class="page-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+        'action' => ['search'],
         'method' => 'get',
     ]); ?>
 
     <?= $form->field($model, 'globalSearch') ?>
+
+    <?= Html::submitButton('Hľadať', [
+        'class' => 'btn btn-primary',
+        'id' => 'submit-btn'
+    ]) ?>
 
     <?php ActiveForm::end(); ?>
 
