@@ -2,7 +2,6 @@
 
 use backend\components\TreeGrid\TreeGridWidget;
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -54,14 +53,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Akcie',
                 'value' => function ($data) {
                     $result = '';
-                    $result .= Html::a('<span class="fa fa-files-o"></span>', Url::to(['edit', 'id' => $data->id, 'duplicate' => true]), [
-                        'target' => '_blank'
-                    ]);
+                    $result .= Html::a('<span class="fa fa-files-o"></span>',
+                        Url::to(['edit', 'id' => $data->id, 'duplicate' => true]), [
+                            'target' => '_blank'
+                        ]);
 
-                    if ($data->getProducts()->count() == 0) {
+                    $result .= Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                        Url::to(['delete', 'id' => $data->id], ['data-method'=>'post']));
+
+                    /*if ($data->getProducts()->count() == 0) {
                         $result .= Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť tento produkt (' . $data->name . ')?" data-method="post" data-pjax="0"></a>',
                             Url::to(['delete', 'id' => $data->id]));
-                    }
+                    }*/
                     return $result;
                 },
                 'size' => 1

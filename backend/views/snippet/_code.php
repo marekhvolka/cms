@@ -51,7 +51,7 @@ use yii\helpers\BaseHtml;
                     'attribute' => 'code',
 
                     'mode' => 'php', // programing language mode. Default "html"
-                    'theme' => 'github', // editor theme. Default "github"
+                    'theme' => 'chrome', // editor theme. Default "github"
                     'options' => [
                         'name' => $prefix . "[code]",
                         'value' => $model->code,

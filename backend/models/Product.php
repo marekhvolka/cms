@@ -66,13 +66,13 @@ class Product extends CustomModel implements ICacheable, IDuplicable
                 ['name', 'language_id'],
                 'unique',
                 'targetAttribute' => ['name', 'language_id'],
-                'message' => 'The combination of Name and Language ID has already been taken.'
+                'message' => 'Produkt s daným názvom pre krajinu už existuje.'
             ],
             [
                 ['identifier', 'language_id'],
                 'unique',
                 'targetAttribute' => ['identifier', 'language_id'],
-                'message' => 'The combination of Identifier and Language ID has already been taken.'
+                'message' => 'Produkt s daným názvom pre krajinu už existuje.'
             ]
         ];
     }

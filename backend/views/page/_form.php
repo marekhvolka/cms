@@ -92,16 +92,18 @@ if ($model->portal) {
 
     <h3 class="page-header">Hlavička stránky</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'header[active]',
-        'value' => $model->header->active,
+    <?= $form->field($model->header, 'active')->radioList([
+        '0' => 'Neaktívna',
+        '1' => 'Aktívna',
+    ], [
+        'name' => 'header[active]'
     ]) ?>
 
     <?= LayoutWidget::widget([
             'area' => $model->header,
             'controllerUrl' => Url::to(['/page']),
             'page' => $model,
-            'portal'=> null
+            'portal' => null
         ]
     ) ?>
 
@@ -112,28 +114,33 @@ if ($model->portal) {
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
             'page' => $model,
-            'portal'=> null
+            'portal' => null
         ]
     ) ?>
 
     <h3 class="page-header">Sidebar</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'sidebar[active]',
-        'value' => $model->sidebar->active,
+    <?= $form->field($model->sidebar, 'active')->radioList([
+        '0' => 'Neaktívny',
+        '1' => 'Aktívny',
+    ], [
+        'name' => 'sidebar[active]'
     ]) ?>
+
 
     <?= $form->field($model, 'sidebar_side')->radioList([
         'left' => 'Vľavo',
         'right' => 'Vpravo',
     ]) ?>
 
-    <?= Html::radioList('sidebar[size]', $model->sidebar->size, [
+    <?= $form->field($model->sidebar, 'size')->radioList([
         '4' => '8:4',
         '5' => '7:5',
         '6' => '6:6',
         '7' => '5:7',
         '8' => '4:8',
+    ], [
+        'name' => 'sidebar[size]'
     ]) ?>
 
     <?= LayoutWidget::widget([
@@ -141,22 +148,24 @@ if ($model->portal) {
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
             'page' => $model,
-            'portal'=> null
+            'portal' => null
         ]
     ) ?>
 
     <h3 class="page-footer">Patička stránky</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'footer[active]',
-        'value' => $model->footer->active,
+    <?= $form->field($model->footer, 'active')->radioList([
+        '0' => 'Neaktívna',
+        '1' => 'Aktívna',
+    ], [
+        'name' => 'footer[active]'
     ]) ?>
 
     <?= LayoutWidget::widget([
             'area' => $model->footer,
             'controllerUrl' => Url::to(['/page']),
             'page' => $model,
-            'portal'=> null
+            'portal' => null
         ]
     ) ?>
 

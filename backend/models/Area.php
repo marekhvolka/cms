@@ -75,10 +75,10 @@ class Area extends CustomModel implements IDuplicable
     {
         return [
             'id' => 'ID',
-            'type' => 'Type',
+            'type' => 'Typ',
             'page_id' => 'Page ID',
             'portal_id' => 'Portal ID',
-            'active' => 'Active',
+            'active' => 'Aktívny',
             'size' => 'Veľkosť'
         ];
     }
