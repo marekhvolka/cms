@@ -69,6 +69,8 @@ class TagController extends BaseController
                     throw new Exception;
                 }
 
+                $model->updateProducts();
+
                 $transaction->commit();
 
                 return $this->redirectAfterSave($model);

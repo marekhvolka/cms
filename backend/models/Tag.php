@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "tag".
@@ -74,8 +75,40 @@ class Tag extends CustomModel
      */
     public function getProducts()
     {
-        //TODO: fix
-        return $this->hasMany(Product::className(), ['tag_id' => 'id']);
+        return $this->hasMany(Product::className(), ['id' => 'product_id'])
+            ->viaTable('product_tag', ['tag_id' => 'id']);
+    }
+
+    public function updateProducts()
+    {
+        $tagId = $this->id;
+        $products = Yii::$app->request->post('Tag');
+
+        if (!isset($products['_products'])) {
+            $products = [];
+        } else {
+            $products = $products['_products'];
+        }
+
+        $saved_tags = $this->getProducts()->select('id')->asArray()->column();
+
+        $to_remove = array_filter($saved_tags, function ($item) use ($products) {
+            return !in_array($item, $products);
+        });
+
+        $to_add = array_map(function ($id) use ($tagId) {
+            return [
+                'tag_id' => $tagId,
+                'product_id' => $id,
+                'last_edit' => 'CURRENT_DATETIME',
+                'last_edit_user' => Yii::$app->user->getId()
+            ];
+        }, array_filter($products, function ($item) use ($saved_tags) {
+            return !in_array($item, $saved_tags);
+        }));
+
+        (new Query())->createCommand()->delete('product_tag', ['product_id' => $to_remove, 'tag_id' => $this->id])->execute();
+        (new Query())->createCommand()->batchInsert('product_tag', ['tag_id', 'product_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
     }
 
     public function getSnippetVarValues()

@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\Product;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\switchinput\SwitchInput;
@@ -53,6 +54,24 @@ use kartik\select2\Select2;
             'tags' => true,
         ],
     ]);
+
+    ?>
+    <label class="control-label">Produkty</label>
+
+    <?php
+
+    echo Select2::widget([
+        'name' => 'Tag[_products]',
+        'value' => $model->getProducts()->select('id')->column(),
+        'data' => ArrayHelper::map(Product::find()->select('id, name')->all(), 'id', 'name'),
+        'options' => [
+            'placeholder' => 'Priradiť produkty',
+            'multiple' => true,
+        ],
+        'pluginOptions' => [
+            'tags' => true,
+        ],
+    ])
 
     ?>
 
