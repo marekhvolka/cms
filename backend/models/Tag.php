@@ -100,7 +100,6 @@ class Tag extends CustomModel
             return [
                 'tag_id' => $tagId,
                 'product_id' => $id,
-                'last_edit' => 'CURRENT_DATETIME',
                 'last_edit_user' => Yii::$app->user->getId()
             ];
         }, array_filter($products, function ($item) use ($saved_tags) {
@@ -111,7 +110,7 @@ class Tag extends CustomModel
             (new Query())->createCommand()->delete('product_tag', ['product_id' => $to_remove, 'tag_id' => $this->id])->execute();
         }
         if (count($to_add) > 0) {
-            (new Query())->createCommand()->batchInsert('product_tag', ['tag_id', 'product_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
+            (new Query())->createCommand()->batchInsert('product_tag', ['tag_id', 'product_id', 'last_edit_user'], $to_add)->execute();
         }
     }
 

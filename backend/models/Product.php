@@ -348,7 +348,6 @@ class Product extends CustomModel implements ICacheable, IDuplicable
             return [
                 'product_id' => $productId,
                 'tag_id' => $id,
-                'last_edit' => 'CURRENT_DATETIME',
                 'last_edit_user' => Yii::$app->user->getId()
             ];
         }, array_filter($tags, function ($item) use ($saved_tags) {
@@ -360,7 +359,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
         }
 
         if (count($to_add) > 0) {
-            (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
+            (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit_user'], $to_add)->execute();
         }
     }
 
