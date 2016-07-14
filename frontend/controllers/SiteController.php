@@ -13,6 +13,7 @@ use Yii;
 use yii\base\InvalidParamException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
@@ -136,6 +137,10 @@ class SiteController extends Controller
             ob_start();
             include $path;
             $html = ob_get_contents();
+            if (!Yii::$app->user->getIsGuest()) {
+                $html = str_replace('</head>', '<link rel="stylesheet" href="' . Url::to(['css/top-bar.css']) . '"></head>', $html);
+                $html = str_replace('<body>', '<body>' . $this->renderPartial('_top-bar', ['page' => $page, 'portal' => $portal]), $html);
+            }
             ob_end_clean();
             echo $html;
         }
