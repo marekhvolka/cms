@@ -11,10 +11,13 @@ $(function () {
     function openFile(name, directory, url) {
         file_editor.find('.select-a-file').hide();
 
-        var code_mirror = $('.CodeMirror')[0].CodeMirror;
-
         // disable editing during loading the file
-        code_mirror.setOption('readOnly', true);
+        aceEditor.setOptions({
+            readOnly: true,
+            highlightActiveLine: false,
+            highlightGutterLine: false
+        });
+
         // set the hidden input's value determining the path to the file to the file which should be opened
         file_editor.find('#editfileform-name').val(name);
         file_editor.find('#editfileform-directory').val(directory);
@@ -33,28 +36,19 @@ $(function () {
             $.get(url, function (data) {
                 var url = $("#url"),
                     mode = /\.([^/.]+)$/.exec(name)[1];
-
-                switch (mode){
-                    case "scss":
-                        mode = "text/x-scss";
-                        break;
-                    case "php":
-                        mode = "application/x-httpd-php";
-                        break;
-                    case "css":
-                        mode = "text/css";
-                        break;
-                }
-
                 file_editor.find('.file-name').text(name);
-                code_mirror.setOption("mode", mode);
+                aceEditor.setValue(data, 1);
+                //code_mirror.setOption("mode", mode);
                 if (url.is('[data-remove-extension]')) {
                     name = name.replace(/\.[^/.]+$/, "");
                 }
                 url.val(url.attr('data-prefix') + directory + "/" + name);
-                code_mirror.getDoc().setValue(data);
-                code_mirror.setOption('readOnly', false);
-                code_mirror.refresh();
+                aceEditor.setOptions({
+                    readOnly: false,
+                    highlightActiveLine: true,
+                    highlightGutterLine: true
+                });
+                aceEditor.session.setMode("ace/mode/" + mode)
             });
         }
     }

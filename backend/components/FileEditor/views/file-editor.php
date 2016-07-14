@@ -1,4 +1,5 @@
 <?php
+use backend\components\AceEditor\AceEditorWidget;
 use backend\components\FileEditor\FileEditorAsset;
 use backend\components\FileEditor\models\CreateDirectoryForm;
 use backend\components\FileEditor\models\EditFileForm;
@@ -108,37 +109,23 @@ function build_file_tree($data, $from_dir = '')
             <div class="file-editing"
                  <?php if ($isImageLoaded || $editFileForm->name == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = ActiveForm::begin() ?>
-                <?= CodemirrorWidget::widget([
-                        'name' => $editFileForm->formName() . '[text]',
-                        'value' => $editFileForm->text,
-                        'assets' => [
-                            CodemirrorAsset::MODE_XML,
-                            CodemirrorAsset::MODE_HTMLMIXED,
-                            CodemirrorAsset::MODE_CSS,
-                            CodemirrorAsset::MODE_CSS_SCSS,
-                            CodemirrorAsset::MODE_JAVASCRIPT,
-                            CodemirrorAsset::MODE_CLIKE,
-                            CodemirrorAsset::MODE_PHP,
-                            CodemirrorAsset::KEYMAP_EMACS,
-                            CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
-                            CodemirrorAsset::ADDON_COMMENT,
-                            CodemirrorAsset::ADDON_DIALOG,
-                            CodemirrorAsset::ADDON_SEARCHCURSOR,
-                            CodemirrorAsset::ADDON_SEARCH,
-                        ],
-                        'settings' => [
-                            'mode' => 'application/x-httpd-php',
-                            'lineNumbers' => true,
-                        ],
+                <?= AceEditorWidget::widget([
+                    'name' => $editFileForm->formName() . '[text]',
+                    'value' => $editFileForm->text,
+                    'theme' => 'monokai',
+                    'aceOptions' => [
+                        'showPrintMargin' => false,
+                        "maxLines" => 29,
+                        "minLines" => 5
                     ]
-                ) ?>
+                ]); ?>
                 <?= $form->field($editFileForm, 'name')->hiddenInput()->label(false) ?>
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
 
                 <div class="url-address-to-copy">
                     <input class="form-control"
                            id="url"
-                        <?php if ($removeExtensionFromGeneratedUrl)  { ?> data-remove-extension <?php } ?>
+                        <?php if ($removeExtensionFromGeneratedUrl) { ?> data-remove-extension <?php } ?>
                            data-prefix="<?= $generatedUrlPrefix ?>"
                            value="<?= $generatedUrlPrefix ?><?= $editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl) ?>">
                     <button class="clippy" data-clipboard-target="#url">
