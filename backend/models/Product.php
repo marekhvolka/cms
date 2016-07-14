@@ -5,6 +5,7 @@ namespace backend\models;
 use common\models\User;
 use Yii;
 use yii\base\Exception;
+use yii\db\Query;
 
 /**
  * This is the model class for table "product".
@@ -36,6 +37,8 @@ use yii\base\Exception;
  */
 class Product extends CustomModel implements ICacheable
 {
+    public $_tags;
+
     /**
      * @inheritdoc
      */
@@ -318,6 +321,38 @@ class Product extends CustomModel implements ICacheable
     {
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
             ->viaTable('product_tag', ['product_id' => 'id']);
+    }
+
+    public function updateTags()
+    {
+        $productId = $this->id;
+        $tags = Yii::$app->request->post(Product::className());
+
+        if (!isset($tags['_tags'])) {
+            $tags = [];
+        } else {
+            $tags = $tags['_tags'];
+        }
+
+        $saved_tags = $this->getTags()->select('id')->asArray()->column();
+
+        $to_remove = array_filter($saved_tags, function ($item) use ($tags) {
+            return !in_array($item, $tags);
+        });
+
+        $to_add = array_map(function ($id) use ($productId) {
+            return [
+                'product_id' => $productId,
+                'tag_id' => $id,
+                'last_edit' => 'CURRENT_DATETIME',
+                'last_edit_user' => Yii::$app->user->getId()
+            ];
+        }, array_filter($tags, function ($item) use ($saved_tags) {
+            return !in_array($item, $saved_tags);
+        }));
+
+        (new Query())->createCommand()->delete('product_tag', ['product_id' => $this->id, 'tag_id' => $to_remove])->execute();
+        (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit', 'last_edit_user'], $to_add)->execute();
     }
 
     public function relations()

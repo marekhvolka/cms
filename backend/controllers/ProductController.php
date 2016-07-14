@@ -4,7 +4,6 @@ namespace backend\controllers;
 
 use backend\components\VarManager\VarManagerWidget;
 use backend\models\Block;
-use backend\models\Model;
 use backend\models\Product;
 use backend\models\ProductVar;
 use backend\models\ProductVarValue;
@@ -118,6 +117,8 @@ class ProductController extends BaseController
                         }
                     }
                 }
+
+                $model->updateTags();
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 

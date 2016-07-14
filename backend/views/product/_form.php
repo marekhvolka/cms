@@ -4,6 +4,7 @@ use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\controllers\BaseController;
 use backend\models\Portal;
 use backend\models\Product;
+use backend\models\Tag;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -59,6 +60,23 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX
+    ]) ?>
+
+    <?= Select2::widget([
+        'name' => Product::className() . '[_tags]',
+        'value' => array_map(function ($item) {
+            return $item->id;
+        }, $model->tags),
+        'data' => ArrayHelper::map(Tag::find()->andWhere(
+            ['or', ['like', 'product_type', $model->type_id . ","], ['product_type' => $model->type_id], ['like', 'product_type', "," . $model->type_id . ","], ['like', 'product_type', "," . $model->type_id]]
+        )->all(), 'id', 'name'),
+        'options' => [
+            'placeholder' => 'Priradiť tagy',
+            'multiple' => true,
+        ],
+        'pluginOptions' => [
+            'tags' => true,
+        ],
     ]) ?>
 
     <?= VarManagerWidget::widget([
