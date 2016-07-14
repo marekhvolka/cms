@@ -197,8 +197,8 @@ abstract class BaseController extends Controller
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
-        $page = Product::findOne(Yii::$app->request->post('pageId'));
-        $portal = Product::findOne(Yii::$app->request->post('portalId'));
+        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $block = Block::findOne(['id' => $id]);
 
@@ -246,10 +246,9 @@ abstract class BaseController extends Controller
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
         $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $parentId = Yii::$app->request->post('parentId');
-
-        $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $listItem = $parentVar->createNewListItem();
 
