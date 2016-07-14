@@ -415,7 +415,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $reload = false;
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->isOutdated()) {
             try {
                 $prefix = $this->getIncludePrefix();
 
