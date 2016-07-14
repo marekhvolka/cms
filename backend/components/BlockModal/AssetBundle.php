@@ -23,7 +23,7 @@ class AssetBundle extends \yii\web\AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\jui\JuiAsset',
         'kartik\select2\Select2Asset',
-        //'kartik\switchinput\SwitchInput'
+        'kartik\color\ColorInputAsset'
     ];
 
     public function init()

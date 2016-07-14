@@ -50,7 +50,7 @@ use yii\helpers\BaseHtml;
                     'model' => $model,
                     'attribute' => 'code',
 
-                    'mode' => 'html', // programing language mode. Default "html"
+                    'mode' => 'php', // programing language mode. Default "html"
                     'theme' => 'github', // editor theme. Default "github"
                     'options' => [
                         'name' => $prefix . "[code]",
