@@ -81,7 +81,7 @@ class GlobalSearch
             ['like', 'title', $searchTerm],
         ])
             ->andWhere([
-                'portal_id' => BaseController::$portal->id
+                'portal_id' => Yii::$app->user->identity->portal_id
             ])
             ->limit(10)
             ->all();
@@ -104,7 +104,7 @@ class GlobalSearch
                 ['like', 'identifier', $searchTerm],
             ])
             ->andWhere([
-                'language_id' => BaseController::$portal->language_id
+                'language_id' => Yii::$app->user->identity->portal->language_id
             ])
             ->limit(10)
             ->all();

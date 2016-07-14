@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\PortalSearch */
+/* @var $searchModel backend\models\search\PortalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Stránky';
@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $this->beginBlock('button'); ?>
 
-<?php $result = \backend\controllers\BaseController::$portal->getOutdatedPageCount(); ?>
+<?php $result = Yii::$app->user->identity->portal->getOutdatedPageCount(); ?>
 
 <strong> Počet neaktuálných: <?= $result['outdated'] ?>/<?= $result['count'] ?></strong>
 <?= Html::a('Pridať podstránku', ['edit'], ['class' => 'btn btn-success pull-right']) ?>

@@ -63,7 +63,7 @@ class TrackingCodeController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                $model->portal_id = BaseController::$portal->id;
+                $model->portal_id = Yii::$app->user->identity->portal_id;
 
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;

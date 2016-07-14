@@ -35,10 +35,6 @@ use yii\widgets\ActiveForm;
  */
 abstract class BaseController extends Controller
 {
-    public static $develop = true;
-    /** @var $portal Portal */
-    public static $portal = null;
-
     public function behaviors()
     {
         return [
@@ -65,25 +61,12 @@ abstract class BaseController extends Controller
         if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
             $this->changeCurrentPortal($change_portal);
         }
-
-        if (!Yii::$app->session->has('portal_id')) {
-            $this->changeCurrentPortal(3);
-        }
-
-        self::$portal = Portal::findOne(Yii::$app->session->get('portal_id'));
     }
 
     public function changeCurrentPortal($portalId)
     {
-        /*Yii::$app->response->cookies->add(new Cookie([
-            'name' => 'portal_id',
-            'value' => $portalId,
-            'expire' => 2147483647 // maximum value
-        ]));*/
-
-        Yii::$app->session->set('portal_id', $portalId);
-
-        self::$portal = Portal::findOne($portalId);
+        Yii::$app->user->identity->portal_id = $portalId;
+        Yii::$app->user->identity->save();
     }
 
     /**

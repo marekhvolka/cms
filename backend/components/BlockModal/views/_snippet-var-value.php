@@ -104,7 +104,7 @@ use yii\helpers\Html;
                 case 'product' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map(BaseController::$portal->language->products,
+                        ArrayHelper::map(Yii::$app->user->identity->portal->language->products,
                             'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_product_id]',
@@ -118,7 +118,7 @@ use yii\helpers\Html;
 
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(BaseController::$portal->pages, 'id',
+                        ArrayHelper::map(Yii::$app->user->identity->portal->pages, 'id',
                             'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',

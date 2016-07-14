@@ -53,11 +53,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Akcie',
                 'value' => function ($data) {
+                    $result = '';
+                    $result .= Html::a('<span class="fa fa-files-o"></span>', Url::to(['edit', 'id' => $data->id, 'duplicate' => true]), [
+                        'target' => '_blank'
+                    ]);
+
                     if ($data->getProducts()->count() == 0) {
-                        return Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť tento produkt (' . $data->name . ')?" data-method="post" data-pjax="0"></a>', Url::to(['delete', 'id' => $data->id]));
-                    } else {
-                        return '&nbsp;';
+                        $result .= Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť tento produkt (' . $data->name . ')?" data-method="post" data-pjax="0"></a>',
+                            Url::to(['delete', 'id' => $data->id]));
                     }
+                    return $result;
                 },
                 'size' => 1
             ]

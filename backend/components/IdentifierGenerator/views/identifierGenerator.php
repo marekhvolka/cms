@@ -56,6 +56,18 @@ function cleanUpSpecialChars(str)
     str = str.replace(/[ýÿ]/g,"y");
     str = str.replace(/[žźż]/g,"z");
 
+    str = str.replace(/,/g, '');
+    str = str.replace(/\?/g, '');
+    str = str.replace(/\!/g, '');
+    str = str.replace(/:/g, '');
+    str = str.replace(/\./g, '');
+    //str = str.replace(/\\/g, '');
+    str = str.replace(/\//g, '');
+    str = str.replace(/\(/g, '');
+    str = str.replace(/\)/g, '');
+    str = str.replace(/\[/g, '');
+    str = str.replace(/\]/g, '');
+
     return str;
 }
         

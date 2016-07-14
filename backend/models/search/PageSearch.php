@@ -73,7 +73,7 @@ class PageSearch extends Page
         $query = Page::find();
 
         if ($byPortal) {
-            $query->where(['portal_id' => BaseController::$portal->id]);
+            $query->where(['portal_id' => Yii::$app->user->identity->portal_id]);
         }
 
         $this->load($params);

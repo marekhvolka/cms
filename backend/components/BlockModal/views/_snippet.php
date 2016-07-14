@@ -85,7 +85,7 @@ use yii\helpers\Url;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
             <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map(BaseController::$portal->portalSnippets,
+                    ArrayHelper::map(Yii::$app->user->identity->portal->portalSnippets,
                         'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
