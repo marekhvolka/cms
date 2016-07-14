@@ -23,24 +23,17 @@ use kartik\switchinput\SwitchInput;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= CodemirrorWidget::widget([
-            'name' => 'TrackingCode[code]',
-            'value' => $model->code,
-            'assets' => [
-                CodemirrorAsset::MODE_CLIKE,
-                CodemirrorAsset::KEYMAP_EMACS,
-                CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
-                CodemirrorAsset::ADDON_COMMENT,
-                CodemirrorAsset::ADDON_DIALOG,
-                CodemirrorAsset::ADDON_SEARCHCURSOR,
-                CodemirrorAsset::ADDON_SEARCH,
-            ],
-            'settings' => [
-                'lineNumbers' => true,
-                'mode' => 'text/x-csrc',
-            ],
-        ]
-    ) ?>
+    <?= trntv\aceeditor\AceEditor::widget([
+        // You can either use it for model attribute
+        'model' => $model,
+        'attribute' => 'code',
+
+        'mode' => 'php', // programing language mode. Default "html"
+        'theme' => 'chrome', // editor theme. Default "github"
+        'options' => [
+            ]
+    ])
+    ?>
 
     <?= $form->field($model, 'place_id')->dropDownList(
         ArrayHelper::map(TrackingCode::getPlaces(), 'id', 'name')

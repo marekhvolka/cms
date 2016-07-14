@@ -23,7 +23,8 @@ class AssetBundle extends \yii\web\AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\jui\JuiAsset',
         'kartik\select2\Select2Asset',
-        'kartik\color\ColorInputAsset'
+        'kartik\color\ColorInputAsset',
+        'trntv\aceeditor\AceEditorAsset'
     ];
 
     public function init()
