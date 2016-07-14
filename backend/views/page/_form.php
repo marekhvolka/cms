@@ -17,6 +17,14 @@ use yii\widgets\ActiveForm;
 
 ?>
 
+<?php
+if ($model->portal) {
+    $portal = $model->portal;
+} else {
+    $portal = Yii::$app->user->identity->portal;
+}
+?>
+
 <div class="page-form">
 
     <?php $form = ActiveForm::begin([
@@ -42,7 +50,7 @@ use yii\widgets\ActiveForm;
             ]) ?>
 
             <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map(Yii::$app->user->identity->portal->pages, 'id', 'breadcrumbs'),
+                'data' => ArrayHelper::map($portal->pages, 'id', 'breadcrumbs'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber rodiča ...'],
                 'pluginOptions' => [
@@ -57,7 +65,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Yii::$app->user->identity->portal->language->products, 'id',
+        'data' => ArrayHelper::map($portal->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber produktu ...'],
@@ -81,7 +89,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?= $form->field($model, 'color_scheme')->dropDownList(
-        ArrayHelper::map(Yii::$app->user->identity->portal->template->getColorSchemes(), 'label',
+        ArrayHelper::map($portal->template->getColorSchemes(), 'label',
             'label')); ?>
 
     <h3 class="page-header">Hlavička stránky</h3>

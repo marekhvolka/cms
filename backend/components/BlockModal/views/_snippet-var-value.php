@@ -14,6 +14,7 @@ use yii\helpers\Html;
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
 /* @var $globalObjects array */
 /* @var $parentId int */
+
 ?>
 
 <div class="snippet-var-value" data-identifier="<?= $snippetVarValue->var->identifier ?>">
