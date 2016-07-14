@@ -141,6 +141,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
 
                 $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
                 $buffer .= '\'name\' => \'' . addslashes($this->name) . '\',' . PHP_EOL;
+                $buffer .= '\'identifier\' => \'' . addslashes($this->identifier) . '\',' . PHP_EOL;
 
                 foreach ($this->productProperties as $productVarValue) {
                     $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
