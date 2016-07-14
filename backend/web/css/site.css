@@ -293,10 +293,6 @@ a.anchor {
     margin: 0;
 }
 
-.CodeMirror {
-    height: initial !important;
-}
-
 #radioBtn .notActive {
     color: #3276b1;
     background-color: #fff;
@@ -383,6 +379,21 @@ span.row-drag-by, span.section-drag-by {
     cursor: move;
 }
 
-div.CodeMirror-hscrollbar {
-    display: none !important;
+.block-modal {
+    z-index: 10000;
+}
+
+.block-modal > .modal-dialog {
+    width: 93%;
+}
+
+.block-modal > .modal-dialog > .modal-content {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.block-modal > .modal-dialog > .modal-content > .modal-body {
+    height: 100%;
+    max-height: none;
 }

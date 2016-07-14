@@ -7,12 +7,7 @@ use backend\models\Block;
 /* @var $prefix string */
 
 ?>
-<style>
-    .modal-dialog {
-        width: 80% !important;
-    }
-</style>
-<div class="modal" id="modal" role="dialog">
+<div class="modal block-modal" id="modal" role="dialog">
     <div class="modal-dialog modal-xlg">
         <div class="modal-content">
             <div class="modal-main-content">

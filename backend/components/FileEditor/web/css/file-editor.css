@@ -251,27 +251,8 @@ UI.jqueryFileTree a.delete {
     box-shadow: 0 0 3px 3px lightgray;
 }
 
-.file-editor .CodeMirror-scroll {
-    min-height: 200px;
-    max-height: 500px;
-}
-
-.file-editor .file-editing .CodeMirror {
-    box-shadow: 0 0 3px 3px lightgray;
-}
 .file-editor .image img {
     max-width: 100%;
-}
-
-#createFileModal .CodeMirror {
-    margin-top: 20px;
-    box-shadow: 0 0 3px 3px lightgray;
-    border-radius: 1px;
-    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-}
-
-#createFileModal .CodeMirror:focus {
-    border-color: #66AFE9;
 }
 
 .file-editor .clippy {
