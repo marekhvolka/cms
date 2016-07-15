@@ -58,12 +58,19 @@ class ProductController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionEdit($id = null)
+    public function actionEdit($id = null, $duplicate = false)
     {
         $model = $id ? $this->findModel($id) : new Product();
         $allVariables = ProductVar::find()->all();
 
-        if ($model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isPost) {
+
+            if ($duplicate) {
+                $model = new Product();
+            }
+
+            $model->load(Yii::$app->request->post());
+
             if (Yii::$app->request->isAjax) { // ajax validácia
                 return $this->ajaxValidation($model);
             }

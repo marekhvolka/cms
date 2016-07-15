@@ -75,13 +75,14 @@ class Language extends CustomModel
     }
 
     /** Vrati cestu k suboru, v ktorom su nacachovane data zo slovnika
+     * @param bool $reload
      * @return string
      */
-    public function getDictionaryCacheFile()
+    public function getDictionaryCacheFile($reload = false)
     {
         $path = Yii::$app->dataEngine->getCommonDirectory() . $this->identifier . '_dictionary.php';
 
-        if (!file_exists($path)) {
+        if (!file_exists($path) || $reload) {
             $buffer = '<?php ' . PHP_EOL;
 
             $buffer .= 'include("' . Yii::$app->dataEngine->getCommonCacheFile() . '");' . PHP_EOL;

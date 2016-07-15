@@ -66,13 +66,13 @@ class Product extends CustomModel implements ICacheable, IDuplicable
                 ['name', 'language_id'],
                 'unique',
                 'targetAttribute' => ['name', 'language_id'],
-                'message' => 'The combination of Name and Language ID has already been taken.'
+                'message' => 'Produkt s daným názvom pre krajinu už existuje.'
             ],
             [
                 ['identifier', 'language_id'],
                 'unique',
                 'targetAttribute' => ['identifier', 'language_id'],
-                'message' => 'The combination of Identifier and Language ID has already been taken.'
+                'message' => 'Produkt s daným názvom pre krajinu už existuje.'
             ]
         ];
     }
@@ -140,6 +140,8 @@ class Product extends CustomModel implements ICacheable, IDuplicable
                 $buffer .= 'array(' . PHP_EOL;
 
                 $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
+                $buffer .= '\'name\' => \'' . addslashes($this->name) . '\',' . PHP_EOL;
+                $buffer .= '\'identifier\' => \'' . addslashes($this->identifier) . '\',' . PHP_EOL;
 
                 foreach ($this->productProperties as $productVarValue) {
                     $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;

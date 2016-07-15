@@ -12,7 +12,7 @@ use yii\jui\DatePicker;
 /* @var $prefix string */
 
 if (!isset($model)) {
-    $model = Portal::findOne(BaseController::$portal);
+    $model = Portal::findOne(Yii::$app->user->identity->portal);
 }
 ?>
 

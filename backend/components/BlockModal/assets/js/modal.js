@@ -16,7 +16,8 @@ body.on(
 
         var postData = {
             prefix: $(this).data('prefix'),
-            productId: $(this).data('product-id'),
+            pageId: $(this).data('page-id'),
+            portalId: $(this).data('portal-id'),
             snippetId: $(this).val(),
             blockType: $(this).data('type')
         };
@@ -41,10 +42,10 @@ body.on(
 body.on(
     'change', '.parent-dropdown', function ()
     {
-
         var postData = {
             prefix: $(this).data('prefix'),
-            productId: $(this).data('product-id'),
+            pageId: $(this).data('page-id'),
+            portalId: $(this).data('portal-id'),
             parentId: $(this).val(),
             blockType: $(this).data('type')
         };
@@ -81,7 +82,8 @@ body.on(
                     id: blockId,
                     prefix: $(this).data('prefix'),
                     blockType: $(this).data('block-type'),
-                    productId: $(this).data('product-id')
+                    pageId: $(this).data('page-id'),
+                    portalId: $(this).data('portal-id')
                 },
                 self = this;
 
@@ -124,7 +126,8 @@ body.on(
         var postData = {
             prefix: $(this).data('prefix'),
             parentVarId: $(this).data('parent-var-id'),
-            productId: $(this).data('product-id'),
+            pageId: $(this).data('page-id'),
+            portalId: $(this).data('portal-id'),
             parentId: $(this).data('parent-id')
         };
 

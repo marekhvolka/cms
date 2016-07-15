@@ -5,15 +5,13 @@
  * Date: 21.06.16
  * Time: 19:54
  */
+use backend\models\Portal;
 use yii\helpers\BaseHtml;
 
 /* @var $model \backend\models\Column */
-/* @var $itemId int */
-/* @var $indexSection int */
-/* @var $indexRow int */
-/* @var $indexColumn int */
 /* @var $prefix string */
-/* @var $product \backend\models\Product */
+/* @var $page \backend\models\Page */
+/* @var $portal Portal */
 
 ?>
 
@@ -35,14 +33,14 @@ use yii\helpers\BaseHtml;
                 <div class="dropdown dropdown-column-content inline-button add-block">
                     <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
                             title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
-                            data-product-id="<?= $product ? $product->id : '' ?>">
+                            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="column-option" data-type="text">Text</a></li>
                         <li><a class="column-option" data-type="html">HTML</a></li>
                         <li><a class="column-option" data-type="snippet">Snippet</a></li>
-                        <?php if ($product) : ?>
+                        <?php if ($page && $page->product) : ?>
                             <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
                         <?php endif; ?>
                         <li><a class="column-option" data-type="portal_snippet">Portálový snippet</a></li>
@@ -61,7 +59,8 @@ use yii\helpers\BaseHtml;
             <?= $this->render('_block', [
                 'model' => $block,
                 'prefix' => $prefix . "[Block][$indexBlock]",
-                'product' => $product
+                'page' => $page,
+                'portal' => $portal
             ]); ?>
         <?php endforeach; ?>
     </div>

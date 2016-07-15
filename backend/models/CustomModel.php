@@ -136,7 +136,7 @@ class CustomModel extends \yii\db\ActiveRecord
 
         $systemException->save();
 
-        if (BaseController::$develop) {
+        if (Yii::$app->user->identity->portal) {
             throw $exception;
         }
     }

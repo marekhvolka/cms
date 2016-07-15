@@ -9,12 +9,6 @@ use yii\widgets\Breadcrumbs;
 
 /* @var $this \yii\web\View */
 
-
-$portal = Portal::find()
-    ->where(['id' => BaseController::$portal->id])
-    ->one();
-$portalName = isset($portal->name) ? $portal->name : '';
-
 NavBar::begin([
     /*'brandLabel' => Html::img('@web/images/logo_white.png', ['alt' => 'Logo', 'class' => 'brand-logo']),
     'brandUrl' => Yii::$app->homeUrl,*/
@@ -41,7 +35,7 @@ echo Nav::widget([
     ],
     'items' => [
         [
-            'label' => $portalName,
+            'label' => Yii::$app->user->identity->portal->name,
             'items' => $items
         ]
     ],

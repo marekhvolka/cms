@@ -2,8 +2,6 @@
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
-use backend\controllers\BaseController;
-use backend\models\Portal;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
@@ -15,6 +13,14 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
 
+?>
+
+<?php
+if ($model->portal) {
+    $portal = $model->portal;
+} else {
+    $portal = Yii::$app->user->identity->portal;
+}
 ?>
 
 <div class="page-form">
@@ -42,7 +48,7 @@ use yii\widgets\ActiveForm;
             ]) ?>
 
             <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map(BaseController::$portal->pages, 'id', 'breadcrumbs'),
+                'data' => ArrayHelper::map($portal->pages, 'id', 'breadcrumbs'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber rodiča ...'],
                 'pluginOptions' => [
@@ -57,7 +63,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(BaseController::$portal->language->products, 'id',
+        'data' => ArrayHelper::map($portal->language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber produktu ...'],
@@ -81,20 +87,23 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?= $form->field($model, 'color_scheme')->dropDownList(
-        ArrayHelper::map(BaseController::$portal->template->getColorSchemes(), 'label',
+        ArrayHelper::map($portal->template->getColorSchemes(), 'label',
             'label')); ?>
 
     <h3 class="page-header">Hlavička stránky</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'header[active]',
-        'value' => $model->header->active,
+    <?= $form->field($model->header, 'active')->radioList([
+        '0' => 'Neaktívna',
+        '1' => 'Aktívna',
+    ], [
+        'name' => 'header[active]'
     ]) ?>
 
     <?= LayoutWidget::widget([
             'area' => $model->header,
             'controllerUrl' => Url::to(['/page']),
-            'product' => $model->product
+            'page' => $model,
+            'portal' => null
         ]
     ) ?>
 
@@ -104,49 +113,59 @@ use yii\widgets\ActiveForm;
             'area' => $model->content,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'product' => $model->product
+            'page' => $model,
+            'portal' => null
         ]
     ) ?>
 
     <h3 class="page-header">Sidebar</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'sidebar[active]',
-        'value' => $model->sidebar->active,
+    <?= $form->field($model->sidebar, 'active')->radioList([
+        '0' => 'Neaktívny',
+        '1' => 'Aktívny',
+    ], [
+        'name' => 'sidebar[active]'
     ]) ?>
+
 
     <?= $form->field($model, 'sidebar_side')->radioList([
         'left' => 'Vľavo',
         'right' => 'Vpravo',
     ]) ?>
 
-    <?= Html::radioList('sidebar[size]', $model->sidebar->size, [
+    <?= $form->field($model->sidebar, 'size')->radioList([
         '4' => '8:4',
         '5' => '7:5',
         '6' => '6:6',
         '7' => '5:7',
         '8' => '4:8',
+    ], [
+        'name' => 'sidebar[size]'
     ]) ?>
 
     <?= LayoutWidget::widget([
             'area' => $model->sidebar,
             'controllerUrl' => Url::to(['/page']),
             'allowAddingSection' => false,
-            'product' => $model->product
+            'page' => $model,
+            'portal' => null
         ]
     ) ?>
 
     <h3 class="page-footer">Patička stránky</h3>
 
-    <?= SwitchInput::widget([
-        'name' => 'footer[active]',
-        'value' => $model->footer->active,
+    <?= $form->field($model->footer, 'active')->radioList([
+        '0' => 'Neaktívna',
+        '1' => 'Aktívna',
+    ], [
+        'name' => 'footer[active]'
     ]) ?>
 
     <?= LayoutWidget::widget([
             'area' => $model->footer,
             'controllerUrl' => Url::to(['/page']),
-            'product' => $model->product
+            'page' => $model,
+            'portal' => null
         ]
     ) ?>
 

@@ -1,9 +1,11 @@
 <?php
 use backend\models\Block;
+use backend\models\Portal;
 use yii\helpers\BaseHtml;
 
 /* @var $listItem backend\models\ListItem */
-/* @var $product backend\models\Product */
+/* @var $page backend\models\Page */
+/* @var $portal Portal */
 /* @var $prefix string */
 /* @var $indexItem int */
 /* @var $globalObjects array */
@@ -28,7 +30,8 @@ use yii\helpers\BaseHtml;
         <?php foreach ($listItem->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'snippetVarValue' => $snippetVarValue,
-                'product' => $product,
+                'page' => $page,
+                'portal' => $portal,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
                 'parentId' => $parentId
             ]);

@@ -65,7 +65,6 @@ class PageController extends BaseController
             $model = $this->findModel($id);
         } else {
             $model = new Page();
-
             $model->initializeNew();
         }
 
@@ -87,19 +86,19 @@ class PageController extends BaseController
             try {
 
                 $headerData = Yii::$app->request->post('header');
-                $model->header->load($headerData);
+                $model->header->load($headerData, '');
                 $this->loadLayout($model->header, $headerData);
 
                 $footerData = Yii::$app->request->post('footer');
-                $model->footer->load($footerData);
+                $model->footer->load($footerData, '');
                 $this->loadLayout($model->footer, $footerData);
 
                 $contentData = Yii::$app->request->post('content');
-                $model->content->load($contentData);
+                $model->content->load($contentData, '');
                 $this->loadLayout($model->content, $contentData);
 
                 $sidebarData = Yii::$app->request->post('sidebar');
-                $model->sidebar->load($sidebarData);
+                $model->sidebar->load($sidebarData, '');
                 $this->loadLayout($model->sidebar, $sidebarData);
 
                 if (!($model->validate() && $model->save())) {

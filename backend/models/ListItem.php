@@ -118,7 +118,7 @@ class ListItem extends CustomModel implements IDuplicable
             $snippetVarValue->prepareToDuplicate();
         }
 
-        $this->id = null;
+        unset($this->id);
         $this->list_id = null;
     }
 

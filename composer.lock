@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fb3a9f6f7d013238dec209463af333db",
-    "content-hash": "ca70d9b67a7e9028271212428abc6384",
+    "hash": "bdf697b81adf640ec1dd3e58c3d0d926",
+    "content-hash": "4b9abea62da011db6090c8297dfe5f00",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -389,47 +389,6 @@
                 "markdown-extra"
             ],
             "time": "2015-03-06 05:28:07"
-        },
-        {
-            "name": "cliff363825/yii2-colorpicker",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cliff363825/yii2-colorpicker.git",
-                "reference": "be87130d5fd835c4ad983f7f5ef6fe4ec49abac0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cliff363825/yii2-colorpicker/zipball/be87130d5fd835c4ad983f7f5ef6fe4ec49abac0",
-                "reference": "be87130d5fd835c4ad983f7f5ef6fe4ec49abac0",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "cliff363825\\colorpicker\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "cliff363825",
-                    "email": "cliff_363825@163.com"
-                }
-            ],
-            "description": "ColorPicker Widget for Yii2 framework",
-            "keywords": [
-                "colorpicker",
-                "widget",
-                "yii2"
-            ],
-            "time": "2014-10-23 02:35:54"
         },
         {
             "name": "conquer/codemirror",
@@ -2031,6 +1990,47 @@
             "extra": {
                 "bower-asset-main": "dist/typeahead.bundle.js"
             }
+        },
+        {
+            "name": "cliff363825/yii2-colorpicker",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cliff363825/yii2-colorpicker.git",
+                "reference": "be87130d5fd835c4ad983f7f5ef6fe4ec49abac0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cliff363825/yii2-colorpicker/zipball/be87130d5fd835c4ad983f7f5ef6fe4ec49abac0",
+                "reference": "be87130d5fd835c4ad983f7f5ef6fe4ec49abac0",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "cliff363825\\colorpicker\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "cliff363825",
+                    "email": "cliff_363825@163.com"
+                }
+            ],
+            "description": "ColorPicker Widget for Yii2 framework",
+            "keywords": [
+                "colorpicker",
+                "widget",
+                "yii2"
+            ],
+            "time": "2014-10-23 02:35:54"
         },
         {
             "name": "fzaninotto/faker",

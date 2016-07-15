@@ -85,4 +85,11 @@ class Word extends \yii\db\ActiveRecord
     {
         $this->translations = $value;
     }
+
+    public function resetAfterUpdate()
+    {
+        foreach(Language::find()->all() as $language) {
+            $language->getDictionaryCacheFile(true);
+        }
+    }
 }

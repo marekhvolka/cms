@@ -16,7 +16,8 @@ body.on(
             layouts = $this.parents('.layouts'),
             postData = {
                 prefix: $this.data('prefix'),
-                productId: $this.data('product-id')
+                pageId: $this.data('page-id'),
+                portalId: $this.data('portal-id')
             };
 
         $.post(
@@ -48,7 +49,8 @@ body.on(
             section = $this.parents('.section').first(),
             postData = {
                 prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
-                productId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('product-id')
+                pageId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('page-id'),
+                portalId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('portal-id')
             };
 
         $.post(
@@ -57,7 +59,8 @@ body.on(
                     postColumnData = {
                         width: columnsByWidth,
                         prefix: row.data('prefix'),
-                        productId: row.data('product-id')
+                        pageId: row.data('page-id'),
+                        portalId: row.data('portal-id')
                     };
 
                 $.post(
@@ -82,7 +85,8 @@ body.on(
 
         var postData = {
             prefix: mainButton.data('prefix'),
-            productId: mainButton.data('product-id'),
+            pageId: mainButton.data('page-id'),
+            portalId: mainButton.data('portal-id'),
             type: $(this).data('type')
         };
 

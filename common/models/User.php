@@ -1,6 +1,7 @@
 <?php
 namespace common\models;
 
+use backend\models\Portal;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -17,8 +18,10 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property string $auth_key
  * @property integer $status
- * @property integer $updated_at
  * @property string $password write-only password
+ * @property string updated_at
+ * @property int $portal_id
+ * @property Portal $portal
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -31,16 +34,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return '{{%user}}';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
     }
 
     /**
@@ -206,5 +199,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function getPortal()
+    {
+        return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
     }
 }

@@ -46,7 +46,7 @@ class RedirectSearch extends Redirect
     {
         $query = Redirect::find();
 
-        $query->where(['portal_id' => BaseController::$portal->id]);
+        $query->where(['portal_id' => Yii::$app->user->identity->portal_id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -75,6 +75,8 @@ class WordController extends BaseController
 
                 $transaction->commit();
 
+                $model->resetAfterUpdate();
+
                 return $this->redirectAfterSave($model);
             } catch (Exception $exc) {
                 $transaction->rollBack();

@@ -46,7 +46,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
     public function initializeNew()
     {
-        $this->portal_id = BaseController::$portal->id;
+        $this->portal_id = Yii::$app->user->identity->portal_id;
 
         $this->header = new Area();
         $this->header->type = 'header';
@@ -415,7 +415,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $reload = false;
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->isOutdated()) {
             try {
                 $prefix = $this->getIncludePrefix();
 

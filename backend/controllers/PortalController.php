@@ -180,7 +180,7 @@ class PortalController extends BaseController
 
     public function actionLayoutEdit($type)
     {
-        $model = BaseController::$portal;
+        $model = Yii::$app->user->identity->portal;
 
         if (Yii::$app->request->isPost) {
 

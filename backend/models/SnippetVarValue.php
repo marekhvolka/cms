@@ -277,7 +277,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
             $listItem->prepareToDuplicate();
         }
 
-        $this->id = null;
+        unset($this->id);
         $this->block_id = null;
     }
 

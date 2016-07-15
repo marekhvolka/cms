@@ -1,26 +1,31 @@
 <?php
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
-use backend\controllers\BaseController;
-use backend\models\Portal;
+use backend\components\VarManager\VarManagerWidget;
+use backend\models\Language;
 use backend\models\Product;
+use backend\models\ProductType;
 use backend\models\Tag;
 use kartik\select2\Select2;
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
-use backend\models\Language;
 use kartik\switchinput\SwitchInput;
-use backend\models\ProductType;
-use backend\components\VarManager\VarManagerWidget;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Product */
 /* @var $allVariables backend\models\ProductVar */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<?php
+if ($model->language) {
+    $language = $model->language;
+} else {
+    $language = Yii::$app->user->identity->portal->language;
+}
 
+?>
 <div class="product-form">
 
     <?php $form = ActiveForm::begin([
@@ -39,7 +44,7 @@ use yii\helpers\Url;
     ]) ?>
 
     <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(BaseController::$portal->language->products, 'id',
+        'data' => ArrayHelper::map($language->products, 'id',
             'breadcrumbs'),
         'language' => 'en',
         'options' => ['placeholder' => 'Výber predka ...'],
@@ -68,7 +73,13 @@ use yii\helpers\Url;
             return $item->id;
         }, $model->tags),
         'data' => ArrayHelper::map(Tag::find()->andWhere(
-            ['or', ['like', 'product_type', $model->type_id . ","], ['product_type' => $model->type_id], ['like', 'product_type', "," . $model->type_id . ","], ['like', 'product_type', "," . $model->type_id]]
+            [
+                'or',
+                ['like', 'product_type', $model->type_id . ","],
+                ['product_type' => $model->type_id],
+                ['like', 'product_type', "," . $model->type_id . ","],
+                ['like', 'product_type', "," . $model->type_id]
+            ]
         )->all(), 'id', 'name'),
         'options' => [
             'placeholder' => 'Priradiť tagy',

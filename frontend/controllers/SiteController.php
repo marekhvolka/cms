@@ -73,35 +73,26 @@ class SiteController extends Controller
     {
         $identifiers = explode("/", strtolower($url));
 
-        $portalId = Yii::$app->session->get('portal_id');
+        $portal = Portal::find()->where([
+            'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
+        ])
+            ->one();
 
-        $portal = Portal::findOne($portalId);
-        if (!isset($portal)) {
-
-            $portal = Portal::find()->where([
-                'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
-            ])
-                ->one();
-
-            if (isset($portal)) {
-                $portalId = $portal->id;
-            } else {
-                $portalId = 3;
-            }
+        if (!$portal) {
+            $portal = Yii::$app->user->identity->portal;
         }
 
         if ($identifiers[0] == '') { //homepage
             $page = Page::find()->where([
                 'parent_id' => null,
-                'portal_id' => $portalId,
+                'portal_id' => $portal->id,
                 'identifier' => 'homepage'
             ])
                 ->one();
         } else {
-
             $redirect = Redirect::find()
                 ->where([
-                    'portal_id' => $portalId,
+                    'portal_id' => $portal->id,
                     'source_url' => '/' . $url
                 ])
                 ->one();
@@ -113,7 +104,7 @@ class SiteController extends Controller
             $pages = Page::find()
                 ->where([
                     'parent_id' => null,
-                    'portal_id' => $portalId
+                    'portal_id' => $portal->id
                 ])->all();
 
             $page = $this->findPage($pages, $identifiers, 0);
@@ -122,14 +113,14 @@ class SiteController extends Controller
             $page = Page::find()
                 ->where([
                     'identifier' => '404',
-                    'portal_id' => $portalId
+                    'portal_id' => $portal->id
                 ])->one();
 
             http_response_code(404);
         }
 
         if (isset($page)) {
-            $reload = $page->isOutdated() && Yii::$app->session->has('portal_id');
+            $reload = $page->isOutdated() && !Yii::$app->user->isGuest;;
             $path = $page->getMainCacheFile($reload);
         }
 
@@ -140,8 +131,10 @@ class SiteController extends Controller
             include $path;
             $html = ob_get_contents();
             if (!Yii::$app->user->getIsGuest()) {
-                $html = str_replace('</head>', '<link rel="stylesheet" href="' . Url::to(['css/top-bar.css']) . '"></head>', $html);
-                $html = str_replace('<body>', '<body>' . $this->renderPartial('_top-bar', ['page' => $page, 'portal' => $portal]), $html);
+                $html = str_replace('</head>',
+                    '<link rel="stylesheet" href="' . Url::to(['css/top-bar.css']) . '"></head>', $html);
+                $html = str_replace('<body>',
+                    '<body>' . $this->renderPartial('_top-bar', ['page' => $page, 'portal' => $portal]), $html);
             }
             ob_end_clean();
             echo $html;

@@ -9,16 +9,18 @@ use yii\helpers\BaseHtml;
 use yii\helpers\Html;
 
 /* @var $snippetVarValue backend\models\SnippetVarValue */
-/* @var $product backend\models\Product */
+/* @var $page backend\models\Page */
+/* @var $portal backend\models\Portal */
 /* @var $prefix string */
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
 /* @var $globalObjects array */
 /* @var $parentId int */
+
 ?>
 
 <div class="snippet-var-value" data-identifier="<?= $snippetVarValue->var->identifier ?>">
     <?php
-    $productType = $product ? $product->productType : null;
+    $productType = $page && $page->product ? $page->product->productType : null;
     $defaultValue = $snippetVarValue->var->getDefaultValue($productType);
 
     if ($snippetVarValue->typeName != 'list') : ?>
@@ -126,7 +128,7 @@ use yii\helpers\Html;
                 case 'product' : ?>
 
                     <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map(BaseController::$portal->language->products,
+                        ArrayHelper::map($page ? $page->portal->language->products : $portal->language->products,
                             'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_product_id]',
@@ -138,9 +140,8 @@ use yii\helpers\Html;
                     break;
                 case 'page' : ?>
 
-
                     <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map(BaseController::$portal->pages, 'id',
+                        ArrayHelper::map($page ? $page->portal->pages : $portal->pages, 'id',
                             'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',
@@ -247,20 +248,21 @@ use yii\helpers\Html;
             </span>
                 <a class="btn btn-success btn-xs pull-right btn-add-list-item"
                    data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                   data-parent-id="<?= $parentId ?>">
+                   data-parent-id="<?= $parentId ?>" data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             </div>
 
-            <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
-                <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
-                    <?= $this->render('_list-item', [
-                        'listItem' => $listItem,
-                        'product' => $product,
-                        'prefix' => $prefix . "[ListItem][$indexItem]",
-                        'parentId' => $parentId
-                    ]); ?>
-                <?php endforeach; ?>
+        <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
+            <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
+                <?= $this->render('_list-item', [
+                    'listItem' => $listItem,
+                    'page' => $page,
+                    'portal' => $portal,
+                    'prefix' => $prefix . "[ListItem][$indexItem]",
+                    'parentId' => $parentId
+                ]); ?>
+            <?php endforeach; ?>
             </div>
         </div>
     <?php endif; ?>

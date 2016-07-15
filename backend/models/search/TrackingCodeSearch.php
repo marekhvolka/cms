@@ -44,7 +44,7 @@ class TrackingCodeSearch extends TrackingCode
     {
         $query = TrackingCode::find();
 
-        $query->where(['portal_id' => BaseController::$portal->id]);
+        $query->where(['portal_id' => Yii::$app->user->identity->portal_id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

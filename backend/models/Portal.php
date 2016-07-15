@@ -471,7 +471,7 @@ class Portal extends CustomModel implements ICacheable
         $query = 'SELECT SUM(outdated) outdated, COUNT(*) count FROM page WHERE portal_id = :portal_id';
 
         return Yii::$app->db->createCommand($query, [
-            'portal_id' => BaseController::$portal->id
+            'portal_id' => $this->id
         ])
             ->queryOne();
     }

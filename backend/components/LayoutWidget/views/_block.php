@@ -1,11 +1,13 @@
 <?php
 
 use backend\components\BlockModal\BlockModalWidget;
+use backend\models\Portal;
 use yii\helpers\Html;
 
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
-/* @var $product \backend\models\Product */
+/* @var $page \backend\models\Page */
+/* @var $portal Portal */
 
 if (!isset($renderModal)) {
     $renderModal = false;
@@ -21,7 +23,8 @@ if (!isset($renderModal)) {
     </button>
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
-            data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>" data-product-id="<?= $product ? $product->id : '' ?>"
+            data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
+            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
         <?php echo $model->name; ?>
     </button>
@@ -56,7 +59,8 @@ if (!isset($renderModal)) {
         <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
             echo BlockModalWidget::widget([
                 'block' => $model,
-                'product' => $product,
+                'page' => $page,
+                'portal' => $portal,
                 'prefix' => $prefix
             ]);
         } ?>
