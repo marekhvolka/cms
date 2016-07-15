@@ -1,8 +1,11 @@
 $(function () {
     var file_editor = $('.file-editor');
 
-    setTimeout(function() {
-        aceEditor.session.setMode("ace/mode/" + /\.([^/.]+)$/.exec(file_editor.find('.file-name').text())[1]);
+    setTimeout(function () {
+        var name = file_editor.find('.file-name').text();
+        if (name != null && name.length > 0) {
+            aceEditor.session.setMode("ace/mode/" + /\.([^/.]+)$/.exec(name)[1]);
+        }
     }, 0);
 
     /**
