@@ -56,7 +56,8 @@ class VarManagerWidget extends Widget
         return $this->render('_variableValue', [
             'varValue' => $varValue,
             'prefix' => $prefix . "[$indexVar]",
-            'model' => $model
+            'model' => $model,
+            'renderModal' => true,
         ]);
     }
 }

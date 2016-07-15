@@ -409,8 +409,8 @@ class Block extends CustomModel implements ICacheable, IDuplicable
             $snippetVarValue->prepareToDuplicate();
         }
 
-        $this->productVarValue = null;
-        $this->portalVarValue = null;
+        $this->product_var_value_id = null;
+        $this->portal_var_value_id = null;
         unset($this->id);
         $this->column_id = null;
     }

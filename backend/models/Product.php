@@ -437,10 +437,6 @@ class Product extends CustomModel implements ICacheable, IDuplicable
             $productVarValue->prepareToDuplicate();
         }
 
-        foreach ($this->tags as $tag) {
-            $tag->prepareToDuplicate();
-        }
-
         unset($this->id);
     }
 }

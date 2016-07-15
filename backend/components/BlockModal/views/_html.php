@@ -8,12 +8,21 @@ $id = rand(0, 100000000);
 <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
-<div class="modal-body">
-    <textarea class="form-control editor" id="editor<?= $id ?>" rows="3"
-              name="<?= $prefix . '[data]' ?>"><?= $model->data ?></textarea>
-</div>
 
-<script>
-    var editor = ace.edit("editor<?= $id ?>");
-</script>
+<?= trntv\aceeditor\AceEditor::widget([
+    // You can either use it for model attribute
+    'model' => $model,
+    'attribute' => 'data',
+
+    'mode' => 'php', // programing language mode. Default "html"
+    'theme' => 'chrome', // editor theme. Default "github"
+    'options' => [
+        'name' => $prefix . "[data]",
+        'value' => $model->data,
+        'id' => 'html' . hash('md5', $prefix)
+    ]
+])
+?>
+
+
 
