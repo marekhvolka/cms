@@ -217,7 +217,8 @@ function build_file_tree($data, $from_dir = '')
                         'showPrintMargin' => false,
                         "maxLines" => 29,
                         "minLines" => 5
-                    ]
+                    ],
+                    'varNameAceEditor' => 'newFileAceEditor'
                 ]); ?>
             </div>
             <div class="modal-footer">
