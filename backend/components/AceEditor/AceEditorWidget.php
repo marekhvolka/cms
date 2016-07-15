@@ -1,6 +1,7 @@
 <?php
 namespace backend\components\AceEditor;
 
+use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;
@@ -71,17 +72,24 @@ class AceEditorWidget extends InputWidget
 })();
 JS;
         $view = $this->getView();
-        $view->registerJs("\nvar {$this->varNameAceEditor} = {};\n", $view::POS_HEAD);
-        $view->registerJs($js);
 
         $div = Html::beginTag('div', ['id' => $id]) . Html::endTag('div');
         $options = array_merge($this->options, ['id' => $valueId]);
 
         if ($this->hasModel()) {
-            return $div . Html::activeTextarea($this->model, $this->attribute, $options);
+            $result = $div . Html::activeTextarea($this->model, $this->attribute, $options);
         } else {
-            return $div . Html::textarea($this->name, $this->value, $options);
+            $result = $div . Html::textarea($this->name, $this->value, $options);
         }
 
+        $code = "\nvar {$this->varNameAceEditor} = {};\n";
+        if (Yii::$app->request->isAjax) {
+            $result .= '<script type="text/javascript">'. $code . $js . '</script>';
+        } else {
+            $view->registerJs($code, $view::POS_HEAD);
+            $view->registerJs($js);
+        }
+
+        return $result;
     }
 }

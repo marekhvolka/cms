@@ -1,5 +1,7 @@
 <?php
 /* @var $model \backend\models\Block */
+use backend\components\AceEditor\AceEditorWidget;
+
 /* @var $prefix string */
 
 $id = rand(0, 100000000);
@@ -8,21 +10,21 @@ $id = rand(0, 100000000);
 <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
+<div class="modal-body">
 
-<?= trntv\aceeditor\AceEditor::widget([
-    // You can either use it for model attribute
-    'model' => $model,
-    'attribute' => 'data',
-
-    'mode' => 'php', // programing language mode. Default "html"
-    'theme' => 'chrome', // editor theme. Default "github"
-    'options' => [
-        'name' => $prefix . "[data]",
+    <?= AceEditorWidget::widget([
+        'name' => $prefix . '[data]',
         'value' => $model->data,
-        'id' => 'html' . hash('md5', $prefix)
-    ]
-])
-?>
+        'theme' => 'chrome',
+        'aceOptions' => [
+            'showPrintMargin' => false,
+            "maxLines" => 29,
+            "minLines" => 5
+        ]
+    ]); ?>
+</div>
 
-
+<script>
+    var editor = ace.edit("editor<?= $id ?>");
+</script>
 
