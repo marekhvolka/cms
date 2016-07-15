@@ -1,13 +1,11 @@
-for (var i = 0; i < selectedVarIds.length; i++)
-{
+for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true);
 }
 
 //$('#types-dropdown').select2();
 
 $('#types-dropdown').change(
-    function ()
-    {
+    function () {
         var postData = {
             varId: $(this).val(),
             modelId: $(this).data('model-id'),
@@ -15,8 +13,7 @@ $('#types-dropdown').change(
         };
 
         $.post(
-            appendVarValueUrl, postData, function (data)
-            {
+            appendVarValueUrl, postData, function (data) {
                 var newVariableValue = $(data);
                 $('#dynamic-fields').append(newVariableValue); //pripojime vygenerovany view do zoznamu
                 attachRemove(newVariableValue.find('.remove-btn').first());
@@ -28,11 +25,9 @@ $('#types-dropdown').change(
     }
 );
 
-function attachRemove(button)
-{
+function attachRemove(button) {
     $(button).click(
-        function ()
-        {
+        function () {
             var id = $(this).data('id');
             $(this).parents('.form-group').first().remove();
 
@@ -52,3 +47,22 @@ $("body").on('click', ".variable-value a.open-multimedia", function (e) {
         assigningTo.val(path);
     });
 });
+
+function applySpectrum() {
+    var apply = $(".apply-spectrum");
+    apply.find(".apply-spectrum-picker").spectrum({
+        preferredFormat: "hex",
+        change: function (color) {
+            $(this).parents('.spectrum-parent').first().find('.source').val(color);
+        }
+    }).removeClass('apply-spectrum-picker');
+
+    apply.find('.apply-spectrum-source').on('input', function () {
+        var $this = $(this);
+        $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
+    }).removeClass('apply-spectrum-source');
+
+    apply.removeClass('apply-spectrum');
+}
+
+applySpectrum();

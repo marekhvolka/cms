@@ -110,7 +110,8 @@ function build_file_tree($data, $from_dir = '')
                  <?php if ($isImageLoaded || $editFileForm->name == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = ActiveForm::begin() ?>
                 <?= AceEditorWidget::widget([
-                    'name' => $editFileForm->formName() . '[text]',
+                    'model' => $editFileForm,
+                    'attribute' => 'text',
                     'value' => $editFileForm->text,
                     'theme' => 'chrome',
                     'aceOptions' => [

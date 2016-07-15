@@ -49,92 +49,99 @@ if (!isset($model)) {
                         'name' => $prefix . '[value_text]',
                     ]);
                     break;
-                case 'page':
-                    echo Html::activeDropDownList($varValue, 'value_page_id',
-                        ArrayHelper::map($model->pages, 'id', 'breadcrumbs'),
-                        [
-                            'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control select2',
-                            'prompt' => 'Vyber podstránku'
-                        ]);
-
-                    ?>
-                    <script type="text/javascript">
-                        $(".select2").select2();
-                    </script>
-                    <?php
-
-                    break;
-                case 'image':
-                    echo Html::activeTextInput($varValue, 'value_text', [
-                        'class' => 'form-control value',
-                        'name' => $prefix . '[value_text]',
+            case 'page':
+                echo Html::activeDropDownList($varValue, 'value_page_id',
+                    ArrayHelper::map($model->pages, 'id', 'breadcrumbs'),
+                    [
+                        'name' => $prefix . '[value_page_id]',
+                        'class' => 'form-control select2',
+                        'prompt' => 'Vyber podstránku'
                     ]);
 
-                    echo '<span class="input-group-btn">';
-                    echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success open-multimedia']);
-                    echo '</span>';
-                    break;
-                case 'portal_snippet':
-                case 'product_snippet': ?>
-                    <div class="btn-group layout-block block"
-                         data-content="" role="group">
-                        <?= Html::hiddenInput($prefix . "[type]", $varValue->valueBlock->type, ['class' => 'type']); ?>
-                        <?= Html::hiddenInput($prefix . "[existing]", !$varValue->isNewRecord,
-                            ['class' => 'existing']); ?>
-                        <?= Html::hiddenInput($prefix . "[id]", $varValue->id, ['class' => 'id']); ?>
+                ?>
+                <script type="text/javascript">
+                    $(".select2").select2();
+                </script>
+            <?php
 
-                        <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
-                                data-id="<?= $varValue->valueBlock->id ?>" data-prefix="<?= $prefix ?>"
-                                data-target="#modal-<?= $varValue->id ?>">
-                            <?php echo $varValue->valueBlock->name; ?>
-                        </button>
+            break;
+            case 'image':
+                echo Html::activeTextInput($varValue, 'value_text', [
+                    'class' => 'form-control value',
+                    'name' => $prefix . '[value_text]',
+                ]);
 
-                        <?=
-                        Html::a(
-                            '<span class="glyphicon glyphicon-link"></span>', $varValue->valueBlock->snippetCode->url, [
-                                'class' => 'btn btn-info btn-sm',
-                                'title' => 'Upraviť snippet',
-                                'target' => '_blank'
-                            ]
-                        ) ?>
+                echo '<span class="input-group-btn">';
+                echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success open-multimedia']);
+                echo '</span>';
+                break;
+            case 'portal_snippet':
+            case 'product_snippet': ?>
+                <div class="btn-group layout-block block"
+                     data-content="" role="group">
+                    <?= Html::hiddenInput($prefix . "[type]", $varValue->valueBlock->type, ['class' => 'type']); ?>
+                    <?= Html::hiddenInput($prefix . "[existing]", !$varValue->isNewRecord,
+                        ['class' => 'existing']); ?>
+                    <?= Html::hiddenInput($prefix . "[id]", $varValue->id, ['class' => 'id']); ?>
 
-                        <div class="modal-container">
+                    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
+                            data-id="<?= $varValue->valueBlock->id ?>" data-prefix="<?= $prefix ?>"
+                            data-target="#modal-<?= $varValue->id ?>">
+                        <?php echo $varValue->valueBlock->name; ?>
+                    </button>
 
-                        </div>
-                    </div>
-                    <?php
-                    break;
-                case 'date':
-                    echo DatePicker::widget([
-                        'value' => $varValue->value_text,
-                        'attribute' => 'from_date',
-                        //'language' => 'ru',
-                        'dateFormat' => 'yyyy/MM/dd',
-                        'class' => 'form-control',
-                        'name' => $prefix . "[value_text]",
-                    ]);
-                    /*echo DatePicker::widget([
-                        'name' => $prefix . "[value_text]",
-                        'type' => DatePicker::TYPE_INPUT,
-                        'value' => $varValue->value_text,
-                        'dateFormat' => 'YYYY/mm/dd',
-                        'pluginOptions' => [
-                            'autoclose' => true,
-                            //'format' => 'yyyy/mm/dd'
-                        ],
-                        'class' => 'form-control'
-                    ]);*/
-                    break;
-                case 'color':
-                    echo ColorInput::widget([
-                        'name' => $prefix . "[value_text]",
-                        'value' => $varValue->value_text,
-                        'pluginOptions' => [
-                            'showAlpha' => false,
+                    <?=
+                    Html::a(
+                        '<span class="glyphicon glyphicon-link"></span>', $varValue->valueBlock->snippetCode->url, [
+                            'class' => 'btn btn-info btn-sm',
+                            'title' => 'Upraviť snippet',
+                            'target' => '_blank'
                         ]
-                    ]);
-                    break;
+                    ) ?>
+
+                    <div class="modal-container">
+
+                    </div>
+                </div>
+            <?php
+            break;
+            case 'date':
+                echo DatePicker::widget([
+                    'value' => $varValue->value_text,
+                    'attribute' => 'from_date',
+                    //'language' => 'ru',
+                    'dateFormat' => 'yyyy/MM/dd',
+                    'class' => 'form-control',
+                    'name' => $prefix . "[value_text]",
+                ]);
+                /*echo DatePicker::widget([
+                    'name' => $prefix . "[value_text]",
+                    'type' => DatePicker::TYPE_INPUT,
+                    'value' => $varValue->value_text,
+                    'dateFormat' => 'YYYY/mm/dd',
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        //'format' => 'yyyy/mm/dd'
+                    ],
+                    'class' => 'form-control'
+                ]);*/
+                break;
+            case 'color':
+
+            ?>
+                <div class="input-group apply-spectrum spectrum-parent">
+                        <span class="color-picking">
+                            <input type="text" class="apply-spectrum-picker picker"
+                                   value="<?= $varValue->value_text ?>">
+                        </span>
+                    <input type="text" class="form-control apply-spectrum-source source"
+                           name="<?= $prefix . '[value_text]' ?>"
+                           value="<?= $varValue->value_text ?>">
+                </div>
+                <script>if(applySpectrum != null) applySpectrum();</script>
+                <?php
+
+                break;
                 default:
                     echo Html::activeTextInput($varValue, 'value_text', [
                         'class' => 'form-control',
