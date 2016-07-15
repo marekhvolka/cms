@@ -10,14 +10,14 @@ use yii\widgets\InputWidget;
  */
 class AceEditorWidget extends InputWidget
 {
+    public static $id = 0;
+
     /** @var string */
     public $varNameAceEditor = 'aceEditor';
     /** @var string */
     public $mode = 'php';
     /** @var string */
     public $theme = 'github';
-    /** @var bool Static syntax highlight */
-    public $editable = true;
     /** @var bool */
     public $autocompletion = false;
     /** @var array */
@@ -33,19 +33,18 @@ class AceEditorWidget extends InputWidget
      */
     public function run()
     {
-        if (!$this->editable) {
-            $this->extensions[] = 'static_highlight';
-        }
+        $this->extensions[] = 'static_highlight';
         if ($this->autocompletion) {
             $this->extensions[] = 'language_tools';
         }
         AceEditorAsset::register($this->view, $this->extensions);
-        return $this->editable ? $this->editable() : $this->readable();
+        return $this->editable();
     }
 
     protected function editable()
     {
-        $id = $this->id;
+        $id = 'ace-editor-' . self::$id++;
+        $valueId = 'ace-editor-value' . self::$id;
         $autocompletion = $this->autocompletion ? 'true' : 'false';
         if ($this->autocompletion) {
             $this->aceOptions['enableBasicAutocompletion'] = true;
@@ -55,7 +54,7 @@ class AceEditorWidget extends InputWidget
         $aceOptions = Json::encode($this->aceOptions);
         $js = <<<JS
 (function(){
-    var aceEditorAutocompletion = {$autocompletion};
+    aceEditorAutocompletion = {$autocompletion};
     if (aceEditorAutocompletion) {
         ace.require("ace/ext/language_tools");
     }
@@ -63,37 +62,26 @@ class AceEditorWidget extends InputWidget
     {$this->varNameAceEditor}.setTheme("ace/theme/{$this->theme}");
     {$this->varNameAceEditor}.getSession().setMode("ace/mode/{$this->mode}");
     {$this->varNameAceEditor}.setOptions({$aceOptions});
+    
+    var textarea = $('#{$valueId}').hide();
+        {$this->varNameAceEditor}.getSession().setValue(textarea.val());
+        {$this->varNameAceEditor}.getSession().on('change', function(){
+        textarea.val({$this->varNameAceEditor}.getSession().getValue());
+    });
 })();
 JS;
         $view = $this->getView();
         $view->registerJs("\nvar {$this->varNameAceEditor} = {};\n", $view::POS_HEAD);
         $view->registerJs($js);
-        if ($this->hasModel()) {
-            return Html::activeTextarea($this->model, $this->attribute, $this->options);
-        }
-        return Html::textarea($this->name, $this->value, $this->options);
-    }
 
-    /**
-     * @return string
-     */
-    protected function readable()
-    {
-        $this->options['id'] = $this->id;
-        $this->view->registerJs(
-            <<<JS
-(function(){
-    var _highlight = ace.require("ace/ext/static_highlight");
-    _highlight(\$('#{$this->id}')[0], {
-        mode: "ace/mode/{$this->mode}",
-        theme: "ace/theme/{$this->theme}",
-        startLineNumber: 1,
-        showGutter: true,
-        trim: true
-    });
-})();
-JS
-        );
-        return Html::tag('pre', htmlspecialchars($this->value), $this->options);
+        $div = Html::beginTag('div', ['id' => $id]) . Html::endTag('div');
+        $options = array_merge($this->options, ['id' => $valueId]);
+
+        if ($this->hasModel()) {
+            return $div . Html::activeTextarea($this->model, $this->attribute, $options);
+        } else {
+            return $div . Html::textarea($this->name, $this->value, $options);
+        }
+
     }
 }
