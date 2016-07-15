@@ -131,8 +131,7 @@ function build_file_tree($data, $from_dir = '')
                         'showPrintMargin' => false,
                         "maxLines" => 29,
                         "minLines" => 5
-                    ],
-                    'varNameAceEditor' => 'newFileAceEditor'
+                    ]
                 ]); ?>
                 <?= $form->field($editFileForm, 'name')->hiddenInput()->label(false) ?>
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>
