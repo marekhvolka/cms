@@ -105,7 +105,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
 
                 return file_get_contents($this->directory . '/' . $file);
             }
-        } else if(Yii::$app->request->get('fileAction') == 'refreshAll'){
+        } else if (Yii::$app->request->get('fileAction') == 'refreshAll') {
             $this->compileAll();
         }
 
@@ -138,7 +138,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $edit_file_form->directory = $new_file_form->directory;
             $new_file_form = new NewFileForm($this->directory);
         } else if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) { // editing file
-                $edit_file_form->save(false);
+            $edit_file_form->save(false);
 
             $original_path = $edit_file_form->getFullPath();
             $original_relative_path = $edit_file_form->getRelativePath();
@@ -195,7 +195,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
     {
         $path = realpath($this->directory);
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
-            if(PathHelper::isSCSSFile($filename)){
+            if (PathHelper::isSCSSFile($filename)) {
                 $this->compileScss($filename);
             }
         }

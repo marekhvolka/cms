@@ -1,6 +1,10 @@
 $(function () {
     var file_editor = $('.file-editor');
 
+    setTimeout(function() {
+        aceEditor.session.setMode("ace/mode/" + /\.([^/.]+)$/.exec(file_editor.find('.file-name').text())[1]);
+    }, 0);
+
     /**
      * Opens a file in the editor. In case of an image, shows not the textarea but the image itself.
      *
