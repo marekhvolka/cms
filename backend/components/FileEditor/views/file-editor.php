@@ -4,8 +4,6 @@ use backend\components\FileEditor\FileEditorAsset;
 use backend\components\FileEditor\models\CreateDirectoryForm;
 use backend\components\FileEditor\models\EditFileForm;
 use backend\components\FileEditor\models\NewFileForm;
-use conquer\codemirror\CodemirrorAsset;
-use conquer\codemirror\CodemirrorWidget;
 use kartik\select2\Select2;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
@@ -42,8 +40,10 @@ function build_file_tree($data, $from_dir = '')
                 // directory
                 ?>
                 <li class="directory expanded">
-                    <?= $index ?> <a data-path="<?= $path ?>" href="<?= Url::current(['file' => $path,
-                        'fileAction' => 'delete'])
+                    <?= $index ?> <a data-path="<?= $path ?>" href="<?= Url::current([
+                        'file' => $path,
+                        'fileAction' => 'delete'
+                    ])
                     ?>" class="delete">x</a> <a href="#"
                                                 class="add-file"
                                                 data-name='<?= $path ?>'
@@ -81,17 +81,30 @@ function build_file_tree($data, $from_dir = '')
 ?>
 
 <?php $this->beginBlock('button'); ?>
-<?= Html::a('Vytvoriť súbor', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
-    'data-toggle' => "modal", 'data-target' => '#createFileModal']) ?>
+<?= Html::a('Vytvoriť súbor', "#", [
+    'class' => 'btn btn-success pull-right',
+    'data-name' => '/',
+    'data-toggle' => "modal",
+    'data-target' => '#createFileModal'
+]) ?>
 
-<?= Html::a('Nahrať súbor', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
-    'data-toggle' => "modal", 'data-target' => '#uploadFileModal']) ?>
+<?= Html::a('Nahrať súbor', "#", [
+    'class' => 'btn btn-success pull-right',
+    'data-name' => '/',
+    'data-toggle' => "modal",
+    'data-target' => '#uploadFileModal'
+]) ?>
 
-<?= Html::a('Vytvoriť priečinok', "#", ['class' => 'btn btn-success pull-right', 'data-name' => '/',
-    'data-toggle' => "modal", 'data-target' => '#createDirectoryModal']) ?>
+<?= Html::a('Vytvoriť priečinok', "#", [
+    'class' => 'btn btn-success pull-right',
+    'data-name' => '/',
+    'data-toggle' => "modal",
+    'data-target' => '#createDirectoryModal'
+]) ?>
 
 
-<?= Html::a('Skompiluj všetky SCSS', Url::current(['fileAction' => 'refreshAll']), ['class' => 'btn btn-success pull-right']) ?>
+<?= Html::a('Skompiluj všetky SCSS', Url::current(['fileAction' => 'refreshAll']),
+    ['class' => 'btn btn-success pull-right']) ?>
 <?php $this->endBlock(); ?>
 
 <div class="file-editor">
@@ -110,15 +123,16 @@ function build_file_tree($data, $from_dir = '')
                  <?php if ($isImageLoaded || $editFileForm->name == null) : ?>style="display: none"<?php endif; ?>>
                 <?php $form = ActiveForm::begin() ?>
                 <?= AceEditorWidget::widget([
-                    'model' => $editFileForm,
+                    'model' => $newFileForm,
                     'attribute' => 'text',
-                    'value' => $editFileForm->text,
+                    'value' => empty($newFileForm->text) ? "" : $newFileForm->text,
                     'theme' => 'chrome',
                     'aceOptions' => [
                         'showPrintMargin' => false,
                         "maxLines" => 29,
                         "minLines" => 5
-                    ]
+                    ],
+                    'varNameAceEditor' => 'newFileAceEditor'
                 ]); ?>
                 <?= $form->field($editFileForm, 'name')->hiddenInput()->label(false) ?>
                 <?= $form->field($editFileForm, 'directory')->hiddenInput()->label(false) ?>

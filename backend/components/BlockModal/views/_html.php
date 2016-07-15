@@ -23,3 +23,8 @@ $id = rand(0, 100000000);
         ]
     ]); ?>
 </div>
+
+<script>
+    var editor = ace.edit("editor<?= $id ?>");
+</script>
+

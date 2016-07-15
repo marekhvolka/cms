@@ -64,7 +64,6 @@ class ProductController extends BaseController
         $allVariables = ProductVar::find()->all();
 
         if (Yii::$app->request->isPost) {
-
             if ($duplicate) {
                 $model = new Product();
             }
@@ -88,8 +87,6 @@ class ProductController extends BaseController
                     if (!key_exists('SnippetVarValue', $productValueData)) {
                         continue;
                     }
-
-                    $model->productVarValues[$index]->setOutdated();
 
                     if (!$model->productVarValues[$index]->valueBlock) {
                         $block = new Block();
@@ -143,12 +140,16 @@ class ProductController extends BaseController
                 $transaction->rollBack();
                 return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);
             }
-        } else {
-            return $this->render('edit', [
-                'model' => $model,
-                'allVariables' => $allVariables
-            ]);
         }
+
+        if ($duplicate) {
+            $model->prepareToDuplicate();
+        }
+
+        return $this->render('edit', [
+            'model' => $model,
+            'allVariables' => $allVariables
+        ]);
     }
 
     /**
@@ -158,7 +159,14 @@ class ProductController extends BaseController
     public function actionAppendVarValue()
     {
         $varValue = new ProductVarValue();
-        $varValue->var_id = Yii::$app->request->post('varId');
+
+        $var = ProductVar::findOne(Yii::$app->request->post('varId'));
+        $varValue->var_id = $var->id;
+
+        if ($var->isSnippet()) {
+            $varValue->valueBlock = new Block();
+            $varValue->valueBlock->type = 'snippet';
+        }
 
         $model = null;
         $prefix = Yii::$app->request->post('prefix');

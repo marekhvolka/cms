@@ -1,7 +1,6 @@
 <?php
-use backend\controllers\BaseController;
+use backend\components\BlockModal\BlockModalWidget;
 use backend\models\Portal;
-use kartik\color\ColorInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\jui\DatePicker;
@@ -13,6 +12,10 @@ use yii\jui\DatePicker;
 
 if (!isset($model)) {
     $model = Portal::findOne(Yii::$app->user->identity->portal);
+}
+
+if (!isset($renderModal)) {
+    $renderModal = false;
 }
 ?>
 
@@ -72,7 +75,8 @@ if (!isset($model)) {
                 ]);
 
                 echo '<span class="input-group-btn">';
-                echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right btn btn-success open-multimedia']);
+                echo Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
+                    ['class' => 'pull-right btn btn-success open-multimedia']);
                 echo '</span>';
                 break;
             case 'portal_snippet':
@@ -89,18 +93,26 @@ if (!isset($model)) {
                             data-target="#modal-<?= $varValue->id ?>">
                         <?php echo $varValue->valueBlock->name; ?>
                     </button>
-
-                    <?=
-                    Html::a(
-                        '<span class="glyphicon glyphicon-link"></span>', $varValue->valueBlock->snippetCode->url, [
-                            'class' => 'btn btn-info btn-sm',
-                            'title' => 'Upraviť snippet',
-                            'target' => '_blank'
-                        ]
-                    ) ?>
+                    <?php if ($varValue->valueBlock->snippetCode) : ?>
+                        <?=
+                        Html::a(
+                            '<span class="glyphicon glyphicon-link"></span>', $varValue->valueBlock->snippetCode->url, [
+                                'class' => 'btn btn-info btn-sm',
+                                'title' => 'Upraviť snippet',
+                                'target' => '_blank'
+                            ]
+                        ) ?>
+                    <?php endif; ?>
 
                     <div class="modal-container">
-
+                        <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
+                            echo BlockModalWidget::widget([
+                                'block' => $varValue->valueBlock,
+                                'page' => null,
+                                'portal' => null,
+                                'prefix' => $prefix
+                            ]);
+                        } ?>
                     </div>
                 </div>
             <?php
@@ -138,7 +150,10 @@ if (!isset($model)) {
                            name="<?= $prefix . '[value_text]' ?>"
                            value="<?= $varValue->value_text ?>">
                 </div>
-                <script>if(applySpectrum != null) applySpectrum();</script>
+                <script>if (applySpectrum != null)
+                    {
+                        applySpectrum();
+                    }</script>
                 <?php
 
                 break;
