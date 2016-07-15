@@ -73,7 +73,7 @@ class ProductVarValue extends Variable implements IDuplicable
     public function getValueBlock()
     {
         if (!isset($this->valueBlock)) {
-            $this->valueBlock = $this->hasOne(Block::className(), ['product_var_value_id' => 'id']);
+            $this->valueBlock = $this->hasOne(Block::className(), ['product_var_value_id' => 'id'])->one();
         }
 
         return $this->valueBlock;
