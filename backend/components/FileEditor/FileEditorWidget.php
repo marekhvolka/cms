@@ -138,7 +138,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $edit_file_form->directory = $new_file_form->directory;
             $new_file_form = new NewFileForm($this->directory);
         } else if ($edit_file_form->load(Yii::$app->request->post()) && $edit_file_form->validate()) { // editing file
-            $edit_file_form->save(false);
+                $edit_file_form->save(false);
 
             $original_path = $edit_file_form->getFullPath();
             $original_relative_path = $edit_file_form->getRelativePath();

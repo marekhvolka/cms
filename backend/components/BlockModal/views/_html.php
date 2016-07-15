@@ -9,7 +9,11 @@ $id = rand(0, 100000000);
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
 <div class="modal-body">
-    <textarea class="form-control editor" id="ckeditor<?= $id ?>" rows="3"
+    <textarea class="form-control editor" id="editor<?= $id ?>" rows="3"
               name="<?= $prefix . '[data]' ?>"><?= $model->data ?></textarea>
 </div>
+
+<script>
+    var editor = ace.edit("editor<?= $id ?>");
+</script>
 
