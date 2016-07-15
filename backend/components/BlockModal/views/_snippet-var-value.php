@@ -55,7 +55,7 @@ use yii\helpers\Html;
                     Icons::all(),
                     [
                         'name' => $prefix . '[value_product_id]',
-                        'class' => 'form-control select2',
+                        'class' => 'form-control activate-select2',
                         'prompt' => 'Vyber ikonku'
                     ]) ?>
                     <?php
@@ -80,17 +80,39 @@ use yii\helpers\Html;
                 <?php
                 break;
                 case 'color' : ?>
-                    <div class="input-group">
-                        <input type="color" class="form-control" id="<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
+                    <div class="input-group apply-spectrum spectrum-parent">
+                        <span class="color-picking">
+                            <input type="text" class="apply-spectrum-picker picker" value="<?= $snippetVarValue->value_text ?>">
+                        </span>
+                        <input type="text" class="form-control apply-spectrum-source source" id="<?= $snippetVarValue->id ?>"
+                               name="<?= $prefix . '[value_text]' ?>"
                                value="<?= $snippetVarValue->value_text ?>"
                                placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
                         <span class="input-group-addon"><i></i></span>
                     </div>
 
+                    <script type="text/javascript">
+                        var apply = $(".apply-spectrum");
+                        apply.find(".apply-spectrum-picker").spectrum({
+                            preferredFormat: "hex",
+                            change: function(color) {
+                                $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                            }
+                        }).removeClass('apply-spectrum-picker');
+
+                        apply.find('.apply-spectrum-source').on('input', function(){
+                            var $this = $(this);
+                            $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
+                        }).removeClass('apply-spectrum-source');
+
+                        apply.removeClass('apply-spectrum');
+                    </script>
+
                 <?php
                 break;
                 case 'editor' : ?>
-                    <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>" name="<?= $prefix . '[value_text]' ?>"
+                    <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>"
+                              name="<?= $prefix . '[value_text]' ?>"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
                         <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
                     </textarea>
@@ -108,7 +130,7 @@ use yii\helpers\Html;
                             'id', 'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_product_id]',
-                            'class' => 'form-control select2',
+                            'class' => 'form-control activate-select2',
                             'prompt' => 'Vyber produkt'
                         ]) ?>
 
@@ -122,7 +144,7 @@ use yii\helpers\Html;
                             'breadcrumbs'),
                         [
                             'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control select2',
+                            'class' => 'form-control activate-select2',
                             'prompt' => 'Vyber podstránku'
                         ]) ?>
 
@@ -135,7 +157,7 @@ use yii\helpers\Html;
                         ArrayHelper::map(ProductVar::find()->all(), 'id', 'name'),
                         [
                             'name' => $prefix . '[value_product_var_id]',
-                            'class' => 'form-control select2',
+                            'class' => 'form-control activate-select2',
                             'prompt' => 'Vyber produktovú premennú'
                         ]) ?>
 
@@ -147,7 +169,7 @@ use yii\helpers\Html;
                         ArrayHelper::map(Tag::find()->all(), 'id', 'label'),
                         [
                             'name' => $prefix . '[value_tag_id]',
-                            'class' => 'form-control select2',
+                            'class' => 'form-control activate-select2',
                             'prompt' => 'Vyber tag'
                         ]) ?>
 
@@ -160,7 +182,7 @@ use yii\helpers\Html;
                         ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
                         [
                             'name' => $prefix . '[value_dropdown_id]',
-                            'class' => 'form-control select2'
+                            'class' => 'form-control activate-select2'
                         ]) ?>
 
                     <?php
@@ -169,13 +191,17 @@ use yii\helpers\Html;
                 case 'bool' : ?>
 
                 <?= SwitchInput::widget([
-                    'id' => 'switch-input' . $snippetVarValue->id,
                     'name' => $prefix . '[value_text]',
                     'value' => $snippetVarValue->value_text,
-                    'type' => SwitchInput::CHECKBOX
+                    'type' => SwitchInput::CHECKBOX,
+                    'containerOptions' => [
+                        'class' => 'form-group apply-child-bootstrap-switch'
+                    ]
                 ]) ?>
                     <script type="text/javascript">
-                        $("#switch-input<?= $snippetVarValue->id ?>").bootstrapSwitch();
+                        var toApply = $(".apply-child-bootstrap-switch");
+                        toApply.find("input").bootstrapSwitch();
+                        toApply.removeClass('apply-child-bootstrap-switch');
                     </script>
 
                     <?php
@@ -199,13 +225,13 @@ use yii\helpers\Html;
                     return o.text;
                 }
 
-                $(".select2").select2({
+                $(".activate-select2").select2({
                     templateResult: format,
                     templateSelection: format,
                     escapeMarkup: function (m) {
                         return m;
                     }
-                });
+                }).removeClass('activate-select2');
             </script>
             <div class="clearfix"></div>
         </div>
@@ -216,7 +242,7 @@ use yii\helpers\Html;
             <span>
                 <?= $snippetVarValue->var->identifier ?>
             </span>
-            <span>
+                <span>
                 Počet položiek: <span class="list-items-count"><?= sizeof($snippetVarValue->listItems) ?></span>
             </span>
                 <a class="btn btn-success btn-xs pull-right btn-add-list-item"
@@ -226,15 +252,15 @@ use yii\helpers\Html;
                 </a>
             </div>
 
-        <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
-            <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
-                <?= $this->render('_list-item', [
-                    'listItem' => $listItem,
-                    'product' => $product,
-                    'prefix' => $prefix . "[ListItem][$indexItem]",
-                    'parentId' => $parentId
-                ]); ?>
-            <?php endforeach; ?>
+            <div class="panel-body panel-collapse collapse in children-list fixed-panel sortable">
+                <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
+                    <?= $this->render('_list-item', [
+                        'listItem' => $listItem,
+                        'product' => $product,
+                        'prefix' => $prefix . "[ListItem][$indexItem]",
+                        'parentId' => $parentId
+                    ]); ?>
+                <?php endforeach; ?>
             </div>
         </div>
     <?php endif; ?>

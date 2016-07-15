@@ -50,7 +50,7 @@ use yii\helpers\Url;
                         <?= Html::dropDownList('snippet_id', null,
                     ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
                         'prompt' => 'Výber snippetu',
-                        'class' => 'snippet-dropdown',
+                        'class' => 'snippet-dropdown activate-select2',
                         'data-type' => $model->type,
                         'data-prefix' => $prefix,
                         'data-product-id' => $product ? $product->id : ''
@@ -58,7 +58,7 @@ use yii\helpers\Url;
 
 
                 <script type="text/javascript">
-                            $(".snippet-dropdown").select2();
+                            $(".activate-select2").select2().removeClass('activate-select2');
                         </script>
                     <?php endif;
             break;
@@ -123,7 +123,6 @@ use yii\helpers\Url;
 
         $.get(changeUrl.replace('1', $(this).val()), function (data) {
             var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
-            console.log(data);
             items.show();
             items.each(function () {
                 var _this = $(this);

@@ -379,10 +379,6 @@ span.row-drag-by, span.section-drag-by {
     cursor: move;
 }
 
-.block-modal {
-    z-index: 10000;
-}
-
 .block-modal > .modal-dialog {
     width: 93%;
 }
@@ -396,4 +392,50 @@ span.row-drag-by, span.section-drag-by {
 .block-modal > .modal-dialog > .modal-content > .modal-body {
     height: 100%;
     max-height: none;
+}
+
+.color-picking {
+    display: table-cell;
+    width: 60px;
+    padding-top: 0;
+    position: relative;
+    top: -14px;
+    right: -10px;
+}
+
+.sp-soft.sp-container {
+    background-color: #efefef;
+    border: solid 1px #ccc;
+    box-shadow: 0 0 1px #aaa;
+}
+
+.sp-replacer {
+    border: solid 1px #ccc;
+    background: #efefef;
+    color: #888;
+    vertical-align: middle;
+    padding: 5px 4px;
+    box-shadow: 0 0 1px #aaa;
+}
+
+.sp-replacer:hover, .sp-replacer.sp-active {
+    color: #fff;
+    box-shadow: 0 0 2px #999;
+}
+
+.sp-replacer.sp-disabled {
+    color: silver;
+}
+
+.sp-preview {
+    border-radius: 2px;
+}
+
+.sp-cancel {
+    color: #e60000 !important;
+}
+
+.sp-replacer:hover, .sp-replacer.sp-active {
+    border-color: #bbb;
+    color: #111;
 }
