@@ -208,23 +208,17 @@ function build_file_tree($data, $from_dir = '')
                     'hideSearch' => true
                 ]) ?>
 
-                <?= CodemirrorWidget::widget([
-                        'name' => $newFileForm->formName() . '[text]',
-                        'value' => empty($newFileForm->text) ? "" : $newFileForm->text,
-                        'assets' => [
-                            CodemirrorAsset::MODE_CLIKE,
-                            CodemirrorAsset::KEYMAP_EMACS,
-                            CodemirrorAsset::ADDON_EDIT_MATCHBRACKETS,
-                            CodemirrorAsset::ADDON_COMMENT,
-                            CodemirrorAsset::ADDON_DIALOG,
-                            CodemirrorAsset::ADDON_SEARCHCURSOR,
-                            CodemirrorAsset::ADDON_SEARCH,
-                        ],
-                        'settings' => [
-                            'mode' => 'application/x-httpd-php'
-                        ],
+                <?= AceEditorWidget::widget([
+                    'model' => $newFileForm,
+                    'attribute' => 'text',
+                    'value' => empty($newFileForm->text) ? "" : $newFileForm->text,
+                    'theme' => 'chrome',
+                    'aceOptions' => [
+                        'showPrintMargin' => false,
+                        "maxLines" => 29,
+                        "minLines" => 5
                     ]
-                ) ?>
+                ]); ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>

@@ -74,12 +74,6 @@ $(function () {
         $("#uploadfileform-directory").val($(this).attr('data-name')).trigger("change");
     });
 
-    $("*[data-target='#createFileModal']").click(function () {
-        setTimeout(function () {
-            $('#createFileModal .CodeMirror')[0].CodeMirror.refresh();
-        }, 400);
-    });
-
     new Clipboard('.clippy');
 
     $(".clippy").click(function (e) {
