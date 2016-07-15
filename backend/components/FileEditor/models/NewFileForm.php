@@ -13,13 +13,6 @@ use yii\base\Model;
 class NewFileForm extends Model
 {
     /**
-     * The new content of the file.
-     *
-     * @var string
-     */
-    public $text;
-
-    /**
      * The name of the file to be edited.
      *
      * @var string
@@ -57,7 +50,6 @@ class NewFileForm extends Model
     {
         return [
             ['name', 'required'],
-            ['text', 'safe'],
             ['directory', function ($attribute) {
                 if (!PathHelper::isInside(DIRECTORY_SEPARATOR . PathHelper::normalizePath($this->getFullPath()), realpath($this->baseDir))) {
                     $this->addError($attribute, 'Nevalídny súbor.');
@@ -75,7 +67,7 @@ class NewFileForm extends Model
     public function save($validate)
     {
         if (!$validate || $this->validate()) {
-            file_put_contents($this->getFullPath(), $this->text);
+            file_put_contents($this->getFullPath(), "");
         }
     }
 

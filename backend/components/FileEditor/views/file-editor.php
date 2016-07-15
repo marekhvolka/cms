@@ -141,7 +141,7 @@ function build_file_tree($data, $from_dir = '')
                            id="url"
                         <?php if ($removeExtensionFromGeneratedUrl) { ?> data-remove-extension <?php } ?>
                            data-prefix="<?= $generatedUrlPrefix ?>"
-                           value="<?= $generatedUrlPrefix ?><?= $editFileForm->directory . "/" . $editFileForm->getFileName($removeExtensionFromGeneratedUrl) ?>">
+                           value="<?= $generatedUrlPrefix ?><?= $editFileForm->directory . $editFileForm->getFileName($removeExtensionFromGeneratedUrl) ?>">
                     <button class="clippy" data-clipboard-target="#url">
                         <img src="<?= Url::to(['/images/clippy.svg']); ?>" alt="Copy to clipboard">
                     </button>
@@ -220,19 +220,6 @@ function build_file_tree($data, $from_dir = '')
                     'maintainOrder' => false,
                     'hideSearch' => true
                 ]) ?>
-
-                <?= AceEditorWidget::widget([
-                    'model' => $newFileForm,
-                    'attribute' => 'text',
-                    'value' => empty($newFileForm->text) ? "" : $newFileForm->text,
-                    'theme' => 'chrome',
-                    'aceOptions' => [
-                        'showPrintMargin' => false,
-                        "maxLines" => 29,
-                        "minLines" => 5
-                    ],
-                    'varNameAceEditor' => 'newFileAceEditor'
-                ]); ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>

@@ -133,7 +133,7 @@ class FileEditorWidget extends Component implements ViewContextInterface
             $original_path = $new_file_form->getFullPath();
             $original_relative_path = $new_file_form->getRelativePath();
 
-            $edit_file_form->text = $new_file_form->text;
+            $edit_file_form->text = "";
             $edit_file_form->name = $new_file_form->name;
             $edit_file_form->directory = $new_file_form->directory;
             $new_file_form = new NewFileForm($this->directory);
