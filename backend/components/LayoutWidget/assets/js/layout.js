@@ -126,6 +126,15 @@ function getColumnsWidths(rowType) {
             return ['4', '8'];
     }
 }
+var disableDragAndDrop = false;
+
+body.on('shown.bs.modal', function (e) {
+    disableDragAndDrop = true;
+});
+
+body.on('hidden.bs.modal', function (e) {
+    disableDragAndDrop = false;
+});
 
 function enableDragBy(items, dragBy) {
     dragula(items, {
@@ -134,6 +143,9 @@ function enableDragBy(items, dragBy) {
         },
         accepts: function (el, target, source, sibling) {
             return target == source;
+        },
+        invalid: function () {
+            return disableDragAndDrop;
         }
     });
 }
