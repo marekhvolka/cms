@@ -72,7 +72,7 @@ abstract class BaseController extends Controller
         /* @var $portal Portal */
         $portal = Portal::findOne($portalId);
 
-        if (!Yii::$app->params['develop'])
+        if (key_exists('develop', Yii::$app->params) && !Yii::$app->params['develop'])
             $this->redirect('http://www.' . $portal->domain . '/backend/web/');
     }
 
