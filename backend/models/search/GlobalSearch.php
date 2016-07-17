@@ -32,7 +32,8 @@ class GlobalSearch
             'snippet_code' => [],
             'page' => [],
             'product' => [],
-            'actions' => []
+            'action' => [],
+            'word' => []
         );
 
         // SNIPPETS
@@ -48,6 +49,22 @@ class GlobalSearch
                 'name' => $snippet['name'],
                 'id' => $snippet['id'],
                 'class' => 'suggest-snippet'
+            ];
+        }
+
+        // Slovnik
+        $words = (new Query())->select("id, identifier")->from("word")->where(['like', 'identifier', $searchTerm])
+            ->limit(10)->all();
+
+        foreach ($words as $word) {
+            $results['word'][] = [
+                'link' => Url::to([
+                    '/word/edit',
+                    'id' => $word['id']
+                ]),
+                'name' => $word['identifier'],
+                'id' => $word['id'],
+                'class' => 'suggest-word'
             ];
         }
 
