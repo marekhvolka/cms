@@ -7,6 +7,11 @@
  */
 
 use backend\components\MultimediaWidget\MultimediaWidgetAsset;
+use backend\models\MultimediaCategory;
+
+/* @var $categories MultimediaCategory[] */
+/* @var $modal boolean */
+/* @var $onlyImages boolean */
 
 MultimediaWidgetAsset::register($this);
 ?>

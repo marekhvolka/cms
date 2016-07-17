@@ -6,14 +6,17 @@
  * Time: 14:55
  */
 
+use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use kartik\file\FileInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
 
 $model = new MultimediaItem();
+
+/* @var $modal boolean */
+/* @var $categories MultimediaCategory[] */
 
 ?>
 <div class="form-group">
@@ -40,7 +43,7 @@ $model = new MultimediaItem();
     <div class="clearfix"></div>
 </div>
 <div class="form-group">
-    <?= Html::submitButton('Uložiť', ['class' => 'btn btn-success save-multimedia']) ?>
+    <?= Html::submitButton('Uložiť', ['class' => 'btn btn-success save-multimedia btn-lg pull-right']) ?>
 </div>
 
 <script type="text/javascript">

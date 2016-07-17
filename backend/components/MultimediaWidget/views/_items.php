@@ -3,6 +3,7 @@ use backend\components\PathHelper;
 use yii\helpers\Url;
 
 /* @var $categories \backend\models\MultimediaCategory[] */
+/* @var $onlyImages boolean */
 
 foreach ($categories as $multimediaCategory) {
     if (count($multimediaCategory->getItems($onlyImages)) > 0) {

@@ -1,9 +1,7 @@
 <?php
-use backend\components\PathHelper;
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
 
 /* @var $categories \backend\models\MultimediaCategory[] */
+/* @var $onlyImages boolean */
 
 ?>
 <div class="form-group">

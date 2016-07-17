@@ -9,6 +9,7 @@
 use backend\components\MultimediaWidget\MultimediaWidgetAsset;
 
 /* @var $categories \backend\models\MultimediaCategory[] */
+/* @var $onlyImages boolean */
 
 MultimediaWidgetAsset::register($this);
 ?>

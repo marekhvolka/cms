@@ -267,6 +267,7 @@ ul {
 
 .global-search .data li.active a {
     text-decoration: underline;
+    font-weight: bold;
 }
 
 .global-search .data li a:hover {
