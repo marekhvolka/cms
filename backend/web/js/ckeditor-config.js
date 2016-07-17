@@ -27,6 +27,8 @@ var ckeditorConfig = {
     // Simplify the dialog windows.
     removeDialogTabs: 'image:advanced;link:advanced',
 
-    extraPlugins: 'custimage' //enable custimage tool button
+    extraPlugins: 'custimage', //enable custimage tool button
     //config.removePlugins = 'image';
+
+    allowedContent: true
 };
