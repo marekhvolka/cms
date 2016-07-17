@@ -335,26 +335,26 @@ class SnippetVar extends Variable
         }
     }
 
-    public function hasChanged()
+    public function isChanged()
     {
-        if (!empty($this->dirtyAttributes)) {
+        if (!empty(parent::isChanged())) {
             return true;
         }
 
         foreach ($this->children as $childVar) {
-            if ($childVar->hasChanged()) {
+            if ($childVar->isChanged()) {
                 return true;
             }
         }
 
         foreach ($this->defaultValues as $defaultValue) {
-            if ($defaultValue->hasChanged()) {
+            if ($defaultValue->isChanged()) {
                 return true;
             }
         }
 
         foreach ($this->dropdownValues as $dropdown) {
-            if ($dropdown->hasChanged()) {
+            if ($dropdown->isChanged()) {
                 return true;
             }
         }
