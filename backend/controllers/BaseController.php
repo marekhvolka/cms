@@ -59,7 +59,7 @@ abstract class BaseController extends Controller
 
         $change_portal = Yii::$app->request->get('change-portal');
 
-        if (!empty($change_portal) && Portal::find()->where(['id' => $change_portal])->count() == 1) {
+        if (!empty($change_portal)) {
             $this->changeCurrentPortal($change_portal);
         }
     }
@@ -68,6 +68,12 @@ abstract class BaseController extends Controller
     {
         Yii::$app->user->identity->portal_id = $portalId;
         Yii::$app->user->identity->save();
+
+        /* @var $portal Portal */
+        $portal = Portal::findOne($portalId);
+
+        if (!Yii::$app->params['develop'])
+            $this->redirect('http://www.' . $portal->domain . '/backend/web/');
     }
 
     /**
