@@ -192,6 +192,9 @@ class Snippet extends CustomModel implements ICacheable
         $changed = false;
 
         if ($this->isChanged() || $this->snippetVarsHasChanged()) {
+
+            $this->setOutdated();
+            $this->getMainCacheFile();
             $changed = true;
         }
         /* @var $snippetCode \backend\models\SnippetCode */
