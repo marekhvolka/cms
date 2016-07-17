@@ -72,6 +72,16 @@ class SiteController extends BaseController
         }
 
         $model = new LoginForm();
+
+        $defaultPortal = Portal::find()->where([
+            'domain' => str_replace('www.', '', $_SERVER['HTTP_HOST'])
+        ])
+            ->one();
+
+        if ($defaultPortal) {
+            $model->portal_id = $defaultPortal->id;
+        }
+
         $portals = Portal::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
