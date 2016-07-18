@@ -77,12 +77,18 @@ class PortalVarValue extends CustomModel
         return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getValueBlock()
     {
-        return $this->hasOne(Block::className(), ['portal_var_value_id' => 'id']);
+        if (!isset($this->valueBlock)) {
+            $this->valueBlock = $this->hasOne(Block::className(), ['portal_var_value_id' => 'id'])->one();
+        }
+
+        return $this->valueBlock;
+    }
+
+    public function setValueBlock($value)
+    {
+        $this->valueBlock = $value;
     }
 
     public function getValue()

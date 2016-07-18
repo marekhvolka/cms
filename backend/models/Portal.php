@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property integer $template_id
  * @property string $color_scheme
  * @property integer $active
- * @property integer $published
  * @property bool $outdated
  *
  * @property string $templatePath

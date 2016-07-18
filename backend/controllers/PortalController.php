@@ -82,7 +82,6 @@ class PortalController extends BaseController
                     if (!$model->portalVarValues[$index]->valueBlock) {
                         $block = new Block();
                         $block->type = 'snippet';
-                        $block->portal_var_value_id = $model->portalVarValues[$index]->id;
 
                         $model->portalVarValues[$index]->valueBlock = $block;
                     }
@@ -110,6 +109,8 @@ class PortalController extends BaseController
                     }
 
                     if ($portalVarValue->valueBlock) {
+                        $portalVarValue->valueBlock->portal_var_value_id = $portalVarValue->id;
+
                         if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
                             throw new Exception;
                         }
@@ -124,7 +125,7 @@ class PortalController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                return $this->redirectAfterSave($model, ['allVariables' => $allVariables]);
+                return $this->redirectAfterSave($model);
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);
@@ -144,7 +145,14 @@ class PortalController extends BaseController
     public function actionAppendVarValue()
     {
         $varValue = new PortalVarValue();
-        $varValue->var_id = Yii::$app->request->post('varId');
+
+        $var = PortalVar::findOne(Yii::$app->request->post('varId'));
+        $varValue->var_id = $var->id;
+
+        if ($var->isSnippet()) {
+            $varValue->valueBlock = new Block();
+            $varValue->valueBlock->type = 'snippet';
+        }
 
         $modelId = Yii::$app->request->post('modelId');
 
@@ -153,7 +161,6 @@ class PortalController extends BaseController
         if (isset($modelId)) {
             $model = Portal::findOne($modelId);
         }
-
         $prefix = Yii::$app->request->post('prefix');
 
         $indexVar = rand(1000, 100000);

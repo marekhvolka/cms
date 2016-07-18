@@ -91,7 +91,6 @@ class ProductController extends BaseController
                     if (!$model->productVarValues[$index]->valueBlock) {
                         $block = new Block();
                         $block->type = 'snippet';
-                        $block->product_var_value_id = $model->productVarValues[$index]->id;
 
                         $model->productVarValues[$index]->valueBlock = $block;
                     }
@@ -119,6 +118,7 @@ class ProductController extends BaseController
                     }
 
                     if ($productVarValue->valueBlock) {
+                        $productVarValue->valueBlock->product_var_value_id = $productVarValue->id;
                         if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
                             throw new Exception;
                         }
@@ -135,7 +135,7 @@ class ProductController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                return $this->redirectAfterSave($model, ['allVariables' => $allVariables]);
+                return $this->redirectAfterSave($model);
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);

@@ -93,6 +93,8 @@ body.on(
 
                     modalContainer.append(modalWindow);
 
+                    enableDragBy(modalContainer.find(".children-list.list-items").toArray(), '.list-item-drag-by');
+
                     modalWindow.modal({
                         backdrop: 'static',
                         keyboard: false
@@ -131,6 +133,7 @@ body.on(
             {
                 appendElement(listPanel, $(data));
                 listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
+                enableDragBy(listPanel.find(".children-list.list-items").toArray(), '.list-item-drag-by');
             }
         );
     }
@@ -183,5 +186,3 @@ body.on('click', ".var-value a.open-multimedia", function (e) {
         assigningTo.val(path);
     });
 });
-
-enableDragBy($(".children-list.list-items").toArray(), '.list-item-drag-by');

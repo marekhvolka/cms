@@ -20,7 +20,7 @@ class AssetBundle extends \yii\web\AssetBundle
     ];
 
     public $depends = [
-        'backend\components\BlockModal\AssetBundle'
+        'backend\components\BlockModal\AssetBundle',
     ];
 
     public function init()

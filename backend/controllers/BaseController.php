@@ -447,17 +447,12 @@ abstract class BaseController extends Controller
         }
     }
 
-    protected function redirectAfterSave($model, $editOptions = array())
+    protected function redirectAfterSave($model)
     {
         Alert::success('Položka bola úspešne uložená.');
 
         $continue = Yii::$app->request->post('continue');
         if (isset($continue)) {
-            /*return $this->render('edit', array_merge([
-                'model' => $model
-            ],
-                $editOptions));*/
-
             return $this->redirect(['edit', 'id' => $model->id]);
         } else {
             return $this->redirect(['index']);
