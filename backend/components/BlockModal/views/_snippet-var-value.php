@@ -53,10 +53,10 @@ use yii\helpers\Html;
                 break;
                 case 'icon' :
                     ?>
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                    <?= Html::activeDropDownList($snippetVarValue, 'value_text',
                     Icons::all(),
                     [
-                        'name' => $prefix . '[value_product_id]',
+                        'name' => $prefix . '[value_text]',
                         'class' => 'form-control activate-select2',
                         'prompt' => 'Vyber ikonku'
                     ]) ?>
