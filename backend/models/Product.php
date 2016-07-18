@@ -50,7 +50,6 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     public function init()
     {
         $this->active = 1;
-        $this->language_id = Yii::$app->user->identity->portal->language->id;
     }
 
     /**
