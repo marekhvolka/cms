@@ -289,11 +289,11 @@ class Portal extends CustomModel implements ICacheable
     /** Vrati cestu k suboru, v ktorom nacachovane data k portalu
      * @return string
      */
-    public function getPortalVarsFile()
+    public function getPortalVarsFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'portal_var.php';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->outdated || $reload) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -358,15 +358,15 @@ class Portal extends CustomModel implements ICacheable
         return $buffer;
     }
 
-    public function getMainCacheFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->outdated || $reload) {
             try {
                 $buffer = '<?php' . PHP_EOL;
 
-                $buffer .= 'include("' . $this->getPortalVarsFile() . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
 
                 $buffer .= '?>';
 

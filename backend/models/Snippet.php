@@ -154,11 +154,11 @@ class Snippet extends CustomModel implements ICacheable
      * s default hodnotami a nastavenia snippetu)
      * @return string
      */
-    public function getMainCacheFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'snippet.php';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->outdated || $reload) {
 
             try {
                 $dataEngine = Yii::$app->dataEngine;

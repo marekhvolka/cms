@@ -219,6 +219,12 @@ class SnippetController extends BaseController
         return $this->redirect(['index']);
     }
 
+    public function actionHardReset($id)
+    {
+        Snippet::findOne($id)->getMainCacheFile(true);
+    }
+
+
     public function actionCodeUsage($id)
     {
         $code = SnippetCode::findOne($id);

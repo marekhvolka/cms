@@ -183,7 +183,7 @@ class PageController extends BaseController
         }
     }
 
-    public function actionResetShow($id)
+    public function actionHardReset($id)
     {
         Page::findOne($id)->getMainCacheFile(true);
 

@@ -86,6 +86,11 @@ use yii\widgets\ActiveForm;
                     'id' => 'submit-btn',
                     'name' => 'continue'
                 ]) ?>
+
+                <?= Html::a('Hard reset', Url::to(['hard-reset', 'id' => $model->id]), [
+                    'class' => 'btn btn-danger',
+                    'target' => '_blank'
+                ]) ?>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\switchinput\SwitchInput;
 
@@ -36,6 +37,11 @@ use kartik\switchinput\SwitchInput;
                     'class' => 'btn btn-info',
                     'id' => 'submit-btn',
                     'name' => 'continue'
+                ]) ?>
+
+                <?= Html::a('Hard reset', Url::to(['hard-reset', 'id' => $model->id]), [
+                    'class' => 'btn btn-danger',
+                    'target' => '_blank'
                 ]) ?>
             </div>
         </div>

@@ -186,6 +186,11 @@ class PortalController extends BaseController
         return $this->redirect(['index']);
     }
 
+    public function actionHardReset($id)
+    {
+        Portal::findOne($id)->getMainCacheFile(true);
+    }
+
     public function actionLayoutEdit($type)
     {
         $model = Yii::$app->user->identity->portal;

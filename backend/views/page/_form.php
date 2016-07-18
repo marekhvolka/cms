@@ -186,7 +186,7 @@ if ($model->portal) {
                     'class' => 'btn btn-info',
                     'target' => '_blank'
                 ]) ?>
-                <?= Html::a('Hard reset a náhľad', Url::to(['reset-show', 'id' => $model->id]), [
+                <?= Html::a('Hard reset a náhľad', Url::to(['hard-reset', 'id' => $model->id]), [
                     'class' => 'btn btn-danger',
                     'target' => '_blank'
                 ]) ?>

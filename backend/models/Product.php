@@ -119,17 +119,17 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     /** Vrati cestu k suboru, v ktorom je nacachovany produkt
      * @return string
      */
-    public function getProductVarsFile()
+    public function getProductVarsFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'product_var.php';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->outdated || $reload) {
 
             try {
                 $buffer = '<?php ' . PHP_EOL;
 
                 if (isset($this->parent)) {
-                    $buffer .= 'include("' . $this->parent->getProductVarsFile() . '");' . PHP_EOL;
+                    $buffer .= 'include("' . $this->parent->getProductVarsFile($reload) . '");' . PHP_EOL;
                 }
 
                 $buffer .= '$tempObject = (object) ';
@@ -358,11 +358,13 @@ class Product extends CustomModel implements ICacheable, IDuplicable
         }));
 
         if (count($to_remove) > 0) {
-            (new Query())->createCommand()->delete('product_tag', ['product_id' => $this->id, 'tag_id' => $to_remove])->execute();
+            (new Query())->createCommand()->delete('product_tag',
+                ['product_id' => $this->id, 'tag_id' => $to_remove])->execute();
         }
 
         if (count($to_add) > 0) {
-            (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit_user'], $to_add)->execute();
+            (new Query())->createCommand()->batchInsert('product_tag', ['product_id', 'tag_id', 'last_edit_user'],
+                $to_add)->execute();
         }
     }
 
@@ -390,20 +392,20 @@ class Product extends CustomModel implements ICacheable, IDuplicable
         return $this->productType->name;
     }
 
-    public function getMainCacheFile()
+    public function getMainCacheFile($reload = false)
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->outdated) {
+        if (!file_exists($path) || $this->outdated || $reload) {
 
             try {
                 $buffer = '<?php' . PHP_EOL;
 
-                $buffer .= 'include("' . $this->getProductVarsFile() . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getProductVarsFile($reload) . '");' . PHP_EOL;
 
                 foreach ($this->productSnippets as $productVarValue) {
                     $buffer .= '$' . $this->identifier . '->' . $productVarValue->productVarValue->var->identifier .
-                        ' = file_get_contents("' . $productVarValue->getMainCacheFile() . '");' . PHP_EOL;
+                        ' = file_get_contents("' . $productVarValue->getMainCacheFile($reload) . '");' . PHP_EOL;
                 }
 
                 $buffer .= '?>';

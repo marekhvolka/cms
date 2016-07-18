@@ -206,6 +206,12 @@ class ProductController extends BaseController
         return $this->redirect(['index']);
     }
 
+    public function actionHardReset($id)
+    {
+        Product::findOne($id)->getMainCacheFile(true);
+    }
+
+
     /**
      * Finds the Product model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

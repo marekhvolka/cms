@@ -2,16 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\Language;
+use backend\models\search\LanguageSearch;
 use common\components\Alert;
 use Exception;
 use Yii;
-use backend\models\Language;
-use backend\models\search\LanguageSearch;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
+use yii\web\NotFoundHttpException;
 
 /**
  * LanguageController implements the CRUD actions for Language model.
@@ -86,7 +83,7 @@ class LanguageController extends BaseController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete()) {
+        if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
             Alert::danger('Položku sa nepodarilo vymazať.');
@@ -110,4 +107,15 @@ class LanguageController extends BaseController
             throw new NotFoundHttpException('Táto stránka neexistuje.');
         }
     }
+
+    public function actionHardReset($id)
+    {
+        /* @var $language Language */
+        $language = Language::findOne($id);
+
+        $language->getProductsMainCacheFile(true);
+        $language->getDictionaryCacheFile(true);
+
+    }
+
 }
