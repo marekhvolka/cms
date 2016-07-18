@@ -65,6 +65,11 @@ class ProductController extends BaseController
     public function actionEdit($id = null, $duplicate = false)
     {
         $model = $id ? $this->findModel($id) : new Product();
+
+        if (!$model->language_id && Yii::$app->user->identity->portal) {
+            $model->language_id = Yii::$app->user->identity->portal->language_id;
+        }
+
         $allVariables = ProductVar::find()->all();
 
         if (Yii::$app->request->isPost) {
