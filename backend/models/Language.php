@@ -85,7 +85,7 @@ class Language extends CustomModel
         if (!file_exists($path) || $reload) {
             $buffer = '<?php ' . PHP_EOL;
 
-            $buffer .= 'include("' . Yii::$app->dataEngine->getCommonCacheFile() . '");' . PHP_EOL;
+            $buffer .= 'include("' . Yii::$app->dataEngine->getCommonCacheFile($reload) . '");' . PHP_EOL;
 
             $buffer .= '$tempObject = ';
 
@@ -142,7 +142,7 @@ class Language extends CustomModel
             $buffer = '<?php ' . PHP_EOL;
 
             foreach ($this->products as $product) {
-                $productPath = $product->getMainCacheFile();
+                $productPath = $product->getMainCacheFile($reload);
 
                 $buffer .= 'include("' . $productPath . '");' . PHP_EOL;
             }

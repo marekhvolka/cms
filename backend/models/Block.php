@@ -292,7 +292,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
                 if ($this->isSnippet()) {
                     $blockData = $this->prepareSnippetData();
                 } else {
-                    $blockData = $this->data;
+                    $blockData = htmlspecialchars($this->data);
                 }
                 $buffer .= $blockData;
 
