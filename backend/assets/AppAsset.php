@@ -21,10 +21,12 @@ class AppAsset extends AssetBundle
         '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
         'css/theme.css',
         'css/site.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.css',
     ];
     public $js = [
         'js/menu.js',
         'js/global-search.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
         'js/common.js'
     ];
     public $depends = [

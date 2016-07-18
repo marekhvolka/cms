@@ -22,6 +22,7 @@ class AssetBundle extends \yii\web\AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\jui\JuiAsset',
+        'backend\assets\AppAsset',
         'kartik\select2\Select2Asset',
         'kartik\color\ColorInputAsset',
         'trntv\aceeditor\AceEditorAsset'

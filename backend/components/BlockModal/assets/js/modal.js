@@ -13,7 +13,6 @@ var appendUrl = {
 body.on(
     'change', '.snippet-dropdown', function ()
     {
-
         var postData = {
             prefix: $(this).data('prefix'),
             pageId: $(this).data('page-id'),
@@ -102,10 +101,6 @@ body.on(
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
-                    $( function() {
-                        $(".sortable").sortable();
-                        $(".sortable").disableSelection();
-                    } );
                 }
             );
         }
@@ -188,3 +183,5 @@ body.on('click', ".var-value a.open-multimedia", function (e) {
         assigningTo.val(path);
     });
 });
+
+enableDragBy($(".children-list.list-items").toArray(), '.list-item-drag-by');

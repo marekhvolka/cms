@@ -102,7 +102,9 @@ class Area extends CustomModel implements IDuplicable
     public function getSections()
     {
         if (!isset($this->sections)) {
-            $this->sections = $this->hasMany(Section::className(), ['area_id' => 'id'])->all();
+            $this->sections = $this->hasMany(Section::className(), ['area_id' => 'id'])
+                ->orderBy('order')
+                ->all();
         }
 
         return $this->sections;
@@ -239,8 +241,7 @@ class Area extends CustomModel implements IDuplicable
             foreach ($this->portal->pages as $page) {
                 $page->setOutdated();
             }
-        }
-        else if ($this->page) {
+        } else if ($this->page) {
             $this->page->setOutdated();
         }
     }

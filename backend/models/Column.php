@@ -77,7 +77,7 @@ class Column extends CustomModel implements IDuplicable
     {
         if (!isset($this->blocks)) {
             $this->blocks = $this->hasMany(Block::className(), ['column_id' => 'id'])
-                ->orderBy(['order' => SORT_ASC])
+                ->orderBy('order')
                 ->all();
         }
 

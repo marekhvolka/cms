@@ -136,19 +136,6 @@ body.on('hidden.bs.modal', function (e) {
     disableDragAndDrop = false;
 });
 
-function enableDragBy(items, dragBy) {
-    dragula(items, {
-        moves: function (el, container, handle) {
-            return dragBy == null || $(handle).is(dragBy);
-        },
-        accepts: function (el, target, source, sibling) {
-            return target == source;
-        },
-        invalid: function () {
-            return disableDragAndDrop;
-        }
-    });
-}
 enableDragBy($(".children-list.sections").toArray(), '.section-drag-by');
 enableDragBy($(".children-list.rows").toArray(), '.row-drag-by');
 enableDragBy($(".children-list.blocks").toArray());

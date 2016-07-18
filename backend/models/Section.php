@@ -12,6 +12,7 @@ use Yii;
  * @property string $css_id
  * @property string $css_style
  * @property int $area_id
+ * @property int $order
  *
  * @property Row[] $rows
  * @property Area $area
@@ -33,7 +34,7 @@ class Section extends CustomModel implements IDuplicable
     {
         return [
             [['id'], 'unique'],
-            [['area_id'], 'integer'],
+            [['area_id', 'order'], 'integer'],
             [['css_class', 'css_style', 'css_id'], 'string'],
             [
                 ['area_id'],

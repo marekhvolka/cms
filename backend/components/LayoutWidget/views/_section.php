@@ -14,6 +14,9 @@ use yii\helpers\BaseHtml;
 
     <div class="panel-heading">
         <h3 class="panel-title">
+            <span>
+                <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>
+            </span>
             <span class="section-drag-by">Sekcia</span>
 
             <div class="btn-group section-buttons pull-right">

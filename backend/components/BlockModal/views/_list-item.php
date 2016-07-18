@@ -16,7 +16,10 @@ use yii\helpers\BaseHtml;
     <?= BaseHtml::hiddenInput($prefix . "[existing]", !$listItem->isNewRecord, ['class' => 'existing']); ?>
     <div class="panel-heading">
         <span>
-            <i class="fa fa-bars"></i>
+            <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>
+        </span>
+        <span class="">
+            <i class="fa fa-bars list-item-drag-by"></i>
         </span>
         <span>
             <?= $listItem->order ?>

@@ -14,8 +14,22 @@ $('#radioBtn a').on('click', function(){
 });
 
 $("body").on(
-    'click', '.panel-heading > span', function ()
+    'click', '.panel-heading .collapse-btn', function ()
     {
         $(this).parents('.panel').first().find('.panel-body').first().collapse('toggle');
     }
 );
+
+function enableDragBy(items, dragBy) {
+    dragula(items, {
+        moves: function (el, container, handle) {
+            return dragBy == null || $(handle).is(dragBy);
+        },
+        accepts: function (el, target, source, sibling) {
+            return target == source;
+        },
+        invalid: function () {
+            return disableDragAndDrop;
+        }
+    });
+}
