@@ -66,11 +66,11 @@ use yii\helpers\Url;
             break;
 
             case 'product_snippet' :
-            if ($model->parent && $product) : ?>
+            if ($model->parent && $page && $page->product) : ?>
                         <span>Produktový snippet <?= $model->parent->productVarValue->var->name ?></span>
                     <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map($product->productSnippets, 'id', 'varIdentifier'),
+                    ArrayHelper::map($page->product->productSnippets, 'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
                         'class' => 'parent-dropdown form-control',
@@ -87,7 +87,7 @@ use yii\helpers\Url;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
             <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map(Yii::$app->user->identity->portal->portalSnippets,
+                    ArrayHelper::map($portal->portalSnippets,
                         'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
