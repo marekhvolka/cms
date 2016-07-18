@@ -20,6 +20,8 @@ $("body").on(
     }
 );
 
+var disableDragAndDrop = false;
+
 function enableDragBy(items, dragBy) {
     dragula(items, {
         moves: function (el, container, handle) {

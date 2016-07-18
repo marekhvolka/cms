@@ -408,11 +408,13 @@ class Page extends CustomModel implements ICacheable, IDuplicable
     }
 
     /** Vrati cestu k suboru, kde je ulozeny finalny obsah stranky pred kompilaciou
+     * @param bool $reload
      * @return string
+     * @throws
      */
-    public function getMainPreCacheFile()
+    public function getMainPreCacheFile($reload = false)
     {
-        $reload = false;
+        $hardReload = false;
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
         if (!file_exists($path) || $this->isOutdated()) {
@@ -420,8 +422,8 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 $prefix = $this->getIncludePrefix();
 
                 if (($this->product && $this->product->outdated) || $this->portal->outdated ||
-                    ($this->parent && $this->parent->head_outdated)) {
-                    $reload = true;
+                    ($this->parent && $this->parent->head_outdated) || $reload) {
+                    $hardReload = true;
                 }
 
                 $prefix .= '<?php' . PHP_EOL;
@@ -429,11 +431,11 @@ class Page extends CustomModel implements ICacheable, IDuplicable
                 $prefix .= '$global_header = executeScript("' . $this->portal->header->getCacheFile() . '");' . PHP_EOL;
                 $prefix .= '$global_footer = executeScript("' . $this->portal->footer->getCacheFile() . '");' . PHP_EOL;
 
-                $prefix .= '$page_header = executeScript("' . $this->header->getCacheFile($reload) . '");' . PHP_EOL;
-                $prefix .= '$page_footer = executeScript("' . $this->footer->getCacheFile($reload) . '");' . PHP_EOL;
+                $prefix .= '$page_header = executeScript("' . $this->header->getCacheFile($hardReload) . '");' . PHP_EOL;
+                $prefix .= '$page_footer = executeScript("' . $this->footer->getCacheFile($hardReload) . '");' . PHP_EOL;
 
-                $prefix .= '$page_sidebar = executeScript("' . $this->sidebar->getCacheFile($reload) . '");' . PHP_EOL;
-                $prefix .= '$page_content = executeScript("' . $this->content->getCacheFile($reload) . '");' . PHP_EOL;
+                $prefix .= '$page_sidebar = executeScript("' . $this->sidebar->getCacheFile($hardReload) . '");' . PHP_EOL;
+                $prefix .= '$page_content = executeScript("' . $this->content->getCacheFile($hardReload) . '");' . PHP_EOL;
 
                 if ($this->sidebar_side == 'left') {
                     $prefix .= '$page_master = $page_sidebar . $page_content;' . PHP_EOL;
@@ -472,7 +474,7 @@ class Page extends CustomModel implements ICacheable, IDuplicable
 
         if (!file_exists($path) || $reload) {
             try {
-                $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile(), array());
+                $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile($reload), array());
 
                 $result = html_entity_decode($result, ENT_QUOTES);
 

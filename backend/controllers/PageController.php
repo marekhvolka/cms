@@ -183,6 +183,13 @@ class PageController extends BaseController
         }
     }
 
+    public function actionResetShow($id)
+    {
+        Page::findOne($id)->getMainCacheFile(true);
+
+        return $this->actionShow($id);
+    }
+
     public function actionShow($id)
     {
         $page = $this->findModel($id);

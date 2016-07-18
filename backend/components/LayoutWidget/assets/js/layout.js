@@ -126,7 +126,6 @@ function getColumnsWidths(rowType) {
             return ['4', '8'];
     }
 }
-var disableDragAndDrop = false;
 
 body.on('shown.bs.modal', function (e) {
     disableDragAndDrop = true;
