@@ -131,13 +131,14 @@ class Language extends CustomModel
     }
 
     /** Vrati cestu k hlavnemu suboru, v ktorom su includnute vsetky nacachovane subory pre produkty daneho jazyka
+     * @param bool $reload
      * @return string
      */
-    public function getProductsMainCacheFile()
+    public function getProductsMainCacheFile($reload = false)
     {
         $path = $this->getProductsDirectory() . 'products.php';
 
-        if (!file_exists($path)) {
+        if (!file_exists($path) || $reload) {
             $buffer = '<?php ' . PHP_EOL;
 
             foreach ($this->products as $product) {

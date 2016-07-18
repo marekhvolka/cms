@@ -66,57 +66,58 @@ class PortalController extends BaseController
             $transaction = Yii::$app->db->beginTransaction();
 
             try {
-                $portalVarValuesData = Yii::$app->request->post('Var');
-
                 if (!($model->validate() && $model->save())) {
                     throw new Exception;
                 }
 
-                foreach ($portalVarValuesData as $index => $portalValueData) {
-                    $model->loadFromData('portalVarValues', $portalValueData, $index, PortalVarValue::className());
+                $portalVarValuesData = Yii::$app->request->post('Var');
+                if ($portalVarValuesData) {
+                    foreach ($portalVarValuesData as $index => $portalValueData) {
+                        $model->loadFromData('portalVarValues', $portalValueData, $index, PortalVarValue::className());
 
-                    if (!key_exists('SnippetVarValue', $portalValueData)) {
-                        continue;
-                    }
-
-                    if (!$model->portalVarValues[$index]->valueBlock) {
-                        $block = new Block();
-                        $block->type = 'snippet';
-
-                        $model->portalVarValues[$index]->valueBlock = $block;
-                    }
-
-                    $model->portalVarValues[$index]->valueBlock->snippet_code_id = $portalValueData['snippet_code_id'];
-
-                    $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
-                }
-
-                foreach ($model->portalVarValues as $indexPortalVarValue => $portalVarValue) {
-                    $portalVarValue->portal_id = $model->id;
-
-                    if ($portalVarValue->removed) {
-
-                        if ($portalVarValue->valueBlock) {
-                            $portalVarValue->valueBlock->delete();
+                        if (!key_exists('SnippetVarValue', $portalValueData)) {
+                            continue;
                         }
-                        $portalVarValue->delete();
-                        unset($model->portalVarValues[$indexPortalVarValue]);
-                        continue;
+
+                        if (!$model->portalVarValues[$index]->valueBlock) {
+                            $block = new Block();
+                            $block->type = 'snippet';
+
+                            $model->portalVarValues[$index]->valueBlock = $block;
+                        }
+
+                        $model->portalVarValues[$index]->valueBlock->snippet_code_id = $portalValueData['snippet_code_id'];
+
+                        $this->loadSnippetVarValues($portalValueData, $model->portalVarValues[$index]->valueBlock);
                     }
 
-                    if (!($portalVarValue->validate() && $portalVarValue->save())) {
-                        throw new Exception;
-                    }
+                    foreach ($model->portalVarValues as $indexPortalVarValue => $portalVarValue) {
+                        $portalVarValue->portal_id = $model->id;
 
-                    if ($portalVarValue->valueBlock) {
-                        $portalVarValue->valueBlock->portal_var_value_id = $portalVarValue->id;
+                        if ($portalVarValue->removed) {
 
-                        if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
+                            if ($portalVarValue->valueBlock) {
+                                $portalVarValue->valueBlock->delete();
+                            }
+                            $portalVarValue->delete();
+                            unset($model->portalVarValues[$indexPortalVarValue]);
+                            continue;
+                        }
+
+                        if (!($portalVarValue->validate() && $portalVarValue->save())) {
                             throw new Exception;
                         }
 
-                        if ($portalVarValue->valueBlock->isChanged()) {
-                            $this->saveSnippetVarValues($portalVarValue->valueBlock);
+                        if ($portalVarValue->valueBlock) {
+                            $portalVarValue->valueBlock->portal_var_value_id = $portalVarValue->id;
+
+                            if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
+                                throw new Exception;
+                            }
+
+                            if ($portalVarValue->valueBlock->isChanged()) {
+                                $this->saveSnippetVarValues($portalVarValue->valueBlock);
+                            }
                         }
                     }
                 }

@@ -56,7 +56,11 @@ class ProductController extends BaseController
      * Edits an Product model.
      * If edit is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
+     * @param bool $duplicate
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     * @throws \yii\db\Exception
      */
     public function actionEdit($id = null, $duplicate = false)
     {
@@ -81,50 +85,53 @@ class ProductController extends BaseController
 
                 $productVarValuesData = Yii::$app->request->post('Var');
 
-                foreach ($productVarValuesData as $index => $productValueData) {
-                    $model->loadFromData('productVarValues', $productValueData, $index, ProductVarValue::className());
+                if ($productVarValuesData) {
+                    foreach ($productVarValuesData as $index => $productValueData) {
+                        $model->loadFromData('productVarValues', $productValueData, $index,
+                            ProductVarValue::className());
 
-                    if (!key_exists('SnippetVarValue', $productValueData)) {
-                        continue;
-                    }
-
-                    if (!$model->productVarValues[$index]->valueBlock) {
-                        $block = new Block();
-                        $block->type = 'snippet';
-
-                        $model->productVarValues[$index]->valueBlock = $block;
-                    }
-
-                    $model->productVarValues[$index]->valueBlock->snippet_code_id = $productValueData['snippet_code_id'];
-
-                    $this->loadSnippetVarValues($productValueData, $model->productVarValues[$index]->valueBlock);
-                }
-
-                foreach ($model->productVarValues as $indexProductVarValue => $productVarValue) {
-                    $productVarValue->product_id = $model->id;
-
-                    if ($productVarValue->removed) {
-
-                        if ($productVarValue->valueBlock) {
-                            $productVarValue->valueBlock->delete();
+                        if (!key_exists('SnippetVarValue', $productValueData)) {
+                            continue;
                         }
-                        $productVarValue->delete();
-                        unset($model->productVarValues[$indexProductVarValue]);
-                        continue;
+
+                        if (!$model->productVarValues[$index]->valueBlock) {
+                            $block = new Block();
+                            $block->type = 'snippet';
+
+                            $model->productVarValues[$index]->valueBlock = $block;
+                        }
+
+                        $model->productVarValues[$index]->valueBlock->snippet_code_id = $productValueData['snippet_code_id'];
+
+                        $this->loadSnippetVarValues($productValueData, $model->productVarValues[$index]->valueBlock);
                     }
 
-                    if (!($productVarValue->validate() && $productVarValue->save())) {
-                        throw new Exception;
-                    }
+                    foreach ($model->productVarValues as $indexProductVarValue => $productVarValue) {
+                        $productVarValue->product_id = $model->id;
 
-                    if ($productVarValue->valueBlock) {
-                        $productVarValue->valueBlock->product_var_value_id = $productVarValue->id;
-                        if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
+                        if ($productVarValue->removed) {
+
+                            if ($productVarValue->valueBlock) {
+                                $productVarValue->valueBlock->delete();
+                            }
+                            $productVarValue->delete();
+                            unset($model->productVarValues[$indexProductVarValue]);
+                            continue;
+                        }
+
+                        if (!($productVarValue->validate() && $productVarValue->save())) {
                             throw new Exception;
                         }
 
-                        if ($productVarValue->valueBlock->isChanged()) {
-                            $this->saveSnippetVarValues($productVarValue->valueBlock);
+                        if ($productVarValue->valueBlock) {
+                            $productVarValue->valueBlock->product_var_value_id = $productVarValue->id;
+                            if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
+                                throw new Exception;
+                            }
+
+                            if ($productVarValue->valueBlock->isChanged()) {
+                                $this->saveSnippetVarValues($productVarValue->valueBlock);
+                            }
                         }
                     }
                 }
@@ -133,6 +140,9 @@ class ProductController extends BaseController
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 
+                if (!$id) {
+                    $model->language->getProductsMainCacheFile(true);
+                }
                 $model->resetAfterUpdate();
 
                 return $this->redirectAfterSave($model);
