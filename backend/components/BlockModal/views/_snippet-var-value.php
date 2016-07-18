@@ -183,7 +183,7 @@ use yii\helpers\Html;
                         ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
                         [
                             'name' => $prefix . '[value_dropdown_id]',
-                            'class' => 'form-control activate-select2'
+                            'class' => 'form-control'
                         ]) ?>
 
                     <?php

@@ -54,7 +54,8 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                     'value_tag_id',
                     'value_product_var_id',
                     'value_product_id',
-                    'list_item_id'
+                    'list_item_id',
+                    'value_dropdown_id'
                 ],
                 'integer'
             ],
