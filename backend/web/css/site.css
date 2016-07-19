@@ -334,6 +334,10 @@ a.anchor {
     background-color: #d1ffcd;
 }
 
+.global-search .suggest-action {
+    background-color: rgba(0, 255, 0, 0.46);
+}
+
 .search-multimedia {
     width: 400px !important;
 }

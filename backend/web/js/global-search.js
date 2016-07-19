@@ -120,7 +120,7 @@ $(
 
                     var dataInDOM = $(".global-search .data"),
                         totalCount = data.snippet.length + data.snippet_code.length + data.page.length +
-                            data.product.length + data.word.length;
+                            data.product.length + data.word.length + data.actions.length;
 
                     dataInDOM.show();
 
@@ -143,6 +143,7 @@ $(
                         appendOneTypeOfData(data.snippet, "snippet");
                         appendOneTypeOfData(data.snippet_code, "varianta snippetu");
                         appendOneTypeOfData(data.word, "slovník");
+                        appendOneTypeOfData(data.actions, "akcie");
                     }
                     else
                     {

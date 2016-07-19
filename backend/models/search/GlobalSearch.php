@@ -32,7 +32,7 @@ class GlobalSearch
             'snippet_code' => [],
             'page' => [],
             'product' => [],
-            'action' => [],
+            'actions' => [],
             'word' => []
         );
 
@@ -138,14 +138,29 @@ class GlobalSearch
             ];
         }
 
-        /*$results['actions'][] = [
-            'link' => Url::to([
-                '/product/',
-            ]),
-            'name' => 'Zoznam produktov',
-            'id' => '',
-            'class' => 'suggest-action'
-        ];*/
+        $processActions = function ($searchTerm, $list, $prefix, $urlSuffix = '') {
+            $actions = [];
+            foreach ($list as $item) {
+                $name = $prefix . $item[0];
+
+                if ($searchTerm == '' || (mb_strlen($name) >= mb_strlen($searchTerm) && mb_substr(mb_strtolower($name), 0, mb_strlen($searchTerm)) == mb_strtolower($searchTerm))) {
+                    $actions[] = [
+                        'link' => Url::to([
+                            '/' . $item[1] . '/' . $urlSuffix,
+                        ]),
+                        'name' => $name,
+                        'class' => 'suggest-action'
+                    ];
+                }
+            };
+            return $actions;
+        };
+
+        $listActions = [['stránok', 'page'], ['ďakovačiek', 'thanks'], ['prekladov', 'word'], ['multimédii', 'multimedia'], ['snippetov', 'snippet'], ['produktov', 'product'], ['produktových premenných', 'product-var'], ['typov produktu', 'product-type'], ['tagov', 'tag'], ['šablón', 'template'], ['portálov', 'portal'], ['používateľov', 'user'], ['krajín', 'language']];
+        $addActions = [['stránku', 'page'], ['ďakovačku', 'thanks'], ['preklad', 'word'], ['snippet', 'snippet'], ['produkt', 'product'], ['produktovú premennú', 'product-var'], ['typ produktu', 'product-type'], ['tag', 'tag'], ['šablónu', 'template'], ['portál', 'portal'], ['používateľa', 'user'], ['krajinu', 'language']];
+
+        $results['actions'] += $processActions($searchTerm, $listActions, 'Zoznam ');
+        $results['actions'] += $processActions($searchTerm, $addActions, 'Pridať ', 'edit');
 
         return $results;
     }
