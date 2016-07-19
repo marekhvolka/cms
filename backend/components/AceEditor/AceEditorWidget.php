@@ -11,7 +11,9 @@ use yii\widgets\InputWidget;
  */
 class AceEditorWidget extends InputWidget
 {
-    public static $id = 0;
+    public static $lastId = 0;
+
+    public $id;
 
     /** @var string */
     public $varNameAceEditor = 'aceEditor';
@@ -34,6 +36,7 @@ class AceEditorWidget extends InputWidget
      */
     public function run()
     {
+        $this->id = AceEditorWidget::$lastId++;
         $this->extensions[] = 'static_highlight';
         if ($this->autocompletion) {
             $this->extensions[] = 'language_tools';
@@ -44,8 +47,8 @@ class AceEditorWidget extends InputWidget
 
     protected function editable()
     {
-        $id = 'ace-editor-' . self::$id++;
-        $valueId = 'ace-editor-value' . self::$id;
+        $id = 'ace-editor-' . $this->id;
+        $valueId = 'ace-editor-value' . $this->id;
         $autocompletion = $this->autocompletion ? 'true' : 'false';
         if ($this->autocompletion) {
             $this->aceOptions['enableBasicAutocompletion'] = true;

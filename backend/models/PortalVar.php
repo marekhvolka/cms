@@ -28,7 +28,8 @@ class PortalVar extends Variable
         return array_merge(parent::rules(), [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 50],
-            [['name'], 'unique']
+            [['name'], 'unique', 'message' => 'Zadajte unikátny identifikátor.'],
+            [['identifier'], 'unique', 'message' => 'Zadajte unikátny identifikátor.'],
         ]);
     }
 

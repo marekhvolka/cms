@@ -45,10 +45,22 @@ class SnippetVar extends Variable
             [['identifier'], 'string', 'max' => 50],
             [['snippet_id', 'parent_id', 'id'], 'integer'],
             [
+                ['identifier', 'snippet_id'],
+                'unique',
+                'targetAttribute' => ['identifier', 'snippet_id'],
+                'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.',
+                'when' => function ($model) {
+                    return $model->parent_id == null;
+                }
+            ],
+            [
                 ['identifier', 'snippet_id', 'parent_id'],
                 'unique',
                 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
-                'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'
+                'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.',
+                'when' => function($model) {
+                    return $model->parent_id != null;
+                }
             ],
             [['identifier'], 'match', 'pattern' => '/^[_a-zA-Z][a-zA-Z0-9_]*$/i', 'message' => 'Identifikátor musí začínať znakom alebo _, pokračovať smie len znakom, číslom alebo _.'],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
