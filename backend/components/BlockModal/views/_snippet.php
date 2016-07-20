@@ -39,8 +39,6 @@ use yii\helpers\Url;
                 ]) ?>
 
 
-
-
                 <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                         style="right: 60px; top: 13px;" data-toggle="modal"
                         data-target="#supportModal" title="Nápoveda">
@@ -56,7 +54,6 @@ use yii\helpers\Url;
                         'data-page-id' => $page ? $page->id : '',
                         'data-portal-id' => $portal ? $portal->id : ''
                     ]) ?>
-
 
 
                 <script type="text/javascript">
