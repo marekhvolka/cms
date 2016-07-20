@@ -41,8 +41,8 @@ class SnippetVarDefaultValue extends CustomModel
             [
                 ['snippet_var_id', 'product_type_id', 'partnership_type_id'],
                 'unique',
-                'targetAttribute' => ['snippet_var_id', 'product_type_id'],
-                'message' => 'The combination of Snippet Var ID and Product Type ID has already been taken.'
+                'targetAttribute' => ['snippet_var_id', 'product_type_id', 'partnership_type_id'],
+                'message' => 'Pre danú premennú už existuje kombinácia typu produktu a typu spolupráce.'
             ],
             [
                 ['product_type_id'],
