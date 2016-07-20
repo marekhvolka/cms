@@ -236,7 +236,7 @@ class SnippetVar extends Variable
                 break;
             default:
 
-                $productTypeDefaultValue = $this->getDefaultValue($productType);
+                $productTypeDefaultValue = $this->getDefaultValue($product);
 
                 if ($productTypeDefaultValue) {
                     $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value_text) . '\'';
