@@ -86,10 +86,6 @@ if ($model->portal) {
         </div>
     </div>
 
-    <?= $form->field($model, 'color_scheme')->dropDownList(
-        ArrayHelper::map($portal->template->getColorSchemes(), 'label',
-            'label')); ?>
-
     <h3 class="page-header">Hlavička stránky</h3>
 
     <?= $form->field($model->header, 'active')->radioList([

@@ -99,13 +99,13 @@ class Column extends CustomModel implements IDuplicable
 
         $result = '<div';
 
-        $result .= $cssClasses != '' ? ' class="' . $cssClasses . '"' : '';
+        $result .= $cssClasses != '' ? ' class="' . $cssClasses . ' box"' : '';
         $result .= $cssIds != '' ? ' id="' . $cssIds . '"' : '';
         $result .= $cssStyles != '' ? ' style="' . $cssStyles . '"' : '';
 
         $result .= '>' . PHP_EOL;
 
-        $result .= '<div class="box">' . PHP_EOL;
+        //$result .= '<div class="box">' . PHP_EOL;
 
         return $result;
     }
@@ -134,8 +134,8 @@ class Column extends CustomModel implements IDuplicable
 
     public function getPostfix()
     {
-        $result = '</div> <!-- box end -->' . PHP_EOL;
-        $result .= '</div> <!-- col end -->' . PHP_EOL;
+        //$result = '</div> <!-- box end -->' . PHP_EOL;
+        $result = '</div> <!-- col end -->' . PHP_EOL;
 
         return $result;
     }
