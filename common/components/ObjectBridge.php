@@ -72,6 +72,9 @@ class ObjectBridge extends ArrayObject
         return false;
     }
 
+    /** Funkcia, ktora vrati, ci ma dany produkt aktualne akciu
+     * @return bool
+     */
     public function hasDiscount()
     {
         if (!isset($this->obj) || !isset($this->obj->platnost_akcie)) {
@@ -82,6 +85,21 @@ class ObjectBridge extends ArrayObject
         } else {
             return false;
         }
+    }
+
+    /**
+     * Funkcia ktora vrati, ci je produkt aktivny - mame spolupracu
+     */
+    public function isAvailable()
+    {
+        if (!isset($this->obj) || !isset($this->obj->typ_spoluprace)) {
+            return false;
+        }
+
+        if ($this->obj->typ_spoluprace == 'bez_spoluprace')
+            return false;
+
+        return true;
     }
 }
 

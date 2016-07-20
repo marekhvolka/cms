@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
+ * @property string $identifier
  *
  * @property Product[] $products
  */
@@ -29,7 +30,7 @@ class PartnershipType extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 50],
+            [['name', 'identifier'], 'string', 'max' => 50],
         ];
     }
 
@@ -41,6 +42,7 @@ class PartnershipType extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'identifier' => 'Identifikátor'
         ];
     }
 

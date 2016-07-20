@@ -145,6 +145,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
                 $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
                 $buffer .= '\'name\' => \'' . addslashes($this->name) . '\',' . PHP_EOL;
                 $buffer .= '\'identifier\' => \'' . addslashes($this->identifier) . '\',' . PHP_EOL;
+                $buffer .= '\'typ_spoluprace\' => \'' . addslashes($this->partnershipType->identifier) . '\',' . PHP_EOL;
 
                 foreach ($this->productProperties as $productVarValue) {
                     $buffer .= '\'' . $productVarValue->var->identifier . '\' => ' . $productVarValue->value . ',' . PHP_EOL;
@@ -400,6 +401,14 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     public function getProductTypeName()
     {
         return $this->productType->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPartnershipTypeName()
+    {
+        return $this->partnershipType->name;
     }
 
     public function getMainCacheFile($reload = false)

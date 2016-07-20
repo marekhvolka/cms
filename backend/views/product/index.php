@@ -37,6 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'size' => '3',
             ],
             [
+                'label' => 'Typ spolupráce',
+                'value' => 'partnershipTypeName',
+                'size' => '3',
+            ],
+            [
                 'label' => 'Aktívna',
                 'value' => 'active',
                 'size' => '1',
