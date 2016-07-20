@@ -14,6 +14,7 @@ use yii\db\Query;
  * @property string $name
  * @property integer $parent_id
  * @property integer $type_id
+ * @property integer $partnership_type_id
  * @property string $identifier
  * @property string $description
  * @property integer $language_id
@@ -23,6 +24,7 @@ use yii\db\Query;
  * @property bool $outdated
  *
  * @property ProductType $productType
+ * @property PartnershipType $partnershipType
  * @property string $productTypeName
  * @property Page[] $pages
  * @property User $lastEditUser
@@ -59,7 +61,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     {
         return [
             [['name', 'type_id', 'identifier', 'language_id', 'active'], 'required'],
-            [['parent_id', 'type_id', 'language_id', 'active', 'last_edit_user'], 'integer'],
+            [['parent_id', 'type_id', 'language_id', 'active', 'last_edit_user', 'partnership_type_id'], 'integer'],
             [['last_edit'], 'safe'],
             [['name', 'identifier'], 'string', 'max' => 50],
             [
@@ -87,6 +89,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
             'name' => 'Názov',
             'parent_id' => 'Rodič',
             'type_id' => 'Typ produktu',
+            'partnership_type_id' => 'Typ spolupráce',
             'identifier' => 'Identifikátor',
             'description' => 'Popis',
             'language_id' => 'Krajina',
@@ -381,6 +384,14 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     public function getProductType()
     {
         return $this->hasOne(ProductType::className(), ['id' => 'type_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPartnershipType()
+    {
+        return $this->hasOne(PartnershipType::className(), ['id' => 'partnership_type_id']);
     }
 
     /**

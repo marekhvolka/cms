@@ -3,6 +3,7 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\VarManager\VarManagerWidget;
 use backend\models\Language;
+use backend\models\PartnershipType;
 use backend\models\Product;
 use backend\models\ProductType;
 use backend\models\Tag;
@@ -55,6 +56,10 @@ if ($model->language) {
 
     <?= $form->field($model, 'type_id')->dropDownList(
         ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
+    ) ?>
+
+    <?= $form->field($model, 'partnership_type_id')->dropDownList(
+        ArrayHelper::map(PartnershipType::find()->all(), 'id', 'name')
     ) ?>
 
     <?= $form->field($model, 'description')->textarea() ?>

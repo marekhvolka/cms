@@ -16,6 +16,12 @@ use yii\helpers\Url;
  * @property integer $snippet_id
  * @property bool $outdated
  * @property bool $dynamic
+ * @property string $section_id
+ * @property string $section_class
+ * @property string $section_style
+ * @property string $column_id
+ * @property string $column_class
+ * @property string $column_style
  *
  * @property Block[] $blocks
  * @property string $url
@@ -41,7 +47,19 @@ class SnippetCode extends CustomModel
             [['code', 'description'], 'string'],
             [['dynamic'], 'boolean'],
             [['snippet_id'], 'integer'],
-            [['name', 'portal'], 'string', 'max' => 50],
+            [
+                [
+                    'name',
+                    'portal',
+                    'section_id',
+                    'section_class',
+                    'section_style',
+                    'column_id',
+                    'column_class',
+                    'column_style'
+                ],
+                'string',
+            ],
             [
                 ['name', 'snippet_id'],
                 'unique',
@@ -64,7 +82,13 @@ class SnippetCode extends CustomModel
             'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'ID snippetu',
             'blocks' => 'Bloky',
-            'dynamic' => 'Dynamický'
+            'dynamic' => 'Dynamický',
+            'section_id' => 'Sekcia ID',
+            'section_class' => 'Sekcia Class',
+            'section_style' => 'Sekcia Style',
+            'column_id' => 'ID stĺpca',
+            'column_class' => 'CSS trieda stĺpca',
+            'column_style' => 'Štýly stĺpca',
         ];
     }
 

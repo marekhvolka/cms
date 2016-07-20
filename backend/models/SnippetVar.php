@@ -50,7 +50,12 @@ class SnippetVar extends Variable
                 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
                 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.'
             ],
-            [['identifier'], 'match', 'pattern' => '/^[_a-zA-Z][a-zA-Z0-9_]*$/i', 'message' => 'Identifikátor musí začínať znakom alebo _, pokračovať smie len znakom, číslom alebo _.'],
+            [
+                ['identifier'],
+                'match',
+                'pattern' => '/^[_a-zA-Z][a-zA-Z0-9_]*$/i',
+                'message' => 'Identifikátor musí začínať znakom alebo _, pokračovať smie len znakom, číslom alebo _.'
+            ],
             //[['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => SnippetVar::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [
                 ['snippet_id'],
@@ -94,9 +99,13 @@ class SnippetVar extends Variable
         if (!isset($this->defaultValues)) {
             $this->defaultValues = [];
             $default = $this->hasMany(SnippetVarDefaultValue::className(),
-                ['snippet_var_id' => 'id'])->where(['product_type_id' => null])->one();
+                ['snippet_var_id' => 'id'])
+                ->where([
+                    'product_type_id' => null,
+                    'partnership_type_id' => null
+                ])->one();
 
-            if($default == null){
+            if ($default == null) {
                 $default = new SnippetVarDefaultValue();
                 $default->snippet_var_id = $this->id;
             }
@@ -104,7 +113,8 @@ class SnippetVar extends Variable
             $this->defaultValues[] = $default;
 
             $this->defaultValues = array_merge($this->defaultValues, $this->hasMany(SnippetVarDefaultValue::className(),
-                ['snippet_var_id' => 'id'])->where('product_type_id IS NOT NULL')->orderBy('product_type_id')->all());
+                ['snippet_var_id' => 'id'])->where('product_type_id IS NOT NULL OR partnership_type_id IS NOT NULL')
+                ->orderBy('product_type_id')->all());
         }
 
         return $this->defaultValues;
@@ -237,18 +247,28 @@ class SnippetVar extends Variable
     }
 
     /** Vrati default hodnotu podla typu produktu
-     * @param $productType
+     * @param Product $product
      * @return mixed|string
      */
-    public function getDefaultValue($productType = null)
+    public function getDefaultValue($product = null)
     {
-        if ($productType) {
+        if ($product) {
             $defaultValue = SnippetVarDefaultValue::find()
                 ->andWhere([
                     'snippet_var_id' => $this->id,
-                    'product_type_id' => $productType->id
+                    'product_type_id' => $product->type_id,
+                    'partnership_type_id' => $product->partnership_type_id
                 ])
                 ->one();
+
+            if (!isset($defaultValue)) {
+                $defaultValue = SnippetVarDefaultValue::find()
+                    ->andWhere([
+                        'snippet_var_id' => $this->id,
+                        'product_type_id' => $product->type_id
+                    ])
+                    ->one();
+            }
         }
         if (!isset($defaultValue)) {
             $defaultValue = SnippetVarDefaultValue::find()
