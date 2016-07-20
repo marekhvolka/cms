@@ -192,10 +192,10 @@ class SnippetVar extends Variable
     }
 
     /** Metoda, ktora vrati vseobecnu defaultnu hodnotu (nie pre konkretny typ produktov)
-     * @param null $productType
+     * @param Product $product
      * @return string
      */
-    public function getDefaultValueAsString($productType = null)
+    public function getDefaultValueAsString($product = null)
     {
         $cacheEngine = Yii::$app->dataEngine;
 
@@ -227,7 +227,7 @@ class SnippetVar extends Variable
                 break;
             case 'dropdown' :
 
-                $productTypeDefaultValue = $this->getDefaultValue($productType);
+                $productTypeDefaultValue = $this->getDefaultValue($product);
 
                 if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown)) {
                     $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
