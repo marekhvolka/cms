@@ -99,7 +99,7 @@ class Column extends CustomModel implements IDuplicable
 
         $result = '<div';
 
-        $result .= $cssClasses != '' ? ' class="' . $cssClasses . ' box"' : '';
+        $result .= $cssClasses != '' ? ' class="' . $cssClasses . '"' : '';
         $result .= $cssIds != '' ? ' id="' . $cssIds . '"' : '';
         $result .= $cssStyles != '' ? ' style="' . $cssStyles . '"' : '';
 
