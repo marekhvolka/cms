@@ -17,9 +17,10 @@ Multimedia.prototype.init = function () {
     this.modal = $("#multimediaWidget");
     this.searchInput = $(".search-multimedia");
 
-    var _this = this;
+    var _this = this,
+        body = $('body');
 
-    $("body").on('click', '.multimedia-image', function (e) {
+    body.on('click', '.multimedia-image', function (e) {
         e.preventDefault();
         var $this = $(this);
 
@@ -30,6 +31,14 @@ Multimedia.prototype.init = function () {
                 }
             ]);
         }
+    });
+
+    body.on('contextmenu', '.multimedia-item', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+
+        alert($this.attr("data-path-for-web"));
+
     });
 
     this.searchInput.on('change input', function () {
