@@ -201,7 +201,14 @@ use yii\helpers\Html;
                 ]) ?>
                     <script type="text/javascript">
                         var toApply = $(".apply-child-bootstrap-switch");
-                        toApply.find("input").bootstrapSwitch();
+                        toApply.find("input").bootstrapSwitch({onSwitchChange: function(event, state){
+                            var _this = $(this);
+                            if(state){
+                                _this.attr('checked', 'checked');
+                            } else {
+                                _this.removeAttr('checked');
+                            }
+                        }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>});
                         toApply.removeClass('apply-child-bootstrap-switch');
                     </script>
 
