@@ -4,7 +4,6 @@ use backend\components\AceEditor\AceEditorWidget;
 
 /* @var $prefix string */
 
-$id = rand(0, 100000000);
 ?>
 
 <div class="modal-header">
