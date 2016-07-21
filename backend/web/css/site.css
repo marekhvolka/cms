@@ -337,6 +337,7 @@ a.anchor {
 .search-multimedia {
     width: 400px !important;
 }
+
 .btn-alternative-usage {
     margin-right: 5px;
 }
@@ -350,6 +351,10 @@ a.anchor {
 
 .snippet-dropdown + .select2 {
     min-width: 400px;
+}
+
+span.select2 {
+    width: 100% !important;
 }
 
 .syntax-highlight-line {
