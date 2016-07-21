@@ -29,21 +29,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     return Html::a($data->name, Url::to(['edit', 'id' => $data->id]));
                 },
-                'size' => '4'
+                'size' => '3'
             ],
             [
                 'label' => 'Typ produktu',
                 'value' => 'productTypeName',
-                'size' => '3',
+                'size' => '2',
             ],
             [
                 'label' => 'Typ spolupráce',
                 'value' => 'partnershipTypeName',
-                'size' => '3',
+                'size' => '2',
             ],
             [
                 'label' => 'Aktívna',
-                'value' => 'active',
+                'value' => function ($active) {
+                    return $active ? '√' : 'X';
+                },
                 'size' => '1',
             ],
             [
@@ -64,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
 
                     $result .= Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                        Url::to(['delete', 'id' => $data->id], ['data-method'=>'post']));
+                        Url::to(['delete', 'id' => $data->id], ['data-method' => 'post']));
 
                     /*if ($data->getProducts()->count() == 0) {
                         $result .= Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť tento produkt (' . $data->name . ')?" data-method="post" data-pjax="0"></a>',
