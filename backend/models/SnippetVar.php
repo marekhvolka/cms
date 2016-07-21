@@ -45,15 +45,6 @@ class SnippetVar extends Variable
             [['identifier'], 'string', 'max' => 50],
             [['snippet_id', 'parent_id', 'id'], 'integer'],
             [
-                ['identifier', 'snippet_id'],
-                'unique',
-                'targetAttribute' => ['identifier', 'snippet_id'],
-                'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.',
-                'when' => function ($model) {
-                    return $model->parent_id == null;
-                }
-            ],
-            [
                 ['identifier', 'snippet_id', 'parent_id'],
                 'unique',
                 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
