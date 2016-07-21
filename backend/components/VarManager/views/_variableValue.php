@@ -88,6 +88,7 @@ if (!isset($renderModal)) {
                         ['class' => 'existing']); ?>
                     <?= Html::hiddenInput($prefix . "[id]", $varValue->id, ['class' => 'id']); ?>
 
+
                     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
                             data-id="<?= $varValue->valueBlock->id ?>" data-prefix="<?= $prefix ?>"
                             data-portal-id="<?= $model->id ?>" data-target="#modal-<?= $varValue->id ?>">
@@ -102,6 +103,15 @@ if (!isset($renderModal)) {
                                 'target' => '_blank'
                             ]
                         ) ?>
+
+                        <?php if (!$varValue->isNewRecord): ?>
+                            <button type="button"
+                                    class="btn btn-default btn-sm text-content-btn block-usage"
+                                    data-toggle="modal"
+                                    data-target="#productUsedIn[data-id='<?= $varValue->id ?>']">
+                                <i class="glyphicon glyphicon-question-sign"></i>
+                            </button>
+                        <?php endif; ?>
                     <?php endif; ?>
 
                     <div class="modal-container">
@@ -114,6 +124,27 @@ if (!isset($renderModal)) {
                             ]);
                         } ?>
                     </div>
+                    <?php if (!$varValue->isNewRecord) : ?>
+                        <div class="usages">
+                            <div class="modal fade" id="productUsedIn" data-id="<?= $varValue->id ?>" tabindex="-1" role="dialog"
+                                 aria-labelledby="productUsedInLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Zavrieť">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title" id="alternativeUsedInLabel">Použitie snippetu</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <?= $this->render('_product-var-block-usage', ['block' => $varValue->valueBlock]) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php
             break;
@@ -150,8 +181,7 @@ if (!isset($renderModal)) {
                            name="<?= $prefix . '[value_text]' ?>"
                            value="<?= $varValue->value_text ?>">
                 </div>
-                <script>if (applySpectrum != null)
-                    {
+                <script>if (applySpectrum != null) {
                         applySpectrum();
                     }</script>
                 <?php

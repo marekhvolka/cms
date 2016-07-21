@@ -39,7 +39,8 @@ function attachRemove(button) {
 
 attachRemove($('.remove-btn'));
 
-$("body").on('click', ".variable-value a.open-multimedia", function (e) {
+var body = $("body");
+body.on('click', ".variable-value a.open-multimedia", function (e) {
     e.preventDefault();
     var assigningTo = $(this).parents('.var-value').first().find('.value');
 

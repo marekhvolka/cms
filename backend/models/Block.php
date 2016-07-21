@@ -432,7 +432,6 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function getOwner()
     {
-        // TODO: rewrite using join
         if ($this->column_id != null) {
             /** @var Column $column */
             $column = $this->getColumn()->one();
@@ -475,6 +474,35 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         }
 
         return null;
+    }
+
+    public function getChildrenOwners(){
+        $pageAreas = [];
+        $portalAreas = [];
+        $portals = [];
+        $products = [];
+
+        foreach($this->getChildBlocks()->all() as $block){
+            $owner = $block->getOwner();
+            if ($owner instanceof Portal) {
+                $portals[] = [$owner, $block];
+            } else if ($owner instanceof Area) {
+                if ($owner->page) {
+                    $pageAreas[] = [$owner, $block, $owner->page];
+                } else if ($owner->portal) {
+                    $portalAreas[] = [$owner, $block, $owner->portal];
+                }
+            } else if ($owner instanceof Product) {
+                $products[] = [$owner, $block];
+            }
+        }
+
+        return [
+            $pageAreas,
+            $portalAreas,
+            $portals,
+            $products
+        ];
     }
 
     public function isChanged()
