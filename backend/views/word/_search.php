@@ -15,7 +15,7 @@ use yii\widgets\Pjax;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-        'options' => ['data-pjax' => true],
+        'options' => ['data-pjax' => true, 'class' => 'disable-are-you-sure'],
     ]); ?>
 
     <?= $form->field($model, 'globalSearch') ?>

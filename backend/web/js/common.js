@@ -35,3 +35,9 @@ function enableDragBy(items, dragBy) {
         }
     });
 }
+
+$('form:not(.disable-are-you-sure)').areYouSure();
+
+function rescanForms() {
+    $('form:not(.disable-are-you-sure)').trigger('rescan.areYouSure');
+}

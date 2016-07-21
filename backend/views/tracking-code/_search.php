@@ -12,6 +12,9 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => [
+            'class' => 'disable-are-you-sure'
+        ]
     ]); ?>
 
     <?= $form->field($model, 'id') ?>

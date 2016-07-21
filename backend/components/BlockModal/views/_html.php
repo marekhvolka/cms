@@ -3,6 +3,7 @@
 use backend\components\AceEditor\AceEditorWidget;
 
 /* @var $prefix string */
+
 ?>
 
 <div class="modal-header">
@@ -20,3 +21,4 @@ use backend\components\AceEditor\AceEditorWidget;
         ]
     ]); ?>
 </div>
+

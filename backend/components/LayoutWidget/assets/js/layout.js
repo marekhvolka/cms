@@ -25,6 +25,8 @@ body.on(
                 var section = appendElement(layouts, $(data));
                 enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
                 enableDragBy(section.find(".children-list.blocks").toArray());
+
+                rescanForms();
             }
         );
     }
@@ -71,6 +73,8 @@ body.on(
                             var column = appendElement(row, $(parsed[i]));
                             enableDragBy(column.find(".children-list.blocks").toArray());
                         }
+
+                        rescanForms();
                     }
                 );
             }
@@ -93,6 +97,8 @@ body.on(
         $.post(
             appendUrl.block, postData, function (data) {
                 appendElement(column, $(data));
+
+                rescanForms();
             }
         );
     }

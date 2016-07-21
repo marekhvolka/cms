@@ -33,6 +33,8 @@ body.on(
                 var modalContent = self.parents('.modal-main-content').first();
                 modalContent.empty();
                 modalContent.append($(data));
+
+                rescanForms();
             }
         );
     }
@@ -61,6 +63,8 @@ body.on(
                 var modalContent = self.parents('.modal-main-content').first();
                 modalContent.empty();
                 modalContent.append($(data));
+
+                rescanForms();
             }
         );
     }
@@ -103,6 +107,8 @@ body.on(
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
+
+                    rescanForms();
                 }
             );
         }
@@ -134,6 +140,7 @@ body.on(
                 appendElement(listPanel, $(data));
                 listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
                 enableDragBy(listPanel.find(".children-list.list-items").toArray(), '.list-item-drag-by');
+                rescanForms();
             }
         );
     }
