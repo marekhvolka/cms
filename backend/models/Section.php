@@ -119,9 +119,9 @@ class Section extends CustomModel implements IDuplicable
             foreach ($row->columns as $column) {
                 foreach ($column->blocks as $block) {
                     if (isset($block->snippetCode)) {
-                        $settings['classes'] .= $block->snippetCode->snippet->section_class . ' ';
-                        $settings['ids'] .= $block->snippetCode->snippet->section_id . ' ';
-                        $settings['styles'] .= $block->snippetCode->snippet->section_style . ' ';
+                        $settings['classes'] .= $block->snippetCode->section_class . ' ';
+                        $settings['ids'] .= $block->snippetCode->section_id . ' ';
+                        $settings['styles'] .= $block->snippetCode->section_style . ' ';
                     }
                 }
             }

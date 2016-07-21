@@ -10,11 +10,13 @@ use Yii;
  * @property integer $id
  * @property integer $snippet_var_id
  * @property integer $product_type_id
+ * @property integer $partnership_type_id
  * @property string $value_text
  * @property integer $value_dropdown_id
  *
  * @property SnippetVarDropdown $valueDropdown
  * @property ProductType $productType
+ * @property PartnershipType $partnershipType
  * @property SnippetVar $snippetVar
  */
 class SnippetVarDefaultValue extends CustomModel
@@ -34,13 +36,13 @@ class SnippetVarDefaultValue extends CustomModel
     {
         return [
             [['snippet_var_id'], 'required'],
-            [['snippet_var_id', 'product_type_id'], 'integer'],
+            [['snippet_var_id', 'product_type_id', 'partnership_type_id'], 'integer'],
             [['value_text'], 'string', 'max' => 255],
             [
-                ['snippet_var_id', 'product_type_id'],
+                ['snippet_var_id', 'product_type_id', 'partnership_type_id'],
                 'unique',
-                'targetAttribute' => ['snippet_var_id', 'product_type_id'],
-                'message' => 'The combination of Snippet Var ID and Product Type ID has already been taken.'
+                'targetAttribute' => ['snippet_var_id', 'product_type_id', 'partnership_type_id'],
+                'message' => 'Pre danú premennú už existuje kombinácia typu produktu a typu spolupráce.'
             ],
             [
                 ['product_type_id'],
@@ -78,6 +80,14 @@ class SnippetVarDefaultValue extends CustomModel
     public function getProductType()
     {
         return $this->hasOne(ProductType::className(), ['id' => 'product_type_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPartnershipType()
+    {
+        return $this->hasOne(PartnershipType::className(), ['id' => 'partnership_type_id']);
     }
 
     /**

@@ -123,9 +123,9 @@ class Column extends CustomModel implements IDuplicable
 
         foreach ($this->blocks as $block) {
             if (isset($block->snippetCode)) {
-                $settings['classes'] .= $block->snippetCode->snippet->column_class . ' ';
-                $settings['ids'] .= $block->snippetCode->snippet->column_id . ' ';
-                $settings['styles'] .= $block->snippetCode->snippet->column_style . ' ';
+                $settings['classes'] .= $block->snippetCode->column_class . ' ';
+                $settings['ids'] .= $block->snippetCode->column_id . ' ';
+                $settings['styles'] .= $block->snippetCode->column_style . ' ';
             }
         }
 

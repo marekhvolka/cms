@@ -1,8 +1,6 @@
 <?php
-use backend\controllers\BaseController;
 use backend\models\Page;
 use backend\models\Portal;
-use backend\models\Product;
 use backend\models\Snippet;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
@@ -41,12 +39,11 @@ use yii\helpers\Url;
                 ]) ?>
 
 
-
                 <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                         style="right: 60px; top: 13px;" data-toggle="modal"
                         data-target="#supportModal" title="Nápoveda">
-                            <span class="fa fa-question"></span>
-                        </button>
+                    <span class="fa fa-question"></span>
+                </button>
                     <?php else : ?>
                         <?= Html::dropDownList('snippet_id', null,
                     ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
@@ -60,8 +57,8 @@ use yii\helpers\Url;
 
 
                 <script type="text/javascript">
-                            $(".activate-select2").select2().removeClass('activate-select2');
-                        </script>
+                    $(".activate-select2").select2().removeClass('activate-select2');
+                </script>
                     <?php endif;
             break;
 
@@ -87,7 +84,7 @@ use yii\helpers\Url;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
             <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map($portal->portalSnippets,
+                    ArrayHelper::map($portal ? $portal->portalSnippets : $page->portal->portalSnippets,
                         'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
@@ -121,20 +118,30 @@ use yii\helpers\Url;
 <script type="text/javascript">
     var changeUrl = '<?= Url::to(['/snippet/get-snippet-code-variables', 'id' => '1']) ?>';
 
-    $(".change-snippet-code.not-applied").bind('change', function (e) {
-        var $this = $(this);
+    $(".change-snippet-code.not-applied").bind(
+        'change', function (e)
+        {
+            var $this = $(this);
 
-        $.get(changeUrl.replace('1', $(this).val()), function (data) {
-            var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
-            items.show();
-            items.each(function () {
-                var _this = $(this);
-                if (data.indexOf(_this.attr('data-identifier')) == -1) {
-                    _this.hide();
+            $.get(
+                changeUrl.replace('1', $(this).val()), function (data)
+                {
+                    var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
+                    items.show();
+                    items.each(
+                        function ()
+                        {
+                            var _this = $(this);
+                            if (data.indexOf(_this.attr('data-identifier')) == -1)
+                            {
+                                _this.hide();
+                            }
+                        }
+                    );
                 }
-            });
-        });
-    }).trigger('change').removeClass('not-applied');
+            );
+        }
+    ).trigger('change').removeClass('not-applied');
 </script>
 
 

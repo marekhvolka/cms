@@ -10,7 +10,6 @@ use backend\components\AceEditor\AceEditorWidget;
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
 <div class="modal-body">
-
     <?= AceEditorWidget::widget([
         'name' => $prefix . '[data]',
         'value' => $model->data,

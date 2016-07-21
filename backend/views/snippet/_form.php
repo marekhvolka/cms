@@ -50,8 +50,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
 
-    <?= $this->render('_blocks-and-sections', ['model' => $model]); ?>
-
     <div class="form-group snippet-vars">
         <div class="panel panel-success">
             <div class="panel-heading form-inline">

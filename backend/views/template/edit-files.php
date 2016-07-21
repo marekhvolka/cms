@@ -7,7 +7,7 @@ use backend\models\Template;
 /* @var $model Template */
 
 $this->title = 'Editovať súbory šablóny';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $model->name;
 ?>
 
 <div class="edit-files" style="margin-left: -20px">

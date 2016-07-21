@@ -90,6 +90,10 @@ use yii\helpers\BaseHtml;
                 ?>
             </div>
         </div>
+        <?= $this->render('_blocks-and-sections', [
+            'model' => $model,
+            'prefix' => $prefix
+        ]); ?>
         <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true',
             ['class' => 'existing']); ?>
         <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'snippet-code-id']); ?>

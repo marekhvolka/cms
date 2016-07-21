@@ -92,12 +92,12 @@ class ListItem extends CustomModel implements IDuplicable
         $this->snippetVarValues = $value;
     }
 
-    public function getValue($productType = null)
+    public function getValue($product = null)
     {
         $buffer = '(object) array(' . PHP_EOL;
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
-            $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->getValue($productType) . ', ';
+            $buffer .= '\'' . $snippetVarValue->var->identifier . '\' => ' . $snippetVarValue->getValue($product) . ', ';
         }
 
         $buffer = substr($buffer, 0, sizeof($buffer) - 2);

@@ -20,8 +20,8 @@ use yii\helpers\Html;
 
 <div class="snippet-var-value" data-identifier="<?= $snippetVarValue->var->identifier ?>">
     <?php
-    $productType = $page && $page->product ? $page->product->productType : null;
-    $defaultValue = $snippetVarValue->var->getDefaultValue($productType);
+    $product = $page && $page->product ? $page->product : null;
+    $defaultValue = $snippetVarValue->var->getDefaultValue($product);
 
     if ($snippetVarValue->typeName != 'list') : ?>
         <div class="form-group var-value">

@@ -163,10 +163,10 @@ class SnippetVarValue extends CustomModel implements IDuplicable
     }
 
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
-     * @param null $productType
+     * @param Product $product
      * @return mixed|string
      */
-    public function getValue($productType = null)
+    public function getValue($product = null)
     {
         $value = null;
 
@@ -178,7 +178,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
 
                 foreach ($this->listItems as $listItem) {
                     if ($listItem->active) {
-                        $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($productType) . ', ' . PHP_EOL;
+                        $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($product) . ', ' . PHP_EOL;
                     }
                 }
 
@@ -241,7 +241,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
                 if (isset($this->value_text) && $this->value_text != '') {
                     $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text))) . '\'';
                 } else {
-                    $defaultValue = $this->var->getDefaultValue($productType);
+                    $defaultValue = $this->var->getDefaultValue($product);
 
                     if (isset($defaultValue)) {
                         $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) . '\'';

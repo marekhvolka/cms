@@ -326,7 +326,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     private function prepareSnippetData()
     {
-        $productType = null;
+        $product = null;
 
         $buffer = '<?php ' . PHP_EOL;
         /* @var $snippetVarValue SnippetVarValue */
@@ -344,10 +344,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         if (isset($this->column) && isset($this->column->row->section->area->page) && isset($this->column->row->section->area->page->product)) {
             $buffer .= '/* Product type default var values  */' . PHP_EOL;
-            $productType = $this->column->row->section->area->page->product->productType;
+            $product = $this->column->row->section->area->page->product;
 
             foreach ($this->snippetVarValues as $snippetVarValue) {
-                $defaultValue = $snippetVarValue->var->getDefaultValueAsString($productType);
+                $defaultValue = $snippetVarValue->var->getDefaultValueAsString($product);
 
                 if (isset($defaultValue)) {
                     $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $defaultValue . ';' . PHP_EOL;
@@ -369,7 +369,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         foreach ($this->snippetVarValues as $snippetVarValue) {
 
-            $value = $snippetVarValue->getValue($productType);
+            $value = $snippetVarValue->getValue($product);
             if (isset($value) && $value != '\'\'' && $value != 'NULL' && $value != 'array()') {
                 $buffer .= '$snippet->' . $snippetVarValue->var->identifier . ' = ' . $value . ';' . PHP_EOL;
             }

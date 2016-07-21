@@ -1,4 +1,5 @@
 <?php
+use backend\models\PartnershipType;
 use backend\models\ProductType;
 use yii\bootstrap\BaseHtml;
 use yii\helpers\ArrayHelper;
@@ -15,7 +16,7 @@ use yii\helpers\ArrayHelper;
 <div class="row">
     <div class="col-sm-12">
         <?php if ($defaultValue->productType || $forProductType) : ?>
-            <div class="col-sm-4 column-without-padding">
+            <div class="col-sm-3 column-without-padding">
                 <?= BaseHtml::activeDropDownList($defaultValue, "product_type_id", ArrayHelper::map(
                     ProductType::find()->all(), "id", "name"
                 ), [
@@ -25,8 +26,18 @@ use yii\helpers\ArrayHelper;
                 ]);
                 ?>
             </div>
+            <div class="col-sm-3 column-without-padding">
+                <?= BaseHtml::activeDropDownList($defaultValue, "partnership_type_id", ArrayHelper::map(
+                    PartnershipType::find()->all(), "id", "name"
+                ), [
+                    'class' => 'form-control',
+                    'prompt' => 'Vyber typ spolupráce',
+                    'name' => $prefix . "[partnership_type_id]"
+                ]);
+                ?>
+            </div>
         <?php endif; ?>
-        <div class="col-sm-<?= $defaultValue->productType || $forProductType ? '8' : '12' ?> column-without-padding">
+        <div class="col-sm-<?= $defaultValue->productType || $forProductType ? '6' : '12' ?> column-without-padding">
             <?= BaseHtml::activeTextInput($defaultValue, "value_text", [
                 'class' => 'form-control',
                 'name' => $prefix . "[value_text]",
