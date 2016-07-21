@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bdf697b81adf640ec1dd3e58c3d0d926",
-    "content-hash": "4b9abea62da011db6090c8297dfe5f00",
+    "hash": "a2e4196a2fd70d945851e465802c4927",
+    "content-hash": "7f511822a9a8e29045ff41073f7ef118",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -221,6 +221,48 @@
                 ],
                 "bower-asset-ignore": []
             }
+        },
+        {
+            "name": "bower-asset/jquery.are-you-sure",
+            "version": "1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codedance/jquery.AreYouSure.git",
+                "reference": "098b3d3a35a0bd09fd3bbab514dd7d2f4159e680"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codedance/jquery.AreYouSure/zipball/098b3d3a35a0bd09fd3bbab514dd7d2f4159e680",
+                "reference": "098b3d3a35a0bd09fd3bbab514dd7d2f4159e680",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.4.2"
+            },
+            "require-dev": {
+                "bower-asset/jasmine-jquery": "~2.0.3"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "jquery.are-you-sure.js",
+                "bower-asset-ignore": [
+                    "**/.*",
+                    "demo"
+                ]
+            },
+            "license": [
+                "MIT/GPLv2"
+            ],
+            "description": "A light-weight jQuery 'dirty forms' Plugin - it monitors html forms and alerts users to unsaved changes if they attempt to close the browser or navigate away from the page. (Are you sure?)",
+            "keywords": [
+                "are-you-sure",
+                "change",
+                "dirty",
+                "field",
+                "form",
+                "save-check",
+                "save-warning"
+            ]
         },
         {
             "name": "bower-asset/jquery.inputmask",

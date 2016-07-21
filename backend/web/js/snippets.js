@@ -20,6 +20,7 @@ body.on(
             appendUrl.code, postData, function (data)
             {
                 $('.snippet-codes').append($(data));
+                rescanForms();
             }
         );
     }
@@ -47,6 +48,7 @@ body.on(
             url, postData, function (data)
             {
                 $(self).parents('.snippet-vars').first().find('.snippet-vars-container').first().append($(data));
+                rescanForms();
             }
         );
     }
@@ -76,6 +78,8 @@ body.on(
                 {
                     var listBoxContainer = $(self).parents('.var-body').first().find('.list-box-container');
                     listBoxContainer.append($(data));
+
+                    rescanForms();
                 }
             );
         }
@@ -107,6 +111,8 @@ body.on(
             appendUrl.defaultValue, postData, function (data)
             {
                 self.parents('.snippet-var-default-values').first().append($(data));
+
+                rescanForms();
             }
         );
     }
@@ -121,5 +127,7 @@ body.on('click', '.btn-alternative-usage', function (e) {
         var modal = $("#alternativeUsedIn");
         modal.find(".modal-body").empty().append($(data));
         modal.modal("show");
+
+        rescanForms();
     });
 });

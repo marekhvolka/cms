@@ -34,7 +34,8 @@
         "kartik-v/yii2-widget-fileinput": "@dev",
         "2amigos/yii2-ckeditor-widget": "~1.0",
         "yiisoft/yii2-jui": "^2.0",
-        "trntv/yii2-aceeditor": "*"
+        "trntv/yii2-aceeditor": "*",
+        "bower-asset/jquery.are-you-sure": "^1.9"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
