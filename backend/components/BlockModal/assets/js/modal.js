@@ -34,7 +34,7 @@ body.on(
                 modalContent.empty();
                 modalContent.append($(data));
 
-                rescanForms();
+                //rescanForms();
             }
         );
     }
