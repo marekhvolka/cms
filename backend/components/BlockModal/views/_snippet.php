@@ -73,6 +73,8 @@ use yii\helpers\Url;
                         'class' => 'parent-dropdown form-control',
                         'data-prefix' => $prefix,
                         'data-type' => $model->type,
+                        'data-page-id' => $page ? $page->id : '',
+                        'data-portal-id' => $portal ? $portal->id : '',
                         'prompt' => 'Vyber produktový snippet'
                     ]) ?>
             <?php endif;
