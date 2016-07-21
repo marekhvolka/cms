@@ -268,7 +268,8 @@ class SnippetVar extends Variable
                 $defaultValue = SnippetVarDefaultValue::find()
                     ->andWhere([
                         'snippet_var_id' => $this->id,
-                        'product_type_id' => $product->type_id
+                        'product_type_id' => $product->type_id,
+                        'partnership_type_id' => null
                     ])
                     ->one();
             }
