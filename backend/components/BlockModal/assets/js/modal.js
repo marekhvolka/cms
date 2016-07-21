@@ -141,6 +141,7 @@ body.on(
                 listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
                 enableDragBy(listPanel.find(".children-list.list-items").toArray(), '.list-item-drag-by');
                 rescanForms();
+                listPanel.parents(".modal-main-content").first().find(".change-snippet-code").trigger('change'); // so that unneeded variables get removed
             }
         );
     }
