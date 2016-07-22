@@ -6,6 +6,7 @@
  * Time: 19:54
  */
 use backend\models\Portal;
+use yii\bootstrap\Html;
 use yii\helpers\BaseHtml;
 
 /* @var $model \backend\models\Column */
@@ -26,7 +27,7 @@ use yii\helpers\BaseHtml;
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">
-                    <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
+                    <button class="btn btn-primary options-btn btn-xs open-column-options">
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -53,6 +54,7 @@ use yii\helpers\BaseHtml;
                 </div>
             </div>
         </h4>
+        <?= $this->render('_section-column-options', ['model' => $model, 'prefix' => $prefix]) ?>
     </div>
     <div class="panel-body children-list blocks">
         <?php foreach ($model->blocks as $indexBlock => $block) : ?>

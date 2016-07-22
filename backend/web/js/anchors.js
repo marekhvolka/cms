@@ -29,5 +29,4 @@ items.click(function () {
     if (scrollTo.length == 0) {
         $(this).remove();
     }
-
 });

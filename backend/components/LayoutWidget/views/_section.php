@@ -1,5 +1,6 @@
 <?php
 use backend\models\Portal;
+use yii\bootstrap\Html;
 use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
@@ -21,13 +22,15 @@ use yii\helpers\BaseHtml;
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">
-                    <button class="btn btn-primary options-btn btn-xs" data-toggle="modal" data-target="#modal-options">
+                    <button class="btn btn-primary options-btn btn-xs open-section-options">
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     </button>
                 </div>
                 <div class="dropdown dropdown-cols inline-button">
-                    <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs" data-prefix="<?= $prefix ?>"
-                            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
+                    <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
+                            data-prefix="<?= $prefix ?>"
+                            data-page-id="<?= $page ? $page->id : '' ?>"
+                            data-portal-id="<?= $portal ? $portal->id : '' ?>"
                             title="Vložiť nový riadok" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
@@ -48,6 +51,7 @@ use yii\helpers\BaseHtml;
                     </button>
                 </div>
             </div>
+            <?= $this->render('_section-column-options', ['model' => $model, 'prefix' => $prefix]) ?>
         </h3>
     </div>
     <div class="panel-body">

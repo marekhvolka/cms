@@ -44,6 +44,16 @@ body.on(
     }
 );
 
+body.on('click', '.open-section-options', function (e) {
+    $(this).parents('.panel-title').find('.modal').modal('show');
+    e.preventDefault();
+});
+
+body.on('click', '.open-column-options', function (e) {
+    $(this).parents('.panel-heading').find('.modal').modal('show');
+    e.preventDefault();
+});
+
 body.on(
     "click", ".add-row", function () {
         var $this = $(this),
