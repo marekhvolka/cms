@@ -11,8 +11,7 @@ var appendUrl = {
     body = $("body");
 
 body.on(
-    'change', '.snippet-dropdown', function ()
-    {
+    'change', '.snippet-dropdown', function () {
         var postData = {
             prefix: $(this).data('prefix'),
             pageId: $(this).data('page-id'),
@@ -26,23 +25,23 @@ body.on(
         var self = $(this);
 
         $.post(
-            appendUrl.blockModalContent, postData, function (data)
-            {
+            appendUrl.blockModalContent, postData, function (data) {
                 self.parents('.btn-group').first().find('.btn-block-modal').first().html(snippetName);
 
                 var modalContent = self.parents('.modal-main-content').first();
                 modalContent.empty();
                 modalContent.append($(data));
 
-                //rescanForms();
+                setTimeout(function () {
+                    rescanForms();
+                }, 0);
             }
         );
     }
 );
 
 body.on(
-    'change', '.parent-dropdown', function ()
-    {
+    'change', '.parent-dropdown', function () {
         var postData = {
             prefix: $(this).data('prefix'),
             pageId: $(this).data('page-id'),
@@ -56,31 +55,30 @@ body.on(
         var self = $(this);
 
         $.post(
-            appendUrl.blockModalContent, postData, function (data)
-            {
+            appendUrl.blockModalContent, postData, function (data) {
                 self.parents('.btn-group').first().find('.btn-block-modal').first().html(snippetName);
 
                 var modalContent = self.parents('.modal-main-content').first();
                 modalContent.empty();
                 modalContent.append($(data));
 
-                //rescanForms();
+                setTimeout(function () {
+                    rescanForms();
+                }, 0);
             }
         );
     }
 );
 
 body.on(
-    'click', '.btn-block-modal', function ()
-    {
+    'click', '.btn-block-modal', function () {
         var modalContainer = $(this).parents('.block').first().find('.modal-container');
 
         var blockId = $(this).data('id'),
             modal = $('#modal-' + blockId);
 
         // if it exists, it will get shown automatically... otherwise, load it
-        if (modalContainer.children().length == 0)
-        {
+        if (modalContainer.children().length == 0) {
             var postData = {
                     id: blockId,
                     prefix: $(this).data('prefix'),
@@ -91,8 +89,7 @@ body.on(
                 self = this;
 
             $.post(
-                appendUrl.blockModal, postData, function (data)
-                {
+                appendUrl.blockModal, postData, function (data) {
                     var modalWindow = $(data);
 
                     modalContainer.append(modalWindow);
@@ -108,12 +105,13 @@ body.on(
                         $('[data-toggle="tooltip"]').tooltip()
                     });
 
-                    //rescanForms();
+                    setTimeout(function () {
+                        rescanForms();
+                    }, 0);
                 }
             );
         }
-        else
-        {
+        else {
             modalContainer.children('.modal').first().modal('show');
         }
 
@@ -122,8 +120,7 @@ body.on(
 );
 
 body.on(
-    'click', '.btn-add-list-item', function ()
-    {
+    'click', '.btn-add-list-item', function () {
         var listPanel = $(this).parents('.list-panel').first();
 
         var postData = {
@@ -135,21 +132,21 @@ body.on(
         };
 
         $.post(
-            appendUrl.listItem, postData, function (data)
-            {
+            appendUrl.listItem, postData, function (data) {
                 appendElement(listPanel, $(data));
                 listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
                 enableDragBy(listPanel.find(".children-list.list-items").toArray(), '.list-item-drag-by');
-                //rescanForms();
                 listPanel.parents(".modal-main-content").first().find(".change-snippet-code").trigger('change'); // so that unneeded variables get removed
+                setTimeout(function () {
+                    rescanForms();
+                }, 0);
             }
         );
     }
 );
 
 body.on(
-    'click', '.btn-remove-list-item', function ()
-    {
+    'click', '.btn-remove-list-item', function () {
         var listPanel = $(this).parents('.list-panel');
 
         $(this).parents('.list-item').first().remove();
@@ -158,8 +155,7 @@ body.on(
 );
 
 body.on(
-    'click', '.btn-modal-save', function ()
-    {
+    'click', '.btn-modal-save', function () {
         var modalWindow = $(this).parents('.modal').first();
 
         modalWindow.modal('hide');
@@ -169,8 +165,7 @@ body.on(
 );
 
 body.on(
-    'click', '.btn-modal-close', function ()
-    {
+    'click', '.btn-modal-close', function () {
         var modalWindow = $(this).parents('.modal').first();
 
         modalWindow.modal('hide');
@@ -179,8 +174,7 @@ body.on(
     }
 );
 
-function appendElement(parentElement, dataToAppend)
-{
+function appendElement(parentElement, dataToAppend) {
     parentElement.find('.children-list:first').append(dataToAppend);
 
     return dataToAppend;

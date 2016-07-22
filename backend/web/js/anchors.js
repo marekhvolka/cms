@@ -23,15 +23,11 @@ search.on('input', function () {
     }).hide();
 });
 
-/*
 items.click(function () {
     var scrollTo = $($(this).attr('href'));
 
-    if (scrollTo.length > 0) {
-        search.val('').trigger('input');
-        //toggle.click();
-    } else {
+    if (scrollTo.length == 0) {
         $(this).remove();
     }
 
-});*/
+});
