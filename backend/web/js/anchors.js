@@ -28,9 +28,9 @@ items.click(function () {
 
     if (scrollTo.length > 0) {
         search.val('').trigger('input');
+        toggle.click();
     } else {
         $(this).remove();
     }
 
-    toggle.click();
 });

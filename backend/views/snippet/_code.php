@@ -15,7 +15,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="item panel panel-default snippet-code"><!-- widgetBody -->
-    <a class="anchor" id="code<?= $model->id ?>"></a>
+    <a class="anchor" id="code<?= $model->id ?>" name="code<?= $model->id ?>"></a>
     <div class="panel-heading form-inline">
 
         <?= BaseHtml::activeTextInput($model, "name", [
