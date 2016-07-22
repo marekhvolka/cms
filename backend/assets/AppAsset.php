@@ -27,7 +27,7 @@ class AppAsset extends AssetBundle
         'js/menu.js',
         'js/global-search.js',
         'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
-        'http://www.papercut.com/products/free-software/are-you-sure/jquery.are-you-sure.js',
+        'js/are-you-sure.js',
         'js/common.js'
     ];
     public $depends = [

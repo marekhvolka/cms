@@ -32,9 +32,7 @@ body.on(
                 modalContent.empty();
                 modalContent.append($(data));
 
-                setTimeout(function () {
-                    rescanForms();
-                }, 0);
+                rescanForms();
             }
         );
     }
@@ -62,9 +60,7 @@ body.on(
                 modalContent.empty();
                 modalContent.append($(data));
 
-                setTimeout(function () {
-                    rescanForms();
-                }, 0);
+                rescanForms();
             }
         );
     }
@@ -105,9 +101,7 @@ body.on(
                         $('[data-toggle="tooltip"]').tooltip()
                     });
 
-                    setTimeout(function () {
-                        rescanForms();
-                    }, 0);
+                    rescanForms();
                 }
             );
         }
