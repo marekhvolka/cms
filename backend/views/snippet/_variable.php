@@ -12,6 +12,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="item panel panel-default snippet-var"><!-- widgetBody -->
+    <a class="anchor" id="variable<?= $model->id ?>"></a>
     <div class="panel-heading form-inline">
         <a data-toggle="collapse" href="#panelVar<?= $prefix ?>">
             <span>

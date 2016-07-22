@@ -449,3 +449,34 @@ span.row-drag-by, span.section-drag-by {
     border-color: #bbb;
     color: #111;
 }
+
+.anchors {
+    position: fixed;
+    right: 10px;
+    top: 70px;
+    max-height: 400px;
+    min-width: 240px;
+    overflow-y: scroll;
+    padding: 10px 40px 10px 10px;
+    background-color: white;
+    border: 1px solid black;
+    z-index: 10;
+}
+
+.anchors.closed {
+    max-width: 100px;
+    min-width: auto;
+}
+
+.anchors.closed h3 {
+    padding: 0;
+    margin: 0;
+}
+
+.anchors a {
+    display: block;
+}
+
+.anchors.closed .opened {
+    display: none;
+}

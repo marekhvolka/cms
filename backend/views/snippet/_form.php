@@ -10,7 +10,28 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\Snippet */
 /* @var $form yii\widgets\ActiveForm */
 
+$this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\JqueryAsset']]);
 ?>
+
+<div class="anchors closed">
+    <h3 class="toggle"><a href="#">Kotvy</a></h3>
+    <div class="opened items">
+        <input type="text" placeholder="Hľadať">
+
+        <h4>Alternatívy</h4>
+        <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
+
+            <a href="#code<?= $snippetCode->id ?>"><?= $snippetCode->name ?></a>
+
+        <?php endforeach; ?>
+        <h4>Premenné</h4>
+        <?php foreach ($model->snippetVariables as $indexCode => $variable): ?>
+
+            <a href="#variable<?= $variable->id ?>"><?= $variable->identifier ?></a>
+
+        <?php endforeach; ?>
+    </div>
+</div>
 
 <div class="snippet-form">
 
