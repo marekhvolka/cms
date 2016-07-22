@@ -101,6 +101,18 @@ class ObjectBridge extends ArrayObject
 
         return true;
     }
+
+    public function isApi()
+    {
+        if (!isset($this->obj) || !isset($this->obj->typ_spoluprace)) {
+            return false;
+        }
+
+        if ($this->obj->typ_spoluprace == 'api')
+            return true;
+
+        return false;
+    }
 }
 
 function executeScript($path)
