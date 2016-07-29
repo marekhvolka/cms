@@ -1,8 +1,7 @@
 <?php
 
 use backend\models\Portal;
-use conquer\codemirror\CodemirrorAsset;
-use conquer\codemirror\CodemirrorWidget;
+use backend\components\AceEditor\AceEditorWidget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
 
@@ -45,7 +44,7 @@ use yii\helpers\BaseHtml;
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-12">
-                <?= trntv\aceeditor\AceEditor::widget([
+                <?= AceEditorWidget::widget([
                     // You can either use it for model attribute
                     'model' => $model,
                     'attribute' => 'code',
