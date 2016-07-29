@@ -78,7 +78,7 @@ class SiteController extends Controller
         ])
             ->one();
 
-        if (!$portal || !Yii::$app->user->identity->portal->active) {
+        if (!$portal) {
             $portal = Yii::$app->user->identity->portal;
         }
 
