@@ -10,7 +10,7 @@ use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
 /**
- * Represents one file in a subcategory of a category.
+ * Trieda, reprezentujuca subor (obrazok, dokument, ...) v multimediach
  *
  * @package backend\models
  */

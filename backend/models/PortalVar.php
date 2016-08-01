@@ -6,7 +6,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "snippet_var".
+ * Trieda, reprezentujuca premennu, ktoru je mozne priradit pre portal
  *
  * @property string $product_type
  */

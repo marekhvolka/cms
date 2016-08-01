@@ -8,7 +8,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Represents a single multimedia category.
+ * Trieda reprezentujuca kategoriu multimedii. V praxi adresar, v ktorom su ulozene subory
  *
  * @property $items[] MultimediaItem
  * @package backend\models

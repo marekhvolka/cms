@@ -13,10 +13,10 @@ namespace backend\models;
  * @property bool $removed Indicates if model has to be removed
  */
 
-use backend\controllers\BaseController;
 use Yii;
+use yii\db\ActiveRecord;
 
-class CustomModel extends \yii\db\ActiveRecord
+class CustomModel extends ActiveRecord
 {
     public $removed = true;
 

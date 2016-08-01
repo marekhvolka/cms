@@ -5,7 +5,7 @@ namespace backend\models;
 use Yii;
 
 /**
- * This is the model class for table "partnership_type".
+ * Trieda, reprezentujuca typ spoluprace pri produktoch
  *
  * @property integer $id
  * @property string $name

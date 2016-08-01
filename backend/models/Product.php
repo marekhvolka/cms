@@ -8,7 +8,7 @@ use yii\base\Exception;
 use yii\db\Query;
 
 /**
- * This is the model class for table "product".
+ * Trieda reprezentujuca produkt (pozicku, ucet, ...)
  *
  * @property integer $id
  * @property string $name
@@ -99,6 +99,9 @@ class Product extends CustomModel implements ICacheable, IDuplicable
         ];
     }
 
+    /**
+     * Metoda, pripravujuca produkt na duplikaciu
+     */
     public function resetAfterUpdate()
     {
         $this->setOutdated();

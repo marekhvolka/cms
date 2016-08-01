@@ -2,34 +2,24 @@
 
 namespace backend\models\search;
 
-use backend\models\Snippet;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use backend\models\Post;
 
 /**
- * SnippetSearch represents the model behind the search form about `app\models\Snippet`.
+ * PostSearch represents the model behind the search form about `backend\models\Post`.
  */
-class SnippetSearch extends Snippet
+class PostSearch extends Post
 {
-    public $globalSearch;
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'last_edit_user'], 'integer'],
-            [
-                [
-                    'globalSearch',
-                    'name',
-                    'description',
-                    'last_edit'
-                ],
-                'safe'
-            ],
+            [['id', 'portal_id', 'layout_id', 'last_edit_user', 'active'], 'integer'],
+            [['name', 'url', 'published_at', 'perex', 'last_edit'], 'safe'],
         ];
     }
 
@@ -51,7 +41,9 @@ class SnippetSearch extends Snippet
      */
     public function search($params)
     {
-        $query = Snippet::find();
+        $query = Post::find();
+
+        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -65,8 +57,20 @@ class SnippetSearch extends Snippet
             return $dataProvider;
         }
 
-        $query->orFilterWhere(['like', 'name', $this->globalSearch])
-            ->orFilterWhere(['like', 'description', $this->globalSearch]);
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'portal_id' => $this->portal_id,
+            'layout_id' => $this->layout_id,
+            'published_at' => $this->published_at,
+            'last_edit' => $this->last_edit,
+            'last_edit_user' => $this->last_edit_user,
+            'active' => $this->active,
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'url', $this->url])
+            ->andFilterWhere(['like', 'perex', $this->perex]);
 
         return $dataProvider;
     }
