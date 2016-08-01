@@ -47,6 +47,7 @@ use yii\helpers\BaseHtml;
                 <?= AceEditorWidget::widget([
                     'name' => $prefix . '[code]',
                     'value' => $model->code,
+                    'varNameAceEditor' => 'code' . hash('md5', $prefix),
                     'theme' => 'chrome',
                     'aceOptions' => [
                         'showPrintMargin' => false,

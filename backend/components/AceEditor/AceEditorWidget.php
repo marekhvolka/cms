@@ -13,8 +13,6 @@ class AceEditorWidget extends InputWidget
 {
     public static $lastId = 0;
 
-    public $id;
-
     /** @var string */
     public $varNameAceEditor;
     /** @var string */
@@ -54,8 +52,8 @@ class AceEditorWidget extends InputWidget
 
     protected function editable()
     {
-        $id = 'ace-editor-' . $this->id;
-        $valueId = 'ace-editor-value' . $this->id;
+        $id = 'ace-editor-' . $this->varNameAceEditor;
+        $valueId = 'ace-editor-value' . $this->varNameAceEditor;
         $autocompletion = $this->autocompletion ? 'true' : 'false';
         if ($this->autocompletion) {
             $this->aceOptions['enableBasicAutocompletion'] = true;
@@ -73,7 +71,7 @@ class AceEditorWidget extends InputWidget
     {$this->varNameAceEditor}.setTheme("ace/theme/{$this->theme}");
     {$this->varNameAceEditor}.getSession().setMode("ace/mode/{$this->mode}");
     {$this->varNameAceEditor}.setOptions({$aceOptions});
-    
+
     var textarea = $('#{$valueId}').hide();
         {$this->varNameAceEditor}.getSession().setValue(textarea.val());
         {$this->varNameAceEditor}.getSession().on('change', function(){
@@ -94,7 +92,7 @@ JS;
 
         $code = "\nvar {$this->varNameAceEditor} = {};\n";
         if (Yii::$app->request->isAjax) {
-            $result .= '<script type="text/javascript">' . $code . $js . '</script>';
+            $result .= '<script type="text/javascript">'. $code . $js . '</script>';
         } else {
             $view->registerJs($code, $view::POS_HEAD);
             $view->registerJs($js);
