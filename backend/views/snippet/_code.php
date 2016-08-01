@@ -45,19 +45,15 @@ use yii\helpers\BaseHtml;
         <div class="row">
             <div class="col-sm-12">
                 <?= AceEditorWidget::widget([
-                    // You can either use it for model attribute
-                    'model' => $model,
-                    'attribute' => 'code',
-
-                    'mode' => 'php', // programing language mode. Default "html"
-                    'theme' => 'chrome', // editor theme. Default "github"
-                    'options' => [
-                        'name' => $prefix . "[code]",
-                        'value' => $model->code,
-                        'id' => 'code' . hash('md5', $prefix)
+                    'name' => $prefix . '[code]',
+                    'value' => $model->code,
+                    'theme' => 'chrome',
+                    'aceOptions' => [
+                        'showPrintMargin' => false,
+                        "maxLines" => 29,
+                        "minLines" => 5,
                     ]
-                ])
-                ?>
+                ]); ?>
             </div>
         </div><!-- .row -->
         <div class="row">

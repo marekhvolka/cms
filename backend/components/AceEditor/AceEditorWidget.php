@@ -16,7 +16,7 @@ class AceEditorWidget extends InputWidget
     public $id;
 
     /** @var string */
-    public $varNameAceEditor = 'aceEditor';
+    public $varNameAceEditor;
     /** @var string */
     public $mode = 'php';
     /** @var string */
@@ -37,6 +37,13 @@ class AceEditorWidget extends InputWidget
     public function run()
     {
         $this->id = AceEditorWidget::$lastId++;
+        if ($this->varNameAceEditor == null) {
+            $this->varNameAceEditor = 'aceEditor';
+
+            if (AceEditorWidget::$lastId > 1) {
+                $this->varNameAceEditor .= AceEditorWidget::$lastId;
+            }
+        }
         $this->extensions[] = 'static_highlight';
         if ($this->autocompletion) {
             $this->extensions[] = 'language_tools';
@@ -87,7 +94,7 @@ JS;
 
         $code = "\nvar {$this->varNameAceEditor} = {};\n";
         if (Yii::$app->request->isAjax) {
-            $result .= '<script type="text/javascript">'. $code . $js . '</script>';
+            $result .= '<script type="text/javascript">' . $code . $js . '</script>';
         } else {
             $view->registerJs($code, $view::POS_HEAD);
             $view->registerJs($js);
