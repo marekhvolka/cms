@@ -39,10 +39,12 @@ use yii\base\Exception;
  * @property Area $footer
  * @property Area $content
  * @property Area $sidebar
+ *
+ * @property string $cacheIdentifier
  */
 class Page extends CustomModel implements ICacheable, IDuplicable
 {
-    private $cacheIdentifier;
+    //private $cacheIdentifier;
 
     public function initializeNew()
     {
@@ -173,6 +175,14 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         }
 
         return $breadcrumbs . $this->name;
+    }
+
+    /** Metoda vrati identifikator pre potreby cache
+     * @return string
+     */
+    public function getCacheIdentifier()
+    {
+        return '$page' . $this->id;
     }
 
     /**
@@ -534,14 +544,6 @@ class Page extends CustomModel implements ICacheable, IDuplicable
         $this->content->prepareToDuplicate();
 
         unset($this->id);
-    }
-
-    /** Metoda vrati identifikator pre potreby cache
-     * @return string
-     */
-    public function getCacheIdentifier()
-    {
-        return '$page' . $this->id;
     }
 
     /** Metoda, vracajuca, ci sa zmenila hlavicka stranky (ktora ovplyvnuje aj ine stranky - menu a podobne)
