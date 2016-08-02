@@ -199,7 +199,7 @@ class CustomModel extends ActiveRecord
     public function isChanged()
     {
         foreach ($this->myOldAttributes as $index => $oldAttribute) {
-            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user' && $index != 'outdated') {
+            if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user') {
                 return true;
             }
         }

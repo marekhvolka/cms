@@ -124,7 +124,7 @@ class ListItem extends CustomModel implements IDuplicable
 
     public function isChanged()
     {
-        if (parent::isChanged() || $this->removed)
+        if (parent::isChanged())
             return true;
 
         foreach($this->snippetVarValues as $snippetVarValue) {
