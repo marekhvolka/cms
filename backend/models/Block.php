@@ -3,9 +3,7 @@
 namespace backend\models;
 
 use Exception;
-use Latte\Compiler;
 use Latte\Engine;
-use Latte\Loaders\FileLoader;
 use Latte\Loaders\StringLoader;
 use Yii;
 
@@ -476,13 +474,14 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return null;
     }
 
-    public function getChildrenOwners(){
+    public function getChildrenOwners()
+    {
         $pageAreas = [];
         $portalAreas = [];
         $portals = [];
         $products = [];
 
-        foreach($this->getChildBlocks()->all() as $block){
+        foreach ($this->getChildBlocks()->all() as $block) {
             $owner = $block->getOwner();
             if ($owner instanceof Portal) {
                 $portals[] = [$owner, $block];

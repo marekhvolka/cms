@@ -431,9 +431,10 @@ abstract class BaseController extends Controller
                 throw new Exception;
             }
 
-            foreach ($snippetVarValue->listItems as $listItem) {
+            foreach ($snippetVarValue->listItems as $indexListItem => $listItem) {
                 if ($listItem->removed) {
                     $listItem->delete();
+                    unset($snippetVarValue->listItems[$indexListItem]);
                     continue;
                 }
                 $listItem->list_id = $snippetVarValue->id;
