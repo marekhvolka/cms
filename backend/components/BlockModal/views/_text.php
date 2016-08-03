@@ -14,4 +14,5 @@ $id = rand(0, 100000000);
 </div>
 <script type="text/javascript">
     CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
+    CKEDITOR.dtd.$removeEmpty['i'] = false;
 </script>

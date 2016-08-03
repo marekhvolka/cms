@@ -1,5 +1,4 @@
 <?php
-use backend\controllers\BaseController;
 use backend\models\ProductVar;
 use backend\models\Tag;
 use common\components\Icons;
@@ -46,7 +45,8 @@ use yii\helpers\Html;
                                placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
                                value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
                         <span class="input-group-btn">
-                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#", ['class' => 'pull-right open-multimedia btn btn-success']) ?>
+                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
+                            ['class' => 'pull-right open-multimedia btn btn-success']) ?>
                         </span>
                     </div>
                 <?php
@@ -84,9 +84,11 @@ use yii\helpers\Html;
                 case 'color' : ?>
                     <div class="input-group apply-spectrum spectrum-parent">
                         <span class="color-picking">
-                            <input type="text" class="apply-spectrum-picker picker" value="<?= $snippetVarValue->value_text ?>">
+                            <input type="text" class="apply-spectrum-picker picker"
+                                   value="<?= $snippetVarValue->value_text ?>">
                         </span>
-                        <input type="text" class="form-control apply-spectrum-source source" id="<?= $snippetVarValue->id ?>"
+                        <input type="text" class="form-control apply-spectrum-source source"
+                               id="<?= $snippetVarValue->id ?>"
                                name="<?= $prefix . '[value_text]' ?>"
                                value="<?= $snippetVarValue->value_text ?>"
                                placeholder="<?= $defaultValue ? $defaultValue->value_text : '' ?>">
@@ -95,17 +97,23 @@ use yii\helpers\Html;
 
                     <script type="text/javascript">
                         var apply = $(".apply-spectrum");
-                        apply.find(".apply-spectrum-picker").spectrum({
-                            preferredFormat: "hex",
-                            change: function(color) {
-                                $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                        apply.find(".apply-spectrum-picker").spectrum(
+                            {
+                                preferredFormat: "hex",
+                                change: function (color)
+                                {
+                                    $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                                }
                             }
-                        }).removeClass('apply-spectrum-picker');
+                        ).removeClass('apply-spectrum-picker');
 
-                        apply.find('.apply-spectrum-source').on('input', function(){
-                            var $this = $(this);
-                            $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
-                        }).removeClass('apply-spectrum-source');
+                        apply.find('.apply-spectrum-source').on(
+                            'input', function ()
+                            {
+                                var $this = $(this);
+                                $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
+                            }
+                        ).removeClass('apply-spectrum-source');
 
                         apply.removeClass('apply-spectrum');
                     </script>
@@ -121,6 +129,7 @@ use yii\helpers\Html;
 
                     <script type="text/javascript">
                         CKEDITOR.replace("ckeditor<?= $snippetVarValue->id ?>", ckeditorConfig);
+                        CKEDITOR.dtd.$removeEmpty['i'] = false;
                     </script>
 
                 <?php
@@ -201,14 +210,23 @@ use yii\helpers\Html;
                 ]) ?>
                     <script type="text/javascript">
                         var toApply = $(".apply-child-bootstrap-switch");
-                        toApply.find("input").bootstrapSwitch({onSwitchChange: function(event, state){
-                            var _this = $(this);
-                            if(state){
-                                _this.attr('checked', 'checked');
-                            } else {
-                                _this.removeAttr('checked');
-                            }
-                        }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>});
+                        toApply.find("input").bootstrapSwitch(
+                            {
+                                onSwitchChange: function (event, state)
+                                {
+                                    var _this = $(this);
+                                    if (state)
+                                    {
+                                        _this.attr('checked', 'checked');
+                                        _this.val = 1;
+                                    }
+                                    else
+                                    {
+                                        _this.removeAttr('checked');
+                                        _this.val = 0;
+                                    }
+                                }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>}
+                        );
                         toApply.removeClass('apply-child-bootstrap-switch');
                     </script>
 
@@ -221,11 +239,19 @@ use yii\helpers\Html;
                 <?php endif; ?>
             </div>
             <script type="text/javascript">
-                function format(o) {
-                    if (o.id != null) {
-                        if (o.id.match(/fa-[a-z\-]+/)) {
-                            return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace('-', ' ') + ' [font awesome]';
-                        } else if (o.id.match(/glyphicon\-[a-z\-]+/)) {
+                function format(o)
+                {
+                    if (o.id != null)
+                    {
+                        if (o.id.match(/fa-[a-z\-]+/))
+                        {
+                            return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace(
+                                    '-',
+                                    ' '
+                                ) + ' [font awesome]';
+                        }
+                        else if (o.id.match(/glyphicon\-[a-z\-]+/))
+                        {
                             return '<span class="' + o.id + '"></span> ' + o.text + ' [glyphicon]';
                         }
                     }
@@ -233,13 +259,16 @@ use yii\helpers\Html;
                     return o.text;
                 }
 
-                $(".activate-select2").select2({
-                    templateResult: format,
-                    templateSelection: format,
-                    escapeMarkup: function (m) {
-                        return m;
+                $(".activate-select2").select2(
+                    {
+                        templateResult: format,
+                        templateSelection: format,
+                        escapeMarkup: function (m)
+                        {
+                            return m;
+                        }
                     }
-                }).removeClass('activate-select2');
+                ).removeClass('activate-select2');
             </script>
             <div class="clearfix"></div>
         </div>
@@ -255,21 +284,22 @@ use yii\helpers\Html;
             </span>
                 <a class="btn btn-success btn-xs pull-right btn-add-list-item"
                    data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                   data-parent-id="<?= $parentId ?>" data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                   data-parent-id="<?= $parentId ?>" data-page-id="<?= $page ? $page->id : '' ?>"
+                   data-portal-id="<?= $portal ? $portal->id : '' ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             </div>
 
-        <div class="panel-body panel-collapse collapse in children-list list-items fixed-panel">
-            <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
-                <?= $this->render('_list-item', [
-                    'listItem' => $listItem,
-                    'page' => $page,
-                    'portal' => $portal,
-                    'prefix' => $prefix . "[ListItem][$indexItem]",
-                    'parentId' => $parentId
-                ]); ?>
-            <?php endforeach; ?>
+            <div class="panel-body panel-collapse collapse in children-list list-items fixed-panel">
+                <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
+                    <?= $this->render('_list-item', [
+                        'listItem' => $listItem,
+                        'page' => $page,
+                        'portal' => $portal,
+                        'prefix' => $prefix . "[ListItem][$indexItem]",
+                        'parentId' => $parentId
+                    ]); ?>
+                <?php endforeach; ?>
             </div>
         </div>
     <?php endif; ?>
