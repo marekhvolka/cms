@@ -1227,9 +1227,8 @@ video {
 /* PANELS */
 .page-heading {
     border-top: 0;
-    padding: 0px 10px 20px 10px;
-    margin-top: 20px;
-    margin-bottom: 30px;
+    padding: 0px 10px 10px 10px;
+    margin-bottom: 10px;
     position: relative;
 }
 
