@@ -247,7 +247,7 @@ UI.jqueryFileTree a.delete {
     padding: 5px;
     overflow-x: scroll;
     min-height: 400px;
-    max-height: 500px;
+    max-height: 70vh;
     box-shadow: 0 0 3px 3px lightgray;
 }
 

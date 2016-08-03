@@ -129,7 +129,7 @@ function build_file_tree($data, $from_dir = '')
                     'theme' => 'chrome',
                     'aceOptions' => [
                         'showPrintMargin' => false,
-                        "maxLines" => 29,
+                        "maxLines" => 50,
                         "minLines" => 5
                     ]
                 ]); ?>
