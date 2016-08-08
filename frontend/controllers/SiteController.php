@@ -79,7 +79,11 @@ class SiteController extends Controller
             ->one();
 
         if (!$portal) {
-            $portal = Yii::$app->user->identity->portal;
+            if (Yii::$app->user->isGuest) {
+                return '';
+            } else {
+                $portal = Yii::$app->user->identity->portal;
+            }
         }
 
         if ($identifiers[0] == '') { //homepage
