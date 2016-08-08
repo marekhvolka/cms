@@ -126,6 +126,10 @@ class Column extends CustomModel implements IDuplicable
                 $settings['classes'] .= $block->snippetCode->column_class . ' ';
                 $settings['ids'] .= $block->snippetCode->column_id . ' ';
                 $settings['styles'] .= $block->snippetCode->column_style . ' ';
+            } else if (isset($block->parent) && isset($block->parent->snippetCode)) {
+                $settings['classes'] .= $block->parent->snippetCode->column_class . ' ';
+                $settings['ids'] .= $block->parent->snippetCode->column_id . ' ';
+                $settings['styles'] .= $block->parent->snippetCode->column_style . ' ';
             }
         }
 

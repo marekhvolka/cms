@@ -71,10 +71,7 @@ class Section extends CustomModel implements IDuplicable
         return $this->rows;
     }
 
-    public function setRows($value)
-    {
-        $this->rows = $value;
-    }
+    public function setRows($value) { $this->rows = $value; }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -122,6 +119,10 @@ class Section extends CustomModel implements IDuplicable
                         $settings['classes'] .= $block->snippetCode->section_class . ' ';
                         $settings['ids'] .= $block->snippetCode->section_id . ' ';
                         $settings['styles'] .= $block->snippetCode->section_style . ' ';
+                    } else if (isset($block->parent) && isset($block->parent->snippetCode)) {
+                        $settings['classes'] .= $block->parent->snippetCode->section_class . ' ';
+                        $settings['ids'] .= $block->parent->snippetCode->section_id . ' ';
+                        $settings['styles'] .= $block->parent->snippetCode->section_style . ' ';
                     }
                 }
             }
