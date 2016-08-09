@@ -254,4 +254,28 @@ class Snippet extends CustomModel implements ICacheable
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);
         }
     }
+
+    public function assignPortal($portalId)
+    {
+        $query = 'INSERT IGNORE INTO snippet_portal (snippet_id, portal_id) VALUES (:snippet_id, :portal_id)';
+
+        $command = Yii::$app->db->createCommand($query);
+        $command->bindValue(':portal_id', $portalId);
+        $command->bindValue(':snippet_id', $this->id);
+
+        $command->execute();
+    }
+
+    /**
+     * Metoda na zrusenie priradenia vsetkych portalov UGLY
+     */
+    public function removeAssignedPortals()
+    {
+        $query = 'DELETE FROM snippet_portal WHERE snippet_id = :snippet_id';
+
+        $command = Yii::$app->db->createCommand($query);
+        $command->bindValue(':snippet_id', $this->id);
+
+        $command->execute();
+    }
 }

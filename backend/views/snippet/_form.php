@@ -59,7 +59,7 @@ $this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\Jquery
                 </label>
 
                 <?= Select2::widget([
-                    'name' => Portal::className() . '[_tags]',
+                    'name' => 'portals',
                     'value' => array_map(function ($item) {
                         return $item->id;
                     }, $model->portals),

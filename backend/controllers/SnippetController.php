@@ -107,6 +107,12 @@ class SnippetController extends BaseController
 
                 $model->saveChildren('snippetFirstLevelVars', 'snippet_id');
 
+
+                $model->removeAssignedPortals();
+                foreach(Yii::$app->request->post('portals') as $portalId) {
+                    $model->assignPortal($portalId);
+                }
+
                 $transaction->commit();
 
                 $model->resetAfterUpdate();

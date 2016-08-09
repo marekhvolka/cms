@@ -192,7 +192,7 @@ class SnippetVar extends Variable
      * @param Product $product
      * @return mixed|string
      */
-    public function getDefaultValue($product = null)
+    public function getDefaultValue(Product $product = null)
     {
         if ($product) {
             $defaultValue = SnippetVarDefaultValue::find()
