@@ -188,56 +188,6 @@ class SnippetVar extends Variable
         return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
     }
 
-    /** Metoda, ktora vrati vseobecnu defaultnu hodnotu (nie pre konkretny typ produktov)
-     * @param Product $product
-     * @return string
-     */
-    public function getDefaultValueAsString($product = null)
-    {
-        $cacheEngine = Yii::$app->dataEngine;
-
-        $value = '\'\'';
-
-        switch ($this->type->identifier) {
-            case 'list' :
-                $value = ' array()';
-                break;
-
-            case 'page' :
-                $value = 'NULL';
-                break;
-
-            case 'product' :
-                $value = 'NULL';
-                break;
-
-            case 'product_tag' :
-                $value = 'NULL';
-                break;
-
-            case 'bool' :
-                $value = 'false';
-                break;
-
-            case 'dropdown' :
-                $productTypeDefaultValue = $this->getDefaultValue($product);
-
-                if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown)) {
-                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
-                }
-                break;
-
-            default:
-                $productTypeDefaultValue = $this->getDefaultValue($product);
-
-                if ($productTypeDefaultValue) {
-                    $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->value_text) . '\'';
-                }
-        }
-
-        return $value;
-    }
-
     /** Vrati default hodnotu podla typu produktu
      * @param Product $product
      * @return mixed|string

@@ -70,13 +70,28 @@ abstract class VariableValue extends CustomModel
             case 'portal_snippet' :
                 $value = $this->valueBlock->compileBlock();
                 break;
-            default:
+            case 'number' :
                 if (isset($this->value_text) && $this->value_text != '') {
-                    $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text))) . '\'';
+                    $varValue = Yii::$app->dataEngine->normalizeString($this->value_text);
                 } else {
                     $defaultValue = $this->var->getDefaultValue($product);
-                    $value = '\'' . (isset($defaultValue) ? html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) : '') . '\'';
+                    $varValue = isset($defaultValue) ? Yii::$app->dataEngine->normalizeString($defaultValue->value) : '';
                 }
+
+                $varValue = html_entity_decode($varValue);
+                $varValue = str_replace(' ', '&nbsp;', number_format($varValue, strlen(substr(strrchr($varValue, ','), 1)), ',', ' '));
+                $value = '\'' . $varValue . '\'';
+
+                break;
+            default:
+                if (isset($this->value_text) && $this->value_text != '') {
+                    $varValue = $this->value_text;
+                } else {
+                    $defaultValue = $this->var->getDefaultValue($product);
+                    $varValue = isset($defaultValue) ? $defaultValue->value : '';
+                }
+
+                $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($varValue))) . '\'';
         }
 
         return $value;
