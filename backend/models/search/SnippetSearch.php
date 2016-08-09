@@ -54,7 +54,7 @@ class SnippetSearch extends Snippet
         $query = Snippet::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => Yii::$app->user->identity->portal->getSnippets(),
         ]);
 
         $this->load($params);

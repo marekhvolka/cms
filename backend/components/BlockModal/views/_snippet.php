@@ -1,7 +1,6 @@
 <?php
 use backend\models\Page;
 use backend\models\Portal;
-use backend\models\Snippet;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseHtml;
@@ -40,22 +39,23 @@ use yii\helpers\Url;
 
 
 
+
                 <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                         style="right: 60px; top: 13px;" data-toggle="modal"
                         data-target="#supportModal" title="Nápoveda">
                     <span class="fa fa-question"></span>
                 </button>
-                    <?php else : ?>
-                        <?= Html::dropDownList('snippet_id', null,
-                    ArrayHelper::map(Snippet::find()->all(), 'id', 'name'), [
-                        'prompt' => 'Výber snippetu',
-                        'class' => 'snippet-dropdown activate-select2',
-                        'data-type' => $model->type,
-                        'data-prefix' => $prefix,
-                        'data-page-id' => $page ? $page->id : '',
-                        'data-portal-id' => $portal ? $portal->id : ''
-                    ]) ?>
-
+                    <?php else :
+            $snippets = $page ? $page->portal->snippets : $portal->snippets;
+            echo Html::dropDownList('snippet_id', null,
+                ArrayHelper::map($snippets, 'id', 'name'), [
+                    'prompt' => 'Výber snippetu',
+                    'class' => 'snippet-dropdown activate-select2',
+                    'data-type' => $model->type,
+                    'data-prefix' => $prefix,
+                    'data-page-id' => $page ? $page->id : '',
+                    'data-portal-id' => $portal ? $portal->id : ''
+                ]); ?>
 
 
                 <script type="text/javascript">
