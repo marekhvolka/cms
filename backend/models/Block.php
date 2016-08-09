@@ -164,7 +164,6 @@ class Block extends CustomModel implements ICacheable, IDuplicable
     public function getSnippetVarValues()
     {
         if (!isset($this->snippetVarValues)) {
-
             $this->snippetVarValues = array();
 
             if ($this->snippetCode) {
@@ -197,10 +196,7 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $this->snippetVarValues;
     }
 
-    public function setSnippetVarValues($value)
-    {
-        $this->snippetVarValues = $value;
-    }
+    public function setSnippetVarValues($value) { $this->snippetVarValues = $value; }
 
     /** Returns array of newly created models from given data.
      * @param $data
@@ -262,25 +258,17 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
         switch ($this->type) {
             case 'snippet' :
-
                 $path .= 'snippet_cache' . $this->id . '';
-
                 break;
             case 'portal_snippet' :
-
                 $path .= 'portal_snippet_cache' . $this->id . '';
-
                 break;
             case 'product_snippet' :
-
                 $path .= 'product_snippet_cache' . $this->id . '';
-
                 break;
             default:
-
                 $path .= 'block_cache' . $this->id . '';
         }
-
 
         if (!file_exists($path . '.php') || $this->outdated || $reload) {
             try {

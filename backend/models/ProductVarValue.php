@@ -17,7 +17,7 @@ use Yii;
  * @property Product $product
  * @property ProductVar $var
  */
-class ProductVarValue extends Variable implements IDuplicable
+class ProductVarValue extends VariableValue implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -77,11 +77,6 @@ class ProductVarValue extends Variable implements IDuplicable
         }
 
         return $this->valueBlock;
-    }
-
-    public function setValueBlock($value)
-    {
-        $this->valueBlock = $value;
     }
 
     public function prepareToDuplicate()

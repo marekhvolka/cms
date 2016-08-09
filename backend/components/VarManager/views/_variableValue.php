@@ -66,7 +66,6 @@ if (!isset($renderModal)) {
                     $(".select2").select2();
                 </script>
             <?php
-
             break;
             case 'image':
                 echo Html::activeTextInput($varValue, 'value_text', [
@@ -126,7 +125,8 @@ if (!isset($renderModal)) {
                     </div>
                     <?php if (!$varValue->isNewRecord) : ?>
                         <div class="usages">
-                            <div class="modal fade" id="productUsedIn" data-id="<?= $varValue->id ?>" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="productUsedIn" data-id="<?= $varValue->id ?>" tabindex="-1"
+                                 role="dialog"
                                  aria-labelledby="productUsedInLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -138,7 +138,8 @@ if (!isset($renderModal)) {
                                             <h4 class="modal-title" id="alternativeUsedInLabel">Použitie snippetu</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <?= $this->render('_product-var-block-usage', ['block' => $varValue->valueBlock]) ?>
+                                            <?= $this->render('_product-var-block-usage',
+                                                ['block' => $varValue->valueBlock]) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -157,17 +158,6 @@ if (!isset($renderModal)) {
                     'class' => 'form-control',
                     'name' => $prefix . "[value_text]",
                 ]);
-                /*echo DatePicker::widget([
-                    'name' => $prefix . "[value_text]",
-                    'type' => DatePicker::TYPE_INPUT,
-                    'value' => $varValue->value_text,
-                    'dateFormat' => 'YYYY/mm/dd',
-                    'pluginOptions' => [
-                        'autoclose' => true,
-                        //'format' => 'yyyy/mm/dd'
-                    ],
-                    'class' => 'form-control'
-                ]);*/
                 break;
             case 'color':
 
@@ -181,7 +171,8 @@ if (!isset($renderModal)) {
                            name="<?= $prefix . '[value_text]' ?>"
                            value="<?= $varValue->value_text ?>">
                 </div>
-                <script>if (applySpectrum != null) {
+                <script>if (applySpectrum != null)
+                    {
                         applySpectrum();
                     }</script>
                 <?php

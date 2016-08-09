@@ -13,7 +13,6 @@ use Yii;
  * @property integer $show_snippet
  * @property integer $show_portal
  * @property integer $show_product
- * @property string $tbl_type
  *
  */
 class VarType extends \yii\db\ActiveRecord
@@ -32,11 +31,11 @@ class VarType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['identifier', 'show_snippet', 'show_portal', 'show_product', 'tbl_type'], 'required'],
+            [['identifier', 'show_snippet', 'show_portal', 'show_product'], 'required'],
             [['description'], 'string'],
             [['show_snippet', 'show_portal', 'show_product'], 'integer'],
             [['identifier', 'name'], 'string', 'max' => 50],
-            [['tbl_type'], 'string', 'max' => 7]
+            [['string', 'max' => 7]]
         ];
     }
 
@@ -51,8 +50,7 @@ class VarType extends \yii\db\ActiveRecord
             'description' => 'Popis',
             'show_snippet' => 'Ukáž snippet',
             'show_portal' => 'Ukáž portál',
-            'show_product' => 'Ukáž produkt',
-            'tbl_type' => 'Tbl typ',
+            'show_product' => 'Ukáž produkt'
         ];
     }
 }

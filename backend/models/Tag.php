@@ -13,7 +13,6 @@ use yii\db\Query;
  * @property string $name
  * @property string $label
  * @property string $identifier
- * @property integer $active
  * @property string $product_type
  * @property string $last_edit
  * @property integer $last_edit_user
@@ -33,19 +32,14 @@ class Tag extends CustomModel
         return 'tag';
     }
 
-    public function init()
-    {
-        $this->active = 1;
-    }
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['name', 'label', 'identifier', 'active', 'product_type'], 'required'],
-            [['active', 'last_edit_user'], 'integer'],
+            [['name', 'label', 'identifier', 'product_type'], 'required'],
+            [['last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name', 'label', 'identifier'], 'string', 'max' => 50],
             [['product_type'], 'string', 'max' => 100],
@@ -63,7 +57,6 @@ class Tag extends CustomModel
             'name' => 'Systémový názov',
             'label' => 'Názov',
             'identifier' => 'Identifikátor',
-            'active' => 'Aktívny',
             'product_type' => 'Typy produktov',
             'last_edit' => 'Dátum poslednej zmeny',
             'last_edit_user' => 'Naposledy editoval',
@@ -84,11 +77,7 @@ class Tag extends CustomModel
         $tagId = $this->id;
         $products = Yii::$app->request->post('Tag');
 
-        if (!isset($products['_products'])) {
-            $products = [];
-        } else {
-            $products = $products['_products'];
-        }
+        $products = isset($products['_products']) ? $products['_products'] : [];
 
         $saved_tags = $this->getProducts()->select('id')->asArray()->column();
 
@@ -117,14 +106,6 @@ class Tag extends CustomModel
     public function getSnippetVarValues()
     {
         return $this->hasMany(SnippetVarValue::className(), ['value_tag_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastEditUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
     }
 
     /**

@@ -66,12 +66,4 @@ class ProductType extends CustomModel
     {
         return $this->hasMany(Product::className(), ['type_id' => 'id']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastEditUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
-    }
 }

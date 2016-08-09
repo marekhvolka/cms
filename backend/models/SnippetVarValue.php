@@ -29,7 +29,7 @@ use Yii;
  * @property Block $block
  * @property SnippetVar $var
  */
-class SnippetVarValue extends CustomModel implements IDuplicable
+class SnippetVarValue extends VariableValue implements IDuplicable
 {
     /**
      * @inheritdoc
@@ -106,46 +106,6 @@ class SnippetVarValue extends CustomModel implements IDuplicable
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getValuePage()
-    {
-        return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueTag()
-    {
-        return $this->hasOne(Tag::className(), ['id' => 'value_tag_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueProductVar()
-    {
-        return $this->hasOne(ProductVar::className(), ['id' => 'value_product_var_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueDropdown()
-    {
-        return $this->hasOne(SnippetVarDropdown::className(), ['id' => 'value_dropdown_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValueProduct()
-    {
-        return $this->hasOne(Product::className(), ['id' => 'value_product_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getListItems()
     {
         if (!isset($this->listItems)) {
@@ -157,110 +117,7 @@ class SnippetVarValue extends CustomModel implements IDuplicable
         return $this->listItems;
     }
 
-    public function setListItems($value)
-    {
-        $this->listItems = $value;
-    }
-
-    /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat
-     * @param Product $product
-     * @return mixed|string
-     */
-    public function getValue($product = null)
-    {
-        $value = null;
-
-        switch ($this->var->type->identifier) {
-            case 'list' :
-
-                $value = 'array(';
-                $index = 0;
-
-                foreach ($this->listItems as $listItem) {
-                    if ($listItem->active) {
-                        $value .= '\'' . $index++ . '\' => ' . $listItem->getValue($product) . ', ' . PHP_EOL;
-                    }
-                }
-
-                $value .= ')';
-
-                break;
-
-            case 'bool' :
-                $value = $this->value_text == 1 ? 'true' : 'false';
-
-                break;
-            case 'page' :
-
-                if (isset($this->valuePage)) {
-                    $value = '$portal->pages->page' . $this->valuePage->id;
-                } else {
-                    $value = 'NULL';
-                }
-
-                break;
-
-            case 'product' :
-                if (isset($this->valueProduct)) {
-                    $value = '$' . $this->valueProduct->identifier;
-                } else {
-                    $value = 'NULL';
-                }
-
-                break;
-            case 'product_var' :
-                if (isset($this->valueProductVar)) {
-                    $value = '\'' . $this->valueProductVar->identifier . '\'';
-                } else {
-                    $value = 'NULL';
-                }
-                break;
-            case 'product_tag' :
-
-                if ($this->valueTag) {
-                    $value = '$tags->' . $this->valueTag->identifier;
-                } else {
-                    $value = 'NULL';
-                }
-
-                break;
-            case 'dropdown' :
-
-                if (!isset($this->valueDropdown)) {
-                    $this->value_dropdown_id = $this->var->defaultValue->valueDropdown->id;
-                    $this->save();
-
-                    $value = '\'' . $this->var->defaultValue->valueDropdown->value . '\'';
-                } else {
-                    $value = '\'' . $this->valueDropdown->value . '\'';
-                }
-
-                break;
-            default:
-
-                if (isset($this->value_text) && $this->value_text != '') {
-                    $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($this->value_text))) . '\'';
-                } else {
-                    $defaultValue = $this->var->getDefaultValue($product);
-
-                    if (isset($defaultValue)) {
-                        $value = '\'' . html_entity_decode(Yii::$app->dataEngine->normalizeString(($defaultValue->value))) . '\'';
-                    } else {
-                        $value = '\'\'';
-                    }
-                }
-        }
-
-        return $value;
-    }
-
-    /** Getter for $typeName property
-     * @return string
-     */
-    public function getTypeName()
-    {
-        return $this->var->type->identifier;
-    }
+    public function setListItems($value) { $this->listItems = $value; }
 
     public function resetAfterUpdate()
     {

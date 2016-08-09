@@ -76,9 +76,7 @@ class SnippetController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if (!($model->validate() && $model->save())) {
-                    throw new \yii\base\Exception;
-                }
+                $model->validateAndSave();
 
                 $snippetCodesData = Yii::$app->request->post('SnippetCode');
 
@@ -88,6 +86,7 @@ class SnippetController extends BaseController
                     }
                 }
 
+                /* @var $snippetCode SnippetCode */
                 foreach ($model->snippetCodes as $indexCode => $snippetCode) {
                     $snippetCode->snippet_id = $model->id;
 
@@ -97,15 +96,12 @@ class SnippetController extends BaseController
                         continue;
                     }
 
-                    if (!($snippetCode->validate() && $snippetCode->save())) {
-                        throw new \yii\base\Exception;
-                    }
+                    $snippetCode->validateAndSave();
                 }
 
                 $snippetVarsData = Yii::$app->request->post('SnippetVar');
 
                 if ($snippetVarsData != null) {
-
                     $model->loadChildren('snippetFirstLevelVars', $snippetVarsData);
                 }
 

@@ -81,13 +81,11 @@ class Word extends \yii\db\ActiveRecord
         return $this->translations;
     }
 
-    public function setTranslations($value)
-    {
-        $this->translations = $value;
-    }
+    public function setTranslations($value) { $this->translations = $value; }
 
     public function resetAfterUpdate()
     {
+        /* @var $language Language */
         foreach(Language::find()->all() as $language) {
             $language->getDictionaryCacheFile(true);
         }

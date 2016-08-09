@@ -70,10 +70,7 @@ class Row extends CustomModel implements IDuplicable
         return $this->columns;
     }
 
-    public function setColumns($value)
-    {
-        $this->columns = $value;
-    }
+    public function setColumns($value) { $this->columns = $value; }
 
     /**
      * @return \yii\db\ActiveQuery

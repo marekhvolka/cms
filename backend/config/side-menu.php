@@ -2,6 +2,7 @@
 
 return [
     ['icon' => 'files-o', 'title' => 'Stránky', 'controller' => 'page', 'action' => 'index'],
+    ['icon' => 'files-o', 'title' => 'Články', 'controller' => 'post', 'action' => 'index'],
     [
         'icon'     => 'globe',
         'title'    => 'Portál',

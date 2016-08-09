@@ -49,7 +49,7 @@ class SnippetVar extends Variable
                 'unique',
                 'targetAttribute' => ['identifier', 'snippet_id', 'parent_id'],
                 'message' => 'The combination of Identifier, Snippet ID and Parent ID has already been taken.',
-                'when' => function($model) {
+                'when' => function ($model) {
                     return $model->parent_id != null;
                 }
             ],
@@ -123,10 +123,7 @@ class SnippetVar extends Variable
         return $this->defaultValues;
     }
 
-    public function setDefaultValues($value)
-    {
-        $this->defaultValues = $value;
-    }
+    public function setDefaultValues($value) { $this->defaultValues = $value; }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -165,10 +162,7 @@ class SnippetVar extends Variable
         return $this->children;
     }
 
-    public function setChildren($value)
-    {
-        $this->children = $value;
-    }
+    public function setChildren($value) { $this->children = $value; }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -206,39 +200,34 @@ class SnippetVar extends Variable
 
         switch ($this->type->identifier) {
             case 'list' :
-
                 $value = ' array()';
-
                 break;
 
             case 'page' :
                 $value = 'NULL';
-
                 break;
 
             case 'product' :
                 $value = 'NULL';
-
                 break;
+
             case 'product_tag' :
                 $value = 'NULL';
-
                 break;
+
             case 'bool' :
                 $value = 'false';
-
                 break;
-            case 'dropdown' :
 
+            case 'dropdown' :
                 $productTypeDefaultValue = $this->getDefaultValue($product);
 
                 if (isset($productTypeDefaultValue) && isset($productTypeDefaultValue->valueDropdown)) {
                     $value = '\'' . $cacheEngine->normalizeString($productTypeDefaultValue->valueDropdown->value) . '\'';
                 }
-
                 break;
-            default:
 
+            default:
                 $productTypeDefaultValue = $this->getDefaultValue($product);
 
                 if ($productTypeDefaultValue) {
@@ -333,6 +322,7 @@ class SnippetVar extends Variable
      */
     public function saveChildren($propertyIdentifier, $globalParentPropertyIdentifier)
     {
+        /* @var $childModel CustomModel */
         foreach ($this->{$propertyIdentifier} as $childModel) {
             $childModel->parent_id = $this->id;
 
@@ -343,16 +333,12 @@ class SnippetVar extends Variable
                 continue;
             }
 
-            if (!($childModel->validate() && $childModel->save())) {
-                throw new \yii\base\Exception;
-            }
+            $childModel->validateAndSave();
 
+            /* @var $defaultValue SnippetVarDefaultValue */
             foreach ($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
-
-                if (!($defaultValue->validate() && $defaultValue->save())) {
-                    throw new \yii\base\Exception;
-                }
+                $defaultValue->validateAndSave();
             }
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);

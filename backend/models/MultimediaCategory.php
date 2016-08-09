@@ -58,8 +58,8 @@ class MultimediaCategory extends Model
     public static function find($name, $portal_name = null)
     {
         if (!empty($portal_name)) {
+            /* @var $portal Portal */
             $portal = Portal::findOne(['name' => $portal_name]);
-
 
             $category = new MultimediaCategory();
             $category->name = $name;
@@ -150,6 +150,7 @@ class MultimediaCategory extends Model
 
         $multimediaCategories = [];
 
+        /* @var $portal Portal */
         $portal = Yii::$app->user->identity->portal;
 
         if ($portal) {
@@ -178,7 +179,6 @@ class MultimediaCategory extends Model
 
     /**
      * Return all possible items (set their category name, subcategory, etc);
-     *
      * @param bool $only_images
      * @return array
      */

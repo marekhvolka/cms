@@ -20,9 +20,12 @@ use yii\base\Exception;
  * @property SnippetCode[] $snippetCodes
  * @property SnippetVar[] $snippetFirstLevelVars
  * @property SnippetVar[] $snippetVariables
+ * @property Portal[] $portals
  */
 class Snippet extends CustomModel implements ICacheable
 {
+    #region BASIC MODEL
+
     /**
      * @inheritdoc
      */
@@ -60,13 +63,9 @@ class Snippet extends CustomModel implements ICacheable
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastEditUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
-    }
+    #endregion
+
+    #region GETTERS & SETTERS
 
     /**
      * @return \yii\db\ActiveQuery
@@ -80,10 +79,7 @@ class Snippet extends CustomModel implements ICacheable
         return $this->snippetCodes;
     }
 
-    public function setSnippetCodes($value)
-    {
-        $this->snippetCodes = $value;
-    }
+    public function setSnippetCodes($value) { $this->snippetCodes = $value; }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -91,6 +87,12 @@ class Snippet extends CustomModel implements ICacheable
     public function getSnippetVariables()
     {
         return $this->hasMany(SnippetVar::className(), ['snippet_id' => 'id']);
+    }
+
+    public function getPortals()
+    {
+        return $this->hasMany(Portal::className(), ['id' => 'portal_id'])
+            ->viaTable('snippet_portal', ['snippet_id' => 'id']);
     }
 
     /**
@@ -106,10 +108,11 @@ class Snippet extends CustomModel implements ICacheable
         return $this->snippetFirstLevelVars;
     }
 
-    public function setSnippetFirstLevelVars($value)
-    {
-        $this->snippetFirstLevelVars = $value;
-    }
+    public function setSnippetFirstLevelVars($value) { $this->snippetFirstLevelVars = $value; }
+
+    #endregion
+
+    #region CACHING
 
     /** Vrati cestu k adresaru, kde su ulozene nacachovane veci k snippetu
      * @return string
@@ -127,7 +130,9 @@ class Snippet extends CustomModel implements ICacheable
 
     /** Metoda na vratenie cesty k hlavnemu suboru pre dany snippet (obsahuje premenne snippetu
      * s default hodnotami a nastavenia snippetu)
+     * @param bool $reload
      * @return string
+     * @throws
      */
     public function getMainCacheFile($reload = false)
     {
@@ -167,7 +172,6 @@ class Snippet extends CustomModel implements ICacheable
         $changed = false;
 
         if ($this->isChanged() || $this->snippetVarsHasChanged()) {
-
             $this->setOutdated();
             $this->getMainCacheFile();
             $changed = true;
@@ -191,6 +195,8 @@ class Snippet extends CustomModel implements ICacheable
         return false;
     }
 
+    #endregion
+
     /** Metoda na nacitanie potomkovskych poloziek - obsahuje rekurziu
      * @param $propertyIdentifier
      * @param $data
@@ -198,8 +204,7 @@ class Snippet extends CustomModel implements ICacheable
     public function loadChildren($propertyIdentifier, $data)
     {
         foreach ($data as $index => $item) {
-            $this->loadFromData($propertyIdentifier, $item, $index,
-                SnippetVar::className());
+            $this->loadFromData($propertyIdentifier, $item, $index, SnippetVar::className());
 
             if (key_exists('SnippetVarDefaultValue', $item)) {
                 foreach ($item['SnippetVarDefaultValue'] as $indexDefaultValue => $defaultValue) {
@@ -222,6 +227,7 @@ class Snippet extends CustomModel implements ICacheable
      */
     public function saveChildren($propertyIdentifier, $globalParentPropertyIdentifier)
     {
+        /* @var $childModel CustomModel */
         foreach ($this->{$propertyIdentifier} as $childModel) {
 
             if ($childModel->removed) {
@@ -231,10 +237,9 @@ class Snippet extends CustomModel implements ICacheable
 
             $childModel->snippet_id = $this->id;
 
-            if (!($childModel->validate() && $childModel->save())) {
-                throw new \yii\base\Exception;
-            }
+            $childModel->validateAndSave();
 
+            /* @var $defaultValue SnippetVarDefaultValue */
             foreach ($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
 
@@ -243,9 +248,7 @@ class Snippet extends CustomModel implements ICacheable
                     continue;
                 }
 
-                if (!($defaultValue->validate() && $defaultValue->save())) {
-                    throw new \yii\base\Exception;
-                }
+                $defaultValue->validateAndSave();
             }
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);

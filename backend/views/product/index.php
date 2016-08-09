@@ -42,13 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'size' => '2',
             ],
             [
-                'label' => 'Aktívna',
-                'value' => function ($active) {
-                    return $active ? '√' : 'X';
-                },
-                'size' => '1',
-            ],
-            [
                 'label' => 'Posledná zmena',
                 'value' => function ($data) {
                     return $data->last_edit . ' (' .

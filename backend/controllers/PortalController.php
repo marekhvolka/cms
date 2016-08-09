@@ -66,9 +66,7 @@ class PortalController extends BaseController
             $transaction = Yii::$app->db->beginTransaction();
 
             try {
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $portalVarValuesData = Yii::$app->request->post('Var');
                 if ($portalVarValuesData) {
@@ -104,16 +102,12 @@ class PortalController extends BaseController
                             continue;
                         }
 
-                        if (!($portalVarValue->validate() && $portalVarValue->save())) {
-                            throw new Exception;
-                        }
+                        $portalVarValue->validateAndSave();
 
                         if ($portalVarValue->valueBlock) {
                             $portalVarValue->valueBlock->portal_var_value_id = $portalVarValue->id;
 
-                            if (!($portalVarValue->valueBlock->validate() && $portalVarValue->valueBlock->save())) {
-                                throw new Exception;
-                            }
+                            $portalVarValue->valueBlock->validateAndSave();
 
                             if ($portalVarValue->valueBlock->isChanged()) {
                                 $this->saveSnippetVarValues($portalVarValue->valueBlock);
@@ -196,7 +190,6 @@ class PortalController extends BaseController
         $model = Yii::$app->user->identity->portal;
 
         if (Yii::$app->request->isPost) {
-
             $transaction = Yii::$app->db->beginTransaction();
             try {
 
@@ -211,15 +204,10 @@ class PortalController extends BaseController
 
                 $transaction->commit();
 
-                Alert::success('Položka bola úspešne uložená.');
+                return $this->redirectAfterSave($model);
             } catch (Exception $exc) {
-                Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
                 $transaction->rollBack();
-
-                return $this->render('layout-edit', [
-                    'model' => $model,
-                    'type' => $type
-                ]);
+                return $this->redirectAfterFail($model, ['type' => $type]);
             }
         }
 

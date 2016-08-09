@@ -8,7 +8,6 @@ use yii\helpers\ArrayHelper;
 /**
  * Trieda, reprezentujuca premennu, ktoru je mozne priradit pre portal
  *
- * @property string $product_type
  */
 class PortalVar extends Variable
 {

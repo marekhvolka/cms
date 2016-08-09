@@ -80,9 +80,7 @@ class MultimediaItem extends Model
         if ($this->validate(['files', 'path'])) {
             PathHelper::makePath($this->path);
 
-
             foreach($this->files as $file){
-
                 if(!$file->saveAs($this->path . DIRECTORY_SEPARATOR . $file->getBaseName() . '.' . $file->getExtension())){
                     return false;
                 };

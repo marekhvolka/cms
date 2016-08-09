@@ -9,17 +9,21 @@
 namespace backend\models;
 
 /**
- * @property bool $existing Indicates if model already exists.
  * @property bool $removed Indicates if model has to be removed
  */
 
+use common\models\User;
+use Exception;
 use Yii;
 use yii\db\ActiveRecord;
 
+/** Vlastna trieda, z ktorej dedia vsetky modely. Obsahuje veci, potrebne pre ukladanie a nacitavanie dat
+ * Class CustomModel
+ * @package backend\models
+ */
 class CustomModel extends ActiveRecord
 {
     public $removed = true;
-
     public $myOldAttributes = array();
 
     public function load($data, $formName = null)
@@ -70,6 +74,7 @@ class CustomModel extends ActiveRecord
      */
     public function saveChildren($propertyIdentifier, $globalParentPropertyIdentifier)
     {
+        /* @var $childModel CustomModel */
         foreach ($this->{$propertyIdentifier} as $childModel) {
             $childModel->parent_id = $this->id;
 
@@ -80,9 +85,7 @@ class CustomModel extends ActiveRecord
                 continue;
             }
 
-            if (!($childModel->validate() && $childModel->save())) {
-                throw new \yii\base\Exception;
-            }
+            $childModel->validateAndSave();
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);
         }
@@ -93,44 +96,32 @@ class CustomModel extends ActiveRecord
         $systemException = new SystemException();
         $systemException->type = $type;
 
-        if (property_exists($exception, 'sourceName')) {
-            $systemException->source_name = $exception->sourceName;
-        } else {
-            $systemException->source_name = $exception->getFile();
-        }
+        $systemException->source_name = property_exists($exception,
+            'sourceName') ? $exception->sourceName : $exception->getFile();
 
-        if (property_exists($exception, 'sourceCode')) {
-            $systemException->source_code = $exception->sourceCode;
-        } else {
-            $systemException->source_code = file_get_contents($systemException->source_name);
-        }
+        $systemException->source_code = property_exists($exception,
+            'sourceCode') ? $exception->sourceCode : file_get_contents($systemException->source_name);
 
-        if (property_exists($exception, 'sourceLine')) {
-            $systemException->source_line = $exception->sourceLine;
-        } else {
-            $systemException->source_line = $exception->getLine();
-        }
+        $systemException->source_line = property_exists($exception,
+            'sourceLine') ? $exception->sourceLine : $exception->getLine();
+
         $systemException->message = $exception->getMessage();
 
         switch ($this->className()) {
             case Product::className() :
                 $systemException->product_id = $this->id;
-
                 break;
 
             case Portal::className() :
                 $systemException->portal_id = $this->id;
-
                 break;
 
             case Page::className() :
                 $systemException->page_id = $this->id;
-
                 break;
 
             case Block::className() :
                 $systemException->block_id = $this->id;
-
                 break;
         }
 
@@ -146,22 +137,15 @@ class CustomModel extends ActiveRecord
         switch ($this->className()) {
             case Product::className() :
                 SystemException::deleteAll(['product_id' => $this->id]);
-
                 break;
-
             case Portal::className() :
                 SystemException::deleteAll(['portal_id' => $this->id]);
-
                 break;
-
             case Page::className() :
                 SystemException::deleteAll(['page_id' => $this->id]);
-
                 break;
-
             case Block::className() :
                 SystemException::deleteAll(['block_id' => $this->id]);
-
                 break;
         }
     }
@@ -174,7 +158,6 @@ class CustomModel extends ActiveRecord
     public function beforeSave($insert)
     {
         if (key_exists('last_edit_user', $this->attributes)) {
-
             if (isset(Yii::$app->user) && isset(Yii::$app->user->identity)) {
                 $userId = Yii::$app->user->identity->id;
                 $this->last_edit_user = $userId;
@@ -196,6 +179,17 @@ class CustomModel extends ActiveRecord
         $this->removeException();
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastEditUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
+    }
+
+    /** Metoda, ktora urci, ci bol model zmeneny a je potrebne resetnut jeho cache
+     * @return bool
+     */
     public function isChanged()
     {
         foreach ($this->myOldAttributes as $index => $oldAttribute) {
@@ -204,5 +198,15 @@ class CustomModel extends ActiveRecord
             }
         }
         return false;
+    }
+
+    /** Pomocna metoda na validaciu a pripadne ulozenie
+     * @throws Exception
+     */
+    public function validateAndSave()
+    {
+        if (!($this->validate() && $this->save())) {
+            throw new Exception;
+        }
     }
 }

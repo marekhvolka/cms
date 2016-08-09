@@ -17,7 +17,7 @@ use Yii;
  * @property Page $valuePage
  * @property Portal $portal
  */
-class PortalVarValue extends CustomModel
+class PortalVarValue extends VariableValue
 {
     /**
      * @inheritdoc
@@ -61,22 +61,6 @@ class PortalVarValue extends CustomModel
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVar()
-    {
-        return $this->hasOne(PortalVar::className(), ['id' => 'var_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getValuePage()
-    {
-        return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
-    }
-
     public function getValueBlock()
     {
         if (!isset($this->valueBlock)) {
@@ -86,49 +70,11 @@ class PortalVarValue extends CustomModel
         return $this->valueBlock;
     }
 
-    public function setValueBlock($value)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVar()
     {
-        $this->valueBlock = $value;
-    }
-
-    public function getValue()
-    {
-        $value = '';
-
-        switch ($this->var->type->identifier)
-        {
-            case 'list' :
-
-                $value = $this->valueListVar->value;
-
-                break;
-
-            case 'page' :
-
-                if (isset($this->valuePage))
-                    $value = '$portal->pages->page' . $this->valuePage->id;
-                else
-                    $value = 'NULL';
-
-                break;
-
-            case 'product' :
-                if (isset($this->valueProduct))
-                    $value = '$' . $this->valueProduct->identifier;
-                else
-                    $value = 'NULL';
-
-                break;
-
-            case 'portal_snippet' :
-
-                $value = $this->valueBlock->compileBlock();
-
-                break;
-            default:
-                $value = '\''. addslashes($this->value_text) . '\'';
-        }
-
-        return $value;
+        return $this->hasOne(PortalVar::className(), ['id' => 'var_id']);
     }
 }

@@ -64,9 +64,7 @@ class ProductVarController extends BaseController
                 $productTypesIds = !$productTypeIdsArray ?: implode($productTypeIdsArray, ',');
                 $model->product_type = $productTypesIds;
 
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $transaction->commit();
 

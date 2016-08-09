@@ -61,9 +61,7 @@ class ProductTypeController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $transaction->commit();
                 return $this->redirectAfterSave($model);

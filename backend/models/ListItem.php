@@ -16,6 +16,7 @@ use Yii;
  */
 class ListItem extends CustomModel implements IDuplicable
 {
+    #region BASIC MODEL
     /**
      * @inheritdoc
      */
@@ -54,6 +55,10 @@ class ListItem extends CustomModel implements IDuplicable
         ];
     }
 
+    #endregion
+
+    #region GETTERS & SETTERS
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -87,10 +92,9 @@ class ListItem extends CustomModel implements IDuplicable
         return $this->snippetVarValues;
     }
 
-    public function setSnippetVarValues($value)
-    {
-        $this->snippetVarValues = $value;
-    }
+    public function setSnippetVarValues($value) { $this->snippetVarValues = $value; }
+
+    #endregion
 
     public function getValue($product = null)
     {

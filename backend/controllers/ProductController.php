@@ -84,9 +84,7 @@ class ProductController extends BaseController
             }
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $productVarValuesData = Yii::$app->request->post('Var');
 
@@ -124,15 +122,12 @@ class ProductController extends BaseController
                             continue;
                         }
 
-                        if (!($productVarValue->validate() && $productVarValue->save())) {
-                            throw new Exception;
-                        }
+                        $productVarValue->validateAndSave();
 
                         if ($productVarValue->valueBlock) {
                             $productVarValue->valueBlock->product_var_value_id = $productVarValue->id;
-                            if (!($productVarValue->valueBlock->validate() && $productVarValue->valueBlock->save())) {
-                                throw new Exception;
-                            }
+
+                            $productVarValue->validateAndSave();
 
                             if ($productVarValue->valueBlock->isChanged()) {
                                 $this->saveSnippetVarValues($productVarValue->valueBlock);
@@ -203,7 +198,7 @@ class ProductController extends BaseController
         if ($model->getProducts()->count() == 0) {
             $model->delete();
         } else {
-            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstánky.');
+            Alert::danger('Nemôžete vymazať stránku, ktorá obsahuje podstránky.');
         }
 
         $model->delete();

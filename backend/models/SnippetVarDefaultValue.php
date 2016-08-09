@@ -108,10 +108,6 @@ class SnippetVarDefaultValue extends CustomModel
 
     public function getValue()
     {
-        if ($this->valueDropdown != null) {
-            return $this->valueDropdown->value;
-        } else {
-            return '';
-        }
+        return $this->valueDropdown == null ? '' : $this->valueDropdown->value;
     }
 }

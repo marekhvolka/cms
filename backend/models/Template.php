@@ -12,7 +12,6 @@ use Yii;
  * @property string $name
  * @property string $description
  * @property string $identifier
- * @property integer $active
  * @property string $last_edit
  * @property integer $last_edit_user
  *
@@ -30,18 +29,13 @@ class Template extends CustomModel
         return 'template';
     }
 
-    public function init()
-    {
-        $this->active = 1;
-    }
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['name', 'identifier', 'active'], 'required'],
+            [['name', 'identifier'], 'required'],
             [['active', 'last_edit_user'], 'integer'],
             [['description'], 'string'],
             [['last_edit'], 'safe'],
@@ -60,7 +54,6 @@ class Template extends CustomModel
             'name' => 'Názov',
             'description' => 'Popis',
             'identifier' => 'Adresár šablóny',
-            'active' => 'Aktívna',
             'last_edit' => 'Posledná zmena',
             'last_edit_user' => 'Naposledy editoval',
         ];
@@ -94,10 +87,7 @@ class Template extends CustomModel
         return $this->colorSchemes;
     }
 
-    public function setColorSchemes($value)
-    {
-        $this->colorSchemes = $value;
-    }
+    public function setColorSchemes($value) { $this->colorSchemes = $value; }
 
     public function getColorSchemeDirectoryPath($forWeb = false)
     {
@@ -112,14 +102,6 @@ class Template extends CustomModel
     public function getIndexPath($forWeb = false)
     {
         return $this->getMainDirectory($forWeb) . '/index.php';
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastEditUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
     }
 
     public function afterSave($insert, $changedAttributes)

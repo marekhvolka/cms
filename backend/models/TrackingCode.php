@@ -2,10 +2,9 @@
 
 namespace backend\models;
 
-use Yii;
-use yii\db\ActiveRecord;
-use yii\db\Query;
 use common\models\User;
+use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "tracking_code".
@@ -50,7 +49,12 @@ class TrackingCode extends CustomModel
             [['place_id', 'portal_id', 'active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name'], 'string', 'max' => 40],
-            [['name', 'portal_id'], 'unique', 'targetAttribute' => ['name', 'portal_id'], 'message' => 'The combination of Name and Portal ID has already been taken.']
+            [
+                ['name', 'portal_id'],
+                'unique',
+                'targetAttribute' => ['name', 'portal_id'],
+                'message' => 'The combination of Name and Portal ID has already been taken.'
+            ]
         ];
     }
 
@@ -82,14 +86,6 @@ class TrackingCode extends CustomModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastEditUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'last_edit_user']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPlace()
     {
         return (new Query())
@@ -97,9 +93,6 @@ class TrackingCode extends CustomModel
             ->from('tracking_code_place')
             ->where(['id' => $this->place_id])
             ->one();
-
-        //return Yii::$app->db->createCommand('SELECT * FROM tracking_code_place')->where(['place_id' => $this->place_id])
-          //  ->queryOne();
     }
 
     public static function getPlaces()
@@ -113,9 +106,7 @@ class TrackingCode extends CustomModel
     public function resetAfterUpdate()
     {
         $this->setOutdated();
-
         $this->portal->resetAfterUpdate();
-
         $this->portal->compileThanksFiles();
     }
 }

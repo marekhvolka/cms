@@ -70,22 +70,6 @@ use yii\helpers\BaseHtml;
                 ?>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <label class="control-label" for="snippetcode-portal">
-                    <?= $model->getAttributeLabel('portal'); ?>
-                </label>
-
-                <?php
-                $data = ArrayHelper::map(Portal::find()->all(), 'id', 'name');
-                echo BaseHtml::activeDropDownList($model, "portal", $data, [
-                    'maxlength' => true,
-                    'class' => 'form-control',
-                    'name' => $prefix . "[portal]",
-                ]);
-                ?>
-            </div>
-        </div>
         <?= $this->render('_blocks-and-sections', [
             'model' => $model,
             'prefix' => $prefix

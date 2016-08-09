@@ -73,9 +73,7 @@ class PortalVarController extends BaseController
                     return ActiveForm::validate($model);
                 }
 
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $transaction->commit();
 

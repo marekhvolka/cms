@@ -9,12 +9,10 @@ use backend\models\Area;
 use backend\models\Block;
 use backend\models\Column;
 use backend\models\ListItem;
-use backend\models\ListVar;
 use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
-use backend\models\Product;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
@@ -72,8 +70,9 @@ abstract class BaseController extends Controller
         /* @var $portal Portal */
         $portal = Portal::findOne($portalId);
 
-        if (!(key_exists('develop', Yii::$app->params) && Yii::$app->params['develop']))
+        if (!(key_exists('develop', Yii::$app->params) && Yii::$app->params['develop'])) {
             $this->redirect('http://www.' . $portal->domain . '/backend/web/');
+        }
     }
 
     /**
@@ -197,9 +196,6 @@ abstract class BaseController extends Controller
 
     public function actionAppendBlockModal()
     {
-        //$blockId = Yii::$app->request->post('id');
-        //$prefix = Yii::$app->request->post('prefix');
-
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
@@ -212,7 +208,6 @@ abstract class BaseController extends Controller
             $block = new Block();
             $block->type = $type;
         }
-
 
         return (new BlockModalWidget())->appendModal($block, $prefix, $page, $portal);
     }
@@ -335,9 +330,7 @@ abstract class BaseController extends Controller
      */
     public function saveLayout($model)
     {
-        if (!($model->validate() && $model->save())) {
-            throw new Exception;
-        }
+        $model->validateAndSave();
 
         foreach ($model->sections as $indexSection => $section) {
             $section->area_id = $model->id;
@@ -346,9 +339,8 @@ abstract class BaseController extends Controller
                 $section->delete();
                 unset($model->sections[$indexSection]);
                 continue;
-            } else if (!($section->validate() && $section->save())) {
-                throw new Exception;
             }
+            $section->validateAndSave();
 
             foreach ($section->rows as $indexRow => $row) {
                 $row->section_id = $section->id;
@@ -358,9 +350,8 @@ abstract class BaseController extends Controller
                     unset($section->rows[$indexRow]);
                     continue;
                 }
-                if (!($row->validate() && $row->save())) {
-                    throw new Exception;
-                }
+
+                $row->validateAndSave();
 
                 foreach ($row->columns as $indexColumn => $column) {
                     $column->row_id = $row->id;
@@ -370,9 +361,7 @@ abstract class BaseController extends Controller
                         unset($row->columns[$indexColumn]);
                         continue;
                     }
-                    if (!($column->validate() && $column->save())) {
-                        throw new Exception;
-                    }
+                    $column->validateAndSave();
 
                     foreach ($column->blocks as $indexBlock => $block) {
                         $block->column_id = $column->id;
@@ -382,9 +371,7 @@ abstract class BaseController extends Controller
                             unset($column->blocks[$indexBlock]);
                             continue;
                         }
-                        if (!($block->validate() && $block->save())) {
-                            throw new Exception;
-                        }
+                        $block->validateAndSave();
 
                         if ($block->isChanged()) {
                             $this->saveSnippetVarValues($block);
@@ -419,18 +406,17 @@ abstract class BaseController extends Controller
 
     public function saveSnippetVarValues($model, $type = 'block')
     {
+        /* @var $snippetVarValue SnippetVarValue */
         foreach ($model->snippetVarValues as $snippetVarValue) {
-
             if ($type == 'block') {
                 $snippetVarValue->block_id = $model->id;
             } else if ($type == 'list') {
                 $snippetVarValue->list_item_id = $model->id;
             }
 
-            if (!($snippetVarValue->validate() && $snippetVarValue->save())) {
-                throw new Exception;
-            }
+            $snippetVarValue->validateAndSave();
 
+            /* @var $listItem ListItem */
             foreach ($snippetVarValue->listItems as $indexListItem => $listItem) {
                 if ($listItem->removed) {
                     $listItem->delete();
@@ -439,9 +425,7 @@ abstract class BaseController extends Controller
                 }
                 $listItem->list_id = $snippetVarValue->id;
 
-                if (!($listItem->validate() && $listItem->save())) {
-                    throw new Exception;
-                }
+                $listItem->validateAndSave();
 
                 $this->saveSnippetVarValues($listItem, 'list');
             }
@@ -451,18 +435,15 @@ abstract class BaseController extends Controller
     protected function redirectAfterSave($model)
     {
         Alert::success('Položka bola úspešne uložená.');
-
         $continue = Yii::$app->request->post('continue');
-        if (isset($continue)) {
-            return $this->redirect(['edit', 'id' => $model->id]);
-        } else {
-            return $this->redirect(['index']);
-        }
+
+        return isset($continue) ? $this->redirect(['edit', 'id' => $model->id]) : $this->redirect(['index']);
     }
 
     protected function redirectAfterFail($model, $editOptions = array())
     {
         Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
+
         return $this->render('edit', array_merge([
             'model' => $model
         ], $editOptions));

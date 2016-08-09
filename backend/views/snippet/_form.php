@@ -1,6 +1,9 @@
 <?php
 
+use backend\models\Portal;
 use backend\models\VarType;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -40,11 +43,38 @@ $this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\Jquery
         'enableAjaxValidation' => true,
     ]); ?>
 
-    <h3 class="page-header">Všeobecné
-        <small>nastavenia</small>
-    </h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Všeobecné
+                <small>nastavenia</small>
+            </h3>
+        </div>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        <div class="panel-body">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+            <div class="form-group">
+                <label class="control-label" for="snippetcode-portal">
+                    Zobrazovať pre portály
+                </label>
+
+                <?= Select2::widget([
+                    'name' => Portal::className() . '[_tags]',
+                    'value' => array_map(function ($item) {
+                        return $item->id;
+                    }, $model->portals),
+                    'data' => ArrayHelper::map(Portal::find()->all(), 'id', 'name'),
+                    'options' => [
+                        'placeholder' => 'Priradiť portály',
+                        'multiple' => true,
+                    ],
+                    'pluginOptions' => [
+                        'tags' => true,
+                    ],
+                ]) ?>
+            </div>
+        </div>
+    </div>
 
     <div class="form-group">
         <div class="panel panel-success">

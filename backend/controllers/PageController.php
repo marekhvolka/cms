@@ -72,7 +72,6 @@ class PageController extends BaseController
 
             if ($duplicate) {
                 $model = new Page();
-
                 $model->initializeNew();
             }
 
@@ -101,9 +100,7 @@ class PageController extends BaseController
                 $model->sidebar->load($sidebarData, '');
                 $this->loadLayout($model->sidebar, $sidebarData);
 
-                if (!($model->validate() && $model->save())) {
-                    throw new Exception;
-                }
+                $model->validateAndSave();
 
                 $model->header->page_id = $model->id;
                 $model->footer->page_id = $model->id;

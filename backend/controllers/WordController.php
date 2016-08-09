@@ -94,10 +94,8 @@ class WordController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public
-    function actionDelete(
-        $id
-    ) {
+    public function actionDelete($id)
+    {
         if ($this->findModel($id)->delete()) {
             Alert::success('Položka bola úspešne vymazaná.');
         } else {
@@ -114,10 +112,8 @@ class WordController extends BaseController
      * @return Word the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected
-    function findModel(
-        $id
-    ) {
+    protected function findModel($id)
+    {
         if (($model = Word::findOne($id)) !== null) {
             return $model;
         } else {

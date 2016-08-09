@@ -68,10 +68,6 @@ if ($model->language) {
         ArrayHelper::map(Language::find()->all(), 'id', 'name')
     ) ?>
 
-    <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
-
     <?= Select2::widget([
         'name' => Product::className() . '[_tags]',
         'value' => array_map(function ($item) {
