@@ -35,13 +35,11 @@ use backend\components\VarManager\VarManagerWidget;
     <?= $form->field($model, 'template_id')->widget(Select2::classname(), [
         'data' => ArrayHelper::map(Template::find()->all(), 'id', 'name'),
         'language' => 'en',
-        'options' => ['placeholder' => 'Select a state ...'],
+        'options' => ['placeholder' => 'Výber šablóny ...'],
         'pluginOptions' => [
             'allowClear' => true
         ],
     ]); ?>
-
-    <?= $form->field($model, 'color_scheme')->textInput() ?>
 
     <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
         'type' => SwitchInput::CHECKBOX

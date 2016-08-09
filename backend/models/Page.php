@@ -19,7 +19,6 @@ use yii\base\Exception;
  * @property string $title
  * @property string $description
  * @property string $keywords
- * @property string $color_scheme
  * @property string $sidebar_side
  * @property string $last_edit
  * @property integer $last_edit_user
@@ -62,7 +61,6 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
                     'identifier',
                     'portal_id',
                     'active',
-                    'color_scheme',
                     'sidebar_side',
                 ],
                 'required'
@@ -79,13 +77,13 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
             ],
             [['description', 'keywords'], 'string'],
             [['last_edit', 'breadcrumbs', 'url'], 'safe'],
-            [['name', 'identifier', 'color_scheme'], 'string', 'max' => 80],
+            [['name', 'identifier'], 'string', 'max' => 80],
             [['title'], 'string', 'max' => 150],
             [
                 ['identifier', 'portal_id', 'parent_id'],
                 'unique',
                 'targetAttribute' => ['identifier', 'portal_id', 'parent_id'],
-                'message' => 'The combination of Identifier, Portal ID and Parent ID has already been taken.'
+                'message' => 'Daná url sa už používa'
             ]
         ];
     }
@@ -107,7 +105,6 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
             'title' => 'Titulok',
             'description' => 'Popis',
             'keywords' => 'Kľúčové slová',
-            'color_scheme' => 'Farebná schéma',
             'sidebar_side' => 'Pozícia sidebaru',
             'last_edit' => 'Posledná zmena',
             'last_edit_user' => 'Naposledy editoval'

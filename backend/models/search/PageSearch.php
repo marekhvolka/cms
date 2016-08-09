@@ -41,7 +41,6 @@ class PageSearch extends Page
                     'title',
                     'description',
                     'keywords',
-                    'color_scheme',
                     'sidebar_side',
                     'last_edit',
                     'breadcrumbs',

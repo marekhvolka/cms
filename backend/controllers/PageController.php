@@ -83,7 +83,6 @@ class PageController extends BaseController
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-
                 $headerData = Yii::$app->request->post('header');
                 $model->header->load($headerData, '');
                 $this->loadLayout($model->header, $headerData);

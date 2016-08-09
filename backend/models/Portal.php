@@ -59,7 +59,7 @@ class Portal extends CustomModel implements ICacheable
     {
         return [
             [
-                ['name', 'language_id', 'domain', 'template_id', 'color_scheme', 'active'],
+                ['name', 'language_id', 'domain', 'template_id', 'active'],
                 'required'
             ],
             [['language_id', 'template_id', 'active'], 'integer'],
