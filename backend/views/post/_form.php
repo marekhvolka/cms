@@ -2,7 +2,12 @@
 
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
+use backend\models\Post;
+use backend\models\PostCategory;
+use backend\models\PostTag;
+use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\jui\DatePicker;
@@ -31,6 +36,35 @@ use yii\widgets\ActiveForm;
         'dateFormat' => 'yyyy/MM/dd',
         'class' => 'form-control'
     ]) ?>
+
+    <?= $form->field($model, 'post_category_id')->widget(Select2::classname(), [
+        'data' => ArrayHelper::map(PostCategory::find()->all(), 'id', 'name'),
+        'language' => 'en',
+        'options' => ['placeholder' => 'Výber kategórie ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); ?>
+
+    <div class="form-group">
+        <label class="control-label" for="snippetcode-portal">
+            Tagy pre článok
+        </label>
+        <?= Select2::widget([
+            'name' => '[tags]',
+            'value' => array_map(function ($item) {
+                return $item->id;
+            }, $model->tags),
+            'data' => ArrayHelper::map(PostTag::find()->all(), 'id', 'name'),
+            'options' => [
+                'placeholder' => 'Priradiť tagy',
+                'multiple' => true,
+            ],
+            'pluginOptions' => [
+                'tags' => true,
+            ],
+        ]) ?>
+    </div>
 
     <?= $form->field($model, 'perex')->textarea(['rows' => 6]) ?>
 

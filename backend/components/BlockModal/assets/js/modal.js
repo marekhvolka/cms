@@ -90,7 +90,9 @@ body.on(
 
                     modalContainer.append(modalWindow);
 
-                    enableDragBy(modalContainer.find(".children-list.list-items").toArray(), '.list-item-drag-by');
+                    //enableDragBy(modalContainer.find(".children-list.list-items").toArray(), '.list-item-drag-by');
+
+                    modalContainer.find('.children-list.list-items').sortable({handle: '.list-item-drag-by'});
 
                     modalWindow.modal({
                         backdrop: 'static',

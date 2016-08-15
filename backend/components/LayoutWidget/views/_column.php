@@ -24,6 +24,8 @@ use yii\helpers\BaseHtml;
     <div class="panel-heading">
         <h4>
             <span class="row-drag-by"><?php echo $model->order; ?>. stĺpec</span>
+            <?= empty($model->css_id) ? '' : 'ID: [' . $model->css_id . ']' ?>
+            <?= empty($model->css_class) ? '' : 'CLASS: [' . $model->css_class . ']' ?>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">

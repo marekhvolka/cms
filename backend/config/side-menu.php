@@ -2,7 +2,15 @@
 
 return [
     ['icon' => 'files-o', 'title' => 'Stránky', 'controller' => 'page', 'action' => 'index'],
-    ['icon' => 'files-o', 'title' => 'Články', 'controller' => 'post', 'action' => 'index'],
+    [
+        'icon'     => 'globe',
+        'title'    => 'Blog',
+        'children' => [
+            ['title' => 'Články', 'controller' => 'post', 'action' => 'index'],
+            ['title' => 'Kategórie', 'controller' => 'post-category', 'action' => 'index'],
+            ['title' => 'Tagy', 'controller' => 'post-tag', 'action' => 'index'],
+        ],
+    ],
     [
         'icon'     => 'globe',
         'title'    => 'Portál',

@@ -2,65 +2,56 @@
 
 namespace backend\controllers;
 
-use backend\components\IdentifierComponent;
-use backend\models\PortalVar;
-use common\components\Alert;
+use backend\models\PostCategory;
+use backend\models\search\PostCategorySearch;
 use Exception;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
-
 
 /**
- * PortalVarController implements the CRUD actions for PortalVar model.
+ * PostCategoryController implements the CRUD actions for PostCategory model.
  */
-class PortalVarController extends BaseController
+class PostCategoryController extends BaseController
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
-        return array_merge(parent::behaviors(), [
+        return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['POST'],
                 ],
             ],
-        ]);
+        ];
     }
 
     /**
-     * Lists all PortalVar models.
+     * Lists all PostCategory models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => PortalVar::find(),
-        ]);
+        $searchModel = new PostCategorySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Updates an existing PortalVar model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    /**
-     * Updates an existing Language model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * Creates a new PostCategory model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionEdit($id = null)
     {
-        $model = $id ? $this->findModel($id) : new PortalVar();
+        $model = $id ? $this->findModel($id) : new PostCategory();
 
         if ($model->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax) { // ajax validácia
@@ -85,35 +76,31 @@ class PortalVarController extends BaseController
     }
 
     /**
-     * Deletes an existing PortalVar model.
+     * Deletes an existing PostCategory model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        if ($this->findModel($id)->delete()) {
-            Alert::success('Položka bola úspešne vymazaná.');
-        } else {
-            Alert::danger('Položku sa nepodarilo vymazať.');
-        }
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the PortalVar model based on its primary key value.
+     * Finds the PostCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PortalVar the loaded model
+     * @return PostCategory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PortalVar::findOne($id)) !== null) {
+        if (($model = PostCategory::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('Táto stránka neexistuje.');
+            throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
 }

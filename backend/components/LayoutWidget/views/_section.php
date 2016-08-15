@@ -19,6 +19,8 @@ use yii\helpers\BaseHtml;
                 <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>
             </span>
             <span class="section-drag-by">Sekcia</span>
+            <?= empty($model->css_id) ? '' : 'ID: [' . $model->css_id . ']' ?>
+            <?= empty($model->css_class) ? '' : 'CLASS: [' . $model->css_class . ']' ?>
 
             <div class="btn-group section-buttons pull-right">
                 <div class="inline-button">

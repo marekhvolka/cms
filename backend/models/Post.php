@@ -23,6 +23,7 @@ use Yii;
  * @property Area[] $areas
  * @property User $lastEditUser
  * @property Portal $portal
+ * @property PostTag[] $tags
  *
  * @property string $cacheIdentifier
  */
@@ -74,6 +75,12 @@ class Post extends LayoutOwner
     public function getUrl()
     {
         return $this->portal->blogUrl . '/' . $this->identifier . '/';
+    }
+
+    public function getTags()
+    {
+        return $this->hasMany(PostTag::className(), ['id' => 'post_id'])
+            ->viaTable('post_post_tag', ['post_tag_id' => 'id']);
     }
 
     /**
