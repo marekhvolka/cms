@@ -71,8 +71,8 @@ class SiteController extends Controller
 
     public function actionIndex($url = null)
     {
-        if ($url[strlen($url) - 1] != '/')
-            return $this->redirect($url . '/', '301');
+        //if ($url[strlen($url) - 1] != '/')
+            //return $this->redirect('/' . $url . '/', '301');
 
         $identifiers = explode("/", strtolower($url));
 
