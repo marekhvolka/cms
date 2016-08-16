@@ -72,7 +72,11 @@ class GlobalSearch
 
         /** @var SnippetCode[] $snippet_codes */
         $snippet_codes = SnippetCode::find()
-            ->filterWhere(['like', 'name', $searchTerm])
+            ->filterWhere([
+                'or',
+                ['like', 'name', $searchTerm],
+                ['like', 'code', $searchTerm]
+            ])
             ->limit(10)
             ->all();
 
