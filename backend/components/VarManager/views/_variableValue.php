@@ -175,6 +175,19 @@ if (!isset($renderModal)) {
                     {
                         applySpectrum();
                     }</script>
+            <?php
+
+            break;
+
+            case 'number':
+            ?>
+                <div class="input-group">
+                    <input type="number" class="form-control" pattern="[0-9]"
+                           name="<?= $prefix . '[value_text]' ?>"
+                           onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                           value="<?= $varValue->value_text ?>">
+                </div>
+
                 <?php
 
                 break;

@@ -15,7 +15,7 @@ use Yii;
  * @property string $last_edit
  * @property integer $last_edit_user
  *
- * @property ColorScheme[] $colorSchemes
+ * @property CssScheme[] $cssSchemes
  * @property Portal[] $portals
  * @property User $lastEditUser
  */
@@ -67,31 +67,30 @@ class Template extends CustomModel
         return $this->hasMany(Portal::className(), ['template_id' => 'id']);
     }
 
-    public function getColorSchemes()
+    public function getCssSchemes()
     {
-        if (!isset($this->colorSchemes)) {
+        if (!isset($this->cssSchemes)) {
 
-            $this->colorSchemes = array();
-            chdir($this->getColorSchemeDirectoryPath());
+            $this->cssSchemes = array();
+            chdir($this->getCssSchemeDirectoryPath());
 
-            foreach (glob('*.scss') as $file) {
-                $item = new ColorScheme();
-                $item->label = str_replace('.scss', '', $file);
+            foreach (glob('*.css') as $file) {
+                $item = new CssScheme();
                 $item->name = $file;
                 $item->template_id = $this->id;
 
-                $this->colorSchemes[] = $item;
+                $this->cssSchemes[] = $item;
             }
         }
 
-        return $this->colorSchemes;
+        return $this->cssSchemes;
     }
 
-    public function setColorSchemes($value) { $this->colorSchemes = $value; }
+    public function setCssSchemes($value) { $this->cssSchemes = $value; }
 
-    public function getColorSchemeDirectoryPath($forWeb = false)
+    public function getCssSchemeDirectoryPath($forWeb = false)
     {
-        return $this->getMainDirectory($forWeb) . 'css/scheme/';
+        return $this->getMainDirectory($forWeb) . 'css/';
     }
 
     public function getMainDirectory($forWeb = false)
