@@ -7,3 +7,7 @@
 .cms-top-bar a {
     color: white;
 }
+
+.cms-top-bar #template-switch {
+    color: #000;
+}
