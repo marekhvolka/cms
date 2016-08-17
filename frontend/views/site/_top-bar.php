@@ -3,25 +3,24 @@ use backend\models\Page;
 use backend\models\Portal;
 use yii\bootstrap\Html;
 
-/** @var $portal Portal */
-/** @var $page Page */
+/** @var $requestedPage Page */
 ?>
 
 <div class="cms-top-bar">
 
     <select id="template-switch">
-        <?php foreach($page->portal->template->getCssSchemes() as $cssScheme) : ?>
+        <?php foreach($requestedPage->portal->template->getCssSchemes() as $cssScheme) : ?>
             <option value="<?= $cssScheme->getPath() ?>"><?= $cssScheme->name ?></option>
 
         <?php endforeach; ?>
     </select>
 
     <div class="pull-right">
-        <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $page->id, [
+        <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $requestedPage->id, [
             'target' => '_blank'
         ]) ?>
-        <?= $page->product ?
-            Html::a('Upraviť produkt', '/backend/web/product/edit/' . $page->product->id, [
+        <?= $requestedPage->product ?
+            Html::a('Upraviť produkt', '/backend/web/product/edit/' . $requestedPage->product->id, [
                 'target' => '_blank'
             ]) : '' ?>
 
