@@ -34,7 +34,7 @@ use yii\bootstrap\Html;
     $(document).ready(function() {
         var stylesPath = getCookie('developTemplate');
 
-        if (stylesPath == 'null') {
+        if (stylesPath == null || stylesPath == 'null') {
             stylesPath = $('#template-main').attr('href');
         }
 
