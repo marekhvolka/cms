@@ -11,7 +11,8 @@ var appendUrl = {
 
 // Event for appending new section.
 body.on(
-    "click", '.btn-add-section', function () {
+    "click", '.btn-add-section', function ()
+    {
         var $this = $(this),
             layouts = $this.parents('.layouts'),
             postData = {
@@ -21,10 +22,13 @@ body.on(
             };
 
         $.post(
-            appendUrl.section, postData, function (data) {
+            appendUrl.section, postData, function (data)
+            {
                 var section = appendElement(layouts, $(data));
                 enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
                 enableDragBy(section.find(".children-list.blocks").toArray());
+
+                enableDropSection(section);
 
                 rescanForms();
             }
@@ -33,29 +37,38 @@ body.on(
 );
 
 body.on(
-    "click", ".btn-remove-section", function () {
+    "click", ".btn-remove-section", function ()
+    {
         $(this).parents('.section').remove();
     }
 );
 
 body.on(
-    "click", ".btn-remove-row", function () {
+    "click", ".btn-remove-row", function ()
+    {
         $(this).parents('.layout-row').first().remove();
     }
 );
 
-body.on('click', '.open-section-options', function (e) {
-    $(this).parents('.panel-title').find('.modal').modal('show');
-    e.preventDefault();
-});
-
-body.on('click', '.open-column-options', function (e) {
-    $(this).parents('.panel-heading').find('.modal').modal('show');
-    e.preventDefault();
-});
+body.on(
+    'click', '.open-section-options', function (e)
+    {
+        $(this).parents('.panel-title').find('.modal').modal('show');
+        e.preventDefault();
+    }
+);
 
 body.on(
-    "click", ".add-row", function () {
+    'click', '.open-column-options', function (e)
+    {
+        $(this).parents('.panel-heading').find('.modal').modal('show');
+        e.preventDefault();
+    }
+);
+
+body.on(
+    "click", ".add-row", function ()
+    {
         var $this = $(this),
             columnsByWidth = getColumnsWidths($this.data('row-type-width')),
             section = $this.parents('.section').first(),
@@ -66,7 +79,8 @@ body.on(
             };
 
         $.post(
-            appendUrl.row, postData, function (data) {
+            appendUrl.row, postData, function (data)
+            {
                 var row = appendElement(section, $(data)),
                     postColumnData = {
                         width: columnsByWidth,
@@ -76,10 +90,12 @@ body.on(
                     };
 
                 $.post(
-                    appendUrl.column, postColumnData, function (columnsData) {
+                    appendUrl.column, postColumnData, function (columnsData)
+                    {
                         var parsed = JSON.parse(columnsData);
 
-                        for (var i = 0; i < parsed.length; i++) {
+                        for (var i = 0; i < parsed.length; i++)
+                        {
                             var column = appendElement(row, $(parsed[i]));
                             enableDragBy(column.find(".children-list.blocks").toArray());
                         }
@@ -93,9 +109,10 @@ body.on(
 );
 
 body.on(
-    "click", ".column-option", function () {
+    "click", ".add-block", function ()
+    {
         var column = $(this).parents('.column').first();
-        var mainButton = $(this).parents('.add-block').first().find('.add-block-btn').first();
+        var mainButton = $(this).parents('.add-block-dropdown').first().find('.add-block-btn').first();
 
         var postData = {
             prefix: mainButton.data('prefix'),
@@ -105,8 +122,11 @@ body.on(
         };
 
         $.post(
-            appendUrl.block, postData, function (data) {
-                appendElement(column, $(data));
+            appendUrl.block, postData, function (data)
+            {
+                var block = appendElement(column, $(data));
+
+                block.draggable({revert: 'invalid'});
 
                 rescanForms();
             }
@@ -115,19 +135,23 @@ body.on(
 );
 
 body.on(
-    "click", ".btn-remove-block", function () {
+    "click", ".btn-remove-block", function ()
+    {
         $(this).parents('.layout-block').first().remove();
     }
 );
 
-function appendElement(parentElement, dataToAppend) {
+function appendElement(parentElement, dataToAppend)
+{
     parentElement.find('.children-list:first').append(dataToAppend);
 
     return $(dataToAppend);
 }
 
-function getColumnsWidths(rowType) {
-    switch (rowType) {
+function getColumnsWidths(rowType)
+{
+    switch (rowType)
+    {
         case 1:
             return ['12'];
         case 2:
@@ -143,46 +167,96 @@ function getColumnsWidths(rowType) {
     }
 }
 
-body.on('shown.bs.modal', function (e) {
-    disableDragAndDrop = true;
-});
+body.on(
+    'shown.bs.modal', function (e)
+    {
+        disableDragAndDrop = true;
+    }
+);
 
-body.on('hidden.bs.modal', function (e) {
-    disableDragAndDrop = false;
-});
+body.on(
+    'hidden.bs.modal', function (e)
+    {
+        disableDragAndDrop = false;
+    }
+);
 
-enableDragBy($(".children-list.sections").toArray(), '.section-drag-by');
-enableDragBy($(".children-list.rows").toArray(), '.row-drag-by');
-enableDragBy($(".children-list.blocks").toArray());
+//enableDragBy($(".children-list.sections").toArray(), '.section-drag-by');
+//enableDragBy($(".children-list.rows").toArray(), '.row-drag-by');
+//enableDragBy($(".children-list.blocks").toArray());
 
-// Handles elements (blocks, columns, rows) ordering.
+$(
+    function ()
+    {
+        $('.children-list.rows').sortable(
+            {
+                //handle: '.row-drag-by',
+                //placeholder: 'ui-state-highlight',
+                connectWith: '.children-list.rows'
+            }
+        );
+        $('.children-list.sections').sortable(
+            {
+                //handle: '.section-drag-by',
+                //placeholder: 'ui-state-highlight',
+                connectWith: '.children-list.sections'
+            }
+        );
+
+        $('.children-list.blocks').sortable(
+            {
+                //handle: '.block-drag-by',
+                //placeholder: 'ui-state-highlight',
+                //revert: true,
+                connectWith: '.children-list.blocks'
+            }
+        );
+
+    }
+);
+
 /*
- $('#' + formId).submit(function () {
- $(".section-rows").each(function () {
- var rowOrder = 1;
- var rows = $(this).find('.layout-row');
- rows.each(function () {
- $(this).find('.order').val(rowOrder);
- rowOrder++;
- var columnOrder = 1;
- var columns = $(this).find('.column');
- columns.each(function () {
- $(this).find('.order').val(columnOrder);
- columnOrder++;
- var blocks = $(this).find('.layout-block');
- var blockOrder = 1;
- blocks.each(function () {
- $(this).find('.order').val(blockOrder);
- blockOrder++;
- });
- });
- });
- });
- return true;
- });
+ $('.block').draggable(
+ {
+ revert: 'invalid',
+ handle: '.block-drag-by',
+ cancel: false,
+ scroll: true,
+ connectionToSortable: '.children-list.blocks',
+ appendTo: 'body'
+ }
+ );
+
+ //enableDropSection($('.children-list.sections'));
+ enableDropBlock($('.children-list.blocks'));
+
+ function enableDropSection(sectionsList)
+ {
+ sectionsList.droppable(
+ {
+ accept: '.section',
+ drop: function (event, ui)
+ {
+
+ }
+ }
+ );
+ }
+
+ function enableDropBlock(blocksList)
+ {
+ blocksList.droppable(
+ {
+ greedy: true,
+ accept: '.block',
+ drop: function (event, ui)
+ {
+
+ }
+ }
+ );
+ }
 
  */
-
-//$('.dropdown-toggle').dropdown();
 
 

@@ -15,14 +15,13 @@ if (!isset($renderModal)) {
 ?>
 
 <div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>">
-    <?= Html::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= Html::hiddenInput($prefix . "[column_id]", $model->column_id, ['class' => 'column_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
+    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal block-drag-by"
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
             data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">

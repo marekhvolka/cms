@@ -11,7 +11,6 @@ use yii\helpers\BaseHtml;
 
 <div class="row layout-row" data-prefix="<?= $prefix ?>" data-page-id="<?= $page ? $page->id : '' ?>"
      data-portal-id="<?= $portal ? $portal->id : '' ?>">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[section_id]", $model->section_id, ['class' => 'section_id']); ?>
     <div class="children-list">
         <?php foreach ($model->columns as $indexColumn => $column) : ?>

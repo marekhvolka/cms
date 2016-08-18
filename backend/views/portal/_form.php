@@ -1,15 +1,14 @@
 <?php
 
-use backend\models\PortalVar;
+use backend\components\VarManager\VarManagerWidget;
+use backend\models\Language;
+use backend\models\Template;
+use kartik\select2\Select2;
+use kartik\switchinput\SwitchInput;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use backend\models\Template;
-use yii\helpers\ArrayHelper;
-use backend\models\Language;
-use kartik\select2\Select2;
-use kartik\switchinput\SwitchInput;
-use backend\components\VarManager\VarManagerWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Portal */
@@ -24,33 +23,48 @@ use backend\components\VarManager\VarManagerWidget;
         'enableAjaxValidation' => true,
     ]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <ul class="nav nav-tabs" id="myTab">
+        <li role="presentation" class="tab-label active">
+            <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_variables_settings" data-toggle="tab">Premenné</a>
+        </li>
+    </ul>
 
-    <?= $form->field($model, 'language_id')->dropDownList(
-        ArrayHelper::map(Language::find()->all(), 'id', 'name')
-    ) ?>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tab_basic_settings">
 
-    <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'template_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map(Template::find()->all(), 'id', 'name'),
-        'language' => 'en',
-        'options' => ['placeholder' => 'Výber šablóny ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
+            <?= $form->field($model, 'language_id')->dropDownList(
+                ArrayHelper::map(Language::find()->all(), 'id', 'name')
+            ) ?>
 
-    <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
-        'type' => SwitchInput::CHECKBOX
-    ]) ?>
+            <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
 
-    <?= VarManagerWidget::widget([
-        'allVariables' => $allVariables,
-        'assignedVariableValues' => $model->portalVarValues,
-        'appendVarValueUrl' => Url::to(['portal/append-var-value']),
-        'model' => $model
-    ])?>
+            <?= $form->field($model, 'template_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(Template::find()->all(), 'id', 'name'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber šablóny ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
+            <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+        </div>
+        <div class="tab-pane" id="tab_variables_settings">
+            <?= VarManagerWidget::widget([
+                'allVariables' => $allVariables,
+                'assignedVariableValues' => $model->portalVarValues,
+                'appendVarValueUrl' => Url::to(['portal/append-var-value']),
+                'model' => $model
+            ]) ?>
+        </div>
+    </div>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">

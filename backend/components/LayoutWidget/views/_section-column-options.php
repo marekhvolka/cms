@@ -1,5 +1,8 @@
 <?php
 use yii\bootstrap\Html;
+
+/* @var $prefix string */
+
 ?>
 
 <div class="modal fade" role="dialog">

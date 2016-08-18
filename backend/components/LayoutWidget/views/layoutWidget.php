@@ -19,7 +19,7 @@ AssetBundle::register($this);
 
 ?>
 
-<div class="layouts">
+<div class="layouts area">
     <?= BaseHtml::hiddenInput($prefix . "[type]", $area->type); ?>
     <div class="children-list sections">
         <?php foreach ($area->sections as $indexSection => $section) : ?>

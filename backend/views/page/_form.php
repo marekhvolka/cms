@@ -30,13 +30,21 @@ if ($model->portal) {
         'enableAjaxValidation' => true,
     ]); ?>
 
-    <div class="panel panel-default">
 
-        <div class="panel-heading">
-            <h3>Základné nastavenia stránky</h3>
-        </div>
+    <ul class="nav nav-tabs" id="myTab">
+        <li role="presentation" class="tab-label active">
+            <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_seo_settings" data-toggle="tab">SEO nastavenia</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_layout_settings" data-toggle="tab">Layout</a>
+        </li>
+    </ul>
 
-        <div class="panel-body">
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tab_basic_settings">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
@@ -56,114 +64,109 @@ if ($model->portal) {
                 ],
             ]); ?>
 
+            <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($portal->language->products, 'id',
+                    'breadcrumbs'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber produktu ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
         </div>
-    </div>
-
-    <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map($portal->language->products, 'id',
-            'breadcrumbs'),
-        'language' => 'en',
-        'options' => ['placeholder' => 'Výber produktu ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>SEO nastavenia</h3>
-        </div>
-
-        <div class="panel-body">
+        <div class="tab-pane" id="tab_seo_settings">
             <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'description')->textarea() ?>
 
             <?= $form->field($model, 'keywords')->textarea() ?>
         </div>
+        <div class="tab-pane" id="tab_layout_settings">
+            <h3 class="page-header">Hlavička stránky</h3>
+
+            <?= $form->field($model->header, 'active')->radioList([
+                '0' => 'Neaktívna',
+                '1' => 'Aktívna',
+            ], [
+                'name' => 'header[active]'
+            ]) ?>
+
+            <?= LayoutWidget::widget([
+                    'area' => $model->header,
+                    'controllerUrl' => Url::to(['/page']),
+                    'page' => $model,
+                    'portal' => null
+                ]
+            ) ?>
+
+            <h3 class="page-header">Hlavný obsah</h3>
+
+            <?= LayoutWidget::widget([
+                    'area' => $model->content,
+                    'controllerUrl' => Url::to(['/page']),
+                    'allowAddingSection' => false,
+                    'page' => $model,
+                    'portal' => null
+                ]
+            ) ?>
+
+            <h3 class="page-header">Sidebar</h3>
+
+            <?= $form->field($model->sidebar, 'active')->radioList([
+                '0' => 'Neaktívny',
+                '1' => 'Aktívny',
+            ], [
+                'name' => 'sidebar[active]'
+            ]) ?>
+
+
+            <?= $form->field($model, 'sidebar_side')->radioList([
+                'left' => 'Vľavo',
+                'right' => 'Vpravo',
+            ]) ?>
+
+            <?= $form->field($model->sidebar, 'size')->radioList([
+                '4' => '8:4',
+                '5' => '7:5',
+                '6' => '6:6',
+                '7' => '5:7',
+                '8' => '4:8',
+            ], [
+                'name' => 'sidebar[size]'
+            ]) ?>
+
+            <?= LayoutWidget::widget([
+                    'area' => $model->sidebar,
+                    'controllerUrl' => Url::to(['/page']),
+                    'allowAddingSection' => false,
+                    'page' => $model,
+                    'portal' => null
+                ]
+            ) ?>
+
+            <h3 class="page-footer">Patička stránky</h3>
+
+            <?= $form->field($model->footer, 'active')->radioList([
+                '0' => 'Neaktívna',
+                '1' => 'Aktívna',
+            ], [
+                'name' => 'footer[active]'
+            ]) ?>
+
+            <?= LayoutWidget::widget([
+                    'area' => $model->footer,
+                    'controllerUrl' => Url::to(['/page']),
+                    'page' => $model,
+                    'portal' => null
+                ]
+            ) ?>
+        </div>
     </div>
-
-    <h3 class="page-header">Hlavička stránky</h3>
-
-    <?= $form->field($model->header, 'active')->radioList([
-        '0' => 'Neaktívna',
-        '1' => 'Aktívna',
-    ], [
-        'name' => 'header[active]'
-    ]) ?>
-
-    <?= LayoutWidget::widget([
-            'area' => $model->header,
-            'controllerUrl' => Url::to(['/page']),
-            'page' => $model,
-            'portal' => null
-        ]
-    ) ?>
-
-    <h3 class="page-header">Hlavný obsah</h3>
-
-    <?= LayoutWidget::widget([
-            'area' => $model->content,
-            'controllerUrl' => Url::to(['/page']),
-            'allowAddingSection' => false,
-            'page' => $model,
-            'portal' => null
-        ]
-    ) ?>
-
-    <h3 class="page-header">Sidebar</h3>
-
-    <?= $form->field($model->sidebar, 'active')->radioList([
-        '0' => 'Neaktívny',
-        '1' => 'Aktívny',
-    ], [
-        'name' => 'sidebar[active]'
-    ]) ?>
-
-
-    <?= $form->field($model, 'sidebar_side')->radioList([
-        'left' => 'Vľavo',
-        'right' => 'Vpravo',
-    ]) ?>
-
-    <?= $form->field($model->sidebar, 'size')->radioList([
-        '4' => '8:4',
-        '5' => '7:5',
-        '6' => '6:6',
-        '7' => '5:7',
-        '8' => '4:8',
-    ], [
-        'name' => 'sidebar[size]'
-    ]) ?>
-
-    <?= LayoutWidget::widget([
-            'area' => $model->sidebar,
-            'controllerUrl' => Url::to(['/page']),
-            'allowAddingSection' => false,
-            'page' => $model,
-            'portal' => null
-        ]
-    ) ?>
-
-    <h3 class="page-footer">Patička stránky</h3>
-
-    <?= $form->field($model->footer, 'active')->radioList([
-        '0' => 'Neaktívna',
-        '1' => 'Aktívna',
-    ], [
-        'name' => 'footer[active]'
-    ]) ?>
-
-    <?= LayoutWidget::widget([
-            'area' => $model->footer,
-            'controllerUrl' => Url::to(['/page']),
-            'page' => $model,
-            'portal' => null
-        ]
-    ) ?>
+    <div class="clearfix"></div>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">

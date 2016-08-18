@@ -43,16 +43,22 @@ $this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\Jquery
         'enableAjaxValidation' => true,
     ]); ?>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>Všeobecné
-                <small>nastavenia</small>
-            </h3>
-        </div>
+    <ul class="nav nav-tabs" id="myTab">
+        <li role="presentation" class="tab-label active">
+            <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_codes_settings" data-toggle="tab">Kódy</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_variables_settings" data-toggle="tab">Premenné</a>
+        </li>
+    </ul>
 
-        <div class="panel-body">
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tab_basic_settings">
+
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
             <div class="form-group">
                 <label class="control-label" for="snippetcode-portal">
                     Zobrazovať pre portály
@@ -73,51 +79,50 @@ $this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\Jquery
                     ],
                 ]) ?>
             </div>
+            <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                <h4>
-                    Alternatívy
-                    <a class="btn btn-success btn-xs btn-add-snippet-code pull-right" data-prefix="">
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </h4>
-            </div>
-            <div class="panel-body snippet-codes fixed-panel">
-                <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
-                    <?= $this->render('_code', [
-                        'model' => $snippetCode,
-                        'form' => $form,
-                        'prefix' => "SnippetCode[$indexCode]"
-                    ]); ?>
+        <div class="tab-pane" id="tab_codes_settings">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4>
+                        Alternatívy
+                        <a class="btn btn-success btn-xs btn-add-snippet-code pull-right" data-prefix="">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div class="panel-body snippet-codes fixed-panel">
+                    <?php foreach ($model->snippetCodes as $indexCode => $snippetCode): ?>
+                        <?= $this->render('_code', [
+                            'model' => $snippetCode,
+                            'form' => $form,
+                            'prefix' => "SnippetCode[$indexCode]"
+                        ]); ?>
 
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
-    </div>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => '4']) ?>
-
-    <div class="form-group snippet-vars">
-        <div class="panel panel-success">
-            <div class="panel-heading form-inline">
-                <h4>
-                    Premenné
-                    <a class="btn btn-success btn-xs btn-add-snippet-var pull-right" data-prefix="SnippetVar">
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </h4>
-            </div>
-            <div class="panel-body snippet-vars-container fixed-panel">
-                <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
-                    <?= $this->render('_variable', [
-                        'model' => $snippetVar,
-                        'prefix' => "SnippetVar[$indexVar]"
-                    ]); ?>
-                <?php endforeach; ?>
+        <div class="tab-pane" id="tab_variables_settings">
+            <div class="panel panel-success">
+                <div class="panel-heading form-inline">
+                    <h4>
+                        Premenné
+                        <a class="btn btn-success btn-xs btn-add-snippet-var pull-right" data-prefix="SnippetVar">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div class="panel-body snippet-vars-container fixed-panel">
+                    <?php foreach ($model->snippetFirstLevelVars as $indexVar => $snippetVar): ?>
+                        <?= $this->render('_variable', [
+                            'model' => $snippetVar,
+                            'prefix' => "SnippetVar[$indexVar]"
+                        ]); ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     </div>

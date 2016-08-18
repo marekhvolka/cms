@@ -17,7 +17,6 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$model->isNewRecord, ['class' => 'existing']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
     <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
 
@@ -33,16 +32,16 @@ use yii\helpers\BaseHtml;
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="dropdown dropdown-column-content inline-button add-block">
+                <div class="dropdown dropdown-column-content inline-button add-block-dropdown">
                     <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
                             title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
                             data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="column-option" data-type="text">Text</a></li>
-                        <li><a class="column-option" data-type="html">HTML</a></li>
-                        <li><a class="column-option" data-type="snippet">Snippet</a></li>
+                        <li><a class="add-block" data-type="text">Text</a></li>
+                        <li><a class="add-block" data-type="html">HTML</a></li>
+                        <li><a class="add-block" data-type="snippet">Snippet</a></li>
                         <?php if ($page && $page->product) : ?>
                             <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
                         <?php endif; ?>

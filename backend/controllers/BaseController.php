@@ -333,8 +333,9 @@ abstract class BaseController extends Controller
         $model->validateAndSave();
 
         foreach ($model->sections as $indexSection => $section) {
-            $section->area_id = $model->id;
-
+            if (!isset($section->area_id)) {
+                $section->area_id = $model->id;
+            }
             if ($section->removed) {
                 $section->delete();
                 unset($model->sections[$indexSection]);
@@ -343,7 +344,9 @@ abstract class BaseController extends Controller
             $section->validateAndSave();
 
             foreach ($section->rows as $indexRow => $row) {
-                $row->section_id = $section->id;
+                if (!isset($row->section_id)) {
+                    $row->section_id = $section->id;
+                }
 
                 if ($row->removed) {
                     $row->delete();
@@ -354,7 +357,9 @@ abstract class BaseController extends Controller
                 $row->validateAndSave();
 
                 foreach ($row->columns as $indexColumn => $column) {
-                    $column->row_id = $row->id;
+                    if (!isset($column->row_id)) {
+                        $column->row_id = $row->id;
+                    }
 
                     if ($column->removed) {
                         $column->delete();
@@ -364,7 +369,9 @@ abstract class BaseController extends Controller
                     $column->validateAndSave();
 
                     foreach ($column->blocks as $indexBlock => $block) {
-                        $block->column_id = $column->id;
+                        if (!isset($block->column_id)) {
+                            $block->column_id = $column->id;
+                        }
 
                         if ($block->removed) {
                             $block->delete();

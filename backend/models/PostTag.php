@@ -11,7 +11,6 @@ use Yii;
  * @property string $name
  * @property string $identifier
  *
- * @property PostPostTag[] $postPostTags
  * @property Post[] $posts
  */
 class PostTag extends CustomModel
@@ -47,14 +46,6 @@ class PostTag extends CustomModel
             'name' => 'Name',
             'identifier' => 'Identifier',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPostPostTags()
-    {
-        return $this->hasMany(PostPostTag::className(), ['post_tag_id' => 'id']);
     }
 
     /**

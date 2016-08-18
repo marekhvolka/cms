@@ -8,7 +8,6 @@ use backend\models\Product;
 use backend\models\ProductType;
 use backend\models\Tag;
 use kartik\select2\Select2;
-use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -34,70 +33,91 @@ if ($model->language) {
         'enableAjaxValidation' => true,
     ]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <ul class="nav nav-tabs" id="myTab">
+        <li role="presentation" class="tab-label active">
+            <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_tags_settings" data-toggle="tab">Nastavenia tagov</a>
+        </li>
+        <li role="presentation" class="tab-label">
+            <a href="#tab_variables_settings" data-toggle="tab">Nastavenia premenných</a>
+        </li>
+    </ul>
 
-    <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tab_basic_settings">
 
-    <?= IdentifierGenerator::widget([
-        'idTextFrom' => 'product-name',
-        'idTextTo' => 'product-identifier',
-        'delimiter' => '_',
-    ]) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
-        'data' => ArrayHelper::map($language->products, 'id',
-            'breadcrumbs'),
-        'language' => 'en',
-        'options' => ['placeholder' => 'Výber predka ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
+            <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'type_id')->dropDownList(
-        ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
-    ) ?>
+            <?= IdentifierGenerator::widget([
+                'idTextFrom' => 'product-name',
+                'idTextTo' => 'product-identifier',
+                'delimiter' => '_',
+            ]) ?>
 
-    <?= $form->field($model, 'partnership_type_id')->dropDownList(
-        ArrayHelper::map(PartnershipType::find()->all(), 'id', 'name')
-    ) ?>
+            <?= $form->field($model, 'parent_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($language->products, 'id',
+                    'breadcrumbs'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber predka ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
 
-    <?= $form->field($model, 'description')->textarea() ?>
+            <?= $form->field($model, 'type_id')->dropDownList(
+                ArrayHelper::map(ProductType::find()->all(), 'id', 'name')
+            ) ?>
 
-    <?= $form->field($model, 'language_id')->dropDownList(
-        ArrayHelper::map(Language::find()->all(), 'id', 'name')
-    ) ?>
+            <?= $form->field($model, 'partnership_type_id')->dropDownList(
+                ArrayHelper::map(PartnershipType::find()->all(), 'id', 'name')
+            ) ?>
 
-    <?= Select2::widget([
-        'name' => Product::className() . '[_tags]',
-        'value' => array_map(function ($item) {
-            return $item->id;
-        }, $model->tags),
-        'data' => ArrayHelper::map(Tag::find()->andWhere(
-            [
-                'or',
-                ['like', 'product_type', $model->type_id . ","],
-                ['product_type' => $model->type_id],
-                ['like', 'product_type', "," . $model->type_id . ","],
-                ['like', 'product_type', "," . $model->type_id]
-            ]
-        )->all(), 'id', 'name'),
-        'options' => [
-            'placeholder' => 'Priradiť tagy',
-            'multiple' => true,
-        ],
-        'pluginOptions' => [
-            'tags' => true,
-        ],
-    ]) ?>
+            <?= $form->field($model, 'description')->textarea() ?>
 
-    <?= VarManagerWidget::widget([
-        'allVariables' => $allVariables,
-        'assignedVariableValues' => $model->productVarValues,
-        'appendVarValueUrl' => Url::to(['product/append-var-value']),
-        'model' => $model
-    ]) ?>
+            <?= $form->field($model, 'language_id')->dropDownList(
+                ArrayHelper::map(Language::find()->all(), 'id', 'name')
+            ) ?>
+        </div>
 
+        <div class="tab-pane" id="tab_tags_settings">
+
+            <?= Select2::widget([
+                'name' => Product::className() . '[_tags]',
+                'value' => array_map(function ($item) {
+                    return $item->id;
+                }, $model->tags),
+                'data' => ArrayHelper::map(Tag::find()->andWhere(
+                    [
+                        'or',
+                        ['like', 'product_type', $model->type_id . ","],
+                        ['product_type' => $model->type_id],
+                        ['like', 'product_type', "," . $model->type_id . ","],
+                        ['like', 'product_type', "," . $model->type_id]
+                    ]
+                )->all(), 'id', 'name'),
+                'options' => [
+                    'placeholder' => 'Priradiť tagy',
+                    'multiple' => true,
+                ],
+                'pluginOptions' => [
+                    'tags' => true,
+                ],
+            ]) ?>
+        </div>
+
+        <div class="tab-pane" id="tab_variables_settings">
+            <?= VarManagerWidget::widget([
+                'allVariables' => $allVariables,
+                'assignedVariableValues' => $model->productVarValues,
+                'appendVarValueUrl' => Url::to(['product/append-var-value']),
+                'model' => $model
+            ]) ?>
+        </div>
+    </div>
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">
             <div class="form-group">

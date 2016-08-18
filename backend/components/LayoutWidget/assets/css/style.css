@@ -38,3 +38,9 @@
 .section {
     position: relative;
 }
+
+.ui-state-highlight {
+    height: 45px;
+    width: 344px;
+    background: #000;
+}

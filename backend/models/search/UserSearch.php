@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'active', 'actualPortal', 'role', 'isLog'], 'integer'],
-            [['username', 'email', 'password_hash', 'allowPortal', 'cookie_hash', 'updated_at'], 'safe'],
+            [['id', 'active', 'portal_id', 'role', 'isLog'], 'integer'],
+            [['username', 'email', 'password_hash', 'allowPortal', 'cookie_hash'], 'safe'],
         ];
     }
 
@@ -58,10 +58,9 @@ class UserSearch extends User
         $query->andFilterWhere([
             'id' => $this->id,
             'active' => $this->active,
-            'actualPortal' => $this->actualPortal,
+            'portal_id' => $this->portal_id,
             'role' => $this->role,
             'isLog' => $this->isLog,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
