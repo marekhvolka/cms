@@ -206,7 +206,7 @@ $('.children-list.blocks').each(function() {
         group: '.children-list.blocks',
 
         onAdd: function (/**Event*/evt) {
-            evt.item.getElementsByClassName('column_id')[0].value = evt.to.parentElement.parentElement.getElementsByClassName('model_id')[0].value;
+            evt.item.getElementsByClassName('column_id')[0].value = evt.to.parentElement.getElementsByClassName('model_id')[0].value;
         }
     });
 });
