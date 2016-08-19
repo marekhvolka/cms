@@ -12,7 +12,7 @@ use yii\helpers\BaseHtml;
 <!--SECTION TO ADD-->
 <div class="panel panel-default section" data-options="{}">
     <?= BaseHtml::hiddenInput($prefix . "[area_id]", $model->area_id); ?>
-
+    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id); ?>
     <div class="panel-heading">
         <h3 class="panel-title">
             <span>

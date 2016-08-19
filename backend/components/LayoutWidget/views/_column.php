@@ -18,6 +18,7 @@ use yii\helpers\BaseHtml;
 
 <div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
     <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id); ?>
     <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
 
     <div class="panel-heading">
