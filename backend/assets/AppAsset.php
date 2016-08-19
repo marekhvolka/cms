@@ -26,9 +26,9 @@ class AppAsset extends AssetBundle
     public $js = [
         'js/menu.js',
         'js/global-search.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
+        //'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
         'js/are-you-sure.js',
-        'js/common.js'
+        'js/common.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

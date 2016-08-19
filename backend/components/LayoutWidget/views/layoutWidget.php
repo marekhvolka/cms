@@ -21,7 +21,7 @@ AssetBundle::register($this);
 
 <div class="layouts area">
     <?= BaseHtml::hiddenInput($prefix . "[type]", $area->type); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $area->id); ?>
+    <?= BaseHtml::hiddenInput($prefix . "[id]", $area->id, ['class' => 'model_id']); ?>
     <div class="children-list sections">
         <?php foreach ($area->sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
