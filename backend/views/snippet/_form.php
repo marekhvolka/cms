@@ -105,7 +105,7 @@ $this->registerJsFile(Url::to(['js/anchors.js']), ['depends' => ['yii\web\Jquery
             </div>
         </div>
 
-        <div class="tab-pane" id="tab_variables_settings">
+        <div class="tab-pane snippet-vars" id="tab_variables_settings">
             <div class="panel panel-success">
                 <div class="panel-heading form-inline">
                     <h4>
