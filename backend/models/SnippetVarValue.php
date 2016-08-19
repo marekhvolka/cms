@@ -65,6 +65,13 @@ class SnippetVarValue extends VariableValue implements IDuplicable
                 'unique',
                 'targetAttribute' => ['var_id', 'block_id', 'list_item_id'],
                 'message' => 'The combination of Block ID, ListItemID and Var ID has already been taken.'
+            ],
+            [
+                'block_id',
+                'atLeastOne',
+                'params' => [
+                    'list_item_id',
+                ]
             ]
         ];
     }
@@ -117,14 +124,16 @@ class SnippetVarValue extends VariableValue implements IDuplicable
         return $this->listItems;
     }
 
-    public function setListItems($value) { $this->listItems = $value; }
+    public function setListItems($value)
+    {
+        $this->listItems = $value;
+    }
 
     public function resetAfterUpdate()
     {
         if ($this->block) {
             $this->block->resetAfterUpdate();
-        }
-        else if ($this->listItem) {
+        } else if ($this->listItem) {
             $this->listItem->resetAfterUpdate();
         }
     }
@@ -144,7 +153,7 @@ class SnippetVarValue extends VariableValue implements IDuplicable
         if (parent::isChanged())
             return true;
 
-        foreach($this->listItems as $listItem) {
+        foreach ($this->listItems as $listItem) {
             if ($listItem->isChanged()) {
                 return true;
             }

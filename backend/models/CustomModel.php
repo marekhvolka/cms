@@ -209,4 +209,22 @@ class CustomModel extends ActiveRecord
             throw new Exception;
         }
     }
+
+    /** Validator, ktory zabezpeci, ze aspon jeden stlpec bude vyplneny
+     * @param $attribute
+     * @param $params
+     * @return bool
+     */
+    public function atLeastOne($attribute, $params)
+    {
+        if (!empty($this->{$attribute}))
+            return true;
+
+        foreach ($params as $param) {
+            if (!empty($this->{$param}))
+                return true;
+        }
+
+        return false;
+    }
 }

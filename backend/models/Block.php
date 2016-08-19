@@ -80,6 +80,14 @@ class Block extends CustomModel implements ICacheable, IDuplicable
                 'targetClass' => SnippetCode::className(),
                 'targetAttribute' => ['snippet_code_id' => 'id']
             ],
+            [
+                'column_id',
+                'atLeastOne',
+                'params' => [
+                    'product_var_id',
+                    'portal_var_id',
+                ]
+            ]
         ];
     }
 
@@ -196,7 +204,10 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         return $this->snippetVarValues;
     }
 
-    public function setSnippetVarValues($value) { $this->snippetVarValues = $value; }
+    public function setSnippetVarValues($value)
+    {
+        $this->snippetVarValues = $value;
+    }
 
     /** Returns array of newly created models from given data.
      * @param $data
