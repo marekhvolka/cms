@@ -190,8 +190,12 @@ class PageController extends BaseController
     {
         $page = $this->findModel($id);
 
-        Yii::$app->session->set('portal_preview', $page->portal->id);
+        if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') { //localhost
+            $redirectPrefix = 'http://' . $_SERVER['HTTP_HOST'];
+        } else {
+            $redirectPrefix = 'http://www.' . $page->portal->domain;
+        }
 
-        return $this->redirect('http://www.' . $page->portal->domain . $page->getUrl());
+        return $this->redirect($redirectPrefix . $page->getUrl());
     }
 }

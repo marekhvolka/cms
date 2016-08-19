@@ -494,10 +494,11 @@ class Block extends CustomModel implements ICacheable, IDuplicable
 
     public function isChanged()
     {
-        if (parent::isChanged()) {
-            return true;
-        }
+        return parent::isChanged() || $this->isContentChanged();
+    }
 
+    public function isContentChanged()
+    {
         foreach ($this->snippetVarValues as $snippetVarValue) {
             if ($snippetVarValue->isChanged()) {
                 return true;

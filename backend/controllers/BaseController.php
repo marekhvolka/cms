@@ -380,7 +380,7 @@ abstract class BaseController extends Controller
                         }
                         $block->validateAndSave();
 
-                        if ($block->isChanged()) {
+                        if ($block->isContentChanged()) {
                             $this->saveSnippetVarValues($block);
                             $block->resetAfterUpdate();
                         }
