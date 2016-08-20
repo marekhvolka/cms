@@ -62,6 +62,10 @@ class SnippetController extends BaseController
         } else {
             $model = new Snippet();
 
+
+            $model->portals = array();
+            $model->portals[] = Yii::$app->user->identity->portal;
+
             $defaultSnippetCode = new SnippetCode();
             $defaultSnippetCode->name = 'default';
 

@@ -25,8 +25,8 @@ body.on(
             appendUrl.section, postData, function (data)
             {
                 var section = appendElement(layouts, $(data));
-                enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
-                enableDragBy(section.find(".children-list.blocks").toArray());
+                //enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
+                //enableDragBy(section.find(".children-list.blocks").toArray());
 
                 //enableDropSection(section);
 
