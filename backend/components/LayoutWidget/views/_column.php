@@ -44,9 +44,9 @@ use yii\helpers\BaseHtml;
                         <li><a class="add-block" data-type="html">HTML</a></li>
                         <li><a class="add-block" data-type="snippet">Snippet</a></li>
                         <?php if ($page && $page->product) : ?>
-                            <li><a class="column-option" data-type="product_snippet">Produktový snippet</a></li>
+                            <li><a class="add-block" data-type="product_snippet">Produktový snippet</a></li>
                         <?php endif; ?>
-                        <li><a class="column-option" data-type="portal_snippet">Portálový snippet</a></li>
+                        <li><a class="add-block" data-type="portal_snippet">Portálový snippet</a></li>
                     </ul>
                 </div>
                 <div class="inline-button">
