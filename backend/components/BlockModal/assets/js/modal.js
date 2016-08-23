@@ -145,7 +145,10 @@ body.on(
     'click', '.btn-remove-list-item', function () {
         var listPanel = $(this).parents('.list-panel');
 
-        $(this).parents('.list-item').first().remove();
+        var listItem = $(this).parents('.list-item').first();
+        listItem.addClass('hidden');
+        listItem.find('.removed').first().val(1);
+
         listPanel.first().find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
     }
 );
