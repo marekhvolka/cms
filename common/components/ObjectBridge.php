@@ -113,6 +113,18 @@ class ObjectBridge extends ArrayObject
 
         return false;
     }
+
+    public function isIframe()
+    {
+        if (!isset($this->obj) || !isset($this->obj->typ_spoluprace)) {
+            return false;
+        }
+
+        if ($this->obj->typ_spoluprace == 'api' || $this->obj->typ_spoluprace == 'iframe')
+            return true;
+
+        return false;
+    }
 }
 
 function executeScript($path)

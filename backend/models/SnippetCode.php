@@ -12,7 +12,6 @@ use yii\helpers\Url;
  * @property string $name
  * @property string $code
  * @property string $description
- * @property string $portal
  * @property integer $snippet_id
  * @property bool $outdated
  * @property bool $dynamic
@@ -47,7 +46,6 @@ class SnippetCode extends CustomModel
             [
                 [
                     'name',
-                    'portal',
                     'section_id',
                     'section_class',
                     'section_style',
@@ -76,7 +74,6 @@ class SnippetCode extends CustomModel
             'name' => 'Meno',
             'code' => 'Kód',
             'description' => 'Popis',
-            'portal' => 'Alternatívu je možné použiť na portály',
             'snippet_id' => 'ID snippetu',
             'blocks' => 'Bloky',
             'dynamic' => 'Dynamický',

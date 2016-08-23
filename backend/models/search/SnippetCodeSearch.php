@@ -19,7 +19,7 @@ class SnippetCodeSearch extends SnippetCode
     {
         return [
             [['id', 'snippet_id'], 'integer'],
-            [['name', 'code', 'popis', 'portal'], 'safe'],
+            [['name', 'code', 'description'], 'safe'],
         ];
     }
 
@@ -62,8 +62,7 @@ class SnippetCodeSearch extends SnippetCode
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'popis', $this->popis])
-            ->andFilterWhere(['like', 'portal', $this->portal]);
+            ->andFilterWhere(['like', 'description', $this->popis]);
 
         return $dataProvider;
     }

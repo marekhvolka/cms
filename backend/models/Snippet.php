@@ -91,9 +91,15 @@ class Snippet extends CustomModel implements ICacheable
 
     public function getPortals()
     {
-        return $this->hasMany(Portal::className(), ['id' => 'portal_id'])
-            ->viaTable('snippet_portal', ['snippet_id' => 'id']);
+        if (!isset($this->portals)) {
+            $this->portals = $this->hasMany(Portal::className(), ['id' => 'portal_id'])
+                ->viaTable('snippet_portal', ['snippet_id' => 'id'])->all();
+        }
+
+        return $this->portals;
     }
+
+    public function setPortals($value) { $this->portals = $value; }
 
     /**
      * SnippetVars with no parents (first level - not nested).

@@ -10,7 +10,6 @@ use Yii;
  * @property integer $id
  * @property integer $section_id
  * @property integer $order
- * @property string $options
  *
  * @property Column[] $columns
  * @property Section $section
@@ -32,7 +31,6 @@ class Row extends CustomModel implements IDuplicable
     {
         return [
             [['section_id', 'order'], 'integer'],
-            [['options'], 'string'],
             [
                 ['section_id'],
                 'exist',
@@ -52,7 +50,6 @@ class Row extends CustomModel implements IDuplicable
             'id' => 'ID',
             'section_id' => 'ID sekcies',
             'order' => 'Poradie',
-            'options' => 'Nastavenia',
         ];
     }
 
