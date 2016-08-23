@@ -194,6 +194,10 @@ class CustomModel extends ActiveRecord
      */
     public function isChanged()
     {
+        if ($this->removed) {
+            return true;
+        }
+
         foreach ($this->myOldAttributes as $index => $oldAttribute) {
             if ($oldAttribute != $this->{$index} && $index != 'last_edit' && $index != 'last_edit_user') {
                 return true;
