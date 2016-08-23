@@ -23,15 +23,9 @@ if (!isset($renderModal)) {
     <label class="col-sm-2 control-label label-var"><?= $varValue->var->name ?></label>
     <div class="col-sm-10 var-value" id="var-<?= $varValue->id ?>">
         <div class="input-group">
-            <?= Html::activeHiddenInput($varValue, 'id', [
-                'name' => $prefix . '[id]'
-            ]); ?>
-            <?= Html::activeHiddenInput($varValue, 'var_id', [
-                'name' => $prefix . '[var_id]'
-            ]); ?>
-
-            <?= Html::hiddenInput($prefix . '[existing]',
-                $varValue->id ? 'true' : 'false'); ?>
+            <?= Html::hiddenInput($prefix . '[id]', $varValue->id); ?>
+            <?= Html::hiddenInput($prefix . '[var_id]', $varValue->var_id); ?>
+            <?= Html::hiddenInput($prefix . '[removed]', $varValue->removed, ['class' => 'removed']); ?>
 
             <?php if ($varValue->var->description): ?>
                 <span class="input-group-addon">

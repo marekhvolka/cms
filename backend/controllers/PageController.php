@@ -77,7 +77,7 @@ class PageController extends BaseController
 
             $model->load(Yii::$app->request->post());
 
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 

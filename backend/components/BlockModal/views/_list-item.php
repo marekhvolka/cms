@@ -1,7 +1,7 @@
 <?php
 use backend\models\Block;
 use backend\models\Portal;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 
 /* @var $listItem backend\models\ListItem */
 /* @var $page backend\models\Page */
@@ -13,7 +13,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="panel panel-collapsable panel-item list-item">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$listItem->isNewRecord, ['class' => 'existing']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $listItem->removed, ['class' => 'removed']); ?>
     <div class="panel-heading">
         <span>
             <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>

@@ -2,8 +2,9 @@
 
 use backend\models\Portal;
 use backend\components\AceEditor\AceEditorWidget;
+use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\SnippetCode */
@@ -16,14 +17,13 @@ use yii\helpers\BaseHtml;
 <div class="item panel panel-default snippet-code"><!-- widgetBody -->
     <a class="anchor" id="code<?= $model->id ?>" name="code<?= $model->id ?>"></a>
     <div class="panel-heading form-inline">
+        <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
+        <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'snippet-code-id']); ?>
 
-        <?= BaseHtml::activeTextInput($model, "name", [
-            'class' => 'form-control snippetcode-name',
-            'name' => $prefix . "[name]",
-        ]); ?>
+        <?= Html::textInput($prefix . "[name]", $model->name, ['class' => 'form-control snippetcode-name']); ?>
 
-        <?= \kartik\switchinput\SwitchInput::widget([
-            'type' => \kartik\switchinput\SwitchInput::CHECKBOX,
+        <?= SwitchInput::widget([
+            'type' => SwitchInput::CHECKBOX,
             'name' => $prefix . "[dynamic]",
             'value' => $model->dynamic,
             'id' => hash('md5', $prefix),
@@ -31,7 +31,7 @@ use yii\helpers\BaseHtml;
             'pluginOptions' => [
                 'onText' => 'Dynamický',
                 'offText' => 'Statický',
-                ]
+            ]
         ]) ?>
 
         <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">
@@ -62,20 +62,12 @@ use yii\helpers\BaseHtml;
                 <label class="control-label" for="snippetcode-popis">
                     <?= $model->getAttributeLabel('description'); ?>
                 </label>
-                <?php
-                echo BaseHtml::activeTextarea($model, "description", [
-                    'class' => 'form-control',
-                    'name' => $prefix . "[description]",
-                ]);
-                ?>
+                <?= Html::textarea($prefix . "[description]", $model->description, ['class' => 'form-control']) ?>
             </div>
         </div>
         <?= $this->render('_blocks-and-sections', [
             'model' => $model,
             'prefix' => $prefix
         ]); ?>
-        <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true',
-            ['class' => 'existing']); ?>
-        <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'snippet-code-id']); ?>
     </div>
 </div>

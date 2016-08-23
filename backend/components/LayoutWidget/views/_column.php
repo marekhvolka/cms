@@ -7,7 +7,6 @@
  */
 use backend\models\Portal;
 use yii\bootstrap\Html;
-use yii\helpers\BaseHtml;
 
 /* @var $model \backend\models\Column */
 /* @var $prefix string */
@@ -16,10 +15,10 @@ use yii\helpers\BaseHtml;
 
 ?>
 
-<div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
+<div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}" data-prefix="<?= $prefix ?>">
+    <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+    <?= Html::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
 
     <div class="panel-heading">
         <h4>

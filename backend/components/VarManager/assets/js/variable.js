@@ -29,7 +29,8 @@ function attachRemove(button) {
     $(button).click(
         function () {
             var id = $(this).data('id');
-            $(this).parents('.form-group').first().remove();
+
+            removeItem($(this).parents('.form-group').first());
 
             $('#types-dropdown').find('[value="' + id + '"]').prop('disabled', false);
             $('#types-dropdown').select2();

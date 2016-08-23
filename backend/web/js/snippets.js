@@ -9,34 +9,42 @@ var listTypeId = 5;
 
 var body = $("body");
 
-body.on(
-    'click', '.btn-add-snippet-code', function ()
-    {
-        var postData = {
-            prefix: $(this).data('prefix')
-        };
+body.on('click', '.btn-add-snippet-code', function () {
+    var postData = {
+        prefix: $(this).data('prefix')
+    };
 
-        $.post(
-            appendUrl.code, postData, function (data)
-            {
-                $('.snippet-codes').append($(data));
-                rescanForms();
-            }
-        );
-    }
-);
+    $.post(appendUrl.code, postData, function (data) {
+        $('.snippet-codes').append($(data));
+        rescanForms();
+    });
+});
 
-body.on(
-    'click', '.btn-remove-snippet-code', function ()
-    {
-        $(this).parents('.snippet-code').remove();
-    }
-);
+body.on('click', '.btn-remove-snippet-code', function () {
+    removeItem($(this).parents('.snippet-code'));
+});
 
-body.on(
-    'click', '.btn-add-snippet-var', function ()
-    {
-        var url = appendUrl.snippetVar;
+body.on('click', '.btn-add-snippet-var', function () {
+    var url = appendUrl.snippetVar;
+
+    var postData = {
+        prefix: $(this).data('prefix')
+    };
+
+    var self = this;
+
+    $.post(url, postData, function (data) {
+        $(self).parents('.snippet-vars').first().find('.snippet-vars-container').first().append($(data));
+        rescanForms();
+    });
+});
+
+body.on('click', '.btn-remove-snippet-var', function () {
+    removeItem($(this).parents('.snippet-var').first());
+});
+
+body.on('change', '.select-var-type', function () {
+    if ($(this).val() == listTypeId) {        // If selected type is List.
 
         var postData = {
             prefix: $(this).data('prefix')
@@ -44,79 +52,35 @@ body.on(
 
         var self = this;
 
-        $.post(
-            url, postData, function (data)
-            {
-                $(self).parents('.snippet-vars').first().find('.snippet-vars-container').first().append($(data));
-                rescanForms();
-            }
-        );
+        $.post(appendUrl.listBox, postData, function (data) {
+            var listBoxContainer = $(self).parents('.var-body').first().find('.list-box-container');
+            listBoxContainer.append($(data));
+
+            rescanForms();
+        });
     }
-);
-
-body.on(
-    'click', '.btn-remove-snippet-var', function ()
-    {
-        $(this).parents('.snippet-var').first().remove();
+    else {
+        $(this).parents('.var-body').first().find('.list-box-container').empty();
     }
-);
+});
 
-body.on(
-    'change', '.select-var-type', function ()
-    {
-        if ($(this).val() == listTypeId)
-        {        // If selected type is List.
+body.on('click', '.btn-remove-snippet-default-value', function () {
+    removeItem($(this).parents('.row').first());
+});
 
-            var postData = {
-                prefix: $(this).data('prefix')
-            };
+body.on('click', '.btn-add-snippet-default-value', function () {
+    var postData = {
+        parentPrefix: $(this).data('parent-prefix')
+    };
 
-            var self = this;
+    var self = $(this);
 
-            $.post(
-                appendUrl.listBox, postData, function (data)
-                {
-                    var listBoxContainer = $(self).parents('.var-body').first().find('.list-box-container');
-                    listBoxContainer.append($(data));
+    $.post(appendUrl.defaultValue, postData, function (data) {
+        self.parents('.snippet-var-default-values').first().append($(data));
 
-                    rescanForms();
-                }
-            );
-        }
-        else
-        {
-            $(this).parents('.var-body').first().find('.list-box-container').empty();
-        }
-    }
-);
-
-body.on(
-    'click', '.btn-remove-snippet-default-value', function ()
-    {
-        $(this).parents('.row').first().remove();
-    }
-);
-
-body.on(
-    'click', '.btn-add-snippet-default-value', function ()
-    {
-        var postData = {
-            parentPrefix: $(this).data('parent-prefix'),
-
-        };
-
-        var self = $(this);
-
-        $.post(
-            appendUrl.defaultValue, postData, function (data)
-            {
-                self.parents('.snippet-var-default-values').first().append($(data));
-
-                rescanForms();
-            }
-        );
-    }
-);
+        rescanForms();
+    });
+});
 
 body.on('click', '.btn-alternative-usage', function (e) {
     e.preventDefault();

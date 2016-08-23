@@ -57,7 +57,7 @@ class PostTagController extends BaseController
         $model = $id ? $this->findModel($id) : new PostTag();
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 
@@ -76,19 +76,6 @@ class PostTagController extends BaseController
         return $this->render('edit', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Deletes an existing PostTag model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

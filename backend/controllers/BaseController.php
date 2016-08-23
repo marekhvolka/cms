@@ -21,9 +21,10 @@ use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use common\components\Alert;
-use Yii;
+use yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -70,9 +71,13 @@ abstract class BaseController extends Controller
         /* @var $portal Portal */
         $portal = Portal::findOne($portalId);
 
-        if (!(key_exists('develop', Yii::$app->params) && Yii::$app->params['develop'])) {
-            $this->redirect('http://www.' . $portal->domain . '/backend/web/');
+        if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') { //localhost
+            $redirectPrefix = 'http://' . $_SERVER['HTTP_HOST'];
+        } else {
+            $redirectPrefix = 'http://www.' . $portal->domain;
         }
+
+        $this->redirect($redirectPrefix . '/backend/web/');
     }
 
     /**
@@ -333,9 +338,9 @@ abstract class BaseController extends Controller
         $model->validateAndSave();
 
         foreach ($model->sections as $indexSection => $section) {
-            if (empty($section->area_id)) {
+            //if (empty($section->area_id)) {
                 $section->area_id = $model->id;
-            }
+            //}
             if ($section->removed) {
                 $section->delete();
                 unset($model->sections[$indexSection]);
@@ -344,9 +349,9 @@ abstract class BaseController extends Controller
             $section->validateAndSave();
 
             foreach ($section->rows as $indexRow => $row) {
-                if (empty($row->section_id)) {
+                //if (empty($row->section_id)) {
                     $row->section_id = $section->id;
-                }
+                //}
 
                 if ($row->removed) {
                     $row->delete();
@@ -357,9 +362,9 @@ abstract class BaseController extends Controller
                 $row->validateAndSave();
 
                 foreach ($row->columns as $indexColumn => $column) {
-                    if (empty($column->row_id)) {
+                    //if (empty($column->row_id)) {
                         $column->row_id = $row->id;
-                    }
+                    //}
 
                     if ($column->removed) {
                         $column->delete();
@@ -369,9 +374,9 @@ abstract class BaseController extends Controller
                     $column->validateAndSave();
 
                     foreach ($column->blocks as $indexBlock => $block) {
-                        if (empty($block->column_id)) {
+                        //if (empty($block->column_id)) {
                             $block->column_id = $column->id;
-                        }
+                        //}
 
                         if ($block->removed) {
                             $block->delete();
@@ -441,10 +446,26 @@ abstract class BaseController extends Controller
 
     protected function redirectAfterSave($model)
     {
-        Alert::success('Položka bola úspešne uložená.');
-        $continue = Yii::$app->request->post('continue');
+        $continue = Yii::$app->request->post('ajaxSubmit');
 
-        return isset($continue) ? $this->redirect(['edit', 'id' => $model->id]) : $this->redirect(['index']);
+        if (isset($continue)) {
+            $result = [
+                'status' => 'success'
+            ];
+
+            $result['message'] = yii\bootstrap\Alert::widget([
+                'options' => [
+                    'class' => 'alert-success'
+                ],
+                'body' => 'Položka bola úspešne uložená.'
+            ]);
+
+            return Json::encode($result);
+        } else {
+            Alert::success('Položka bola úspešne uložená.');
+
+            return $this->redirect(['index']);
+        }
     }
 
     protected function redirectAfterFail($model, $editOptions = array())
@@ -460,5 +481,22 @@ abstract class BaseController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return ActiveForm::validate($model);
+    }
+
+    /**
+     * Basic delete method
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        if ($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Položku sa nepodarilo vymazať.');
+        }
+
+        return $this->redirect(['index']);
     }
 }

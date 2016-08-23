@@ -3,7 +3,7 @@
 use backend\components\LayoutWidget\AssetBundle;
 use backend\models\Area;
 use backend\models\Portal;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 
 /* @var $form yii\widgets\ActiveForm */
 /* @var $area Area */
@@ -19,9 +19,10 @@ AssetBundle::register($this);
 
 ?>
 
-<div class="layouts area">
-    <?= BaseHtml::hiddenInput($prefix . "[type]", $area->type); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $area->id, ['class' => 'model_id']); ?>
+<div class="layouts area" data-prefix="<?= $prefix ?>">
+    <?= Html::hiddenInput($prefix . "[type]", $area->type); ?>
+    <?= Html::hiddenInput($prefix . "[id]", $area->id, ['class' => 'model_id']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $area->removed, ['class' => 'removed']); ?>
     <div class="children-list sections">
         <?php foreach ($area->sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
@@ -34,7 +35,7 @@ AssetBundle::register($this);
     </div>
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
-        <button type="button" class="btn btn-success btn-sm btn-add-section" data-prefix="<?= $area->type ?>[Section]"
+        <button type="button" class="btn btn-success btn-sm add-section-btn" data-prefix="<?= $area->type ?>[Section]"
                 data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>

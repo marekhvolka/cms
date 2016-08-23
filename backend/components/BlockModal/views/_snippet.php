@@ -1,9 +1,8 @@
 <?php
 use backend\models\Page;
 use backend\models\Portal;
-use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $page Page */
@@ -14,7 +13,7 @@ use yii\helpers\Url;
 ?>
 
 <div class="col-md-12">
-    <?= BaseHtml::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
+    <?= Html::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
     <div class="modal-header">
         <button type="button" class="btn modal close" data-dismiss="modal">
             <span aria-hidden="true">×</span>

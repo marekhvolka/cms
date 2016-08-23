@@ -9,149 +9,95 @@ var appendUrl = {
     },
     body = $("body");
 
+/* ==========================================================================
+ Section
+ ========================================================================== */
+
 // Event for appending new section.
-body.on(
-    "click", '.btn-add-section', function ()
-    {
-        var $this = $(this),
-            layouts = $this.parents('.layouts'),
-            postData = {
-                prefix: $this.data('prefix'),
-                pageId: $this.data('page-id'),
-                portalId: $this.data('portal-id')
-            };
-
-        $.post(
-            appendUrl.section, postData, function (data)
-            {
-                var section = appendElement(layouts, $(data));
-                //enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
-                //enableDragBy(section.find(".children-list.blocks").toArray());
-
-                //enableDropSection(section);
-
-                rescanForms();
-            }
-        );
-    }
-);
-
-body.on(
-    "click", ".btn-remove-section", function ()
-    {
-        $(this).parents('.section').remove();
-    }
-);
-
-body.on(
-    "click", ".btn-remove-row", function ()
-    {
-        $(this).parents('.layout-row').first().remove();
-    }
-);
-
-body.on(
-    'click', '.open-section-options', function (e)
-    {
-        $(this).parents('.panel-title').find('.modal').modal('show');
-        e.preventDefault();
-    }
-);
-
-body.on(
-    'click', '.open-column-options', function (e)
-    {
-        $(this).parents('.panel-heading').find('.modal').modal('show');
-        e.preventDefault();
-    }
-);
-
-body.on(
-    "click", ".add-row", function ()
-    {
-        var $this = $(this),
-            columnsByWidth = getColumnsWidths($this.data('row-type-width')),
-            section = $this.parents('.section').first(),
-            postData = {
-                prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
-                pageId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('page-id'),
-                portalId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('portal-id')
-            };
-
-        $.post(
-            appendUrl.row, postData, function (data)
-            {
-                var row = appendElement(section, $(data)),
-                    postColumnData = {
-                        width: columnsByWidth,
-                        prefix: row.data('prefix'),
-                        pageId: row.data('page-id'),
-                        portalId: row.data('portal-id')
-                    };
-
-                $.post(
-                    appendUrl.column, postColumnData, function (columnsData)
-                    {
-                        var parsed = JSON.parse(columnsData);
-
-                        for (var i = 0; i < parsed.length; i++)
-                        {
-                            var column = appendElement(row, $(parsed[i]));
-                            //enableDragBy(column.find(".children-list.blocks").toArray());
-                        }
-
-                        rescanForms();
-                    }
-                );
-            }
-        );
-    }
-);
-
-body.on(
-    "click", ".add-block", function ()
-    {
-        var column = $(this).parents('.column').first();
-        var mainButton = $(this).parents('.add-block-dropdown').first().find('.add-block-btn').first();
-
-        var postData = {
-            prefix: mainButton.data('prefix'),
-            pageId: mainButton.data('page-id'),
-            portalId: mainButton.data('portal-id'),
-            type: $(this).data('type')
+body.on("click", '.add-section-btn', function () {
+    var $this = $(this),
+        layouts = $this.parents('.layouts'),
+        postData = {
+            prefix: $this.data('prefix'),
+            pageId: $this.data('page-id'),
+            portalId: $this.data('portal-id')
         };
 
-        $.post(
-            appendUrl.block, postData, function (data)
-            {
-                var block = appendElement(column, $(data));
+    $.post(appendUrl.section, postData, function (data) {
+        var section = appendElement(layouts, $(data));
+        //enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
+        //enableDragBy(section.find(".children-list.blocks").toArray());
 
-                //block.draggable({revert: 'invalid'});
+        //enableDropSection(section);
 
-                rescanForms();
+        sortableRow(section.find('.children-list.rows').first()[0]);
+
+        rescanForms();
+    });
+});
+
+body.on("click", ".btn-remove-section", function () {
+    removeItem($(this).parents('.section'));
+});
+
+body.on('click', '.open-section-options', function (e) {
+    $(this).parents('.panel-title').find('.modal').modal('show');
+    e.preventDefault();
+});
+
+/* ==========================================================================
+ Row
+ ========================================================================== */
+
+body.on("click", ".add-row", function () {
+    var $this = $(this),
+        columnsByWidth = getColumnsWidths($this.data('row-type-width')),
+        section = $this.parents('.section').first(),
+        postData = {
+            prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
+            pageId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('page-id'),
+            portalId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('portal-id')
+        };
+
+    $.post(appendUrl.row, postData, function (data) {
+        var row = appendElement(section, $(data)),
+            postColumnData = {
+                width: columnsByWidth,
+                prefix: row.data('prefix'),
+                pageId: row.data('page-id'),
+                portalId: row.data('portal-id')
+            };
+
+        $.post(appendUrl.column, postColumnData, function (columnsData) {
+            var parsed = JSON.parse(columnsData);
+
+            for (var i = 0; i < parsed.length; i++) {
+                var column = appendElement(row, $(parsed[i]));
+                //enableDragBy(column.find(".children-list.blocks").toArray());
+
+                sortableBlock(column.find('.children-list.blocks').first()[0]);
             }
-        );
-    }
-);
 
-body.on(
-    "click", ".btn-remove-block", function ()
-    {
-        $(this).parents('.layout-block').first().remove();
-    }
-);
+            rescanForms();
+        });
+    });
+});
 
-function appendElement(parentElement, dataToAppend)
-{
-    parentElement.find('.children-list:first').append(dataToAppend);
+body.on("click", ".btn-remove-row", function () {
+    removeItem($(this).parents('.layout-row').first());
+});
 
-    return $(dataToAppend);
-}
+/* ==========================================================================
+ Column
+ ========================================================================== */
 
-function getColumnsWidths(rowType)
-{
-    switch (rowType)
-    {
+body.on('click', '.open-column-options', function (e) {
+    $(this).parents('.panel-heading').find('.modal').modal('show');
+    e.preventDefault();
+});
+
+function getColumnsWidths(rowType) {
+    switch (rowType) {
         case 1:
             return ['12'];
         case 2:
@@ -167,46 +113,123 @@ function getColumnsWidths(rowType)
     }
 }
 
-body.on(
-    'shown.bs.modal', function (e)
-    {
-        disableDragAndDrop = true;
-    }
-);
+/* ==========================================================================
+ Block
+ ========================================================================== */
 
-body.on(
-    'hidden.bs.modal', function (e)
-    {
-        disableDragAndDrop = false;
-    }
-);
+body.on("click", ".add-block", function () {
+    var column = $(this).parents('.column').first();
+    var mainButton = $(this).parents('.add-block-dropdown').first().find('.add-block-btn').first();
 
-$('.children-list.sections').each(function() {
-    Sortable.create(this, {
+    var postData = {
+        prefix: mainButton.data('prefix'),
+        pageId: mainButton.data('page-id'),
+        portalId: mainButton.data('portal-id'),
+        type: $(this).data('type')
+    };
+
+    $.post(appendUrl.block, postData, function (data) {
+        var block = appendElement(column, $(data));
+
+        //block.draggable({revert: 'invalid'});
+
+        rescanForms();
+    });
+});
+
+body.on("click", ".btn-remove-block", function () {
+    removeItem($(this).parents('.layout-block').first());
+});
+
+function appendElement(parentElement, dataToAppend) {
+    parentElement.find('.children-list:first').append(dataToAppend);
+
+    return $(dataToAppend);
+}
+
+body.on('shown.bs.modal', function (e) {
+    disableDragAndDrop = true;
+});
+
+body.on('hidden.bs.modal', function (e) {
+    disableDragAndDrop = false;
+});
+
+function sortableSection(section) {
+    Sortable.create(section, {
         group: '.children-list.sections',
 
         onAdd: function (/**Event*/evt) {
-            evt.item.getElementsByClassName('area_id')[0].value = evt.to.parentElement.parentElement.getElementsByClassName('model_id')[0].value;
+            var oldItem = $(evt.item).clone();
+            oldItem.addClass('hidden');
+            oldItem.find('.removed').first().val(1);
+            $(evt.from).append(oldItem);
+
+            var newId = Math.floor((Math.random() * 1000) + 20);
+
+            var oldPrefix = evt.item.getAttribute('data-prefix');
+            var newPrefix = evt.to.parentElement.parentElement.getAttribute('data-prefix') + '[Section][' + newId + ']';
+
+            while(evt.item.innerHTML.indexOf(oldPrefix) > -1) {
+                evt.item.innerHTML = evt.item.innerHTML.replace(oldPrefix, newPrefix);
+            }
         }
     });
-});
+}
 
-$('.children-list.rows').each(function() {
-    Sortable.create(this, {
+function sortableRow(row) {
+    Sortable.create(row, {
         group: '.children-list.rows',
 
         onAdd: function (/**Event*/evt) {
-            evt.item.getElementsByClassName('section_id')[0].value = evt.to.parentElement.parentElement.getElementsByClassName('model_id')[0].value;
+            var oldItem = $(evt.item).clone();
+            oldItem.addClass('hidden');
+            oldItem.find('.removed').first().val(1);
+            $(evt.from).append(oldItem);
+
+            var newId = Math.floor((Math.random() * 1000) + 20);
+
+            var oldPrefix = evt.item.getAttribute('data-prefix');
+            var newPrefix = evt.to.parentElement.parentElement.getAttribute('data-prefix') + '[Row][' + newId + ']';
+
+            while(evt.item.innerHTML.indexOf(oldPrefix) > -1) {
+                evt.item.innerHTML = evt.item.innerHTML.replace(oldPrefix, newPrefix);
+            }
         }
     });
-});
+}
 
-$('.children-list.blocks').each(function() {
-    Sortable.create(this, {
+function sortableBlock(block) {
+    Sortable.create(block, {
         group: '.children-list.blocks',
 
         onAdd: function (/**Event*/evt) {
-            evt.item.getElementsByClassName('column_id')[0].value = evt.to.parentElement.getElementsByClassName('model_id')[0].value;
+
+            var oldItem = $(evt.item).clone();
+            oldItem.addClass('hidden');
+            oldItem.find('.removed').first().val(1);
+            $(evt.from).append(oldItem);
+
+            var newId = Math.floor((Math.random() * 1000) + 20);
+
+            var oldPrefix = evt.item.getAttribute('data-prefix');
+            var newPrefix = evt.to.parentElement.getAttribute('data-prefix') + '[Block][' + newId + ']';
+
+            while(evt.item.innerHTML.indexOf(oldPrefix) > -1) {
+                evt.item.innerHTML = evt.item.innerHTML.replace(oldPrefix, newPrefix);
+            }
         }
     });
+}
+
+$('.children-list.sections').each(function () {
+    sortableSection(this);
+});
+
+$('.children-list.rows').each(function () {
+    sortableRow(this);
+});
+
+$('.children-list.blocks').each(function () {
+    sortableBlock(this);
 });

@@ -47,14 +47,17 @@ class PostCategoryController extends BaseController
     /**
      * Creates a new PostCategory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param null $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function actionEdit($id = null)
     {
         $model = $id ? $this->findModel($id) : new PostCategory();
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 
@@ -73,19 +76,6 @@ class PostCategoryController extends BaseController
         return $this->render('edit', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Deletes an existing PostCategory model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

@@ -30,7 +30,6 @@ if ($model->portal) {
         'enableAjaxValidation' => true,
     ]); ?>
 
-
     <ul class="nav nav-tabs" id="myTab">
         <li role="presentation" class="tab-label active">
             <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>

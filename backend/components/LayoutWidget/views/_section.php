@@ -10,9 +10,9 @@ use yii\helpers\BaseHtml;
 
 ?>
 <!--SECTION TO ADD-->
-<div class="panel panel-default section" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[area_id]", $model->area_id); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+<div class="panel panel-default section" data-options="{}" data-prefix="<?= $prefix ?>">
+    <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
     <div class="panel-heading">
         <h3 class="panel-title">
             <span>
