@@ -4,7 +4,6 @@ use backend\models\Tag;
 use common\components\Icons;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
-use yii\helpers\BaseHtml;
 use yii\helpers\Html;
 
 /* @var $snippetVarValue backend\models\SnippetVarValue */
@@ -34,7 +33,7 @@ use yii\helpers\Html;
                     </a>
                 <?php endif; ?>
             </label>
-            <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
+            <?= Html::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
             <div class="col-sm-10">
                 <?php
                 switch ($snippetVarValue->typeName) {
@@ -121,14 +120,15 @@ use yii\helpers\Html;
                 <?php
                 break;
                 case 'editor' : ?>
-                    <textarea class="form-control" id="ckeditor<?= $snippetVarValue->id ?>"
+                    <?php $varId = $snippetVarValue->id ? $snippetVarValue->id : rand(100, 10000); ?>
+                    <textarea class="form-control" id="ckeditor<?= $varId ?>"
                               name="<?= $prefix . '[value_text]' ?>"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
                         <?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>
                     </textarea>
 
                     <script type="text/javascript">
-                        CKEDITOR.replace("ckeditor<?= $snippetVarValue->id ?>", ckeditorConfig);
+                        CKEDITOR.replace("ckeditor<?= $varId ?>", ckeditorConfig);
                         CKEDITOR.dtd.$removeEmpty['i'] = false;
                     </script>
 
@@ -274,7 +274,7 @@ use yii\helpers\Html;
         </div>
     <?php elseif (!isset($parentId)) : ?>
         <div class="panel panel-collapsable panel-container list-panel">
-            <?= BaseHtml::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
+            <?= Html::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
             <div class="panel-heading">
             <span>
                 <?= $snippetVarValue->var->identifier ?>
