@@ -25,9 +25,7 @@ foreach ($categories as $multimediaCategory) {
                 <?php foreach ($multimediaCategory->items as $item) {
                     $is_image = PathHelper::isImageFile($item->name);
                     ?>
-                    <div class="col-md-3 multimedia-item <?php if ($is_image) {
-                        echo 'multimedia-image';
-                    } ?>" data-name="<?= $item->name ?>"
+                    <div class="col-md-3 multimedia-item multimedia-image" data-name="<?= $item->name ?>"
                          data-path-for-web="<?= $multimediaCategory->pathForWeb . $item->name ?>">
                         <div class="thumbnail">
                             <div class="caption">
