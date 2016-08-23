@@ -30,5 +30,9 @@ var ckeditorConfig = {
     extraPlugins: 'custimage', //enable custimage tool button
     //config.removePlugins = 'image';
 
-    allowedContent: true
+    allowedContent: true,
+
+    forcePasteAsPlainText: true,
+    entities: false,
+    basicEntities: false
 };
