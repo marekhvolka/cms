@@ -11,7 +11,6 @@ use backend\models\MultimediaCategory;
 
 /* @var $categories MultimediaCategory[] */
 /* @var $modal boolean */
-/* @var $onlyImages boolean */
 
 MultimediaWidgetAsset::register($this);
 ?>
@@ -30,7 +29,7 @@ MultimediaWidgetAsset::register($this);
             <?= $this->render('_new', ['categories' => $categories, 'modal' => $modal]) ?>
         </div>
         <div class="tab-pane" id="tab_existing">
-            <?= $this->render('_existing', ['categories' => $categories, 'onlyImages' => $onlyImages]) ?>
+            <?= $this->render('_existing', ['categories' => $categories]) ?>
         </div>
     </div>
     <div class="clearfix"></div>

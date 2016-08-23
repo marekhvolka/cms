@@ -10,7 +10,7 @@ $this->title = 'Úprava podstránky: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => $model->breadcrumbs, 'url' => ['view', 'id' => $model->id]];
 
 ?>
-<?= MultimediaWidget::widget(['renderAsModal' => true, 'onlyImages' => true]) ?>
+<?= MultimediaWidget::widget(['renderAsModal' => true]) ?>
 <div class="page-update">
 
     <?= $this->render('_form', [

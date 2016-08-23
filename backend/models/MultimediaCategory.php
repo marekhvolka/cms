@@ -2,8 +2,6 @@
 
 namespace backend\models;
 
-use backend\components\PathHelper;
-use backend\controllers\BaseController;
 use Yii;
 use yii\base\Model;
 
@@ -179,10 +177,9 @@ class MultimediaCategory extends Model
 
     /**
      * Return all possible items (set their category name, subcategory, etc);
-     * @param bool $only_images
      * @return array
      */
-    public function getItems($only_images = false)
+    public function getItems()
     {
         if (!isset($this->items)) {
 
@@ -190,11 +187,9 @@ class MultimediaCategory extends Model
             chdir($this->path);
 
             foreach (glob('*') as $file) {
-                if (!$only_images || PathHelper::isImageFile($file)) {
-                    $item = new MultimediaItem();
-                    $item->name = $file;
-                    $this->items[] = $item;
-                }
+                $item = new MultimediaItem();
+                $item->name = $file;
+                $this->items[] = $item;
             }
 
             usort($this->items, function ($a, $b) {

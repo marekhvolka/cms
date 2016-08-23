@@ -1,7 +1,6 @@
 <?php
 
 /* @var $categories \backend\models\MultimediaCategory[] */
-/* @var $onlyImages boolean */
 
 ?>
 <div class="form-group">
@@ -14,5 +13,5 @@
 </div>
 
 <div class="multimedia-categories">
-    <?= $this->render('_items', ['categories' => $categories, 'onlyImages' => $onlyImages]) ?>
+    <?= $this->render('_items', ['categories' => $categories]) ?>
 </div>

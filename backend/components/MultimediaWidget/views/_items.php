@@ -3,10 +3,9 @@ use backend\components\PathHelper;
 use yii\helpers\Url;
 
 /* @var $categories \backend\models\MultimediaCategory[] */
-/* @var $onlyImages boolean */
 
 foreach ($categories as $multimediaCategory) {
-    if (count($multimediaCategory->getItems($onlyImages)) > 0) {
+    if (count($multimediaCategory->getItems()) > 0) {
         ?>
         <div class="panel panel-default multimedia-category">
             <div class="panel-heading">

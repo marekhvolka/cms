@@ -9,7 +9,6 @@
 use backend\components\MultimediaWidget\MultimediaWidgetAsset;
 
 /* @var $categories \backend\models\MultimediaCategory[] */
-/* @var $onlyImages boolean */
 
 MultimediaWidgetAsset::register($this);
 ?>
@@ -24,7 +23,7 @@ MultimediaWidgetAsset::register($this);
                 <h4 class="modal-title" id="multimediaModalLabel">Vybrať súbor z multimédii</h4>
             </div>
             <div class="modal-body">
-                <?= $this->render('view', ['categories' => $categories, 'modal' => true, 'onlyImages' => $onlyImages]) ?>
+                <?= $this->render('view', ['categories' => $categories, 'modal' => true]) ?>
             </div>
         </div>
     </div>
