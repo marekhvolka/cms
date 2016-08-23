@@ -32,5 +32,7 @@ var ckeditorConfig = {
 
     allowedContent: true,
 
-    forcePasteAsPlainText: true
+    forcePasteAsPlainText: true,
+    entities: false,
+    basicEntities: false
 };
