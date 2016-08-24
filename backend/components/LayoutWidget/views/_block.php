@@ -14,7 +14,8 @@ if (!isset($renderModal)) {
 }
 ?>
 
-<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>" data-prefix="<?= $prefix ?>">
+<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>"
+     data-prefix="<?= $prefix ?>">
     <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
     <?= Html::hiddenInput($prefix . "[snippet_code_id]", $model->snippet_code_id); ?>
@@ -36,7 +37,10 @@ if (!isset($renderModal)) {
             '<span class="glyphicon glyphicon-link"></span>', $model->snippetCode->url, [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',
-                'target' => '_blank'
+                'target' => '_blank',
+                'data' => [
+                    'pjax' => false
+                ]
             ]
         ) ?>
     <?php endif; ?>
@@ -47,7 +51,10 @@ if (!isset($renderModal)) {
             '<span class="glyphicon glyphicon-link"></span>', $model->parent->snippetCode->url, [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',
-                'target' => '_blank'
+                'target' => '_blank',
+                'data' => [
+                    'pjax' => false
+                ]
             ]
         ) ?>
     <?php endif; ?>
@@ -57,14 +64,12 @@ if (!isset($renderModal)) {
     </button>
 
     <div class="modal-container">
-        <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
-            echo BlockModalWidget::widget([
-                'block' => $model,
-                'page' => $page,
-                'portal' => $portal,
-                'prefix' => $prefix
-            ]);
-        } ?>
+        <?= BlockModalWidget::widget([
+            'block' => $model,
+            'page' => $page,
+            'portal' => $portal,
+            'prefix' => $prefix
+        ]) ?>
     </div>
     <div class="clearfix"></div>
 </div>

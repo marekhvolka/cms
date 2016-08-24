@@ -13,6 +13,8 @@ $id = rand(0, 100000000);
     ><?= $model->data ?></textarea>
 </div>
 <script type="text/javascript">
-    CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
-    CKEDITOR.dtd.$removeEmpty['i'] = false;
+    $(document).ready(function () {
+        CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
+        CKEDITOR.dtd.$removeEmpty['i'] = false;
+    });
 </script>

@@ -446,7 +446,9 @@ abstract class BaseController extends Controller
 
     protected function redirectAfterSave($model)
     {
-        $continue = Yii::$app->request->post('ajaxSubmit');
+        Alert::success('Položka bola úspešne uložená.');
+        //$continue = Yii::$app->request->post('ajaxSubmit');
+        $continue = Yii::$app->request->post('continue');
 
         if (isset($continue)) {
             $result = [
@@ -460,7 +462,7 @@ abstract class BaseController extends Controller
                 'body' => 'Položka bola úspešne uložená.'
             ]);
 
-            return Json::encode($result);
+            return $this->redirect(['edit', 'id' => $model->id]);
         } else {
             Alert::success('Položka bola úspešne uložená.');
 

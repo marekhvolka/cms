@@ -95,32 +95,32 @@ use yii\helpers\Html;
                     </div>
 
                     <script type="text/javascript">
-                        var apply = $(".apply-spectrum");
-                        apply.find(".apply-spectrum-picker").spectrum(
-                            {
-                                preferredFormat: "hex",
-                                change: function (color)
+                        $(document).ready(function() {
+                            var apply = $(".apply-spectrum");
+                            apply.find(".apply-spectrum-picker").spectrum(
                                 {
-                                    $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                                    preferredFormat: "hex",
+                                    change: function (color) {
+                                        $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                                    }
                                 }
-                            }
-                        ).removeClass('apply-spectrum-picker');
+                            ).removeClass('apply-spectrum-picker');
 
-                        apply.find('.apply-spectrum-source').on(
-                            'input', function ()
-                            {
-                                var $this = $(this);
-                                $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
-                            }
-                        ).removeClass('apply-spectrum-source');
+                            apply.find('.apply-spectrum-source').on(
+                                'input', function () {
+                                    var $this = $(this);
+                                    $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
+                                }
+                            ).removeClass('apply-spectrum-source');
 
-                        apply.removeClass('apply-spectrum');
+                            apply.removeClass('apply-spectrum');
+                        });
                     </script>
 
                 <?php
                 break;
                 case 'editor' : ?>
-                    <?php $varId = $snippetVarValue->id ? $snippetVarValue->id : rand(100, 10000); ?>
+                <?php $varId = $snippetVarValue->id ? $snippetVarValue->id : rand(100, 10000); ?>
                     <textarea class="form-control" id="ckeditor<?= $varId ?>"
                               name="<?= $prefix . '[value_text]' ?>"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
@@ -128,8 +128,10 @@ use yii\helpers\Html;
                     </textarea>
 
                     <script type="text/javascript">
-                        CKEDITOR.replace("ckeditor<?= $varId ?>", ckeditorConfig);
-                        CKEDITOR.dtd.$removeEmpty['i'] = false;
+                        $(document).ready(function () {
+                            CKEDITOR.replace("ckeditor<?= $varId ?>", ckeditorConfig);
+                            CKEDITOR.dtd.$removeEmpty['i'] = false;
+                        });
                     </script>
 
                 <?php
@@ -209,25 +211,24 @@ use yii\helpers\Html;
                     ]
                 ]) ?>
                     <script type="text/javascript">
-                        var toApply = $(".apply-child-bootstrap-switch");
-                        toApply.find("input").bootstrapSwitch(
-                            {
-                                onSwitchChange: function (event, state)
+                        $(document).ready(function () {
+                            var toApply = $(".apply-child-bootstrap-switch");
+                            toApply.find("input").bootstrapSwitch(
                                 {
-                                    var _this = $(this);
-                                    if (state)
-                                    {
-                                        _this.attr('checked', 'checked');
-                                        _this.val = 1;
-                                    }
-                                    else
-                                    {
-                                        _this.removeAttr('checked');
-                                        _this.val = 0;
-                                    }
-                                }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>}
-                        );
-                        toApply.removeClass('apply-child-bootstrap-switch');
+                                    onSwitchChange: function (event, state) {
+                                        var _this = $(this);
+                                        if (state) {
+                                            _this.attr('checked', 'checked');
+                                            _this.val = 1;
+                                        }
+                                        else {
+                                            _this.removeAttr('checked');
+                                            _this.val = 0;
+                                        }
+                                    }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>}
+                            );
+                            toApply.removeClass('apply-child-bootstrap-switch');
+                        });
                     </script>
 
                     <?php
@@ -239,19 +240,15 @@ use yii\helpers\Html;
                 <?php endif; ?>
             </div>
             <script type="text/javascript">
-                function format(o)
-                {
-                    if (o.id != null)
-                    {
-                        if (o.id.match(/fa-[a-z\-]+/))
-                        {
+                function format(o) {
+                    if (o.id != null) {
+                        if (o.id.match(/fa-[a-z\-]+/)) {
                             return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace(
                                     '-',
                                     ' '
                                 ) + ' [font awesome]';
                         }
-                        else if (o.id.match(/glyphicon\-[a-z\-]+/))
-                        {
+                        else if (o.id.match(/glyphicon\-[a-z\-]+/)) {
                             return '<span class="' + o.id + '"></span> ' + o.text + ' [glyphicon]';
                         }
                     }
@@ -259,16 +256,18 @@ use yii\helpers\Html;
                     return o.text;
                 }
 
-                $(".activate-select2").select2(
-                    {
-                        templateResult: format,
-                        templateSelection: format,
-                        escapeMarkup: function (m)
+                $(document).ready(function () {
+                    $(".activate-select2").select2(
                         {
-                            return m;
+                            templateResult: format,
+                            templateSelection: format,
+                            escapeMarkup: function (m) {
+                                return m;
+                            }
                         }
-                    }
-                ).removeClass('activate-select2');
+                    ).removeClass('activate-select2');
+                });
+
             </script>
             <div class="clearfix"></div>
         </div>

@@ -8,11 +8,23 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
 
+?>
+
+<?php
+/*
+$this->registerJs(
+    '$("document").ready(function(){ 
+        $("#page_form").on("pjax:end", function() {
+            $.pjax.reload({container:"#page_form"});  //Reload GridView
+        });
+    });'
+);*/
 ?>
 
 <?php
@@ -24,10 +36,12 @@ if ($model->portal) {
 ?>
 
 <div class="page-form">
+    <?php /*Pjax::begin(['id' => 'page_form']);*/ ?>
 
     <?php $form = ActiveForm::begin([
         'id' => 'form',
         'enableAjaxValidation' => true,
+        //'options' => ['data-pjax' => true]
     ]); ?>
 
     <ul class="nav nav-tabs" id="myTab">
@@ -172,7 +186,10 @@ if ($model->portal) {
             <div class="form-group">
                 <?= Html::submitButton('Uložiť', [
                     'class' => 'btn btn-primary',
-                    'id' => 'submit-btn'
+                    'id' => 'submit-btn',
+                    'data' => [
+                        'pjax' => false
+                    ]
                 ]) ?>
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
@@ -182,17 +199,25 @@ if ($model->portal) {
                 ]) ?>
                 <?= Html::a('Náhľad', Url::to(['show', 'id' => $model->id]), [
                     'class' => 'btn btn-info',
-                    'target' => '_blank'
+                    'target' => '_blank',
+                    'data' => [
+                    'pjax' => false
+                ]
                 ]) ?>
                 <?= Html::a('Hard reset a náhľad', Url::to(['hard-reset', 'id' => $model->id]), [
                     'class' => 'btn btn-danger',
-                    'target' => '_blank'
+                    'target' => '_blank',
+                    'data' => [
+                        'pjax' => false
+                    ]
                 ]) ?>
             </div>
         </div>
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php /*Pjax::end();*/ ?>
 
     <div class="modal fade" id="blockModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
         <div class="modal-dialog" role="document">

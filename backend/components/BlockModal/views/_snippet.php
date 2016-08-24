@@ -39,6 +39,7 @@ use yii\helpers\Url;
 
 
 
+
                 <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                         style="right: 60px; top: 13px;" data-toggle="modal"
                         data-target="#supportModal" title="Nápoveda">
@@ -55,6 +56,7 @@ use yii\helpers\Url;
                     'data-page-id' => $page ? $page->id : '',
                     'data-portal-id' => $portal ? $portal->id : ''
                 ]); ?>
+
 
 
                 <script type="text/javascript">
@@ -119,32 +121,30 @@ use yii\helpers\Url;
 </div>
 
 <script type="text/javascript">
-    var changeUrl = '<?= Url::to(['/snippet/get-snippet-code-variables', 'id' => '1']) ?>';
+    window.onload = function () {
+        var changeUrl = '<?= Url::to(['/snippet/get-snippet-code-variables', 'id' => '1']) ?>';
 
-    $(".change-snippet-code.not-applied").bind(
-        'change', function (e)
-        {
-            var $this = $(this);
+        $(".change-snippet-code.not-applied").bind(
+            'change', function (e) {
+                var $this = $(this);
 
-            $.get(
-                changeUrl.replace('1', $(this).val()), function (data)
-                {
-                    var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
-                    items.show();
-                    items.each(
-                        function ()
-                        {
-                            var _this = $(this);
-                            if (data.indexOf(_this.attr('data-identifier')) == -1)
-                            {
-                                _this.hide();
+                $.get(
+                    changeUrl.replace('1', $(this).val()), function (data) {
+                        var items = $this.parents('.col-md-12').first().find('.modal-body .snippet-var-value');
+                        items.show();
+                        items.each(
+                            function () {
+                                var _this = $(this);
+                                if (data.indexOf(_this.attr('data-identifier')) == -1) {
+                                    _this.hide();
+                                }
                             }
-                        }
-                    );
-                }
-            );
-        }
-    ).trigger('change').removeClass('not-applied');
+                        );
+                    }
+                );
+            }
+        ).trigger('change').removeClass('not-applied');
+    };
 </script>
 
 

@@ -8,6 +8,8 @@
 
 namespace backend\components\BlockModal;
 
+use yii\web\View;
+
 class AssetBundle extends \yii\web\AssetBundle
 {
     public $css = [
@@ -19,13 +21,12 @@ class AssetBundle extends \yii\web\AssetBundle
     ];
 
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
         'yii\jui\JuiAsset',
         'backend\assets\AppAsset',
         'kartik\select2\Select2Asset',
         'kartik\color\ColorInputAsset',
-        'trntv\aceeditor\AceEditorAsset'
+        'trntv\aceeditor\AceEditorAsset',
+        'backend\assets\CKEditorAsset',
     ];
 
     public function init()

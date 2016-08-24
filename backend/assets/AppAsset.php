@@ -8,6 +8,7 @@
 namespace backend\assets;
 
 use yii\web\AssetBundle;
+use yii\web\View;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -30,6 +31,11 @@ class AppAsset extends AssetBundle
         'js/are-you-sure.js',
         'js/common.js',
     ];
+
+    public $jsOptions = [
+        'position' => View::POS_HEAD
+    ];
+
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',

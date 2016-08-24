@@ -73,13 +73,23 @@ $('form').on('beforeSubmit', function(e) {
         console.log('server error');
     });
     return false;
-});*/
+});
 
+*/
 var url = document.location.toString();
 if (url.match('#')) {
 
-    $('.nav-tabs .tab-label').removeClass('active');
-    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').parent().addClass('active');
+    $('.nav-tabs .tab-label').removeClass('active'); //zrusime aktualny tab
     $('.tab-content .tab-pane').hide();
-    $('.tab-content .tab-pane#' + url.split('#')[1]).show();
+
+    var bookmarkId = url.split('#')[1];
+
+    $('.nav-tabs a[href="#' + bookmarkId + '"]').parent().addClass('active'); //ak sa najde tab s danou kotvou, tak ho dame ako aktivny
+    $('.tab-content .tab-pane#' + bookmarkId).show();
+
+    var parentTabPane = $('#' + bookmarkId).first().closest('.tab-pane'); //pre pripad, ze sa kotva nachadza v tabe, musime odkryt aj tab, v ktorom sa nachadza
+    if (typeof parentTabPane != 'undefined') {
+        parentTabPane.show();
+        $('.nav-tabs a[href="' + parentTabPane.attr('id') + '"]').parent().addClass('active');
+    }
 }
