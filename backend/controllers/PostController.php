@@ -152,11 +152,11 @@ class PostController extends BaseController
         $post = $this->findModel($id);
 
         if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') { //localhost
-            $redirectPrefix = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $post->portal->blogMainPage->identifier . '/';
+            $redirectPrefix = 'http://' . $_SERVER['HTTP_HOST'];
         } else {
             $redirectPrefix = 'http://www.' . $post->portal->domain;
         }
 
-        return $this->redirect($redirectPrefix . $post->identifier . '/');
+        return $this->redirect($redirectPrefix . '/' . $post->portal->blogMainPage->identifier . '/' . $post->identifier . '/');
     }
 }

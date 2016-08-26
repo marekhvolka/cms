@@ -15,6 +15,11 @@ use Yii;
 /**
  * @property integer $portal_id
  * @property Portal $portal
+ *
+ * @property Area $header
+ * @property Area $content
+ * @property Area $sidebar
+ * @property Area $footer
  */
 abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheable
 {
