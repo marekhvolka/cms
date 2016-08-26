@@ -33,6 +33,8 @@ var ckeditorConfig = {
     allowedContent: true,
 
     forcePasteAsPlainText: true,
+    //pasteFromWordRemoveFontStyles: true,
+    //pasteFromWordRemoveStyles: true,
     entities: false,
     basicEntities: false
 };

@@ -22,13 +22,13 @@ class AppAsset extends AssetBundle
         '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
         'css/theme.css',
         'css/site.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap2/bootstrap-switch.min.css'
     ];
     public $js = [
         'js/menu.js',
         'js/global-search.js',
-        //'https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.1/dragula.min.js',
         'js/are-you-sure.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js',
         'js/common.js',
     ];
 
@@ -38,7 +38,7 @@ class AppAsset extends AssetBundle
 
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
         'yii\web\JqueryAsset',
+        'yii\bootstrap\BootstrapAsset',
     ];
 }

@@ -22,16 +22,14 @@ use yii\helpers\Html;
 
         <?= Html::textInput($prefix . "[name]", $model->name, ['class' => 'form-control snippetcode-name']); ?>
 
-        <?= SwitchInput::widget([
-            'type' => SwitchInput::CHECKBOX,
-            'name' => $prefix . "[dynamic]",
-            'value' => $model->dynamic,
-            'id' => hash('md5', $prefix),
-            'class' => 'form-control ',
-            'pluginOptions' => [
-                'onText' => 'Dynamický',
-                'offText' => 'Statický',
-            ]
+        <?= Html::checkbox($prefix . '[dynamic]', $model->dynamic, [
+            'data-check' => 'switch',
+            'data-on-color' => 'success',
+            'data-on-text' => 'Dynamický',
+            'data-off-color' => 'default',
+            'data-off-text' => 'Statický',
+            'value' => 1,
+            'uncheck' => 0
         ]) ?>
 
         <button type="button" class="btn-remove-snippet-code btn btn-danger btn-xs pull-right">

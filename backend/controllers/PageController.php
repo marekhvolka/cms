@@ -115,6 +115,10 @@ class PageController extends BaseController
 
                 $model->resetAfterUpdate();
 
+                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
+                    $model->portal->getPortalPagesFile(true);
+                }
+
                 return $this->redirectAfterSave($model);
             } catch (Exception $exc) {
                 $transaction->rollBack();

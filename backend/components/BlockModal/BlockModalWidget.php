@@ -14,7 +14,7 @@ class BlockModalWidget extends Widget
 {
     public $block;
 
-    public $page;
+    public $layoutOwner;
     public $portal;
 
     public $prefix;
@@ -30,7 +30,7 @@ class BlockModalWidget extends Widget
         
         return $this->render('view', [
             'model' => $this->block,
-            'page' => $this->page,
+            'layoutOwner' => $this->layoutOwner,
             'portal' => $this->portal,
             'prefix' => $this->prefix
         ]);
@@ -39,28 +39,28 @@ class BlockModalWidget extends Widget
     /** Renders view for one appended variable.
      * @param $block Block
      * @param $prefix
-     * @param $page
+     * @param $layoutOwner
      * @param $portal
      * @return string
      */
-    public function appendModal($block, $prefix, $page, $portal)
+    public function appendModal($block, $prefix, $layoutOwner, $portal)
     {
         AssetBundle::register($this->getView());
 
         return $this->render('view', [
             'model' => $block,
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
             'prefix' => $prefix
         ]);
     }
 
-    public function appendListItem($listItem, $prefix, $indexItem, $page, $portal, $parentId)
+    public function appendListItem($listItem, $prefix, $indexItem, $layoutOwner, $portal, $parentId)
     {
         return $this->render('_list-item', [
             'listItem' => $listItem,
             'prefix' => $prefix . "[ListItem][$indexItem]",
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
             'parentId' => $parentId
         ]);

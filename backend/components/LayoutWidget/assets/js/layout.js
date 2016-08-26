@@ -19,16 +19,13 @@ body.on("click", '.add-section-btn', function () {
         layouts = $this.parents('.layouts'),
         postData = {
             prefix: $this.data('prefix'),
-            pageId: $this.data('page-id'),
+            layoutOwnerId: $(this).data('layout-owner-id'),
+            layoutOwnerType: $(this).data('layout-owner-type'),
             portalId: $this.data('portal-id')
         };
 
     $.post(appendUrl.section, postData, function (data) {
         var section = appendElement(layouts, $(data));
-        //enableDragBy(section.find(".children-list.rows").toArray(), '.row-drag-by');
-        //enableDragBy(section.find(".children-list.blocks").toArray());
-
-        //enableDropSection(section);
 
         sortableRow(section.find('.children-list.rows').first()[0]);
 
@@ -55,7 +52,8 @@ body.on("click", ".add-row", function () {
         section = $this.parents('.section').first(),
         postData = {
             prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
-            pageId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('page-id'),
+            layoutOwnerId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('layout-owner-id'),
+            layoutOwnerType: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('layout-owner-type'),
             portalId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('portal-id')
         };
 
@@ -64,7 +62,8 @@ body.on("click", ".add-row", function () {
             postColumnData = {
                 width: columnsByWidth,
                 prefix: row.data('prefix'),
-                pageId: row.data('page-id'),
+                layoutOwnerId: row.data('layout-owner-id'),
+                layoutOwnerType: row.data('layout-owner-type'),
                 portalId: row.data('portal-id')
             };
 
@@ -73,8 +72,6 @@ body.on("click", ".add-row", function () {
 
             for (var i = 0; i < parsed.length; i++) {
                 var column = appendElement(row, $(parsed[i]));
-                //enableDragBy(column.find(".children-list.blocks").toArray());
-
                 sortableBlock(column.find('.children-list.blocks').first()[0]);
             }
 
@@ -123,16 +120,14 @@ body.on("click", ".add-block", function () {
 
     var postData = {
         prefix: mainButton.data('prefix'),
-        pageId: mainButton.data('page-id'),
+        layoutOwnerId: mainButton.data('layout-owner-id'),
+        layoutOwnerType: mainButton.data('layout-owner-type'),
         portalId: mainButton.data('portal-id'),
         type: $(this).data('type')
     };
 
     $.post(appendUrl.block, postData, function (data) {
         var block = appendElement(column, $(data));
-
-        //block.draggable({revert: 'invalid'});
-
         rescanForms();
     });
 });
@@ -143,7 +138,6 @@ body.on("click", ".btn-remove-block", function () {
 
 function appendElement(parentElement, dataToAppend) {
     parentElement.find('.children-list:first').append(dataToAppend);
-
     return $(dataToAppend);
 }
 

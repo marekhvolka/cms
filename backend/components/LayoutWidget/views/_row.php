@@ -4,13 +4,14 @@ use yii\helpers\Html;
 
 /* @var $model backend\models\Row */
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 
 ?>
 
-<div class="row layout-row" data-prefix="<?= $prefix ?>" data-page-id="<?= $page ? $page->id : '' ?>"
-     data-portal-id="<?= $portal ? $portal->id : '' ?>">
+<div class="row layout-row" data-prefix="<?= $prefix ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
+     data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+     data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>">
     
     <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
@@ -19,7 +20,7 @@ use yii\helpers\Html;
             <?= $this->render('_column', [
                 'model' => $column,
                 'prefix' => $prefix . "[Column][$indexColumn]",
-                'page' => $page,
+                'layoutOwner' => $layoutOwner,
                 'portal' => $portal
             ]); ?>
         <?php endforeach; ?>

@@ -52,6 +52,20 @@ use yii\widgets\ActiveForm;
                 ],
             ]); ?>
 
+            <?= $form->field($model, 'blog_active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+
+            <?= $form->field($model, 'blog_main_page_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($model->pages, 'id',
+                    'breadcrumbs'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber podstránky pre blog ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>

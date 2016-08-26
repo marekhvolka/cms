@@ -11,6 +11,7 @@ use Yii;
  * @property integer $var_id
  * @property string $value_text
  * @property int $value_page_id
+ * @property int $value_post_id
  * @property int $value_product_id
  * @property int $value_tag_id
  * @property int $value_product_var_id
@@ -26,6 +27,7 @@ use Yii;
  * @property Tag $valueTag
  * @property ProductVar $valueProductVar
  * @property Page $valuePage
+ * @property Post $valuePost
  * @property Block $block
  * @property SnippetVar $var
  */
@@ -51,6 +53,7 @@ class SnippetVarValue extends VariableValue implements IDuplicable
                     'block_id',
                     'var_id',
                     'value_page_id',
+                    'value_post_id',
                     'value_tag_id',
                     'value_product_var_id',
                     'value_product_id',

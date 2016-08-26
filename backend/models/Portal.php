@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $active
  * @property bool $outdated
  * @property bool $blog_active
- * @property string $blog_identifier
+ * @property int $blog_main_page_id
  *
  * @property string $templatePath
  * @property Page[] $pages
@@ -32,6 +32,7 @@ use yii\helpers\ArrayHelper;
  * @property PortalVarValue[] $portalVarValues
  * @property Redirect[] $redirects
  * @property Snippet[] $snippets
+ * @property Page $blogMainPage
  *
  * @property string $blogUrl
  */
@@ -62,8 +63,8 @@ class Portal extends CustomModel implements ICacheable
                 ['name', 'language_id', 'domain', 'template_id', 'active'],
                 'required'
             ],
-            [['language_id', 'template_id', 'active'], 'integer'],
-            [['color_scheme', 'blog_identifier'], 'string'],
+            [['language_id', 'template_id', 'active', 'blog_main_page_id'], 'integer'],
+            [['color_scheme'], 'string'],
             [['name', 'domain'], 'string', 'max' => 50]
         ];
     }
@@ -82,7 +83,7 @@ class Portal extends CustomModel implements ICacheable
             'color_scheme' => 'Farebná schéma',
             'active' => 'Aktívny',
             'blog_active' => 'Blog aktívny',
-            'blog_identifier' => 'Identifikátor blogu (url)'
+            'blog_main_page_id' => 'Hlavná podstránka blogu (url)'
         ];
     }
 
@@ -274,12 +275,20 @@ class Portal extends CustomModel implements ICacheable
         return $this->hasOne(Template::className(), ['id' => 'template_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBlogMainPage()
+    {
+        return $this->hasOne(Page::className(), ['id' => 'blog_main_page_id']);
+    }
+
     /** Vrati cestu k url blogu
      * @return string
      */
     public function getBlogUrl()
     {
-        return '/' . $this->blog_identifier . '/';
+        return '/' . $this->blogMainPage->identifier . '/';
     }
 
     #endregion
@@ -336,24 +345,6 @@ class Portal extends CustomModel implements ICacheable
 
                 $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
 
-                $buffer .= '/* Portal pages */' . PHP_EOL;
-
-                $buffer .= '$portal->pages = (object) array();' . PHP_EOL;
-
-                foreach ($this->pages as $page) {
-                    $buffer .= 'include("' . $page->getVarCacheFile() . '");' . PHP_EOL;
-                    $buffer .= '$portal->pages->page' . $page->id . ' = ' . $page->cacheIdentifier . ';' . PHP_EOL;
-                }
-
-                $buffer .= '/* Portal posts */' . PHP_EOL;
-
-                $buffer .= '$portal->posts = (object) array();' . PHP_EOL;
-
-                foreach ($this->posts as $post) {
-                    $buffer .= 'include("' . $post->getVarCacheFile() . '");' . PHP_EOL;
-                    $buffer .= '$portal->posts->post' . $post->id . ' = ' . $post->cacheIdentifier . ';' . PHP_EOL;
-                }
-
                 $buffer .= '/* Portal vars */' . PHP_EOL;
 
                 foreach ($this->portalVarValues as $portalVarValue) {
@@ -370,6 +361,68 @@ class Portal extends CustomModel implements ICacheable
                 $this->removeException();
             } catch (Exception $exception) {
                 $this->logException($exception, 'portal_var');
+            }
+        }
+
+        return $path;
+    }
+
+    public function getPortalPagesFile($reload = false)
+    {
+        $path = $this->getMainDirectory() . 'portal_pages.php';
+
+        if (!file_exists($path) || $this->outdated || $reload) {
+            try {
+                $dataEngine = Yii::$app->dataEngine;
+
+                $buffer = '<?php ' . PHP_EOL;
+
+                $buffer .= '/* Portal pages */' . PHP_EOL;
+
+                $buffer .= '$portal->pages = (object) array();' . PHP_EOL;
+
+                foreach ($this->pages as $page) {
+                    $buffer .= 'include("' . $page->getVarCacheFile() . '");' . PHP_EOL;
+                    $buffer .= '$portal->pages->page' . $page->id . ' = ' . $page->cacheIdentifier . ';' . PHP_EOL;
+                }
+
+                $buffer .= '?>';
+
+                $dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'portal_pages');
+            }
+        }
+
+        return $path;
+    }
+
+    public function getPortalPostsFile($reload = false)
+    {
+        $path = $this->getMainDirectory() . 'portal_posts.php';
+
+        if (!file_exists($path) || $this->outdated || $reload) {
+            try {
+                $dataEngine = Yii::$app->dataEngine;
+
+                $buffer = '<?php ' . PHP_EOL;
+
+                $buffer .= '/* Portal posts */' . PHP_EOL;
+
+                $buffer .= '$portal->posts = (object) array();' . PHP_EOL;
+
+                foreach ($this->posts as $post) {
+                    $buffer .= 'include("' . $post->getVarCacheFile() . '");' . PHP_EOL;
+                    $buffer .= '$portal->posts->post' . $post->id . ' = ' . $post->cacheIdentifier . ';' . PHP_EOL;
+                }
+
+                $buffer .= '?>';
+
+                $dataEngine->writeToFile($path, 'w+', $buffer);
+                $this->removeException();
+            } catch (Exception $exception) {
+                $this->logException($exception, 'portal_posts');
             }
         }
 
@@ -399,6 +452,8 @@ class Portal extends CustomModel implements ICacheable
                 $buffer = '<?php' . PHP_EOL;
 
                 $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalPagesFile() . '");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalPostsFile() .'");' . PHP_EOL;
 
                 $buffer .= '?>';
 
@@ -459,7 +514,7 @@ class Portal extends CustomModel implements ICacheable
         $this->getPortalVarsFile();
 
         foreach ($this->portalSnippets as $portalSnippet) {
-            if ($portalSnippet->isChanged() || $this->isChanged()) {
+            if ($portalSnippet->isChanged()) {
                 $portalSnippet->resetAfterUpdate();
             }
         }

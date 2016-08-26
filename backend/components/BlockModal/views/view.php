@@ -4,7 +4,7 @@ use backend\models\Block;
 use backend\models\Portal;
 
 /* @var $model Block */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 /* @var $prefix string */
 
@@ -24,7 +24,7 @@ use backend\models\Portal;
                         echo $this->render('_snippet', [
                             'model' => $model,
                             'prefix' => $prefix,
-                            'page' => $page,
+                            'layoutOwner' => $layoutOwner,
                             'portal' => $portal
                         ]);
 

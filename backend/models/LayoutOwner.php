@@ -12,6 +12,10 @@ namespace backend\models;
 use Exception;
 use Yii;
 
+/**
+ * @property integer $portal_id
+ * @property Portal $portal
+ */
 abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheable
 {
     public function initializeNew()
@@ -144,10 +148,14 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
             try {
                 $prefix = $this->getIncludePrefix();
 
-                if (($this->product && $this->product->outdated) || $this->portal->outdated ||
-                    ($this->parent && $this->parent->head_outdated) || $reload
-                ) {
-                    $hardReload = true;
+                if ($this->className() == Page::className()) {
+                    if (($this->product && $this->product->outdated) || $this->portal->outdated ||
+                        ($this->parent && $this->parent->head_outdated) || $reload
+                    ) {
+                        $hardReload = true;
+                    }
+                } else if ($this->className() == Post::className()) {
+                    $hardReload = $this->portal->outdated || $reload;
                 }
 
                 $prefix .= '<?php' . PHP_EOL;
@@ -258,4 +266,24 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
     }
 
+    public function isPost()
+    {
+        return $this->className() == Post::className();
+    }
+
+    public function isPage()
+    {
+        return $this->className() == Page::className();
+    }
+
+    public function getType()
+    {
+        if ($this->isPost()) {
+            return 'post';
+        } else if ($this->isPage()) {
+            return 'page';
+        }
+
+        return '';
+    }
 }

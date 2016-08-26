@@ -139,7 +139,7 @@ class ProductController extends BaseController
 
                 $transaction->commit();
 
-                if (!$id) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
+                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
                     $model->language->getProductsMainCacheFile(true);
                 }
                 $model->resetAfterUpdate();

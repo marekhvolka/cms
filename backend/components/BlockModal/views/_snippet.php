@@ -1,11 +1,12 @@
 <?php
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/* @var $page Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 /* @var $prefix string */
 /* @var $model backend\models\Block */
@@ -37,27 +38,22 @@ use yii\helpers\Url;
                 ]) ?>
 
 
-
-
-
                 <button type="button" class="btn btn-warning btn-xs btn-remove-var pull-right"
                         style="right: 60px; top: 13px;" data-toggle="modal"
                         data-target="#supportModal" title="Nápoveda">
                     <span class="fa fa-question"></span>
                 </button>
                     <?php else :
-            $snippets = $page ? $page->portal->snippets : $portal->snippets;
             echo Html::dropDownList('snippet_id', null,
-                ArrayHelper::map($snippets, 'id', 'name'), [
+                ArrayHelper::map($layoutOwner ? $layoutOwner->portal->snippets : $portal->snippets, 'id', 'name'), [
                     'prompt' => 'Výber snippetu',
                     'class' => 'snippet-dropdown activate-select2',
                     'data-type' => $model->type,
                     'data-prefix' => $prefix,
-                    'data-page-id' => $page ? $page->id : '',
+                    'data-layout-owner-id' => $layoutOwner ? $layoutOwner->id : '',
+                    'data-layout-owner-type' => $layoutOwner ? $layoutOwner->getType() : '',
                     'data-portal-id' => $portal ? $portal->id : ''
                 ]); ?>
-
-
 
                 <script type="text/javascript">
                     $(".activate-select2").select2().removeClass('activate-select2');
@@ -66,17 +62,18 @@ use yii\helpers\Url;
             break;
 
             case 'product_snippet' :
-            if ($model->parent && $page && $page->product) : ?>
+            if ($model->parent && $layoutOwner && $layoutOwner->isPage() && $layoutOwner->product) : ?>
                         <span>Produktový snippet <?= $model->parent->productVarValue->var->name ?></span>
                     <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map($page->product->productSnippets, 'id', 'varIdentifier'),
+                    ArrayHelper::map($layoutOwner->product->productSnippets, 'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
                         'class' => 'parent-dropdown form-control',
                         'data-prefix' => $prefix,
                         'data-type' => $model->type,
-                        'data-page-id' => $page ? $page->id : '',
+                        'data-layout-owner-id' => $layoutOwner ? $layoutOwner->id : '',
+                        'data-layout-owner-type' => $layoutOwner ? $layoutOwner->getType() : '',
                         'data-portal-id' => $portal ? $portal->id : '',
                         'prompt' => 'Vyber produktový snippet'
                     ]) ?>
@@ -89,7 +86,7 @@ use yii\helpers\Url;
                         <span>Portálový snippet <?= $model->parent->portalVarValue->var->name ?></span>
             <?php else : ?>
                 <?= Html::activeDropDownList($model, 'parent_id',
-                    ArrayHelper::map($portal ? $portal->portalSnippets : $page->portal->portalSnippets,
+                    ArrayHelper::map($portal ? $portal->portalSnippets : $layoutOwner->portal->portalSnippets,
                         'id', 'varIdentifier'),
                     [
                         'name' => $prefix . '[parent_id]',
@@ -110,7 +107,7 @@ use yii\helpers\Url;
         foreach ($model->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'snippetVarValue' => $snippetVarValue,
-                'page' => $page,
+                'layoutOwner' => $layoutOwner,
                 'portal' => $portal,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
                 'parentId' => $model->parent_id

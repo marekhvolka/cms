@@ -11,7 +11,7 @@ use yii\helpers\Html;
 /* @var $allowAddingSection bool */
 
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 /* @var $type string */
 
@@ -28,7 +28,7 @@ AssetBundle::register($this);
             <?= $this->render('_section', [
                 'model' => $section,
                 'prefix' => $prefix . "[Section][$indexSection]",
-                'page' => $page,
+                'layoutOwner' => $layoutOwner,
                 'portal' => $portal
             ]); ?>
         <?php endforeach; ?>
@@ -36,7 +36,8 @@ AssetBundle::register($this);
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
         <button type="button" class="btn btn-success btn-sm add-section-btn" data-prefix="<?= $area->type ?>[Section]"
-                data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>" data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+                data-portal-id="<?= $portal ? $portal->id : '' ?>">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
         <?php endif; ?>

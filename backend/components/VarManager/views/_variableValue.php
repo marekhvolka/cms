@@ -57,7 +57,9 @@ if (!isset($renderModal)) {
 
                 ?>
                 <script type="text/javascript">
-                    $(".select2").select2();
+                    $(document).ready(function () {
+                        $(".select2").select2();
+                    });
                 </script>
             <?php
             break;
@@ -165,8 +167,7 @@ if (!isset($renderModal)) {
                            name="<?= $prefix . '[value_text]' ?>"
                            value="<?= $varValue->value_text ?>">
                 </div>
-                <script>if (applySpectrum != null)
-                    {
+                <script>if (applySpectrum != null) {
                         applySpectrum();
                     }</script>
             <?php

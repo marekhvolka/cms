@@ -22,7 +22,6 @@ class AssetBundle extends \yii\web\AssetBundle
         'js/layout.js'
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'backend\components\BlockModal\AssetBundle',
     ];
 

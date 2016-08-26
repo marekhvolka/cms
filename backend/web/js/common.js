@@ -1,7 +1,5 @@
 $(document).ready(function() {
-    $('#radioBtn').each(function() {
-
-    });
+    $("input[data-check='switch']").bootstrapSwitch();
 });
 
 $('#radioBtn a').on('click', function(){

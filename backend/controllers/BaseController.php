@@ -13,6 +13,7 @@ use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
@@ -129,15 +130,22 @@ abstract class BaseController extends Controller
     public function actionAppendSection()
     {
         $prefix = Yii::$app->request->post('prefix');
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $section = new Section();
 
         $indexSection = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $page, $portal);
+        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $layoutOwner, $portal);
     }
 
     /**
@@ -148,14 +156,21 @@ abstract class BaseController extends Controller
     {
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $row = new Row();
 
         $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $page, $portal);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $layoutOwner, $portal);
     }
 
     public function actionAppendColumns()
@@ -163,7 +178,14 @@ abstract class BaseController extends Controller
         $width = Yii::$app->request->post('width');
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $columnsData = array();
@@ -175,7 +197,7 @@ abstract class BaseController extends Controller
 
             $indexColumn = rand(1000, 10000000);
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $page, $portal);
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $layoutOwner, $portal);
         }
         return json_encode($columnsData);
     }
@@ -188,7 +210,15 @@ abstract class BaseController extends Controller
     {
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $indexBlock = rand(1000, 1000000);
@@ -196,7 +226,7 @@ abstract class BaseController extends Controller
         $block = new Block();
         $block->type = Yii::$app->request->post('type');
 
-        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $page, $portal);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $layoutOwner, $portal);
     }
 
     public function actionAppendBlockModal()
@@ -204,7 +234,14 @@ abstract class BaseController extends Controller
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $block = Block::findOne(['id' => $id]);
@@ -214,7 +251,7 @@ abstract class BaseController extends Controller
             $block->type = $type;
         }
 
-        return (new BlockModalWidget())->appendModal($block, $prefix, $page, $portal);
+        return (new BlockModalWidget())->appendModal($block, $prefix, $layoutOwner, $portal);
     }
 
     public function actionAppendBlockModalContent()
@@ -231,13 +268,20 @@ abstract class BaseController extends Controller
             $block->parent_id = $parent->id;
         }
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
         $prefix = Yii::$app->request->post('prefix');
 
         return (new BlockModalWidget())->render('_snippet', [
             'model' => $block,
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
             'prefix' => $prefix
         ]);
@@ -251,7 +295,14 @@ abstract class BaseController extends Controller
 
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $parentId = Yii::$app->request->post('parentId');
@@ -260,7 +311,7 @@ abstract class BaseController extends Controller
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $page, $portal, $parentId);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $layoutOwner, $portal, $parentId);
     }
 
     public function actionAppendMultimediaWindow()

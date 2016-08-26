@@ -10,12 +10,14 @@ use Yii;
  * @property integer $id
  * @property string $type
  * @property integer $page_id
+ * @property integer $post_id
  * @property integer $portal_id
  * @property integer $active
  * @property integer $size
  * @property bool $outdated
  *
  * @property Page $page
+ * @property Post $post
  * @property Portal $portal
  * @property Section[] $sections
  */
@@ -43,13 +45,13 @@ class Area extends CustomModel implements IDuplicable
     {
         return [
             [['type', 'active'], 'required'],
-            [['page_id', 'portal_id', 'active', 'size'], 'integer'],
+            [['page_id', 'post_id', 'portal_id', 'active', 'size'], 'integer'],
             [['type'], 'string', 'max' => 10],
             [
-                ['type', 'portal_id', 'page_id'],
+                ['type', 'portal_id', 'page_id', 'post_id'],
                 'unique',
-                'targetAttribute' => ['type', 'portal_id', 'page_id'],
-                'message' => 'The combination of Type, Page ID and Portal ID has already been taken.'
+                'targetAttribute' => ['type', 'portal_id', 'page_id', 'post_id'],
+                'message' => 'The combination of Type, Page ID, Post ID and Portal ID has already been taken.'
             ],
             [
                 ['page_id'],
@@ -57,6 +59,13 @@ class Area extends CustomModel implements IDuplicable
                 'skipOnError' => true,
                 'targetClass' => Page::className(),
                 'targetAttribute' => ['page_id' => 'id']
+            ],
+            [
+                ['post_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Post::className(),
+                'targetAttribute' => ['post_id' => 'id']
             ],
             [
                 ['portal_id'],
@@ -94,6 +103,14 @@ class Area extends CustomModel implements IDuplicable
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getPost()
+    {
+        return $this->hasOne(Post::className(), ['id' => 'post_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPortal()
     {
         return $this->hasOne(Portal::className(), ['id' => 'portal_id']);
@@ -119,7 +136,9 @@ class Area extends CustomModel implements IDuplicable
     {
         $result = '';
 
-        if ($this->page) {
+        if ($this->page || $this->post) {
+
+            $layoutOwner = $this->page ? $this->page : $this->post;
             switch ($this->type) {
                 case 'header' :
                     $result = '<div id="page-header">';
@@ -146,10 +165,10 @@ class Area extends CustomModel implements IDuplicable
                     break;
 
                 case 'content' :
-                    if (!$this->page->sidebar->active) {
+                    if (!$layoutOwner->sidebar->active) {
                         $width = 12;
                     } else {
-                        $width = 12 - $this->page->sidebar->size;
+                        $width = 12 - $layoutOwner->sidebar->size;
                     }
 
                     $result = '<div id="content" class="col-md-' . $width . '">';
@@ -219,6 +238,8 @@ class Area extends CustomModel implements IDuplicable
 
         if ($this->page) {
             $path = $this->page->getMainDirectory() . 'page_' . $this->type . '.php';
+        } else if ($this->post) {
+            $path = $this->post->getMainDirectory() . 'post_' . $this->type . '.php';
         } else if ($this->portal) {
             $path = $this->portal->getMainDirectory() . 'portal_' . $this->type . '.php';
         }
@@ -254,6 +275,8 @@ class Area extends CustomModel implements IDuplicable
         $path = '';
         if ($this->page) {
             $path = $this->page->getMainDirectory();
+        } else if ($this->post) {
+            $path = $this->post->getMainDirectory();
         } else if ($this->portal) {
             $path = $this->portal->getMainDirectory();
         }

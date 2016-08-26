@@ -43,6 +43,10 @@ abstract class VariableValue extends CustomModel
                 $value = isset($this->valuePage) ? '$portal->pages->page' . $this->valuePage->id : 'NULL';
                 break;
 
+            case 'post' :
+                $value = isset($this->valuePost) ? '$portal->posts->post' . $this->valuePost->id : 'NULL';
+                break;
+
             case 'product' :
                 $value = isset($this->valueProduct) ? '$' . $this->valueProduct->identifier : 'NULL';
                 break;
@@ -103,6 +107,14 @@ abstract class VariableValue extends CustomModel
     public function getValuePage()
     {
         return $this->hasOne(Page::className(), ['id' => 'value_page_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getValuePost()
+    {
+        return $this->hasOne(Post::className(), ['id' => 'value_post_id']);
     }
 
     /**

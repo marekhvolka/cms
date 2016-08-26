@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 
 if (!isset($renderModal)) {
@@ -26,7 +26,9 @@ if (!isset($renderModal)) {
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal block-drag-by"
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
-            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
+            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+            data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
         <?php echo $model->name; ?>
     </button>
@@ -66,7 +68,7 @@ if (!isset($renderModal)) {
     <div class="modal-container">
         <?= BlockModalWidget::widget([
             'block' => $model,
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
             'prefix' => $prefix
         ]) ?>

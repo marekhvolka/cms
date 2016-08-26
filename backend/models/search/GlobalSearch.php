@@ -6,6 +6,7 @@ use backend\controllers\BaseController;
 use backend\models\Model;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use backend\models\Product;
 use backend\models\Snippet;
 use backend\models\SnippetCode;
@@ -120,6 +121,29 @@ class GlobalSearch
                 'id' => $page->id,
                 'name' => $page->breadcrumbs,
                 'class' => 'suggest-page'
+            ];
+        }
+
+        // POSTS
+
+        $posts = Post::find()->filterWhere([
+            'or',
+            ['like', 'name', $searchTerm],
+            ['like', 'identifier', $searchTerm],
+            ['like', 'title', $searchTerm],
+        ])
+            ->andWhere([
+                'portal_id' => Yii::$app->user->identity->portal_id
+            ])
+            ->limit(10)
+            ->all();
+
+        foreach ($posts as $post) {
+            $results['post'][] = [
+                'link' => Url::to(['/post/edit', 'id' => $post['id']]),
+                'id' => $post->id,
+                'name' => $post->name,
+                'class' => 'suggest-post'
             ];
         }
 

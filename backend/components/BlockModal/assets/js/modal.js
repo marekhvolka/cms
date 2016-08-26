@@ -13,7 +13,8 @@ var appendUrl = {
 body.on('change', '.snippet-dropdown', function () {
     var postData = {
         prefix: $(this).data('prefix'),
-        pageId: $(this).data('page-id'),
+        layoutOwnerId: $(this).data('layout-owner-id'),
+        layoutOwnerType: $(this).data('layout-owner-type'),
         portalId: $(this).data('portal-id'),
         snippetId: $(this).val(),
         blockType: $(this).data('type')
@@ -37,7 +38,8 @@ body.on('change', '.snippet-dropdown', function () {
 body.on('change', '.parent-dropdown', function () {
     var postData = {
         prefix: $(this).data('prefix'),
-        pageId: $(this).data('page-id'),
+        layoutOwnerId: $(this).data('layout-owner-id'),
+        layoutOwnerType: $(this).data('layout-owner-type'),
         portalId: $(this).data('portal-id'),
         parentId: $(this).val(),
         blockType: $(this).data('type')
@@ -70,7 +72,8 @@ body.on('click', '.btn-block-modal', function () {
                 id: blockId,
                 prefix: $(this).data('prefix'),
                 blockType: $(this).data('block-type'),
-                pageId: $(this).data('page-id'),
+                layoutOwnerId: $(this).data('layout-owner-id'),
+                layoutOwnerType: $(this).data('layout-owner-type'),
                 portalId: $(this).data('portal-id')
             },
             self = this;
@@ -79,10 +82,6 @@ body.on('click', '.btn-block-modal', function () {
             var modalWindow = $(data);
 
             modalContainer.append(modalWindow);
-
-            //enableDragBy(modalContainer.find(".children-list.list-items").toArray(), '.list-item-drag-by');
-
-            //modalContainer.find('.children-list.list-items').sortable({handle: '.list-item-drag-by'});
 
             modalWindow.find('.children-list.list-items').each(function () {
                 sortableListItem(this);
@@ -113,7 +112,8 @@ body.on('click', '.btn-add-list-item', function () {
     var postData = {
         prefix: $(this).data('prefix'),
         parentVarId: $(this).data('parent-var-id'),
-        pageId: $(this).data('page-id'),
+        layoutOwnerId: $(this).data('layout-owner-id'),
+        layoutOwnerType: $(this).data('layout-owner-type'),
         portalId: $(this).data('portal-id'),
         parentId: $(this).data('parent-id')
     };
@@ -174,7 +174,7 @@ body.on('click', ".var-value a.open-multimedia", function (e) {
     });
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('.children-list.list-items').each(function () {
         sortableListItem(this);
     });
@@ -182,7 +182,6 @@ $(document).ready(function() {
 
 function sortableListItem(listItem) {
     Sortable.create(listItem, {
-
         handle: '.list-item-drag-by'
     });
 }
