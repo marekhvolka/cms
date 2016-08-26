@@ -104,6 +104,16 @@ class SiteController extends Controller
                     'identifier' => $identifiers[1]
                 ])->one();
             }
+
+            if (!$requestedPage) {
+                $pages = Page::find()
+                    ->where([
+                        'parent_id' => null,
+                        'portal_id' => $portal->id
+                    ])->all();
+
+                $requestedPage = $this->findPage($pages, $identifiers, 0);
+            }
         } else {
             $redirect = Redirect::find()
                 ->where([

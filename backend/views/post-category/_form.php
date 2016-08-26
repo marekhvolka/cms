@@ -1,5 +1,6 @@
 <?php
 
+use backend\components\IdentifierGenerator\IdentifierGenerator;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -15,6 +16,12 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'identifier')->textInput(['maxlength' => true]) ?>
+
+    <?= IdentifierGenerator::widget([
+        'idTextFrom' => 'postcategory-name',
+        'idTextTo' => 'postcategory-identifier',
+        'delimiter' => '-',
+    ]) ?>
 
     <div class="navbar-fixed-bottom">
         <div class="col-sm-10 col-sm-offset-2">
