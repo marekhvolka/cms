@@ -3,6 +3,7 @@ namespace frontend\controllers;
 
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use backend\models\Redirect;
 use common\models\LoginForm;
 use frontend\models\ContactForm;
@@ -71,6 +72,9 @@ class SiteController extends Controller
 
     public function actionIndex($url = null)
     {
+        /* @var $portal Portal */
+        /* @var $requestedPage Page|Post */
+
         $identifiers = explode("/", strtolower($url));
 
         $portal = Portal::find()->where([
@@ -93,6 +97,23 @@ class SiteController extends Controller
                 'identifier' => 'homepage'
             ])
                 ->one();
+        } else if ($portal->blogMainPage && $identifiers[0] == $portal->blogMainPage->identifier && sizeof($identifiers) > 2) { //blog ale nie hlavna stranka blogu
+            if (key_exists(1, $identifiers)) {
+                $requestedPage = Post::find()->where([
+                    'portal_id' => $portal->id,
+                    'identifier' => $identifiers[1]
+                ])->one();
+            }
+
+            if (!$requestedPage) {
+                $pages = Page::find()
+                    ->where([
+                        'parent_id' => null,
+                        'portal_id' => $portal->id
+                    ])->all();
+
+                $requestedPage = $this->findPage($pages, $identifiers, 0);
+            }
         } else {
             $redirect = Redirect::find()
                 ->where([

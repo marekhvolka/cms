@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 /* @var $model \backend\models\Block */
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 
 if (!isset($renderModal)) {
@@ -14,17 +14,21 @@ if (!isset($renderModal)) {
 }
 ?>
 
-<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>">
-    <?= Html::hiddenInput($prefix . "[column_id]", $model->column_id, ['class' => 'column_id']); ?>
+<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>"
+     data-prefix="<?= $prefix ?>">
     <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
+    <?= Html::hiddenInput($prefix . "[snippet_code_id]", $model->snippet_code_id); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal block-drag-by"
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
-            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"
+            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+            data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
         <?php echo $model->name; ?>
     </button>
@@ -35,7 +39,10 @@ if (!isset($renderModal)) {
             '<span class="glyphicon glyphicon-link"></span>', $model->snippetCode->url, [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',
-                'target' => '_blank'
+                'target' => '_blank',
+                'data' => [
+                    'pjax' => false
+                ]
             ]
         ) ?>
     <?php endif; ?>
@@ -46,7 +53,10 @@ if (!isset($renderModal)) {
             '<span class="glyphicon glyphicon-link"></span>', $model->parent->snippetCode->url, [
                 'class' => 'btn btn-info btn-sm',
                 'title' => 'Upraviť snippet',
-                'target' => '_blank'
+                'target' => '_blank',
+                'data' => [
+                    'pjax' => false
+                ]
             ]
         ) ?>
     <?php endif; ?>
@@ -56,14 +66,12 @@ if (!isset($renderModal)) {
     </button>
 
     <div class="modal-container">
-        <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
-            echo BlockModalWidget::widget([
-                'block' => $model,
-                'page' => $page,
-                'portal' => $portal,
-                'prefix' => $prefix
-            ]);
-        } ?>
+        <?= BlockModalWidget::widget([
+            'block' => $model,
+            'layoutOwner' => $layoutOwner,
+            'portal' => $portal,
+            'prefix' => $prefix
+        ]) ?>
     </div>
     <div class="clearfix"></div>
 </div>

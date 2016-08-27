@@ -13,6 +13,7 @@ use backend\components\AceEditor\AceEditorWidget;
     <?= AceEditorWidget::widget([
         'name' => $prefix . '[data]',
         'value' => $model->data,
+        'varNameAceEditor' => 'code' . hash('md5', $prefix),
         'theme' => 'chrome',
         'aceOptions' => [
             'showPrintMargin' => false,

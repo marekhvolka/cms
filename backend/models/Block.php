@@ -262,6 +262,9 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         } else if (isset($this->column->row->section->area->page)) { //block podstranky
             $buffer = $this->column->row->section->area->page->getIncludePrefix();
             $path = $this->column->row->section->area->getBlocksMainCacheDirectory();
+        } else if (isset($this->column->row->section->area->post)) { //block clanku
+            $buffer = $this->column->row->section->area->post->getIncludePrefix();
+            $path = $this->column->row->section->area->getBlocksMainCacheDirectory();
         } else if (isset($this->column->row->section->area->portal)) { //block portalu
             $buffer = $this->column->row->section->area->portal->getIncludePrefix();
             $path = $this->column->row->section->area->getBlocksMainCacheDirectory();

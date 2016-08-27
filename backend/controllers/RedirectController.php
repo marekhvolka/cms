@@ -56,7 +56,7 @@ class RedirectController extends BaseController
         $model = $id ? $this->findModel($id) : new Redirect();
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 
@@ -74,23 +74,6 @@ class RedirectController extends BaseController
         return $this->render('edit', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Deletes an existing Redirect model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        if ($this->findModel($id)->delete()) {
-            Alert::success('Položka bola úspešne zmazaná.');
-        } else {
-            Alert::danger('Vyskytla sa chyba pri vymazaní položky.');
-        }
-
-        return $this->redirect(['index']);
     }
 
     /**

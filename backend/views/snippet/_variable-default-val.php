@@ -1,9 +1,8 @@
 <?php
 use backend\models\PartnershipType;
 use backend\models\ProductType;
-use yii\bootstrap\BaseHtml;
+use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
-
 
 /* @var $this yii\web\View */
 /* @var $defaultValue backend\models\SnippetVarDefaultValue */
@@ -15,9 +14,11 @@ use yii\helpers\ArrayHelper;
 ?>
 <div class="row">
     <div class="col-sm-12">
+
+        <?= Html::hiddenInput($prefix . "[removed]", $defaultValue->removed, ['class' => 'removed']); ?>
         <?php if ($defaultValue->productType || $forProductType) : ?>
             <div class="col-sm-3 column-without-padding">
-                <?= BaseHtml::activeDropDownList($defaultValue, "product_type_id", ArrayHelper::map(
+                <?= Html::activeDropDownList($defaultValue, "product_type_id", ArrayHelper::map(
                     ProductType::find()->all(), "id", "name"
                 ), [
                     'class' => 'form-control select-var-type',
@@ -27,7 +28,7 @@ use yii\helpers\ArrayHelper;
                 ?>
             </div>
             <div class="col-sm-3 column-without-padding">
-                <?= BaseHtml::activeDropDownList($defaultValue, "partnership_type_id", ArrayHelper::map(
+                <?= Html::activeDropDownList($defaultValue, "partnership_type_id", ArrayHelper::map(
                     PartnershipType::find()->all(), "id", "name"
                 ), [
                     'class' => 'form-control',
@@ -38,7 +39,7 @@ use yii\helpers\ArrayHelper;
             </div>
         <?php endif; ?>
         <div class="col-sm-<?= $defaultValue->productType || $forProductType ? '6' : '12' ?> column-without-padding">
-            <?= BaseHtml::activeTextInput($defaultValue, "value_text", [
+            <?= Html::activeTextInput($defaultValue, "value_text", [
                 'class' => 'form-control',
                 'name' => $prefix . "[value_text]",
             ]); ?>

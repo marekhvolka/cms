@@ -139,6 +139,7 @@ $(
                         }
 
                         appendOneTypeOfData(data.page, "stránka");
+                        appendOneTypeOfData(data.post, "článok");
                         appendOneTypeOfData(data.product, "produkt");
                         appendOneTypeOfData(data.snippet, "snippet");
                         appendOneTypeOfData(data.snippet_code, "varianta snippetu");

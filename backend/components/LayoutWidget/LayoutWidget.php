@@ -16,7 +16,7 @@ class LayoutWidget extends Widget
     public $controllerUrl;
     public $area;
     public $formId;
-    public $page;
+    public $layoutOwner;
     public $portal;
 
     public $allowAddingSection = true;
@@ -33,7 +33,7 @@ class LayoutWidget extends Widget
             'controllerUrl' => $this->controllerUrl,
             'formId' => $this->formId,
             'allowAddingSection' => $this->allowAddingSection,
-            'page' => $this->page,
+            'layoutOwner' => $this->layoutOwner,
             'portal' => $this->portal,
             'prefix' => $this->area->type
         ]);
@@ -43,16 +43,16 @@ class LayoutWidget extends Widget
      * @param Section $section
      * @param $prefix
      * @param int $indexSection
-     * @param $page
+     * @param $layoutOwner
      * @param $portal
      * @return string
      */
-    public function appendSection(Section $section, $prefix, $indexSection, $page, $portal)
+    public function appendSection(Section $section, $prefix, $indexSection, $layoutOwner, $portal)
     {
         return $this->render('_section', [
             'model' => $section,
             'prefix' => $prefix . "[$indexSection]",
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
         ]);
     }
@@ -61,16 +61,16 @@ class LayoutWidget extends Widget
      * @param Row $row
      * @param $prefix
      * @param $indexRow
-     * @param $page
+     * @param $layoutOwner
      * @param $portal
      * @return string
      */
-    public function appendRow(Row $row, $prefix, $indexRow, $page, $portal)
+    public function appendRow(Row $row, $prefix, $indexRow, $layoutOwner, $portal)
     {
         return $this->render('_row', [
             'model' => $row,
             'prefix' => $prefix . "[Row][$indexRow]",
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
         ]);
     }
@@ -79,16 +79,16 @@ class LayoutWidget extends Widget
      * @param Column $column
      * @param $prefix
      * @param $indexColumn
-     * @param $page
+     * @param $layoutOwner
      * @param $portal
      * @return string
      */
-    public function appendColumn(Column $column, $prefix, $indexColumn, $page, $portal)
+    public function appendColumn(Column $column, $prefix, $indexColumn, $layoutOwner, $portal)
     {
         return $this->render('_column', [
             'model' => $column,
             'prefix' => $prefix . "[Column][$indexColumn]",
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
         ]);
     }
@@ -97,19 +97,18 @@ class LayoutWidget extends Widget
      * @param Block $block
      * @param $prefix
      * @param $indexBlock
-     * @param $page
+     * @param $layoutOwner
      * @param $portal
      * @return string
      */
-    public function appendBlock(Block $block, $prefix, $indexBlock, $page, $portal)
+    public function appendBlock(Block $block, $prefix, $indexBlock, $layoutOwner, $portal)
     {
         return $this->render('_block', [
             'model' => $block,
             'prefix' => $prefix . "[Block][$indexBlock]",
             'renderModal' => true,
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
         ]);
     }
-
 }

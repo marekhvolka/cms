@@ -6,7 +6,9 @@ use backend\controllers\BaseController;
 use backend\models\Model;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use backend\models\Product;
+use backend\models\Snippet;
 use backend\models\SnippetCode;
 use Yii;
 use yii\db\Query;
@@ -36,35 +38,25 @@ class GlobalSearch
             'word' => []
         );
 
-        // SNIPPETS
-        $snippets = (new Query())->select("id, name")->from("snippet")->where(['like', 'name', $searchTerm])
-            ->limit(10)->all();
+        $snippets = Yii::$app->user->identity->portal->hasMany(Snippet::className(), ['id' => 'snippet_id'])
+            ->viaTable('snippet_portal', ['portal_id' => 'id'])
+            ->filterWhere([
+                'or',
+                ['like', 'name', $searchTerm],
+                ['like', 'description', $searchTerm],
+            ])
+                ->limit(10)
+                ->all();
 
         foreach ($snippets as $snippet) {
             $results['snippet'][] = [
                 'link' => Url::to([
                     '/snippet/edit',
-                    'id' => $snippet['id']
+                    'id' => $snippet->id
                 ]),
-                'name' => $snippet['name'],
-                'id' => $snippet['id'],
+                'name' => $snippet->name,
+                'id' => $snippet->id,
                 'class' => 'suggest-snippet'
-            ];
-        }
-
-        // Slovnik
-        $words = (new Query())->select("id, identifier")->from("word")->where(['like', 'identifier', $searchTerm])
-            ->limit(10)->all();
-
-        foreach ($words as $word) {
-            $results['word'][] = [
-                'link' => Url::to([
-                    '/word/edit',
-                    'id' => $word['id']
-                ]),
-                'name' => $word['identifier'],
-                'id' => $word['id'],
-                'class' => 'suggest-word'
             ];
         }
 
@@ -93,6 +85,22 @@ class GlobalSearch
             ];
         }
 
+        // Slovnik
+        $words = (new Query())->select("id, identifier")->from("word")->where(['like', 'identifier', $searchTerm])
+            ->limit(10)->all();
+
+        foreach ($words as $word) {
+            $results['word'][] = [
+                'link' => Url::to([
+                    '/word/edit',
+                    'id' => $word['id']
+                ]),
+                'name' => $word['identifier'],
+                'id' => $word['id'],
+                'class' => 'suggest-word'
+            ];
+        }
+
         // PAGES
 
         $pages = Page::find()->filterWhere([
@@ -113,6 +121,29 @@ class GlobalSearch
                 'id' => $page->id,
                 'name' => $page->breadcrumbs,
                 'class' => 'suggest-page'
+            ];
+        }
+
+        // POSTS
+
+        $posts = Post::find()->filterWhere([
+            'or',
+            ['like', 'name', $searchTerm],
+            ['like', 'identifier', $searchTerm],
+            ['like', 'title', $searchTerm],
+        ])
+            ->andWhere([
+                'portal_id' => Yii::$app->user->identity->portal_id
+            ])
+            ->limit(10)
+            ->all();
+
+        foreach ($posts as $post) {
+            $results['post'][] = [
+                'link' => Url::to(['/post/edit', 'id' => $post['id']]),
+                'id' => $post->id,
+                'name' => $post->name,
+                'class' => 'suggest-post'
             ];
         }
 

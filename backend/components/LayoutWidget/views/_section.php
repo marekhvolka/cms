@@ -5,14 +5,14 @@ use yii\helpers\BaseHtml;
 
 /* @var $model backend\models\Section */
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 
 ?>
 <!--SECTION TO ADD-->
-<div class="panel panel-default section" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[area_id]", $model->area_id); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+<div class="panel panel-default section" data-options="{}" data-prefix="<?= $prefix ?>">
+    <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
     <div class="panel-heading">
         <h3 class="panel-title">
             <span>
@@ -31,7 +31,8 @@ use yii\helpers\BaseHtml;
                 <div class="dropdown dropdown-cols inline-button">
                     <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
                             data-prefix="<?= $prefix ?>"
-                            data-page-id="<?= $page ? $page->id : '' ?>"
+                            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+                            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
                             data-portal-id="<?= $portal ? $portal->id : '' ?>"
                             title="Vložiť nový riadok" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -62,7 +63,7 @@ use yii\helpers\BaseHtml;
                 <?= $this->render('_row', [
                     'model' => $row,
                     'prefix' => $prefix . "[Row][$indexRow]",
-                    'page' => $page,
+                    'layoutOwner' => $layoutOwner,
                     'portal' => $portal
                 ]); ?>
             <?php endforeach; ?>

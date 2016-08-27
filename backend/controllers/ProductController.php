@@ -79,7 +79,7 @@ class ProductController extends BaseController
 
             $model->load(Yii::$app->request->post());
 
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
             $transaction = Yii::$app->db->beginTransaction();
@@ -113,7 +113,6 @@ class ProductController extends BaseController
                         $productVarValue->product_id = $model->id;
 
                         if ($productVarValue->removed) {
-
                             if ($productVarValue->valueBlock) {
                                 $productVarValue->valueBlock->delete();
                             }
@@ -138,9 +137,9 @@ class ProductController extends BaseController
 
                 $model->updateTags();
 
-                $transaction->commit(); // There was no error, models was validated and saved correctly.
+                $transaction->commit();
 
-                if (!$id) {
+                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
                     $model->language->getProductsMainCacheFile(true);
                 }
                 $model->resetAfterUpdate();

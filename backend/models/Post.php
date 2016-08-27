@@ -12,18 +12,22 @@ use Yii;
  * @property integer $id
  * @property string $name
  * @property string $identifier
- * @property integer $portal_id
  * @property string $published_at
  * @property string $image
  * @property string $perex
+ * @property string $title
+ * @property string $description
+ * @property string $keywords
  * @property string $last_edit
  * @property integer $last_edit_user
  * @property integer $active
+ * @property integer $post_category_id
  *
  * @property Area[] $areas
  * @property User $lastEditUser
- * @property Portal $portal
  * @property PostTag[] $tags
+ * @property PostCategory $postCategory
+ * @property SnippetVarValue[] $snippetVarValues
  *
  * @property string $cacheIdentifier
  */
@@ -44,10 +48,10 @@ class Post extends LayoutOwner
     {
         return [
             [['name', 'identifier', 'portal_id', 'post_category_id'], 'required'],
-            [['portal_id', 'last_edit_user', 'active'], 'integer'],
+            [['portal_id', 'last_edit_user', 'active', 'post_category_id'], 'integer'],
             [['published_at', 'last_edit'], 'safe'],
-            [['perex', 'image'], 'string'],
-            [['name', 'identifier'], 'string', 'max' => 255],
+            [['perex', 'image', 'description', 'keywords'], 'string'],
+            [['name', 'identifier', 'title'], 'string', 'max' => 255],
             [['last_edit_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['last_edit_user' => 'id']],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
         ];
@@ -61,11 +65,15 @@ class Post extends LayoutOwner
         return [
             'id' => 'ID',
             'name' => 'Názov',
+            'post_category_id' => 'Kategória',
             'image' => 'Hlavný obrázok',
             'identifier' => 'Identifikátor',
             'portal_id' => 'Portal ID',
             'published_at' => 'Publikovaný dňa',
             'perex' => 'Perex',
+            'title' => 'Titulok',
+            'description' => 'Popis',
+            'keywords' => 'Kľúčové slová',
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
             'active' => 'Aktívny',
@@ -77,10 +85,23 @@ class Post extends LayoutOwner
         return $this->portal->blogUrl . $this->identifier . '/';
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPostCategory()
+    {
+        return $this->hasOne(PostCategory::className(), ['id' => 'post_category_id']);
+    }
+
     public function getTags()
     {
         return $this->hasMany(PostTag::className(), ['id' => 'post_id'])
             ->viaTable('post_post_tag', ['post_tag_id' => 'id']);
+    }
+
+    public function getSnippetVarValues()
+    {
+        return $this->hasMany(SnippetVarValue::className(), ['value_post_id' => 'id']);
     }
 
     /**
@@ -109,14 +130,6 @@ class Post extends LayoutOwner
 
                 $buffer = '<?php ' . PHP_EOL;
 
-                if (isset($this->product)) {
-                    $buffer .= '$product = $' . $this->product->identifier . ';' . PHP_EOL;
-                } else if (isset($this->parent)) {
-                    $buffer .= '$product = $portal->pages->page' . $this->parent->id . '->product' . ';' . PHP_EOL;
-                } else {
-                    $buffer .= '$emptyProduct = (object) array();' . PHP_EOL;
-                    $buffer .= '$product = new ObjectBridge($emptyProduct, \'\');' . PHP_EOL;
-                }
                 $buffer .= '$tempObject = (object) array(' . PHP_EOL;
 
                 $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
@@ -129,6 +142,7 @@ class Post extends LayoutOwner
                 $buffer .= '\'perex\' => \'' . $this->perex . '\',' . PHP_EOL;
                 $buffer .= '\'image\' => \'' . $this->image . '\',' . PHP_EOL;
                 $buffer .= '\'published_at\' => \'' . $this->published_at . '\',' . PHP_EOL;
+                $buffer .= '\'category\' => \'' . $this->postCategory->identifier . '\',' . PHP_EOL;
 
                 if (isset($this->product)) {
                     $buffer .= '\'product\' => $product,' . PHP_EOL;
@@ -138,7 +152,7 @@ class Post extends LayoutOwner
 
                 $buffer .= $this->cacheIdentifier . ' = new ObjectBridge($tempObject, \'post' . $this->id . '\');' . PHP_EOL;
 
-                $buffer .= '$post = ' . $this->cacheIdentifier . ';' . PHP_EOL;
+                $buffer .= '$page = ' . $this->cacheIdentifier . ';' . PHP_EOL; //TODO: different identifier?
 
                 $buffer .= '?>';
 
@@ -154,8 +168,40 @@ class Post extends LayoutOwner
         return $path;
     }
 
-    public function resetAfterUpdate()
+    /** Metoda, resetujuca cache podstranky po zmene
+     * @param string $type
+     */
+    public function resetAfterUpdate($type = 'all')
     {
-        // TODO: Implement resetAfterUpdate() method.
+        $this->setOutdated();
+
+        if ($this->isChanged() && $this->isHeadChanged()) {
+            foreach ($this->snippetVarValues as $snippetVarValue) {
+                $snippetVarValue->resetAfterUpdate();
+            }
+        }
+    }
+
+    /** Metoda, vracajuca, ci sa zmenila hlavicka stranky (ktora ovplyvnuje aj ine stranky - menu a podobne)
+     * @return bool
+     */
+    public function isHeadChanged()
+    {
+        if ($this->myOldAttributes['name'] != $this->name) {
+            return true;
+        }
+        if ($this->myOldAttributes['identifier'] != $this->identifier) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /** Metoda, ktora vrati, ci bola podstranka zmenena (a je potrebne ju nanovo nacachovat)
+     * @return bool
+     */
+    public function isOutdated()
+    {
+        return $this->outdated || $this->portal->outdated;
     }
 }

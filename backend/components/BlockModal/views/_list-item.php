@@ -1,10 +1,10 @@
 <?php
 use backend\models\Block;
 use backend\models\Portal;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 
 /* @var $listItem backend\models\ListItem */
-/* @var $page backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 /* @var $prefix string */
 /* @var $indexItem int */
@@ -13,7 +13,7 @@ use yii\helpers\BaseHtml;
 ?>
 
 <div class="panel panel-collapsable panel-item list-item">
-    <?= BaseHtml::hiddenInput($prefix . "[existing]", !$listItem->isNewRecord, ['class' => 'existing']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $listItem->removed, ['class' => 'removed']); ?>
     <div class="panel-heading">
         <span>
             <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>
@@ -21,6 +21,16 @@ use yii\helpers\BaseHtml;
         <span class="">
             <i class="fa fa-bars list-item-drag-by"></i>
         </span>
+        <?= Html::checkbox($prefix . '[active]', $listItem->active, [
+            'data-check' => 'switch',
+            'data-on-color' => 'primary',
+            'data-on-text' => 'Aktívna',
+            'data-off-color' => 'default',
+            'data-off-text' => 'Neaktívna',
+            'value' => 1,
+            'uncheck' => 0,
+            'data-size' => 'mini'
+        ]) ?>
         <span>
             <?= $listItem->order ?>
         </span>
@@ -33,7 +43,7 @@ use yii\helpers\BaseHtml;
         <?php foreach ($listItem->snippetVarValues as $indexVar => $snippetVarValue) {
             echo $this->render('_snippet-var-value', [
                 'snippetVarValue' => $snippetVarValue,
-                'page' => $page,
+                'layoutOwner' => $layoutOwner,
                 'portal' => $portal,
                 'prefix' => $prefix . "[SnippetVarValue][$indexVar]",
                 'parentId' => $parentId

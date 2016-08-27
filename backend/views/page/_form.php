@@ -1,18 +1,32 @@
 <?php
 
+use backend\components\MultipleSwitch\MultipleSwitchWidget;
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
+use backend\components\ToggleSwitch\ToggleSwitchWidget;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 /* @var $form yii\widgets\ActiveForm */
 
+?>
+
+<?php
+/*
+$this->registerJs(
+    '$("document").ready(function(){ 
+        $("#page_form").on("pjax:end", function() {
+            $.pjax.reload({container:"#page_form"});  //Reload GridView
+        });
+    });'
+);*/
 ?>
 
 <?php
@@ -24,12 +38,13 @@ if ($model->portal) {
 ?>
 
 <div class="page-form">
+    <?php /*Pjax::begin(['id' => 'page_form']);*/ ?>
 
     <?php $form = ActiveForm::begin([
         'id' => 'form',
         'enableAjaxValidation' => true,
+        //'options' => ['data-pjax' => true]
     ]); ?>
-
 
     <ul class="nav nav-tabs" id="myTab">
         <li role="presentation" class="tab-label active">
@@ -88,17 +103,20 @@ if ($model->portal) {
         <div class="tab-pane" id="tab_layout_settings">
             <h3 class="page-header">Hlavička stránky</h3>
 
-            <?= $form->field($model->header, 'active')->radioList([
-                '0' => 'Neaktívna',
-                '1' => 'Aktívna',
-            ], [
-                'name' => 'header[active]'
+            <?= Html::checkbox('header[active]', $model->header->active, [
+                'data-check' => 'switch',
+                'data-on-color' => 'primary',
+                'data-on-text' => 'Aktívny',
+                'data-off-color' => 'default',
+                'data-off-text' => 'Neaktívny',
+                'value' => 1,
+                'uncheck' => 0
             ]) ?>
 
             <?= LayoutWidget::widget([
                     'area' => $model->header,
                     'controllerUrl' => Url::to(['/page']),
-                    'page' => $model,
+                    'layoutOwner' => $model,
                     'portal' => null
                 ]
             ) ?>
@@ -109,58 +127,70 @@ if ($model->portal) {
                     'area' => $model->content,
                     'controllerUrl' => Url::to(['/page']),
                     'allowAddingSection' => false,
-                    'page' => $model,
+                    'layoutOwner' => $model,
                     'portal' => null
                 ]
             ) ?>
 
             <h3 class="page-header">Sidebar</h3>
 
-            <?= $form->field($model->sidebar, 'active')->radioList([
-                '0' => 'Neaktívny',
-                '1' => 'Aktívny',
-            ], [
-                'name' => 'sidebar[active]'
+            <?= Html::checkbox('sidebar[active]', $model->sidebar->active, [
+                'data-check' => 'switch',
+                'data-on-color' => 'primary',
+                'data-on-text' => 'Aktívny',
+                'data-off-color' => 'default',
+                'data-off-text' => 'Neaktívny',
+                'value' => 1,
+                'uncheck' => 0
             ]) ?>
 
-
-            <?= $form->field($model, 'sidebar_side')->radioList([
-                'left' => 'Vľavo',
-                'right' => 'Vpravo',
+            <?= Html::checkbox('sidebar_side', $model->sidebar_side, [
+                'data-check' => 'switch',
+                'data-on-color' => 'default',
+                'data-on-text' => 'Vpravo',
+                'data-off-color' => 'default',
+                'data-off-text' => 'Vľavo',
+                'value' => 'right',
+                'uncheck' => 'left'
             ]) ?>
 
-            <?= $form->field($model->sidebar, 'size')->radioList([
-                '4' => '8:4',
-                '5' => '7:5',
-                '6' => '6:6',
-                '7' => '5:7',
-                '8' => '4:8',
-            ], [
-                'name' => 'sidebar[size]'
+            <?= MultipleSwitchWidget::widget([
+                'name' => 'sidebar[size]',
+                'items' => [
+                    '4' => '8:4',
+                    '5' => '7:5',
+                    '6' => '6:6',
+                    '7' => '5:7',
+                    '8' => '4:8',
+                ],
+                'value' => $model->sidebar->size
             ]) ?>
 
             <?= LayoutWidget::widget([
                     'area' => $model->sidebar,
                     'controllerUrl' => Url::to(['/page']),
                     'allowAddingSection' => false,
-                    'page' => $model,
+                    'layoutOwner' => $model,
                     'portal' => null
                 ]
             ) ?>
 
             <h3 class="page-footer">Patička stránky</h3>
 
-            <?= $form->field($model->footer, 'active')->radioList([
-                '0' => 'Neaktívna',
-                '1' => 'Aktívna',
-            ], [
-                'name' => 'footer[active]'
+            <?= Html::checkbox('footer[active]', $model->footer->active, [
+                'data-check' => 'switch',
+                'data-on-color' => 'primary',
+                'data-on-text' => 'Aktívny',
+                'data-off-color' => 'default',
+                'data-off-text' => 'Neaktívny',
+                'value' => 1,
+                'uncheck' => 0
             ]) ?>
 
             <?= LayoutWidget::widget([
                     'area' => $model->footer,
                     'controllerUrl' => Url::to(['/page']),
-                    'page' => $model,
+                    'layoutOwner' => $model,
                     'portal' => null
                 ]
             ) ?>
@@ -173,7 +203,10 @@ if ($model->portal) {
             <div class="form-group">
                 <?= Html::submitButton('Uložiť', [
                     'class' => 'btn btn-primary',
-                    'id' => 'submit-btn'
+                    'id' => 'submit-btn',
+                    'data' => [
+                        'pjax' => false
+                    ]
                 ]) ?>
 
                 <?= Html::submitButton('Uložiť a pokračovať', [
@@ -183,17 +216,25 @@ if ($model->portal) {
                 ]) ?>
                 <?= Html::a('Náhľad', Url::to(['show', 'id' => $model->id]), [
                     'class' => 'btn btn-info',
-                    'target' => '_blank'
+                    'target' => '_blank',
+                    'data' => [
+                    'pjax' => false
+                ]
                 ]) ?>
                 <?= Html::a('Hard reset a náhľad', Url::to(['hard-reset', 'id' => $model->id]), [
                     'class' => 'btn btn-danger',
-                    'target' => '_blank'
+                    'target' => '_blank',
+                    'data' => [
+                        'pjax' => false
+                    ]
                 ]) ?>
             </div>
         </div>
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php /*Pjax::end();*/ ?>
 
     <div class="modal fade" id="blockModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel">
         <div class="modal-dialog" role="document">

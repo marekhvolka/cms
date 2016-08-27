@@ -3,7 +3,7 @@
 use backend\models\SnippetVarDefaultValue;
 use backend\models\VarType;
 use yii\helpers\ArrayHelper;
-use yii\helpers\BaseHtml;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\SnippetVar */
@@ -19,13 +19,17 @@ use yii\helpers\BaseHtml;
                 <i class="fa fa-angle-down"></i>
             </span>
         </a>
+
+        <?= Html::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
+        <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
+
         <label class="control-label" for="snippetvar-identifier">
             <?= $model->getAttributeLabel('identifier'); ?>
         </label>
-        <?= BaseHtml::activeTextInput($model, "identifier", [
+        <?= Html::activeTextInput($model, "identifier", [
             'maxlength' => true,
-            'class'     => 'form-control',
-            'name'      => $prefix . "[identifier]",
+            'class' => 'form-control',
+            'name' => $prefix . "[identifier]",
         ]);
         ?>
 
@@ -43,10 +47,10 @@ use yii\helpers\BaseHtml;
                 $allTypes = VarType::find()->where(['show_snippet' => 1])->all();
                 $data = ArrayHelper::map($allTypes, 'id', 'name');
 
-                echo BaseHtml::activeDropDownList($model, 'type_id', $data, [
-                    'class'  => 'form-control select-var-type',
+                echo Html::activeDropDownList($model, 'type_id', $data, [
+                    'class' => 'form-control select-var-type',
                     'prompt' => 'Vyber typ premennej',
-                    'name'   => $prefix . "[type_id]",
+                    'name' => $prefix . "[type_id]",
                     'data-prefix' => $prefix
                 ]);
                 ?>
@@ -62,7 +66,7 @@ use yii\helpers\BaseHtml;
                 <div class="snippet-var-default-values">
                     <?php foreach ($model->defaultValues as $indexDefaultValue => $defaultValue) : ?>
                         <?= $this->render("_variable-default-val", [
-                            'defaultValue'   => $defaultValue,
+                            'defaultValue' => $defaultValue,
                             'parentPrefix' => $prefix,
                             'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
                             'forProductType' => false
@@ -73,29 +77,25 @@ use yii\helpers\BaseHtml;
             </div>
         </div>
 
-        <?= BaseHtml::hiddenInput($prefix . "[parent_id]", $model->parent_id); ?>
-
-        <?= BaseHtml::hiddenInput($prefix . "[existing]", $model->isNewRecord ? 'false' : 'true'); ?>
-
         <div class="row">
             <div class="col-sm-12">
                 <label class="control-label" for="snippetvar-default_value">
                     <?= $model->getAttributeLabel('description'); ?>
                 </label>
-                <?= BaseHtml::activeTextarea($model, "description", [
-                    'rows'  => '4',
+                <?= Html::activeTextarea($model, "description", [
+                    'rows' => '4',
                     'class' => 'form-control',
-                    'name'  => $prefix . "[description]",
+                    'name' => $prefix . "[description]",
                 ]); ?>
             </div>
         </div>
         <div class="list-box-container">
-        <?php if (isset($model->type) && $model->type->identifier == 'list'): ?>
-            <?= $this->render('_child-var-box', [
-                'model' => $model,
-                'prefix' => $prefix
-            ]); ?>
-        <?php endif; ?>
+            <?php if (isset($model->type) && $model->type->identifier == 'list'): ?>
+                <?= $this->render('_child-var-box', [
+                    'model' => $model,
+                    'prefix' => $prefix
+                ]); ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>

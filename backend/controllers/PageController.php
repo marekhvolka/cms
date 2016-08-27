@@ -77,7 +77,7 @@ class PageController extends BaseController
 
             $model->load(Yii::$app->request->post());
 
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 
@@ -114,6 +114,10 @@ class PageController extends BaseController
                 $transaction->commit();
 
                 $model->resetAfterUpdate();
+
+                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
+                    $model->portal->getPortalPagesFile(true);
+                }
 
                 return $this->redirectAfterSave($model);
             } catch (Exception $exc) {

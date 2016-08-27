@@ -7,19 +7,18 @@
  */
 use backend\models\Portal;
 use yii\bootstrap\Html;
-use yii\helpers\BaseHtml;
 
 /* @var $model \backend\models\Column */
 /* @var $prefix string */
-/* @var $page \backend\models\Page */
+/* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
 
 ?>
 
-<div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-options="{}">
-    <?= BaseHtml::hiddenInput($prefix . "[row_id]", $model->row_id, ['class' => 'row_id']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
-    <?= BaseHtml::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
+<div class="<?= $model->width ? "col-md-$model->width" : ""; ?> panel panel-default column" data-prefix="<?= $prefix ?>">
+    <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
+    <?= Html::hiddenInput($prefix . "[width]", $model->width, ['class' => 'width']); ?>
+    <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
 
     <div class="panel-heading">
         <h4>
@@ -36,14 +35,16 @@ use yii\helpers\BaseHtml;
                 <div class="dropdown dropdown-column-content inline-button add-block-dropdown">
                     <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
                             title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
-                            data-page-id="<?= $page ? $page->id : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+                            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+                            data-portal-id="<?= $portal ? $portal->id : '' ?>">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="add-block" data-type="text">Text</a></li>
                         <li><a class="add-block" data-type="html">HTML</a></li>
                         <li><a class="add-block" data-type="snippet">Snippet</a></li>
-                        <?php if ($page && $page->product) : ?>
+                        <?php if ($layoutOwner && $layoutOwner->isPage() && $layoutOwner->product) : ?>
                             <li><a class="add-block" data-type="product_snippet">Produktový snippet</a></li>
                         <?php endif; ?>
                         <li><a class="add-block" data-type="portal_snippet">Portálový snippet</a></li>
@@ -63,7 +64,7 @@ use yii\helpers\BaseHtml;
             <?= $this->render('_block', [
                 'model' => $block,
                 'prefix' => $prefix . "[Block][$indexBlock]",
-                'page' => $page,
+                'layoutOwner' => $layoutOwner,
                 'portal' => $portal
             ]); ?>
         <?php endforeach; ?>

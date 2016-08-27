@@ -10,6 +10,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
+ * @property string $identifier
  * @property integer $active
  * @property integer $last_edit_user
  * @property string $last_edit
@@ -38,10 +39,10 @@ class ProductType extends CustomModel
     public function rules()
     {
         return [
-            [['name', 'active'], 'required'],
+            [['name', 'identifier', 'active'], 'required'],
             [['active', 'last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
-            [['name'], 'string', 'max' => 50]
+            [['name', 'identifier'], 'string', 'max' => 50]
         ];
     }
 
@@ -52,8 +53,9 @@ class ProductType extends CustomModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Meno',
-            'active' => 'Aktívna',
+            'name' => 'Názov',
+            'identifier' => 'Identifikátor',
+            'active' => 'Aktívny',
             'last_edit_user' => 'Naposledy editoval',
             'last_edit' => 'Posledná zmena',
         ];

@@ -60,7 +60,7 @@ class PortalController extends BaseController
         $allVariables = PortalVar::find()->all();
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
             $transaction = Yii::$app->db->beginTransaction();
@@ -161,23 +161,6 @@ class PortalController extends BaseController
         $indexVar = rand(1000, 100000);
 
         return (new VarManagerWidget())->appendVariableValue($varValue, $prefix, $indexVar, $model);
-    }
-
-    /**
-     * Deletes an existing Portal model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        if ($this->findModel($id)->delete()) {
-            Alert::success('Položka bola úspešne vymazaná.');
-        } else {
-            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
-        }
-
-        return $this->redirect(['index']);
     }
 
     public function actionHardReset($id)

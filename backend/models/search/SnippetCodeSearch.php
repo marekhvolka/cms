@@ -62,7 +62,7 @@ class SnippetCodeSearch extends SnippetCode
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'description', $this->popis]);
+            ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
     }

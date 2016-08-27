@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($dataProvider->name, Url::to(['/product-type/edit/', 'id' => $dataProvider->id]));
                 },
             ],
+            'identifier',
             'active:boolean',
             [
                 'label' => 'Posledná zmena',

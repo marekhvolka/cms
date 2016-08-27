@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Podstránka',
                 'value' => function ($data) {
-                    return Html::a($data->name, Url::to(['edit', 'id' => $data->id]));
+                    return Html::a($data->name, Url::to(['edit', 'id' => $data->id]))/* . ' ' . Html::a('<i class="fa fa-align-left"></i>', Url::to(['edit', 'id' => $data->id]) . '#tab_layout_settings')*/;
                 },
                 'size' => '4'
             ],

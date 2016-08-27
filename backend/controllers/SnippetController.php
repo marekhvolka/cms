@@ -74,7 +74,7 @@ class SnippetController extends BaseController
         }
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) { // ajax validácia
+            if (Yii::$app->request->isAjax && !Yii::$app->request->post('ajaxSubmit')) { // ajax validácia
                 return $this->ajaxValidation($model);
             }
 
@@ -208,28 +208,10 @@ class SnippetController extends BaseController
         ]);
     }
 
-    /**
-     * Deletes an existing Snippet model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        if ($this->findModel($id)->delete()) {
-            Alert::success('Položka bola úspešne vymazaná.');
-        } else {
-            Alert::danger('Vyskytla sa chyba pri vymazávaní položky.');
-        }
-
-        return $this->redirect(['index']);
-    }
-
     public function actionHardReset($id)
     {
         Snippet::findOne($id)->getMainCacheFile(true);
     }
-
 
     public function actionCodeUsage($id)
     {

@@ -1,4 +1,5 @@
 <?php
+use backend\models\LayoutOwner;
 use backend\models\ProductVar;
 use backend\models\Tag;
 use common\components\Icons;
@@ -7,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /* @var $snippetVarValue backend\models\SnippetVarValue */
-/* @var $page backend\models\Page */
+/* @var $layoutOwner LayoutOwner */
 /* @var $portal backend\models\Portal */
 /* @var $prefix string */
 /* @var $defaultValue \backend\models\SnippetVarDefaultValue */
@@ -18,7 +19,7 @@ use yii\helpers\Html;
 
 <div class="snippet-var-value" data-identifier="<?= $snippetVarValue->var->identifier ?>">
     <?php
-    $product = $page && $page->product ? $page->product : null;
+    $product = $layoutOwner && $layoutOwner->isPage() && $layoutOwner->product ? $layoutOwner->product : null;
     $defaultValue = $snippetVarValue->var->getDefaultValue($product);
 
     if ($snippetVarValue->typeName != 'list') : ?>
@@ -95,32 +96,32 @@ use yii\helpers\Html;
                     </div>
 
                     <script type="text/javascript">
-                        var apply = $(".apply-spectrum");
-                        apply.find(".apply-spectrum-picker").spectrum(
-                            {
-                                preferredFormat: "hex",
-                                change: function (color)
+                        $(document).ready(function () {
+                            var apply = $(".apply-spectrum");
+                            apply.find(".apply-spectrum-picker").spectrum(
                                 {
-                                    $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                                    preferredFormat: "hex",
+                                    change: function (color) {
+                                        $(this).parents('.spectrum-parent').first().find('.source').val(color);
+                                    }
                                 }
-                            }
-                        ).removeClass('apply-spectrum-picker');
+                            ).removeClass('apply-spectrum-picker');
 
-                        apply.find('.apply-spectrum-source').on(
-                            'input', function ()
-                            {
-                                var $this = $(this);
-                                $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
-                            }
-                        ).removeClass('apply-spectrum-source');
+                            apply.find('.apply-spectrum-source').on(
+                                'input', function () {
+                                    var $this = $(this);
+                                    $this.parents('.spectrum-parent').first().find('.picker').spectrum('set', $this.val());
+                                }
+                            ).removeClass('apply-spectrum-source');
 
-                        apply.removeClass('apply-spectrum');
+                            apply.removeClass('apply-spectrum');
+                        });
                     </script>
 
                 <?php
                 break;
                 case 'editor' : ?>
-                    <?php $varId = $snippetVarValue->id ? $snippetVarValue->id : rand(100, 10000); ?>
+                <?php $varId = $snippetVarValue->id ? $snippetVarValue->id : rand(100, 10000); ?>
                     <textarea class="form-control" id="ckeditor<?= $varId ?>"
                               name="<?= $prefix . '[value_text]' ?>"
                               placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>">
@@ -128,110 +129,104 @@ use yii\helpers\Html;
                     </textarea>
 
                     <script type="text/javascript">
-                        CKEDITOR.replace("ckeditor<?= $varId ?>", ckeditorConfig);
-                        CKEDITOR.dtd.$removeEmpty['i'] = false;
-                    </script>
-
-                <?php
-                break;
-                case 'product' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
-                        ArrayHelper::map($page ? $page->portal->language->products : $portal->language->products,
-                            'id', 'breadcrumbs'),
-                        [
-                            'name' => $prefix . '[value_product_id]',
-                            'class' => 'form-control activate-select2',
-                            'prompt' => 'Vyber produkt'
-                        ]) ?>
-
-                    <?php
-                    break;
-                case 'page' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
-                        ArrayHelper::map($page ? $page->portal->pages : $portal->pages, 'id',
-                            'breadcrumbs'),
-                        [
-                            'name' => $prefix . '[value_page_id]',
-                            'class' => 'form-control activate-select2',
-                            'prompt' => 'Vyber podstránku'
-                        ]) ?>
-
-
-                    <?php
-                    break;
-                case 'product_var' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id',
-                        ArrayHelper::map(ProductVar::find()->all(), 'id', 'name'),
-                        [
-                            'name' => $prefix . '[value_product_var_id]',
-                            'class' => 'form-control activate-select2',
-                            'prompt' => 'Vyber produktovú premennú'
-                        ]) ?>
-
-                    <?php
-                    break;
-                case 'product_tag' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id',
-                        ArrayHelper::map(Tag::find()->all(), 'id', 'label'),
-                        [
-                            'name' => $prefix . '[value_tag_id]',
-                            'class' => 'form-control activate-select2',
-                            'prompt' => 'Vyber tag'
-                        ]) ?>
-
-                    <?php
-                    break;
-
-                case 'dropdown' : ?>
-
-                    <?= Html::activeDropDownList($snippetVarValue, 'value_dropdown_id',
-                        ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
-                        [
-                            'name' => $prefix . '[value_dropdown_id]',
-                            'class' => 'form-control'
-                        ]) ?>
-
-                    <?php
-                    break;
-
-                case 'bool' : ?>
-
-                <?= SwitchInput::widget([
-                    'name' => $prefix . '[value_text]',
-                    'value' => $snippetVarValue->value_text,
-                    'type' => SwitchInput::CHECKBOX,
-                    'containerOptions' => [
-                        'class' => 'form-group apply-child-bootstrap-switch'
-                    ]
-                ]) ?>
-                    <script type="text/javascript">
-                        var toApply = $(".apply-child-bootstrap-switch");
-                        toApply.find("input").bootstrapSwitch(
-                            {
-                                onSwitchChange: function (event, state)
-                                {
-                                    var _this = $(this);
-                                    if (state)
-                                    {
-                                        _this.attr('checked', 'checked');
-                                        _this.val = 1;
-                                    }
-                                    else
-                                    {
-                                        _this.removeAttr('checked');
-                                        _this.val = 0;
-                                    }
-                                }, state: <?= $snippetVarValue->value_text == 'true' ? 'true' : 'false' ?>}
-                        );
-                        toApply.removeClass('apply-child-bootstrap-switch');
+                        $(document).ready(function () {
+                            CKEDITOR.replace("ckeditor<?= $varId ?>", ckeditorConfig);
+                            CKEDITOR.dtd.$removeEmpty['i'] = false;
+                        });
                     </script>
 
                     <?php
                     break;
+                    case 'product' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_product_id',
+                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->language->products : $portal->language->products,
+                                'id', 'breadcrumbs'),
+                            [
+                                'name' => $prefix . '[value_product_id]',
+                                'class' => 'form-control activate-select2',
+                                'prompt' => 'Vyber produkt'
+                            ]) ?>
+
+                        <?php
+                        break;
+                    case 'page' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_page_id',
+                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->pages : $portal->pages, 'id',
+                                'breadcrumbs'),
+                            [
+                                'name' => $prefix . '[value_page_id]',
+                                'class' => 'form-control activate-select2',
+                                'prompt' => 'Vyber podstránku'
+                            ]) ?>
+
+                        <?php
+                        break;
+                    case 'post' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_post_id',
+                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->pages : $portal->pages, 'id',
+                                'breadcrumbs'),
+                            [
+                                'name' => $prefix . '[value_post_id]',
+                                'class' => 'form-control activate-select2',
+                                'prompt' => 'Vyber článok'
+                            ]); ?>
+
+                        <?php
+                        break;
+                    case 'product_var' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_product_var_id',
+                            ArrayHelper::map(ProductVar::find()->all(), 'id', 'name'),
+                            [
+                                'name' => $prefix . '[value_product_var_id]',
+                                'class' => 'form-control activate-select2',
+                                'prompt' => 'Vyber produktovú premennú'
+                            ]) ?>
+
+                        <?php
+                        break;
+                    case 'product_tag' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_tag_id',
+                            ArrayHelper::map(Tag::find()->all(), 'id', 'label'),
+                            [
+                                'name' => $prefix . '[value_tag_id]',
+                                'class' => 'form-control activate-select2',
+                                'prompt' => 'Vyber tag'
+                            ]) ?>
+
+                        <?php
+                        break;
+
+                    case 'dropdown' : ?>
+
+                        <?= Html::activeDropDownList($snippetVarValue, 'value_dropdown_id',
+                            ArrayHelper::map($snippetVarValue->var->dropdownValues, 'id', 'value'),
+                            [
+                                'name' => $prefix . '[value_dropdown_id]',
+                                'class' => 'form-control'
+                            ]) ?>
+
+                        <?php
+                        break;
+
+                    case 'bool' : ?>
+
+                        <?= Html::checkbox($prefix . '[value_text]', $snippetVarValue->value_text, [
+                            'data-check' => 'switch',
+                            'data-on-color' => 'primary',
+                            'data-on-text' => 'TRUE',
+                            'data-off-color' => 'default',
+                            'data-off-text' => 'FALSE',
+                            'value' => 1,
+                            'uncheck' => 0
+                        ]) ?>
+
+                        <?php
+                        break;
                 } ?>
                 <?php if (!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je
@@ -239,19 +234,15 @@ use yii\helpers\Html;
                 <?php endif; ?>
             </div>
             <script type="text/javascript">
-                function format(o)
-                {
-                    if (o.id != null)
-                    {
-                        if (o.id.match(/fa-[a-z\-]+/))
-                        {
+                function format(o) {
+                    if (o.id != null) {
+                        if (o.id.match(/fa-[a-z\-]+/)) {
                             return '<span class="' + o.id + '"></span> ' + o.text.slice(3).replace(
                                     '-',
                                     ' '
                                 ) + ' [font awesome]';
                         }
-                        else if (o.id.match(/glyphicon\-[a-z\-]+/))
-                        {
+                        else if (o.id.match(/glyphicon\-[a-z\-]+/)) {
                             return '<span class="' + o.id + '"></span> ' + o.text + ' [glyphicon]';
                         }
                     }
@@ -259,16 +250,18 @@ use yii\helpers\Html;
                     return o.text;
                 }
 
-                $(".activate-select2").select2(
-                    {
-                        templateResult: format,
-                        templateSelection: format,
-                        escapeMarkup: function (m)
+                $(document).ready(function () {
+                    $(".activate-select2").select2(
                         {
-                            return m;
+                            templateResult: format,
+                            templateSelection: format,
+                            escapeMarkup: function (m) {
+                                return m;
+                            }
                         }
-                    }
-                ).removeClass('activate-select2');
+                    ).removeClass('activate-select2');
+                });
+
             </script>
             <div class="clearfix"></div>
         </div>
@@ -284,7 +277,9 @@ use yii\helpers\Html;
             </span>
                 <a class="btn btn-success btn-xs pull-right btn-add-list-item"
                    data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                   data-parent-id="<?= $parentId ?>" data-page-id="<?= $page ? $page->id : '' ?>"
+                   data-parent-id="<?= $parentId ?>"
+                   data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+                   data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
                    data-portal-id="<?= $portal ? $portal->id : '' ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
@@ -294,7 +289,7 @@ use yii\helpers\Html;
                 <?php foreach ($snippetVarValue->listItems as $indexItem => $listItem) : ?>
                     <?= $this->render('_list-item', [
                         'listItem' => $listItem,
-                        'page' => $page,
+                        'layoutOwner' => $layoutOwner,
                         'portal' => $portal,
                         'prefix' => $prefix . "[ListItem][$indexItem]",
                         'parentId' => $parentId

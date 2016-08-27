@@ -18,7 +18,7 @@ use yii\bootstrap\Html;
         <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $requestedPage->id, [
             'target' => '_blank'
         ]) ?>
-        <?= $requestedPage->product ?
+        <?= isset($requestedPage->product) ?
             Html::a('Upraviť produkt', '/backend/web/product/edit/' . $requestedPage->product->id, [
                 'target' => '_blank'
             ]) : '' ?>

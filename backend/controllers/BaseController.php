@@ -13,6 +13,7 @@ use backend\models\MultimediaCategory;
 use backend\models\MultimediaItem;
 use backend\models\Page;
 use backend\models\Portal;
+use backend\models\Post;
 use backend\models\Row;
 use backend\models\search\GlobalSearch;
 use backend\models\Section;
@@ -21,9 +22,10 @@ use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarValue;
 use common\components\Alert;
-use Yii;
+use yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -70,9 +72,13 @@ abstract class BaseController extends Controller
         /* @var $portal Portal */
         $portal = Portal::findOne($portalId);
 
-        if (!(key_exists('develop', Yii::$app->params) && Yii::$app->params['develop'])) {
-            $this->redirect('http://www.' . $portal->domain . '/backend/web/');
+        if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') { //localhost
+            $redirectPrefix = 'http://' . $_SERVER['HTTP_HOST'];
+        } else {
+            $redirectPrefix = 'http://www.' . $portal->domain;
         }
+
+        $this->redirect($redirectPrefix . '/backend/web/');
     }
 
     /**
@@ -124,15 +130,22 @@ abstract class BaseController extends Controller
     public function actionAppendSection()
     {
         $prefix = Yii::$app->request->post('prefix');
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $section = new Section();
 
         $indexSection = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $page, $portal);
+        return (new LayoutWidget())->appendSection($section, $prefix, $indexSection, $layoutOwner, $portal);
     }
 
     /**
@@ -143,14 +156,21 @@ abstract class BaseController extends Controller
     {
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $row = new Row();
 
         $indexRow = rand(1000, 10000000);
 
-        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $page, $portal);
+        return (new LayoutWidget())->appendRow($row, $prefix, $indexRow, $layoutOwner, $portal);
     }
 
     public function actionAppendColumns()
@@ -158,7 +178,14 @@ abstract class BaseController extends Controller
         $width = Yii::$app->request->post('width');
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $columnsData = array();
@@ -170,7 +197,7 @@ abstract class BaseController extends Controller
 
             $indexColumn = rand(1000, 10000000);
 
-            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $page, $portal);
+            $columnsData[] = (new LayoutWidget())->appendColumn($column, $prefix, $indexColumn, $layoutOwner, $portal);
         }
         return json_encode($columnsData);
     }
@@ -183,7 +210,15 @@ abstract class BaseController extends Controller
     {
         $prefix = Yii::$app->request->post('prefix');
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $indexBlock = rand(1000, 1000000);
@@ -191,7 +226,7 @@ abstract class BaseController extends Controller
         $block = new Block();
         $block->type = Yii::$app->request->post('type');
 
-        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $page, $portal);
+        return (new LayoutWidget())->appendBlock($block, $prefix, $indexBlock, $layoutOwner, $portal);
     }
 
     public function actionAppendBlockModal()
@@ -199,7 +234,14 @@ abstract class BaseController extends Controller
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $block = Block::findOne(['id' => $id]);
@@ -209,7 +251,7 @@ abstract class BaseController extends Controller
             $block->type = $type;
         }
 
-        return (new BlockModalWidget())->appendModal($block, $prefix, $page, $portal);
+        return (new BlockModalWidget())->appendModal($block, $prefix, $layoutOwner, $portal);
     }
 
     public function actionAppendBlockModalContent()
@@ -226,13 +268,20 @@ abstract class BaseController extends Controller
             $block->parent_id = $parent->id;
         }
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
         $prefix = Yii::$app->request->post('prefix');
 
         return (new BlockModalWidget())->render('_snippet', [
             'model' => $block,
-            'page' => $page,
+            'layoutOwner' => $layoutOwner,
             'portal' => $portal,
             'prefix' => $prefix
         ]);
@@ -246,7 +295,14 @@ abstract class BaseController extends Controller
 
         $parentVar = SnippetVar::find()->where(['id' => $parentVarId])->one();
 
-        $page = Page::findOne(Yii::$app->request->post('pageId'));
+        $layoutOwner = null;
+        $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+
+        if ($layoutOwnerType == 'post') {
+            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+        } else if ($layoutOwnerType == 'page') {
+            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+        }
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $parentId = Yii::$app->request->post('parentId');
@@ -255,7 +311,7 @@ abstract class BaseController extends Controller
 
         $indexItem = rand(1000, 10000);
 
-        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $page, $portal, $parentId);
+        return (new BlockModalWidget())->appendListItem($listItem, $prefix, $indexItem, $layoutOwner, $portal, $parentId);
     }
 
     public function actionAppendMultimediaWindow()
@@ -333,9 +389,9 @@ abstract class BaseController extends Controller
         $model->validateAndSave();
 
         foreach ($model->sections as $indexSection => $section) {
-            if (empty($section->area_id)) {
+            //if (empty($section->area_id)) {
                 $section->area_id = $model->id;
-            }
+            //}
             if ($section->removed) {
                 $section->delete();
                 unset($model->sections[$indexSection]);
@@ -344,9 +400,9 @@ abstract class BaseController extends Controller
             $section->validateAndSave();
 
             foreach ($section->rows as $indexRow => $row) {
-                if (empty($row->section_id)) {
+                //if (empty($row->section_id)) {
                     $row->section_id = $section->id;
-                }
+                //}
 
                 if ($row->removed) {
                     $row->delete();
@@ -357,9 +413,9 @@ abstract class BaseController extends Controller
                 $row->validateAndSave();
 
                 foreach ($row->columns as $indexColumn => $column) {
-                    if (empty($column->row_id)) {
+                    //if (empty($column->row_id)) {
                         $column->row_id = $row->id;
-                    }
+                    //}
 
                     if ($column->removed) {
                         $column->delete();
@@ -369,9 +425,9 @@ abstract class BaseController extends Controller
                     $column->validateAndSave();
 
                     foreach ($column->blocks as $indexBlock => $block) {
-                        if (empty($block->column_id)) {
+                        //if (empty($block->column_id)) {
                             $block->column_id = $column->id;
-                        }
+                        //}
 
                         if ($block->removed) {
                             $block->delete();
@@ -442,9 +498,27 @@ abstract class BaseController extends Controller
     protected function redirectAfterSave($model)
     {
         Alert::success('Položka bola úspešne uložená.');
+        //$continue = Yii::$app->request->post('ajaxSubmit');
         $continue = Yii::$app->request->post('continue');
 
-        return isset($continue) ? $this->redirect(['edit', 'id' => $model->id]) : $this->redirect(['index']);
+        if (isset($continue)) {
+            $result = [
+                'status' => 'success'
+            ];
+
+            $result['message'] = yii\bootstrap\Alert::widget([
+                'options' => [
+                    'class' => 'alert-success'
+                ],
+                'body' => 'Položka bola úspešne uložená.'
+            ]);
+
+            return $this->redirect(['edit', 'id' => $model->id]);
+        } else {
+            Alert::success('Položka bola úspešne uložená.');
+
+            return $this->redirect(['index']);
+        }
     }
 
     protected function redirectAfterFail($model, $editOptions = array())
@@ -460,5 +534,22 @@ abstract class BaseController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return ActiveForm::validate($model);
+    }
+
+    /**
+     * Basic delete method
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        if ($this->findModel($id)->delete()) {
+            Alert::success('Položka bola úspešne vymazaná.');
+        } else {
+            Alert::danger('Položku sa nepodarilo vymazať.');
+        }
+
+        return $this->redirect(['index']);
     }
 }
