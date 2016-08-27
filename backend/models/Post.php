@@ -43,7 +43,7 @@ class Post extends LayoutOwner
     public function rules()
     {
         return [
-            [['name', 'identifier', 'portal_id'], 'required'],
+            [['name', 'identifier', 'portal_id', 'post_category_id'], 'required'],
             [['portal_id', 'last_edit_user', 'active'], 'integer'],
             [['published_at', 'last_edit'], 'safe'],
             [['perex', 'image'], 'string'],
@@ -74,7 +74,7 @@ class Post extends LayoutOwner
 
     public function getUrl()
     {
-        return $this->portal->blogUrl . '/' . $this->identifier . '/';
+        return $this->portal->blogUrl . $this->identifier . '/';
     }
 
     public function getTags()

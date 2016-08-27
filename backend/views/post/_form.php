@@ -62,6 +62,15 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'perex')->textarea(['rows' => 6]) ?>
 
+            <div class="input-group">
+                <input type="text" class="form-control value" name="post_image' ?>"
+                       value="<?= $model->image ?>"/>
+                        <span class="input-group-btn">
+                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
+                            ['class' => 'pull-right open-multimedia btn btn-success']) ?>
+                        </span>
+            </div>
+
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
