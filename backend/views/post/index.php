@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'identifier',
+            'published_at',
             [
                 'label' => 'Posledná zmena',
                 'value' => function ($dataProvider) {
