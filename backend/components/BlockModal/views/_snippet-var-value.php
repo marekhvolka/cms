@@ -45,7 +45,7 @@ use yii\helpers\Html;
                                placeholder="<?= $defaultValue ? htmlentities($defaultValue->value_text) : '' ?>"
                                value="<?= htmlspecialchars($snippetVarValue->value_text, ENT_QUOTES) ?>"/>
                         <span class="input-group-btn">
-                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
+                        <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "",
                             ['class' => 'pull-right open-multimedia btn btn-success']) ?>
                         </span>
                     </div>

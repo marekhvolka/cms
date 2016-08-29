@@ -2,7 +2,7 @@ for (var i = 0; i < selectedVarIds.length; i++) {
     $('#types-dropdown').find('[value="' + selectedVarIds[i] + '"]').prop('disabled', true);
 }
 
-//$('#types-dropdown').select2();
+initializeMultimediaBtn();
 
 $('#types-dropdown').change(function () {
     var postData = {
@@ -35,14 +35,6 @@ function attachRemove(button) {
 attachRemove($('.remove-btn'));
 
 var body = $("body");
-body.on('click', ".variable-value a.open-multimedia", function (e) {
-    e.preventDefault();
-    var assigningTo = $(this).parents('.var-value').first().find('.value');
-
-    Multimedia.get().show(function (path) {
-        assigningTo.val(path);
-    });
-});
 
 function applySpectrum() {
     var apply = $(".apply-spectrum");

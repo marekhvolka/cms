@@ -1,16 +1,14 @@
 <?php
 
-use backend\components\MultipleSwitch\MultipleSwitchWidget;
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
-use backend\components\ToggleSwitch\ToggleSwitchWidget;
+use backend\components\MultipleSwitch\MultipleSwitchWidget;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
@@ -218,8 +216,8 @@ if ($model->portal) {
                     'class' => 'btn btn-info',
                     'target' => '_blank',
                     'data' => [
-                    'pjax' => false
-                ]
+                        'pjax' => false
+                    ]
                 ]) ?>
                 <?= Html::a('Hard reset a náhľad', Url::to(['hard-reset', 'id' => $model->id]), [
                     'class' => 'btn btn-danger',

@@ -3,7 +3,6 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\components\MultipleSwitch\MultipleSwitchWidget;
-use backend\components\ToggleSwitch\ToggleSwitchWidget;
 use backend\models\PostCategory;
 use backend\models\PostTag;
 use kartik\select2\Select2;
@@ -18,6 +17,15 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\Post */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+
+<script>
+    $(document).ready(
+        function ()
+        {
+            initializeMultimediaBtn();
+        }
+    )
+</script>
 
 <div class="post-form">
 
@@ -65,10 +73,25 @@ use yii\widgets\ActiveForm;
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'perex')->textarea(['rows' => 6]) ?>
+            <div class="form-group">
+                <?php $id = rand(1000, 100000); ?>
 
+                <textarea class="form-control editor" id="ckeditor<?= $id ?>" rows="3" name="Post[perex]"
+                ><?= $model->perex ?></textarea>
+
+                <script type="text/javascript">
+                    $(document).ready(
+                        function ()
+                        {
+                            CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
+                            CKEDITOR.dtd.$removeEmpty['i'] = false;
+                        }
+                    );
+                </script>
+                
+            </div>
             <div class="input-group">
-                <input type="text" class="form-control value" name="post_image' ?>"
+                <input type="text" class="form-control value" name="Post[image]"
                        value="<?= $model->image ?>"/>
                         <span class="input-group-btn">
                         <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",

@@ -165,14 +165,7 @@ function appendElement(parentElement, dataToAppend) {
     return dataToAppend;
 }
 
-body.on('click', ".var-value a.open-multimedia", function (e) {
-    e.preventDefault();
-    var assigningTo = $(this).parents('.var-value').first().find('.value');
-
-    Multimedia.get().show(function (path) {
-        assigningTo.val(path);
-    });
-});
+initializeMultimediaBtn();
 
 $(document).ready(function () {
     $('.children-list.list-items').each(function () {
