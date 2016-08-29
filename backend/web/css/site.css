@@ -338,6 +338,10 @@ a.anchor {
     background-color: rgba(0, 255, 0, 0.46);
 }
 
+.global-search .suggest-post {
+    background-color: rgba(77, 223, 255, 0.35);
+}
+
 .search-multimedia {
     width: 400px !important;
 }

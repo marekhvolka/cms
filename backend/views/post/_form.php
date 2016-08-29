@@ -88,7 +88,7 @@ use yii\widgets\ActiveForm;
                         }
                     );
                 </script>
-                
+
             </div>
             <div class="input-group">
                 <input type="text" class="form-control value" name="Post[image]"

@@ -35,7 +35,8 @@ class GlobalSearch
             'page' => [],
             'product' => [],
             'actions' => [],
-            'word' => []
+            'word' => [],
+            'post' => []
         );
 
         $snippets = Yii::$app->user->identity->portal->hasMany(Snippet::className(), ['id' => 'snippet_id'])
