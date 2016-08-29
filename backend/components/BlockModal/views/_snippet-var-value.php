@@ -166,8 +166,8 @@ use yii\helpers\Html;
                     case 'post' : ?>
 
                         <?= Html::activeDropDownList($snippetVarValue, 'value_post_id',
-                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->pages : $portal->pages, 'id',
-                                'breadcrumbs'),
+                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->posts : $portal->posts, 'id',
+                                'name'),
                             [
                                 'name' => $prefix . '[value_post_id]',
                                 'class' => 'form-control activate-select2',

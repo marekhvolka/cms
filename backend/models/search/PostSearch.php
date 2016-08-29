@@ -73,6 +73,8 @@ class PostSearch extends Post
             ->andFilterWhere(['like', 'identifier', $this->identifier])
             ->andFilterWhere(['like', 'perex', $this->perex]);
 
+        $query->orderBy('published_at DESC');
+
         return $dataProvider;
     }
 }
