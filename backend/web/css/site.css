@@ -484,3 +484,7 @@ span.row-drag-by, span.section-drag-by {
 .anchors.closed .opened {
     display: none;
 }
+
+.added {
+    border: 4px solid green;
+}

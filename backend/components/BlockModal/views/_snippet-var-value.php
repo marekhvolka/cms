@@ -276,13 +276,32 @@ use yii\helpers\Html;
                 Počet položiek: <span class="list-items-count"><?= sizeof($snippetVarValue->listItems) ?></span>
             </span>
                 <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-                   data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
+                   data-prefix="<?= $prefix ?>"
+                   data-parent-var-id="<?= $snippetVarValue->var_id ?>"
                    data-parent-id="<?= $parentId ?>"
                    data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
                    data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
                    data-portal-id="<?= $portal ? $portal->id : '' ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
+
+                <div class="dropdown inline-button add-list-item-dropdown pull-right"
+                     data-prefix="<?= $prefix ?>"
+                     data-parent-var-id="<?= $snippetVarValue->var_id ?>"
+                     data-parent-id="<?= $parentId ?>"
+                     data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+                     data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+                     data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                    <button type="button" class="btn btn-success dropdown-toggle btn-xs"
+                            title="Vložiť novú položku" data-toggle="dropdown" >
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="btn-add-list-item" data-position="begin">Na začiatok zoznamu</a></li>
+                        <li><a class="btn-add-list-item" data-position="middle">Do stredu zoznamu</a></li>
+                        <li><a class="btn-add-list-item" data-position="end">Na koniec zoznamu</a></li>
+                    </ul>
+                </div>
             </div>
 
             <div class="panel-body panel-collapse collapse in children-list list-items fixed-panel">

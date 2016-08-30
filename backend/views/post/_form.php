@@ -90,6 +90,8 @@ use yii\widgets\ActiveForm;
                 </script>
 
             </div>
+            <div class="form-group">
+                <label>Náhľadový obrázok</label>
             <div class="input-group">
                 <input type="text" class="form-control value" name="Post[image]"
                        value="<?= $model->image ?>"/>
@@ -99,6 +101,7 @@ use yii\widgets\ActiveForm;
                         </span>
             </div>
 
+                </div>
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>

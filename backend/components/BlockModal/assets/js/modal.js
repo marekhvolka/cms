@@ -107,19 +107,34 @@ body.on('click', '.btn-block-modal', function () {
 });
 
 body.on('click', '.btn-add-list-item', function () {
-    var listPanel = $(this).parents('.list-panel').first();
+    var clickedBtn = $(this);
+    var listPanel = clickedBtn.parents('.list-panel').first();
+
+    var parentDropdownBtn = clickedBtn.parents('.add-list-item-dropdown');
 
     var postData = {
-        prefix: $(this).data('prefix'),
-        parentVarId: $(this).data('parent-var-id'),
-        layoutOwnerId: $(this).data('layout-owner-id'),
-        layoutOwnerType: $(this).data('layout-owner-type'),
-        portalId: $(this).data('portal-id'),
-        parentId: $(this).data('parent-id')
+        prefix: parentDropdownBtn.data('prefix'),
+        parentVarId: parentDropdownBtn.data('parent-var-id'),
+        layoutOwnerId: parentDropdownBtn.data('layout-owner-id'),
+        layoutOwnerType: parentDropdownBtn.data('layout-owner-type'),
+        portalId: parentDropdownBtn.data('portal-id'),
+        parentId: parentDropdownBtn.data('parent-id')
     };
 
     $.post(appendUrl.listItem, postData, function (data) {
-        var listItem = appendElement(listPanel, $(data));
+
+        var listItem = $(data);
+        
+        if (clickedBtn.data('position') == 'begin') {
+            listPanel.find('.children-list').first().prepend(listItem);
+        } else if (clickedBtn.data('position') == 'end') {
+            listPanel.find('.children-list').first().append(listItem);
+        } else if (clickedBtn.data('position') == 'middle') {
+            var directChildren = listPanel.find('.children-list').first().find('> *');
+            $(directChildren[Math.floor(directChildren.length / 2)]).after(listItem);
+        }
+
+        listItem.addClass('added');
         listPanel.find('.list-items-count').first().text(listPanel.find('.children-list').first().children().length);
 
         listItem.find('.children-list.list-items').each(function () {
@@ -130,10 +145,16 @@ body.on('click', '.btn-add-list-item', function () {
         setTimeout(function () {
             rescanForms();
         }, 0);
+
+        $("input[data-check='switch']").bootstrapSwitch();
     });
 });
 
 body.on('click', '.btn-remove-list-item', function () {
+
+    if (!confirm("Naozaj chceš zmazať túto položku?")) {
+        return;
+    }
     var listPanel = $(this).parents('.list-panel');
 
     var listItem = $(this).parents('.list-item').first();

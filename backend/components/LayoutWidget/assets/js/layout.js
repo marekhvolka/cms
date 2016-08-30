@@ -34,6 +34,9 @@ body.on("click", '.add-section-btn', function () {
 });
 
 body.on("click", ".btn-remove-section", function () {
+    if (!confirm("Naozaj chceš zmazať túto sekciu?")) {
+        return;
+    }
     removeItem($(this).parents('.section'));
 });
 
@@ -81,6 +84,9 @@ body.on("click", ".add-row", function () {
 });
 
 body.on("click", ".btn-remove-row", function () {
+    if (!confirm("Naozaj chceš zmazať tento riadok?")) {
+        return;
+    }
     removeItem($(this).parents('.layout-row').first());
 });
 
@@ -133,6 +139,9 @@ body.on("click", ".add-block", function () {
 });
 
 body.on("click", ".btn-remove-block", function () {
+    if (!confirm("Naozaj chceš zmazať tento blok?")) {
+        return;
+    }
     removeItem($(this).parents('.layout-block').first());
 });
 
