@@ -5,7 +5,7 @@ namespace backend\models;
 use Yii;
 
 /**
- * This is the model class for table "post_tag".
+ * This is the model class for table "post_type".
  *
  * @property integer $id
  * @property string $name
@@ -13,14 +13,14 @@ use Yii;
  *
  * @property Post[] $posts
  */
-class PostTag extends CustomModel
+class PostType extends CustomModel
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'post_tag';
+        return 'post_type';
     }
 
     /**
@@ -53,6 +53,6 @@ class PostTag extends CustomModel
      */
     public function getPosts()
     {
-        return $this->hasMany(Post::className(), ['id' => 'post_id'])->viaTable('post_post_tag', ['post_tag_id' => 'id']);
+        return $this->hasMany(Post::className(), ['post_type_id' => 'id']);
     }
 }

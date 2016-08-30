@@ -22,11 +22,13 @@ use Yii;
  * @property integer $last_edit_user
  * @property integer $active
  * @property integer $post_category_id
+ * @property integer $post_type_id
  *
  * @property Area[] $areas
  * @property User $lastEditUser
  * @property PostTag[] $tags
  * @property PostCategory $postCategory
+ * @property PostType $postType
  * @property SnippetVarValue[] $snippetVarValues
  *
  * @property string $cacheIdentifier
@@ -47,8 +49,8 @@ class Post extends LayoutOwner
     public function rules()
     {
         return [
-            [['name', 'identifier', 'portal_id', 'post_category_id'], 'required'],
-            [['portal_id', 'last_edit_user', 'active', 'post_category_id'], 'integer'],
+            [['name', 'identifier', 'portal_id', 'post_category_id', 'post_type_id'], 'required'],
+            [['portal_id', 'last_edit_user', 'active', 'post_category_id', 'post_type_id'], 'integer'],
             [['published_at', 'last_edit'], 'safe'],
             [['perex', 'image', 'description', 'keywords'], 'string'],
             [['name', 'identifier', 'title'], 'string', 'max' => 255],
@@ -66,6 +68,7 @@ class Post extends LayoutOwner
             'id' => 'ID',
             'name' => 'Názov',
             'post_category_id' => 'Kategória',
+            'post_type_id' => 'Typ',
             'image' => 'Hlavný obrázok',
             'identifier' => 'Identifikátor',
             'portal_id' => 'Portal ID',
@@ -91,6 +94,14 @@ class Post extends LayoutOwner
     public function getPostCategory()
     {
         return $this->hasOne(PostCategory::className(), ['id' => 'post_category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPostType()
+    {
+        return $this->hasOne(PostType::className(), ['id' => 'post_type_id']);
     }
 
     public function getTags()

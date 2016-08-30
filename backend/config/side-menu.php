@@ -8,6 +8,7 @@ return [
         'children' => [
             ['title' => 'Články', 'controller' => 'post', 'action' => 'index'],
             ['title' => 'Kategórie', 'controller' => 'post-category', 'action' => 'index'],
+            ['title' => 'Typy', 'controller' => 'post-type', 'action' => 'index'],
             ['title' => 'Tagy', 'controller' => 'post-tag', 'action' => 'index'],
         ],
     ],

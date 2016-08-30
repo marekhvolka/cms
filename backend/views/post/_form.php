@@ -5,6 +5,7 @@ use backend\components\LayoutWidget\LayoutWidget;
 use backend\components\MultipleSwitch\MultipleSwitchWidget;
 use backend\models\PostCategory;
 use backend\models\PostTag;
+use backend\models\PostType;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
@@ -68,6 +69,15 @@ use yii\widgets\ActiveForm;
                 'data' => ArrayHelper::map(PostCategory::find()->all(), 'id', 'name'),
                 'language' => 'en',
                 'options' => ['placeholder' => 'Výber kategórie ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
+            <?= $form->field($model, 'post_type_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(PostType::find()->all(), 'id', 'name'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber typu ...'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],

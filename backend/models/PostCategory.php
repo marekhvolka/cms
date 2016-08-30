@@ -41,8 +41,8 @@ class PostCategory extends CustomModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'identifier' => 'Identifier',
+            'name' => 'Názov',
+            'identifier' => 'Identifikátor',
         ];
     }
 }

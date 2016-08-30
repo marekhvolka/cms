@@ -275,16 +275,6 @@ use yii\helpers\Html;
                 <span>
                 Počet položiek: <span class="list-items-count"><?= sizeof($snippetVarValue->listItems) ?></span>
             </span>
-                <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-                   data-prefix="<?= $prefix ?>"
-                   data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                   data-parent-id="<?= $parentId ?>"
-                   data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-                   data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                   data-portal-id="<?= $portal ? $portal->id : '' ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
-
                 <div class="dropdown inline-button add-list-item-dropdown pull-right"
                      data-prefix="<?= $prefix ?>"
                      data-parent-var-id="<?= $snippetVarValue->var_id ?>"
