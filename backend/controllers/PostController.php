@@ -107,6 +107,8 @@ class PostController extends BaseController
                 $this->saveLayout($model->sidebar);
                 $this->saveLayout($model->content);
 
+                $model->updateTags();
+
                 $transaction->commit();
 
                 $model->resetAfterUpdate();

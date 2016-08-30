@@ -5,6 +5,7 @@ namespace backend\models;
 use common\models\User;
 use Exception;
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "post".
@@ -106,8 +107,8 @@ class Post extends LayoutOwner
 
     public function getTags()
     {
-        return $this->hasMany(PostTag::className(), ['id' => 'post_id'])
-            ->viaTable('post_post_tag', ['post_tag_id' => 'id']);
+        return $this->hasMany(PostTag::className(), ['id' => 'post_tag_id'])
+            ->viaTable('post_post_tag', ['post_id' => 'id']);
     }
 
     public function getSnippetVarValues()
@@ -214,5 +215,38 @@ class Post extends LayoutOwner
     public function isOutdated()
     {
         return $this->outdated || $this->portal->outdated;
+    }
+
+    public function updateTags()
+    {
+        $productId = $this->id;
+        $tags = Yii::$app->request->post(Post::className());
+
+        $tags = isset($tags['_tags']) ? $tags['_tags'] : [];
+
+        $saved_tags = $this->getTags()->select('id')->asArray()->column();
+
+        $to_remove = array_filter($saved_tags, function ($item) use ($tags) {
+            return !in_array($item, $tags);
+        });
+
+        $to_add = array_map(function ($id) use ($productId) {
+            return [
+                'post_id' => $productId,
+                'post_tag_id' => $id,
+            ];
+        }, array_filter($tags, function ($item) use ($saved_tags) {
+            return !in_array($item, $saved_tags);
+        }));
+
+        if (count($to_remove) > 0) {
+            (new Query())->createCommand()->delete('post_post_tag',
+                ['post_id' => $this->id, 'post_tag_id' => $to_remove])->execute();
+        }
+
+        if (count($to_add) > 0) {
+            (new Query())->createCommand()->batchInsert('post_post_tag', ['post_id', 'post_tag_id'],
+                $to_add)->execute();
+        }
     }
 }

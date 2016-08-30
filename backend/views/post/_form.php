@@ -3,6 +3,7 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\components\MultipleSwitch\MultipleSwitchWidget;
+use backend\models\Post;
 use backend\models\PostCategory;
 use backend\models\PostTag;
 use backend\models\PostType;
@@ -123,7 +124,7 @@ use yii\widgets\ActiveForm;
                     Tagy pre článok
                 </label>
                 <?= Select2::widget([
-                    'name' => '[tags]',
+                    'name' => Post::className() . '[_tags]',
                     'value' => array_map(function ($item) {
                         return $item->id;
                     }, $model->tags),

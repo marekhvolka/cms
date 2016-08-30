@@ -559,4 +559,11 @@ class Portal extends CustomModel implements ICacheable
             Yii::$app->dataEngine->compileThanksFileForPortal($thanksCommonDirectory . $file, $file, $this);
         }
     }
+
+    public function generateSitemap()
+    {
+        $path = $this->getMainDirectory() . 'sitemap.xml';
+
+        
+    }
 }
