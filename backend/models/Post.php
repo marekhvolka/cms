@@ -187,6 +187,9 @@ class Post extends LayoutOwner
     {
         $this->setOutdated();
 
+        if ($this->isHeadChanged())
+            $this->portal->generateSitemap();
+
         if ($this->isChanged() && $this->isHeadChanged()) {
             foreach ($this->snippetVarValues as $snippetVarValue) {
                 $snippetVarValue->resetAfterUpdate();

@@ -564,6 +564,24 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'sitemap.xml';
 
+        $buffer = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . PHP_EOL;
+
+        foreach ($this->pages as $page) {
+            $buffer .= '<url>' . PHP_EOL;
+            $buffer .= '<loc>http://www.' . $page->portal->domain . $page->getUrl() . '</loc>' . PHP_EOL;
+            $buffer .= '</url>' . PHP_EOL;
+        }
+
+        foreach ($this->posts as $post) {
+            $buffer .= '<url>' . PHP_EOL;
+            $buffer .= '<loc>http://www.' . $post->portal->domain . $post->getUrl() . '</loc>' . PHP_EOL;
+            $buffer .= '</url>' . PHP_EOL;
+        }
+
+        $buffer .= '</urlset>';
         
+        Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
     }
 }

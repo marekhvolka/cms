@@ -265,6 +265,9 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
     {
         $this->setOutdated();
 
+        if ($this->isHeadChanged())
+            $this->portal->generateSitemap();
+
         if ($this->isChanged() && $this->isHeadChanged()) {
             foreach ($this->pages as $page) {
                 $page->resetAfterUpdate();
