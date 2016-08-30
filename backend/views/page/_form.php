@@ -90,6 +90,10 @@ if ($model->portal) {
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
+
+            <?= $form->field($model, 'in_sitemap')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
         </div>
         <div class="tab-pane" id="tab_seo_settings">
             <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>

@@ -24,6 +24,7 @@ use yii\base\Exception;
  * @property string $breadcrumbs
  * @property bool $outdated
  * @property bool $head_outdated
+ * @property bool $in_sitemap
  *
  * @property User $lastEditUser
  * @property Page $parent
@@ -60,6 +61,7 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
                     'portal_id',
                     'active',
                     'sidebar_side',
+                    'in_sitemap'
                 ],
                 'required'
             ],
@@ -69,7 +71,8 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
                     'active',
                     'parent_id',
                     'product_id',
-                    'last_edit_user'
+                    'last_edit_user',
+                    'in_sitemap'
                 ],
                 'integer'
             ],
@@ -105,7 +108,8 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
             'keywords' => 'Kľúčové slová',
             'sidebar_side' => 'Pozícia sidebaru',
             'last_edit' => 'Posledná zmena',
-            'last_edit_user' => 'Naposledy editoval'
+            'last_edit_user' => 'Naposledy editoval',
+            'in_sitemap' => 'V sitemape'
         ];
     }
 
@@ -291,6 +295,10 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
             return true;
         }
         if ($this->myOldAttributes['product_id'] != $this->product_id) {
+            return true;
+        }
+
+        if ($this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
             return true;
         }
 

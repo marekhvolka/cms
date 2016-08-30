@@ -24,6 +24,7 @@ use yii\db\Query;
  * @property integer $active
  * @property integer $post_category_id
  * @property integer $post_type_id
+ * @property bool $in_sitemap
  *
  * @property Area[] $areas
  * @property User $lastEditUser
@@ -50,8 +51,8 @@ class Post extends LayoutOwner
     public function rules()
     {
         return [
-            [['name', 'identifier', 'portal_id', 'post_category_id', 'post_type_id'], 'required'],
-            [['portal_id', 'last_edit_user', 'active', 'post_category_id', 'post_type_id'], 'integer'],
+            [['name', 'identifier', 'portal_id', 'post_category_id', 'post_type_id', 'in_sitemap'], 'required'],
+            [['portal_id', 'last_edit_user', 'active', 'post_category_id', 'post_type_id', 'in_sitemap'], 'integer'],
             [['published_at', 'last_edit'], 'safe'],
             [['perex', 'image', 'description', 'keywords'], 'string'],
             [['name', 'identifier', 'title'], 'string', 'max' => 255],
@@ -81,6 +82,7 @@ class Post extends LayoutOwner
             'last_edit' => 'Last Edit',
             'last_edit_user' => 'Last Edit User',
             'active' => 'Aktívny',
+            'in_sitemap' => 'V sitemape'
         ];
     }
 
@@ -206,6 +208,10 @@ class Post extends LayoutOwner
             return true;
         }
         if ($this->myOldAttributes['identifier'] != $this->identifier) {
+            return true;
+        }
+
+        if ($this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
             return true;
         }
 

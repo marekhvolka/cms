@@ -22,8 +22,7 @@ use yii\widgets\ActiveForm;
 
 <script>
     $(document).ready(
-        function ()
-        {
+        function () {
             initializeMultimediaBtn();
         }
     )
@@ -92,8 +91,7 @@ use yii\widgets\ActiveForm;
 
                 <script type="text/javascript">
                     $(document).ready(
-                        function ()
-                        {
+                        function () {
                             CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
                             CKEDITOR.dtd.$removeEmpty['i'] = false;
                         }
@@ -103,17 +101,20 @@ use yii\widgets\ActiveForm;
             </div>
             <div class="form-group">
                 <label>Náhľadový obrázok</label>
-            <div class="input-group">
-                <input type="text" class="form-control value" name="Post[image]"
-                       value="<?= $model->image ?>"/>
+                <div class="input-group">
+                    <input type="text" class="form-control value" name="Post[image]"
+                           value="<?= $model->image ?>"/>
                         <span class="input-group-btn">
                         <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
                             ['class' => 'pull-right open-multimedia btn btn-success']) ?>
                         </span>
-            </div>
-
                 </div>
+            </div>
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+
+            <?= $form->field($model, 'in_sitemap')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
         </div>
