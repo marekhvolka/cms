@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 
 /* @var $pageAreas */
+/* @var $postAreas */
 /* @var $portalAreas */
 /* @var $products */
 /* @var $portals */
@@ -13,6 +14,16 @@ use yii\helpers\Url;
         <?php foreach ($pageAreas as $area) : ?>
             <li>
                 <a href="<?= Url::to(['/page/edit', 'id' => $area[2]->id]) ?>#block-<?= $area[1]->id ?>"><?= $area[2]->breadcrumbs ?> (<?= $area[0]->type ?>) - <?= $area[2]->portal->name ?></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+<?php if (count($postAreas)) : ?>
+    <h2>Články</h2>
+    <ul>
+        <?php foreach ($postAreas as $area) : ?>
+            <li>
+                <a href="<?= Url::to(['/post/edit', 'id' => $area[2]->id]) ?>#block-<?= $area[1]->id ?>"><?= $area[2]->name ?> (<?= $area[0]->type ?>) - <?= $area[2]->portal->name ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
