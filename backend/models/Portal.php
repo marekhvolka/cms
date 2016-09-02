@@ -331,19 +331,13 @@ class Portal extends CustomModel implements ICacheable
 
                 $buffer = '<?php ' . PHP_EOL;
 
-                $buffer .= '$tempObject = (object) array(' . PHP_EOL;
-
-                $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
-                $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
-                $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
-                $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
-                $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
-                $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
-                $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
-
-                $buffer .= ');' . PHP_EOL;
-
-                $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+                $buffer .= '$portal->id = ' . $this->id . ';' . PHP_EOL;
+                $buffer .= '$portal->domain = \'' . $dataEngine->normalizeString($this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->url = \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->name = \'' . $dataEngine->normalizeString($this->name) . '\';' . PHP_EOL;
+                $buffer .= '$portal->lang = \'' . $dataEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
+                $buffer .= '$portal->template = \'' . $this->template->getMainDirectory(true) . '\';' . PHP_EOL;
+                $buffer .= '$portal->color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
 
                 $buffer .= '/* Portal vars */' . PHP_EOL;
 
@@ -451,9 +445,13 @@ class Portal extends CustomModel implements ICacheable
             try {
                 $buffer = '<?php' . PHP_EOL;
 
-                $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
+                $buffer .= '$tempObject = (object) array();' . PHP_EOL;
+
+                $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+
                 $buffer .= 'include("' . $this->getPortalPagesFile() . '");' . PHP_EOL;
                 $buffer .= 'include("' . $this->getPortalPostsFile() .'");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
 
                 $buffer .= '?>';
 
