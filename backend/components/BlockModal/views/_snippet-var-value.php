@@ -265,7 +265,7 @@ use yii\helpers\Html;
             </script>
             <div class="clearfix"></div>
         </div>
-    <?php elseif (!isset($parentId)) : ?>
+    <?php elseif (!isset($parentId) || empty($parentId)) : ?>
         <div class="panel panel-collapsable panel-container list-panel">
             <?= Html::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
             <div class="panel-heading">
