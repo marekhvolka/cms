@@ -106,6 +106,17 @@ class Product extends CustomModel implements ICacheable, IDuplicable
 
     #region GETTERS & SETTERS
 
+    public function isOutdated()
+    {
+        if ($this->outdated)
+            return true;
+
+        if ($this->parent)
+            return $this->parent->isOutdated();
+
+        return false;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

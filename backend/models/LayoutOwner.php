@@ -154,7 +154,7 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
                 $prefix = $this->getIncludePrefix();
 
                 if ($this->className() == Page::className()) {
-                    if (($this->product && $this->product->outdated) || $this->portal->outdated ||
+                    if (($this->product && $this->product->isOutdated()) || $this->portal->outdated ||
                         ($this->parent && $this->parent->head_outdated) || $reload
                     ) {
                         $hardReload = true;

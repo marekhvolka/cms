@@ -96,6 +96,8 @@ body.on('click', '.btn-block-modal', function () {
                 $('[data-toggle="tooltip"]').tooltip()
             });
 
+            $("input[data-check='switch']").bootstrapSwitch();
+
             rescanForms();
         });
     }
