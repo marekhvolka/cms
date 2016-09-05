@@ -9,6 +9,9 @@
 
 namespace backend\components\LayoutWidget;
 
+use kartik\sortable\SortableAsset;
+use yii\jui\Sortable;
+
 class AssetBundle extends \yii\web\AssetBundle
 {
     // Disables assets caching.

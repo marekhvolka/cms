@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property bool $outdated
- * @property bool $blog_active
  * @property int $blog_main_page_id
  *
  * @property string $templatePath
@@ -82,7 +81,6 @@ class Portal extends CustomModel implements ICacheable
             'template_id' => 'Šablóna',
             'color_scheme' => 'Farebná schéma',
             'active' => 'Aktívny',
-            'blog_active' => 'Blog aktívny',
             'blog_main_page_id' => 'Hlavná podstránka blogu (url)'
         ];
     }
