@@ -145,7 +145,7 @@ class SiteController extends Controller
         }
 
         if (isset($requestedPage)) {
-            $reload = $requestedPage->isOutdated() && !Yii::$app->user->isGuest;;
+            $reload = $requestedPage->isOutdated() && !Yii::$app->user->isGuest;
             $path = $requestedPage->getMainCacheFile($reload);
         }
 
@@ -155,7 +155,7 @@ class SiteController extends Controller
             ob_start();
             include $path;
             $html = ob_get_contents();
-            if (!Yii::$app->user->getIsGuest()) {
+            if (!Yii::$app->user->isGuest) {
                 $html = str_replace('</head>',
                     '<link rel="stylesheet" href="' . Url::to(['css/top-bar.css']) . '"></head>', $html);
                 $html = str_replace('<body>',

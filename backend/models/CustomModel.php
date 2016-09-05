@@ -129,7 +129,7 @@ class CustomModel extends ActiveRecord
 
         $systemException->save();
 
-        if (Yii::$app->user->identity->portal) {
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->portal) {
             throw $exception;
         }
     }
