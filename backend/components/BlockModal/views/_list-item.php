@@ -15,8 +15,8 @@ use yii\helpers\Html;
 <div class="panel panel-collapsable panel-item list-item">
     <?= Html::hiddenInput($prefix . "[removed]", $listItem->removed, ['class' => 'removed']); ?>
     <div class="panel-heading">
-        <span>
-            <i class="glyphicon glyphicon-chevron-up collapse-btn"></i>
+        <span class="collapse-btn">
+            <i class="glyphicon glyphicon-chevron-up"></i>
         </span>
         <span class="">
             <i class="fa fa-bars list-item-drag-by"></i>
