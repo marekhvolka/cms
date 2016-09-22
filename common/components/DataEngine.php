@@ -76,7 +76,7 @@ class DataEngine extends Component
             $buffer .= '$bootstrap_css = "/css/bootstrap.min.css";' . PHP_EOL;
             $buffer .= '$bootstrap_js = "/js/bootstrap.min.js";' . PHP_EOL;
             $buffer .= '$jquery = "//code.jquery.com/jquery-1.10.2.min.js";' . PHP_EOL;
-            $buffer .= '$font_awesome = "/fonts/font-awesome-4.3.0/css/font-awesome.min.css";' . PHP_EOL;
+            $buffer .= '$font_awesome = "/fonts/font-awesome-4.6.3/css/font-awesome.min.css";' . PHP_EOL;
 
             $buffer .= '?>' . PHP_EOL;
 

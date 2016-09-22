@@ -19,7 +19,7 @@ $(document).ready(
                                                                                   // musime odkryt aj tab, v ktorom sa nachadza
             if (typeof parentTabPane != 'undefined') {
                 parentTabPane.show();
-                $('.nav-tabs a[href="' + parentTabPane.attr('id') + '"]').parent().addClass('active');
+                $('.nav-tabs a[href="#' + parentTabPane.attr('id') + '"]').parent().addClass('active');
 
                 bookmarkedElement.parent().scrollTop = 0;
             }
@@ -30,6 +30,13 @@ $(document).ready(
                 $(this).parents('.panel').first().find('.panel-body').first().collapse('toggle');
             }
         );
+
+        $(".nav-tabs a").click(function() { //skryvanie a odkryvanie po kliknuti
+            $( "div[id^='tab']").hide(); //skryjeme vsetky taby
+
+            var targetId = $(this).attr('href');
+            $(targetId).show();
+        });
     }
 );
 

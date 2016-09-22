@@ -269,6 +269,9 @@ use yii\helpers\Html;
         <div class="panel panel-collapsable panel-container list-panel">
             <?= Html::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
             <div class="panel-heading">
+            <span class="collapse-btn">
+                <i class="glyphicon glyphicon-chevron-up"></i>
+            </span>
             <span>
                 <?= $snippetVarValue->var->identifier ?>
             </span>
