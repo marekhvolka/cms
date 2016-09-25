@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs custom-tabs">
         <li role="presentation" class="tab-label active">
             <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
         </li>
@@ -47,7 +47,7 @@ use yii\widgets\ActiveForm;
         </li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content custom-tab-content">
         <div class="tab-pane fade in active" id="tab_basic_settings">
 
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
