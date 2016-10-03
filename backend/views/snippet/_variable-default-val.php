@@ -43,7 +43,7 @@ use yii\helpers\ArrayHelper;
                 'class' => 'form-control',
                 'name' => $prefix . "[value_text]",
             ]); ?>
-            <?php if ($defaultValue->productType || $forProductType) : ?>
+            <?php if (($defaultValue->productType || $defaultValue->partnershipType) || $forProductType) : ?>
                 <button type="button" class="btn-remove-snippet-default-value btn btn-danger btn-xs pull-right">
                     <i class="glyphicon glyphicon-minus"></i>
                 </button>
