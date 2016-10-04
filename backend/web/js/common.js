@@ -5,13 +5,13 @@ $(document).ready(
         var url = document.location.toString();
         if (url.match('#')) {
             $('.custom-tabs .tab-label').removeClass('active'); //zrusime aktualny tab
-            $('.custom-tab-content .tab-pane').hide();
+            $('.custom-tab-content > .tab-pane').hide();
 
             var bookmarkId = url.split('#')[1];
 
             $('.custom-tabs a[href="#' + bookmarkId + '"]').parent().addClass('active'); //ak sa najde tab s danou kotvou, tak ho
                                                                                       // dame ako aktivny
-            $('.custom-tab-content .tab-pane#' + bookmarkId).show();
+            $('.custom-tab-content > .tab-pane#' + bookmarkId).show();
 
             var bookmarkedElement = $('#' + bookmarkId).first();
 
@@ -32,7 +32,7 @@ $(document).ready(
         );
 
         $(".custom-tabs a").click(function() { //skryvanie a odkryvanie po kliknuti
-            $( ".custom-tab-content div[id^='tab']").hide(); //skryjeme vsetky taby
+            $( ".custom-tab-content > div[id^='tab']").hide(); //skryjeme vsetky taby
 
             var targetId = $(this).attr('href');
             $(targetId).show();
