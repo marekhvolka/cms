@@ -264,6 +264,8 @@ class Area extends CustomModel implements IDuplicable
             }
         } else if ($this->page) {
             $this->page->setOutdated();
+        } else if ($this->post) {
+            $this->post->setOutdated();
         }
     }
 

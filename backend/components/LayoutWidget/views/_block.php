@@ -24,13 +24,24 @@ if (!isset($renderModal)) {
         <span class="glyphicon glyphicon-globe"></span>
     </button>
 
-    <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal block-drag-by"
+    <?php $buttonClass = 'btn-default';
+        $buttonIcon = '';
+    if ($model->type == 'portal_snippet') {
+        $buttonClass = 'btn-primary';
+        $buttonIcon = '<i class="fa fa-home"></i>';
+    } else if ($model->type == 'product_snippet') {
+        $buttonClass = 'btn-primary';
+        $buttonIcon = '<i class="fa fa-shopping-cart"></i>';
+    }
+    ?>
+
+    <button type="button" class="btn <?= $buttonClass ?> btn-sm text-content-btn btn-block-modal block-drag-by"
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
             data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
             data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
             data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
-        <?php echo $model->name; ?>
+        <?php echo $buttonIcon . ' ' . $model->name; ?>
     </button>
 
     <?php if (($model->type == 'snippet') && $model->snippetCode) : ?>

@@ -2,7 +2,7 @@
 use backend\models\Page;
 use yii\bootstrap\Html;
 
-/** @var $requestedPage Page */
+/** @var $requestedPage \backend\models\LayoutOwner */
 ?>
 
 <div class="cms-top-bar">
@@ -15,6 +15,7 @@ use yii\bootstrap\Html;
     </select>
 
     <div class="pull-right">
+        <?php if ($requestedPage->isPage()) : ?>
         <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $requestedPage->id, [
             'target' => '_blank'
         ]) ?>
@@ -22,7 +23,11 @@ use yii\bootstrap\Html;
             Html::a('Upraviť produkt', '/backend/web/product/edit/' . $requestedPage->product->id, [
                 'target' => '_blank'
             ]) : '' ?>
-
+        <?php elseif ($requestedPage->isPost()) : ?>
+        <?= Html::a('Upraviť článok', '/backend/web/post/edit/' . $requestedPage->id, [
+            'target' => '_blank'
+        ]) ?>
+        <?php endif; ?>
         Prihlásený ako <?= Yii::$app->user->getIdentity()->username ?>.
     </div>
 </div>

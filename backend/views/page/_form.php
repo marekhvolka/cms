@@ -44,7 +44,7 @@ if ($model->portal) {
         //'options' => ['data-pjax' => true]
     ]); ?>
 
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs custom-tabs">
         <li role="presentation" class="tab-label active">
             <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
         </li>
@@ -56,7 +56,7 @@ if ($model->portal) {
         </li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content custom-tab-content">
         <div class="tab-pane fade in active" id="tab_basic_settings">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -88,6 +88,10 @@ if ($model->portal) {
             ]); ?>
 
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+
+            <?= $form->field($model, 'in_sitemap')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
         </div>

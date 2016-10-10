@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property bool $outdated
- * @property bool $blog_active
  * @property int $blog_main_page_id
  *
  * @property string $templatePath
@@ -82,7 +81,6 @@ class Portal extends CustomModel implements ICacheable
             'template_id' => 'Šablóna',
             'color_scheme' => 'Farebná schéma',
             'active' => 'Aktívny',
-            'blog_active' => 'Blog aktívny',
             'blog_main_page_id' => 'Hlavná podstránka blogu (url)'
         ];
     }
@@ -331,19 +329,13 @@ class Portal extends CustomModel implements ICacheable
 
                 $buffer = '<?php ' . PHP_EOL;
 
-                $buffer .= '$tempObject = (object) array(' . PHP_EOL;
-
-                $buffer .= '\'id\' => ' . $this->id . ',' . PHP_EOL;
-                $buffer .= '\'domain\' => \'' . $dataEngine->normalizeString($this->domain) . '\',' . PHP_EOL;
-                $buffer .= '\'url\' => \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\',' . PHP_EOL;
-                $buffer .= '\'name\' => \'' . $dataEngine->normalizeString($this->name) . '\',' . PHP_EOL;
-                $buffer .= '\'lang\' => \'' . $dataEngine->normalizeString($this->language->identifier) . '\',' . PHP_EOL;
-                $buffer .= '\'template\' => \'' . $this->template->getMainDirectory(true) . '\',' . PHP_EOL;
-                $buffer .= '\'color_scheme\' => \'' . $this->getColorSchemePath() . '\',' . PHP_EOL;
-
-                $buffer .= ');' . PHP_EOL;
-
-                $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+                $buffer .= '$portal->id = ' . $this->id . ';' . PHP_EOL;
+                $buffer .= '$portal->domain = \'' . $dataEngine->normalizeString($this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->url = \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->name = \'' . $dataEngine->normalizeString($this->name) . '\';' . PHP_EOL;
+                $buffer .= '$portal->lang = \'' . $dataEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
+                $buffer .= '$portal->template = \'' . $this->template->getMainDirectory(true) . '\';' . PHP_EOL;
+                $buffer .= '$portal->color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
 
                 $buffer .= '/* Portal vars */' . PHP_EOL;
 
@@ -451,9 +443,13 @@ class Portal extends CustomModel implements ICacheable
             try {
                 $buffer = '<?php' . PHP_EOL;
 
-                $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
+                $buffer .= '$tempObject = (object) array();' . PHP_EOL;
+
+                $buffer .= '$portal = new ObjectBridge($tempObject, \'' . $this->domain . '\');' . PHP_EOL;
+
                 $buffer .= 'include("' . $this->getPortalPagesFile() . '");' . PHP_EOL;
                 $buffer .= 'include("' . $this->getPortalPostsFile() .'");' . PHP_EOL;
+                $buffer .= 'include("' . $this->getPortalVarsFile($reload) . '");' . PHP_EOL;
 
                 $buffer .= '?>';
 
@@ -558,5 +554,34 @@ class Portal extends CustomModel implements ICacheable
         foreach ($files as $file) {
             Yii::$app->dataEngine->compileThanksFileForPortal($thanksCommonDirectory . $file, $file, $this);
         }
+    }
+
+    public function generateSitemap()
+    {
+        $path = $this->getMainDirectory() . 'sitemap.xml';
+
+        $buffer = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . PHP_EOL;
+
+        foreach ($this->pages as $page) {
+            if ($page->in_sitemap) {
+                $buffer .= '<url>' . PHP_EOL;
+                $buffer .= '<loc>http://www.' . $page->portal->domain . $page->getUrl() . '</loc>' . PHP_EOL;
+                $buffer .= '</url>' . PHP_EOL;
+            }
+        }
+
+        foreach ($this->posts as $post) {
+            if ($post->in_sitemap) {
+                $buffer .= '<url>' . PHP_EOL;
+                $buffer .= '<loc>http://www.' . $post->portal->domain . $post->getUrl() . '</loc>' . PHP_EOL;
+                $buffer .= '</url>' . PHP_EOL;
+            }
+        }
+
+        $buffer .= '</urlset>';
+        
+        Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
     }
 }

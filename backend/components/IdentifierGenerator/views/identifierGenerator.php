@@ -27,6 +27,7 @@ function generate(input, delimiter)
 {
     var output = input.trim(); //odstranenie medzier na zaciatku a konci
     output = output.replace(/\.$/, "");
+    output = output.replace(/ - /g,"-");
 
     output = output.replace(/[ .]/g, delimiter, output); //nahradenie medzier
 

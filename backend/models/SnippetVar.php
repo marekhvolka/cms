@@ -212,6 +212,16 @@ class SnippetVar extends Variable
                     ])
                     ->one();
             }
+
+            if (!isset($defaultValue)) {
+                $defaultValue = SnippetVarDefaultValue::find()
+                    ->andWhere([
+                        'snippet_var_id' => $this->id,
+                        'product_type_id' => null,
+                        'partnership_type_id' => $product->partnership_type_id
+                    ])
+                    ->one();
+            }
         }
         if (!isset($defaultValue)) {
             $defaultValue = SnippetVarDefaultValue::find()

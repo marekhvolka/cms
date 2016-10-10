@@ -29,6 +29,7 @@ class AppAsset extends AssetBundle
         'js/global-search.js',
         'js/are-you-sure.js',
         'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js',
+        '//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js',
         'js/common.js',
     ];
 

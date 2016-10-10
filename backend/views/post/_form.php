@@ -3,8 +3,10 @@
 use backend\components\IdentifierGenerator\IdentifierGenerator;
 use backend\components\LayoutWidget\LayoutWidget;
 use backend\components\MultipleSwitch\MultipleSwitchWidget;
+use backend\models\Post;
 use backend\models\PostCategory;
 use backend\models\PostTag;
+use backend\models\PostType;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\ArrayHelper;
@@ -20,8 +22,7 @@ use yii\widgets\ActiveForm;
 
 <script>
     $(document).ready(
-        function ()
-        {
+        function () {
             initializeMultimediaBtn();
         }
     )
@@ -31,7 +32,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs custom-tabs">
         <li role="presentation" class="tab-label active">
             <a href="#tab_basic_settings" data-toggle="tab">Základné nastavenia</a>
         </li>
@@ -46,7 +47,7 @@ use yii\widgets\ActiveForm;
         </li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content custom-tab-content">
         <div class="tab-pane fade in active" id="tab_basic_settings">
 
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
@@ -73,6 +74,15 @@ use yii\widgets\ActiveForm;
                 ],
             ]); ?>
 
+            <?= $form->field($model, 'post_type_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(PostType::find()->all(), 'id', 'name'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Výber typu ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+
             <div class="form-group">
                 <?php $id = rand(1000, 100000); ?>
 
@@ -81,8 +91,7 @@ use yii\widgets\ActiveForm;
 
                 <script type="text/javascript">
                     $(document).ready(
-                        function ()
-                        {
+                        function () {
                             CKEDITOR.replace("ckeditor<?= $id ?>", ckeditorConfig);
                             CKEDITOR.dtd.$removeEmpty['i'] = false;
                         }
@@ -90,16 +99,22 @@ use yii\widgets\ActiveForm;
                 </script>
 
             </div>
-            <div class="input-group">
-                <input type="text" class="form-control value" name="Post[image]"
-                       value="<?= $model->image ?>"/>
+            <div class="form-group">
+                <label>Náhľadový obrázok</label>
+                <div class="input-group">
+                    <input type="text" class="form-control value" name="Post[image]"
+                           value="<?= $model->image ?>"/>
                         <span class="input-group-btn">
                         <?= Html::a('<span class="fa fa-fw fa-picture-o"></span>', "#",
                             ['class' => 'pull-right open-multimedia btn btn-success']) ?>
                         </span>
+                </div>
             </div>
-
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
+
+            <?= $form->field($model, 'in_sitemap')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
         </div>
@@ -110,7 +125,7 @@ use yii\widgets\ActiveForm;
                     Tagy pre článok
                 </label>
                 <?= Select2::widget([
-                    'name' => '[tags]',
+                    'name' => Post::className() . '[_tags]',
                     'value' => array_map(function ($item) {
                         return $item->id;
                     }, $model->tags),

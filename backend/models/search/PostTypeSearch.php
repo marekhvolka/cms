@@ -5,12 +5,12 @@ namespace backend\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Post;
+use backend\models\PostType;
 
 /**
- * PostSearch represents the model behind the search form about `backend\models\Post`.
+ * PostTypeSearch represents the model behind the search form about `backend\models\PostType`.
  */
-class PostSearch extends Post
+class PostTypeSearch extends PostType
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PostSearch extends Post
     public function rules()
     {
         return [
-            [['id', 'portal_id', 'last_edit_user', 'active'], 'integer'],
-            [['name', 'identifier', 'published_at', 'perex', 'last_edit'], 'safe'],
+            [['id'], 'integer'],
+            [['name', 'identifier'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-        $query = Post::find();
+        $query = PostType::find();
 
         // add conditions that should always apply here
 
@@ -50,8 +50,6 @@ class PostSearch extends Post
         ]);
 
         $this->load($params);
-
-        $query->where(['portal_id' => Yii::$app->user->identity->portal_id]);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -62,18 +60,10 @@ class PostSearch extends Post
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'portal_id' => $this->portal_id,
-            'published_at' => $this->published_at,
-            'last_edit' => $this->last_edit,
-            'last_edit_user' => $this->last_edit_user,
-            'active' => $this->active,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'identifier', $this->identifier])
-            ->andFilterWhere(['like', 'perex', $this->perex]);
-
-        $query->orderBy('published_at DESC');
+            ->andFilterWhere(['like', 'identifier', $this->identifier]);
 
         return $dataProvider;
     }

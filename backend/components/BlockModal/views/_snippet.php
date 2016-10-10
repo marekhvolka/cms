@@ -91,6 +91,8 @@ use yii\helpers\Url;
                     [
                         'name' => $prefix . '[parent_id]',
                         'class' => 'parent-dropdown form-control',
+                        'data-layout-owner-id' => $layoutOwner ? $layoutOwner->id : '',
+                        'data-layout-owner-type' => $layoutOwner ? $layoutOwner->getType() : '',
                         'data-prefix' => $prefix,
                         'data-type' => $model->type,
                         'prompt' => 'Vyber portálový snippet',

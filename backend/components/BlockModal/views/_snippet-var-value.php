@@ -166,8 +166,8 @@ use yii\helpers\Html;
                     case 'post' : ?>
 
                         <?= Html::activeDropDownList($snippetVarValue, 'value_post_id',
-                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->pages : $portal->pages, 'id',
-                                'breadcrumbs'),
+                            ArrayHelper::map($layoutOwner ? $layoutOwner->portal->posts : $portal->posts, 'id',
+                                'name'),
                             [
                                 'name' => $prefix . '[value_post_id]',
                                 'class' => 'form-control activate-select2',
@@ -265,24 +265,36 @@ use yii\helpers\Html;
             </script>
             <div class="clearfix"></div>
         </div>
-    <?php elseif (!isset($parentId)) : ?>
+    <?php elseif (!isset($parentId) || empty($parentId)) : ?>
         <div class="panel panel-collapsable panel-container list-panel">
             <?= Html::hiddenInput($prefix . "[var_id]", $snippetVarValue->var_id, ['class' => 'var_id']); ?>
             <div class="panel-heading">
+            <span class="collapse-btn">
+                <i class="glyphicon glyphicon-chevron-up"></i>
+            </span>
             <span>
                 <?= $snippetVarValue->var->identifier ?>
             </span>
                 <span>
                 Počet položiek: <span class="list-items-count"><?= sizeof($snippetVarValue->listItems) ?></span>
             </span>
-                <a class="btn btn-success btn-xs pull-right btn-add-list-item"
-                   data-prefix="<?= $prefix ?>" data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                   data-parent-id="<?= $parentId ?>"
-                   data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-                   data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                   data-portal-id="<?= $portal ? $portal->id : '' ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
+                <div class="dropdown inline-button add-list-item-dropdown pull-right"
+                     data-prefix="<?= $prefix ?>"
+                     data-parent-var-id="<?= $snippetVarValue->var_id ?>"
+                     data-parent-id="<?= $parentId ?>"
+                     data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+                     data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+                     data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                    <button type="button" class="btn btn-success dropdown-toggle btn-xs"
+                            title="Vložiť novú položku" data-toggle="dropdown" >
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="btn-add-list-item" data-position="begin">Na začiatok zoznamu</a></li>
+                        <li><a class="btn-add-list-item" data-position="middle">Do stredu zoznamu</a></li>
+                        <li><a class="btn-add-list-item" data-position="end">Na koniec zoznamu</a></li>
+                    </ul>
+                </div>
             </div>
 
             <div class="panel-body panel-collapse collapse in children-list list-items fixed-panel">

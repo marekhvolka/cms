@@ -222,6 +222,7 @@ class SnippetController extends BaseController
         } else {
             /** @var Block[] $blocks */
             $pageAreas = [];
+            $postAreas = [];
             $portalAreas = [];
             $portals = [];
             $products = [];
@@ -235,6 +236,8 @@ class SnippetController extends BaseController
                         $pageAreas[] = [$owner, $block, $owner->page];
                     } else if ($owner->portal) {
                         $portalAreas[] = [$owner, $block, $owner->portal];
+                    } else if ($owner->post) {
+                        $postAreas[] = [$owner, $block, $owner->post];
                     }
                 } else if ($owner instanceof Product) {
                     $products[] = [$owner, $block];
@@ -242,6 +245,7 @@ class SnippetController extends BaseController
             }
             return $this->renderPartial("_code-usage", [
                 'pageAreas' => $pageAreas,
+                'postAreas' => $postAreas,
                 'portalAreas' => $portalAreas,
                 'portals' => $portals,
                 'products' => $products

@@ -113,7 +113,7 @@ if (!isset($renderModal)) {
                         <?php if (Yii::$app->request->get('duplicate') || $renderModal) {
                             echo BlockModalWidget::widget([
                                 'block' => $varValue->valueBlock,
-                                'page' => null,
+                                'layoutOwner' => null,
                                 'portal' => $model->className() == Portal::className() ? $model : null,
                                 'prefix' => $prefix
                             ]);

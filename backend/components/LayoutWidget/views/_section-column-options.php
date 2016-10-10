@@ -15,20 +15,30 @@ use yii\bootstrap\Html;
                 <h4 class="modal-title" id="uploadFileModalLabel">Upraviť nastavenia sekcie</h4>
             </div>
             <div class="modal-body">
-                <table>
-                    <tr>
-                        <td><?= $model->getAttributeLabel('css_id') ?></td>
-                        <td><?= Html::input('text', $prefix . '[css_id]', $model->css_id) ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= $model->getAttributeLabel('css_style') ?></td>
-                        <td><?= Html::input('text', $prefix . '[css_style]', $model->css_style) ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= $model->getAttributeLabel('css_class') ?></td>
-                        <td><?= Html::input('text', $prefix . '[css_class]', $model->css_class) ?></td>
-                    </tr>
-                </table>
+                <div class="form-group">
+                    <label class="control-label">
+                        <?= $model->getAttributeLabel('css_id') ?>
+                    </label>
+                    <?= Html::input('text', $prefix . '[css_id]', $model->css_id, [
+                        'class' => 'form-control'
+                    ]) ?>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">
+                        <?= $model->getAttributeLabel('css_class') ?>
+                    </label>
+                    <?= Html::input('text', $prefix . '[css_class]', $model->css_class, [
+                        'class' => 'form-control'
+                    ]) ?>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">
+                        <?= $model->getAttributeLabel('css_style') ?>
+                    </label>
+                    <?= Html::textarea($prefix . '[css_style]', $model->css_style, [
+                        'class' => 'form-control'
+                    ]) ?>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>

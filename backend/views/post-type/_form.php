@@ -1,15 +1,14 @@
 <?php
 
-use backend\components\IdentifierGenerator\IdentifierGenerator;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\PostCategory */
+/* @var $model backend\models\PostType */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="post-category-form">
+<div class="post-type-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
@@ -35,4 +34,5 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
+
 </div>

@@ -37,7 +37,7 @@ class PostController extends BaseController
     public function actionIndex()
     {
         $searchModel = new PostSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, true);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -106,6 +106,8 @@ class PostController extends BaseController
                 $this->saveLayout($model->footer);
                 $this->saveLayout($model->sidebar);
                 $this->saveLayout($model->content);
+
+                $model->updateTags();
 
                 $transaction->commit();
 

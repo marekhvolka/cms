@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
     <div class="col-sm-12">
 
         <?= Html::hiddenInput($prefix . "[removed]", $defaultValue->removed, ['class' => 'removed']); ?>
-        <?php if ($defaultValue->productType || $forProductType) : ?>
+        <?php if (($defaultValue->productType || $defaultValue->partnershipType) || $forProductType) : ?>
             <div class="col-sm-3 column-without-padding">
                 <?= Html::activeDropDownList($defaultValue, "product_type_id", ArrayHelper::map(
                     ProductType::find()->all(), "id", "name"
@@ -38,12 +38,12 @@ use yii\helpers\ArrayHelper;
                 ?>
             </div>
         <?php endif; ?>
-        <div class="col-sm-<?= $defaultValue->productType || $forProductType ? '6' : '12' ?> column-without-padding">
+        <div class="col-sm-<?= ($defaultValue->productType || $defaultValue->partnershipType) || $forProductType ? '6' : '12' ?> column-without-padding">
             <?= Html::activeTextInput($defaultValue, "value_text", [
                 'class' => 'form-control',
                 'name' => $prefix . "[value_text]",
             ]); ?>
-            <?php if ($defaultValue->productType || $forProductType) : ?>
+            <?php if (($defaultValue->productType || $defaultValue->partnershipType) || $forProductType) : ?>
                 <button type="button" class="btn-remove-snippet-default-value btn btn-danger btn-xs pull-right">
                     <i class="glyphicon glyphicon-minus"></i>
                 </button>

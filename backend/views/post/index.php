@@ -28,7 +28,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($dataProvider->name, Url::to(['/post/edit/', 'id' => $dataProvider->id]));
                 },
             ],
-            'identifier',
+            [
+                'label' => 'Kategória',
+                'value' => 'postCategory.name'
+            ],
+            'published_at',
             [
                 'label' => 'Posledná zmena',
                 'value' => function ($dataProvider) {
