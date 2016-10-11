@@ -404,9 +404,11 @@ class Portal extends CustomModel implements ICacheable
 
                 $buffer .= '$portal->posts = (object) array();' . PHP_EOL;
 
-                foreach ($this->posts as $post) {
-                    $buffer .= 'include("' . $post->getVarCacheFile() . '");' . PHP_EOL;
-                    $buffer .= '$portal->posts->post' . $post->id . ' = ' . $post->cacheIdentifier . ';' . PHP_EOL;
+                if ($this->blogMainPage) {
+                    foreach ($this->posts as $post) {
+                        $buffer .= 'include("' . $post->getVarCacheFile() . '");' . PHP_EOL;
+                        $buffer .= '$portal->posts->post' . $post->id . ' = ' . $post->cacheIdentifier . ';' . PHP_EOL;
+                    }
                 }
 
                 $buffer .= '?>';
@@ -572,11 +574,13 @@ class Portal extends CustomModel implements ICacheable
             }
         }
 
-        foreach ($this->posts as $post) {
-            if ($post->in_sitemap) {
-                $buffer .= '<url>' . PHP_EOL;
-                $buffer .= '<loc>http://www.' . $post->portal->domain . $post->getUrl() . '</loc>' . PHP_EOL;
-                $buffer .= '</url>' . PHP_EOL;
+        if ($this->blogMainPage) {
+            foreach ($this->posts as $post) {
+                if ($post->in_sitemap) {
+                    $buffer .= '<url>' . PHP_EOL;
+                    $buffer .= '<loc>http://www.' . $post->portal->domain . $post->getUrl() . '</loc>' . PHP_EOL;
+                    $buffer .= '</url>' . PHP_EOL;
+                }
             }
         }
 
