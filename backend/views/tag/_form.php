@@ -31,7 +31,7 @@ use kartik\select2\Select2;
         'type' => SwitchInput::CHECKBOX
     ]) ?>
 
-    <label class="control-label" for="producttag-product_type">For Product Types</label>
+    <label class="control-label" for="producttag-product_type">Tag sa bude zobrazovať pre nasledujúce typy produktov</label>
     <?php
     $productTypes = ProductType::find()->all();
     $productTypesData = ArrayHelper::map($productTypes, 'id', 'name');

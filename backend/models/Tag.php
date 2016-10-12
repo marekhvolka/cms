@@ -12,6 +12,7 @@ use yii\db\Query;
  * @property integer $id
  * @property string $name
  * @property string $label
+ * @property integer $active
  * @property string $identifier
  * @property string $product_type
  * @property string $last_edit
@@ -38,7 +39,7 @@ class Tag extends CustomModel
     public function rules()
     {
         return [
-            [['name', 'label', 'identifier', 'product_type'], 'required'],
+            [['name', 'label', 'identifier'], 'required'],
             [['last_edit_user'], 'integer'],
             [['last_edit'], 'safe'],
             [['name', 'label', 'identifier'], 'string', 'max' => 50],
@@ -56,6 +57,7 @@ class Tag extends CustomModel
             'id' => 'ID',
             'name' => 'Systémový názov',
             'label' => 'Názov',
+            'active' => 'Aktívny',
             'identifier' => 'Identifikátor',
             'product_type' => 'Typy produktov',
             'last_edit' => 'Dátum poslednej zmeny',

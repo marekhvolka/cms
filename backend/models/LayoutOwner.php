@@ -45,7 +45,7 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
 
     public function init()
     {
-        $this->active = 1;
+        parent::init();
         $this->sidebar_side = 'right';
     }
 
