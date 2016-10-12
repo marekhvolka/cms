@@ -26,12 +26,17 @@ if (!isset($renderModal)) {
 
     <?php $buttonClass = 'btn-default';
         $buttonName = $model->name;
-    if ($model->type == 'portal_snippet') {
-        $buttonClass = 'btn-primary';
-        $buttonName = '<i class="fa fa-home"></i> ' . $model->parent->portalVarValue->var->name;
-    } else if ($model->type == 'product_snippet') {
-        $buttonClass = 'btn-primary';
-        $buttonName = '<i class="fa fa-shopping-cart"></i> ' . $model->parent->productVarValue->var->name;
+
+    if ($model->parent) {
+        if ($model->type == 'portal_snippet') {
+            $buttonClass = 'btn-primary';
+            $buttonName = '<i class="fa fa-home"></i> ' . $model->parent->portalVarValue->var->name;
+        } else if ($model->type == 'product_snippet') {
+            $buttonClass = 'btn-primary';
+            $buttonName = '<i class="fa fa-shopping-cart"></i> ' . $model->parent->productVarValue->var->name;
+        }
+    } else {
+        $buttonName = 'Neznámy snippet';
     }
     ?>
 

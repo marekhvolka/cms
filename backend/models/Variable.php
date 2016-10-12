@@ -90,13 +90,7 @@ abstract class Variable extends CustomModel
                 break;
 
             case 'page' :
-                $value = 'NULL';
-                break;
-
             case 'product' :
-                $value = 'NULL';
-                break;
-
             case 'product_tag' :
                 $value = 'NULL';
                 break;

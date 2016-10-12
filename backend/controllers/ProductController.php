@@ -126,7 +126,7 @@ class ProductController extends BaseController
                         if ($productVarValue->valueBlock) {
                             $productVarValue->valueBlock->product_var_value_id = $productVarValue->id;
 
-                            $productVarValue->validateAndSave();
+                            $productVarValue->valueBlock->validateAndSave();
 
                             if ($productVarValue->valueBlock->isChanged()) {
                                 $this->saveSnippetVarValues($productVarValue->valueBlock);

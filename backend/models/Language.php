@@ -142,7 +142,7 @@ class Language extends CustomModel
             $buffer = '<?php ' . PHP_EOL;
 
             foreach ($this->products as $product) {
-                $productPath = $product->getMainCacheFile($reload);
+                $productPath = $product->getMainCacheFile();
 
                 $buffer .= 'include("' . $productPath . '");' . PHP_EOL;
             }
