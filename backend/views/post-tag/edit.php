@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\PostTag */
 
-$this->title = 'Update Post Tag: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Post Tags', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = $model->isNewRecord ? 'Pridať nový tag' : 'Upraviť tag: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Tagy článkov', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : 'Upraviť ' . $model->name;
 ?>
 <div class="post-tag-update">
 

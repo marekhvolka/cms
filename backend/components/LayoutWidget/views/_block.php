@@ -25,13 +25,13 @@ if (!isset($renderModal)) {
     </button>
 
     <?php $buttonClass = 'btn-default';
-        $buttonIcon = '';
+        $buttonName = $model->name;
     if ($model->type == 'portal_snippet') {
         $buttonClass = 'btn-primary';
-        $buttonIcon = '<i class="fa fa-home"></i>';
+        $buttonName = '<i class="fa fa-home"></i> ' . $model->parent->portalVarValue->var->name;
     } else if ($model->type == 'product_snippet') {
         $buttonClass = 'btn-primary';
-        $buttonIcon = '<i class="fa fa-shopping-cart"></i>';
+        $buttonName = '<i class="fa fa-shopping-cart"></i> ' . $model->parent->productVarValue->var->name;
     }
     ?>
 
@@ -41,7 +41,7 @@ if (!isset($renderModal)) {
             data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
             data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
-        <?php echo $buttonIcon . ' ' . $model->name; ?>
+        <?= $buttonName ?>
     </button>
 
     <?php if (($model->type == 'snippet') && $model->snippetCode) : ?>

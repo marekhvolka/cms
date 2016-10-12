@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Trieda, reprezentujuca premennu, ktoru je mozne priradit pre portal
- *
+ * @property string $name
  */
 class PortalVar extends Variable
 {

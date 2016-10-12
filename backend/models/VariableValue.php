@@ -10,6 +10,11 @@ namespace backend\models;
 
 use Yii;
 
+/**
+ * Class VariableValue
+ * @package backend\models
+ */
+
 abstract class VariableValue extends CustomModel
 {
     /** Vrati hodnotu premennej - determinuje, z ktoreho stlpca ju ma tahat

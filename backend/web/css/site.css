@@ -488,3 +488,8 @@ span.row-drag-by, span.section-drag-by {
 .added {
     border: 4px solid green;
 }
+
+a.ui-state-default.ui-state-highlight {
+    width: initial;
+    height: initial;
+}

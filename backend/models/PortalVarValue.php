@@ -16,6 +16,7 @@ use Yii;
  * @property Block $valueBlock
  * @property Page $valuePage
  * @property Portal $portal
+ * @property PortalVar $var
  */
 class PortalVarValue extends VariableValue
 {

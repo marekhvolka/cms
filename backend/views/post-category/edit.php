@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\PostCategory */
 
-$this->title = 'Update Post Category: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Post Categories', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = $model->isNewRecord ? 'Pridať novú kategóriu' : 'Upraviť kategóriu: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Kategórie článkov', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : 'Upraviť ' . $model->name;
 ?>
 <div class="post-category-update">
 

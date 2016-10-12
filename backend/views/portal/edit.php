@@ -6,14 +6,12 @@ use yii\helpers\Html;
 /* @var $model backend\models\Portal */
 /* @var $allVariables \backend\models\PortalVar */
 
-$this->title = 'Editácia portálu: ' . ' ' . $model->name;
+$this->title = $model->isNewRecord ? 'Pridať nový portál' : 'Editácia portálu: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Portály', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Úprava';
+$this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : 'Upraviť ' . $model->name;
 ?>
 <div class="portal-update">
 
-    
     <?= $this->render('_form', [
         'model' => $model,
         'allVariables' => $allVariables,

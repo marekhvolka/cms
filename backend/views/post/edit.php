@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Post */
 
-$this->title = 'Update Post: ' . $model->name;
+$this->title = $model->isNewRecord ? 'Pridať nový článok' : 'Upraviť článok: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Články', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['edit', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : 'Upraviť ' . $model->name;
 ?>
 <?= MultimediaWidget::widget(['renderAsModal' => true]) ?>
 <div class="post-update">
