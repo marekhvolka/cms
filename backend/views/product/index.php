@@ -58,8 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'target' => '_blank'
                         ]);
 
-                    $result .= Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                        Url::to(['delete', 'id' => $data->id], ['data-method' => 'post']));
+                    $result .= '' . Html::a('', Url::to(['delete', 'id' => $data->id]), [
+                            'class' => 'glyphicon glyphicon-trash',
+                            'data' => [
+                                'confirm' => 'Skutočne chcete odstrániť produkt ' . $data->name . '?',
+                                'method' => 'post'
+                            ]
+                        ]);
 
                     /*if ($data->getProducts()->count() == 0) {
                         $result .= Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť tento produkt (' . $data->name . ')?" data-method="post" data-pjax="0"></a>',

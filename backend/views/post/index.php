@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -22,9 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'label'=>'Názov',
+                'label' => 'Názov',
                 'format' => 'raw',
-                'value'=>function ($dataProvider) {
+                'value' => function ($dataProvider) {
                     return Html::a($dataProvider->name, Url::to(['/post/edit/', 'id' => $dataProvider->id]));
                 },
             ],
@@ -42,7 +42,34 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'active:boolean',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{show}{edit}{delete}',
+                'buttons' => [
+                    'show' => function ($url, $model) {
+                        return Html::a('<span class="fa fa-eye"></span>', $url, [
+                            'title' => Yii::t('yii', 'Náhľad'),
+                        ]);
+
+                    },
+                    'edit' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'title' => Yii::t('yii', 'Editácia'),
+                        ]);
+
+                    },
+                    'delete' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                            'title' => Yii::t('yii', 'Zmazanie'),
+                            'data' => [
+                                'confirm' => 'Naozaj chcete zmazať článok ' . $model->name . '?',
+                                'method' => 'post'
+                            ]
+                        ]);
+
+                    }
+                ]
+            ],
         ],
     ]); ?>
 </div>

@@ -69,8 +69,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
 
                     if ($data->getPages()->count() == 0) {
-                        $result .= ' ' . Html::a('<a class="glyphicon glyphicon-trash" data-confirm="Skutočne chcete odstrániť túto stránku (' . $data->name . ')?" data-method="post" data-pjax="0"></a>',
-                                Url::to(['delete', 'id' => $data->id]));
+
+                        $result .= '' . Html::a('', Url::to(['delete', 'id' => $data->id]), [
+                                'class' => 'glyphicon glyphicon-trash',
+                                'data' => [
+                                    'confirm' => 'Skutočne chcete odstrániť podstránku ' . $data->name . '?',
+                                    'method' => 'post'
+                                ]
+                            ]);
                     }
 
                     return $result;

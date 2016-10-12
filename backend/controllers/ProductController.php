@@ -139,10 +139,11 @@ class ProductController extends BaseController
 
                 $transaction->commit();
 
+                $model->resetAfterUpdate();
+
                 if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
                     $model->language->getProductsMainCacheFile(true);
                 }
-                $model->resetAfterUpdate();
 
                 return $this->redirectAfterSave($model);
             } catch (Exception $e) {
