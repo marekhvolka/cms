@@ -115,7 +115,7 @@ class PageController extends BaseController
 
                 $model->resetAfterUpdate();
 
-                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie produktu, tak resetneme subor so zoznamom produktov
+                if (!$id || $duplicate) { //ak sa jednalo o vytvaranie podstranky, tak resetneme subor so zoznamom podstranok
                     $model->portal->getPortalPagesFile(true);
                 }
 

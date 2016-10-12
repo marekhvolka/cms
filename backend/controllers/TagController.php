@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Language;
 use common\components\Alert;
 use Exception;
 use Yii;
@@ -70,6 +71,13 @@ class TagController extends BaseController
                 $model->updateProducts();
 
                 $transaction->commit();
+
+                if (!$id) { //ak sa jednalo o vytvaranie tagu, tak resetneme subor so zoznamom tagov
+                    /* @var Language $language */
+                    foreach (Language::find()->all() as $language) {
+                        $language->getDictionaryCacheFile(true);
+                    }
+                }
 
                 return $this->redirectAfterSave($model);
             } catch (Exception $exception) {
