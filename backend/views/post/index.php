@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{show}{edit}{delete}',
+                'template' => '{show} {duplicate} {delete}',
                 'buttons' => [
                     'show' => function ($url, $model) {
                         return Html::a('<span class="fa fa-eye"></span>', $url, [
@@ -52,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
 
                     },
-                    'edit' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
-                            'title' => Yii::t('yii', 'Editácia'),
+                    'duplicate' => function ($url, $model) {
+                        return Html::a('<span class="fa fa-files-o"></span>', 'edit/' . $model->id . '?duplicate=1', [
+                            'title' => Yii::t('yii', 'Duplikácia'),
                         ]);
 
                     },

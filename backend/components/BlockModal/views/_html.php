@@ -10,16 +10,6 @@ use backend\components\AceEditor\AceEditorWidget;
     <h4 class="modal-title" id="myModalLabel">Pridať text</h4>
 </div>
 <div class="modal-body">
-    <?= AceEditorWidget::widget([
-        'name' => $prefix . '[data]',
-        'value' => $model->data,
-        'varNameAceEditor' => 'code' . hash('md5', $prefix),
-        'theme' => 'chrome',
-        'aceOptions' => [
-            'showPrintMargin' => false,
-            "maxLines" => 29,
-            "minLines" => 5
-        ]
-    ]); ?>
+    <textarea name="<?= $prefix . '[data]' ?>" class="form-control" rows="10"><?= $model->data ?></textarea>
 </div>
 

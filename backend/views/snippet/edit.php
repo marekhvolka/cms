@@ -11,9 +11,8 @@ $this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : 'Upraviť ' .
 ?>
 <div class="snippet-update">
 
-    
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
-
+    
 </div>

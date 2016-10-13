@@ -259,9 +259,7 @@ class Area extends CustomModel implements IDuplicable
         $this->setOutdated();
 
         if ($this->portal) {
-            foreach ($this->portal->pages as $page) {
-                $page->setOutdated();
-            }
+            $this->portal->setOutdated();
         } else if ($this->page) {
             $this->page->setOutdated();
         } else if ($this->post) {

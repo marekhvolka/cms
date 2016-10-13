@@ -10,13 +10,13 @@ $(document).ready(
             var bookmarkId = url.split('#')[1];
 
             $('.custom-tabs a[href="#' + bookmarkId + '"]').parent().addClass('active'); //ak sa najde tab s danou kotvou, tak ho
-                                                                                      // dame ako aktivny
+            // dame ako aktivny
             $('.custom-tab-content > .tab-pane#' + bookmarkId).show();
 
             var bookmarkedElement = $('#' + bookmarkId).first();
 
             var parentTabPane = bookmarkedElement.closest('.tab-pane'); //pre pripad, ze sa kotva nachadza v tabe,
-                                                                                  // musime odkryt aj tab, v ktorom sa nachadza
+            // musime odkryt aj tab, v ktorom sa nachadza
             if (typeof parentTabPane != 'undefined') {
                 parentTabPane.show();
                 $('.custom-tabs a[href="#' + parentTabPane.attr('id') + '"]').parent().addClass('active');
@@ -31,8 +31,8 @@ $(document).ready(
             }
         );
 
-        $(".custom-tabs a").click(function() { //skryvanie a odkryvanie po kliknuti
-            $( ".custom-tab-content > div[id^='tab']").hide(); //skryjeme vsetky taby
+        $(".custom-tabs a").click(function () { //skryvanie a odkryvanie po kliknuti
+            $(".custom-tab-content > div[id^='tab']").hide(); //skryjeme vsetky taby
 
             var targetId = $(this).attr('href');
             $(targetId).show();

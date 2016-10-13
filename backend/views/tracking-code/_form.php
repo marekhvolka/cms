@@ -31,7 +31,7 @@ use kartik\switchinput\SwitchInput;
         'mode' => 'php', // programing language mode. Default "html"
         'theme' => 'chrome', // editor theme. Default "github"
         'options' => [
-            ]
+        ]
     ])
     ?>
 
