@@ -105,9 +105,25 @@ class Tag extends CustomModel
 
         if (count($to_remove) > 0) {
             (new Query())->createCommand()->delete('product_tag', ['product_id' => $to_remove, 'tag_id' => $this->id])->execute();
+
+            foreach ($to_remove as $productId) {
+                $product = Product::findOne($productId);
+
+                if ($product) {
+                    $product->resetAfterUpdate();
+                }
+            }
         }
         if (count($to_add) > 0) {
             (new Query())->createCommand()->batchInsert('product_tag', ['tag_id', 'product_id', 'last_edit_user'], $to_add)->execute();
+
+            foreach ($to_add as $item) {
+                $product = Product::findOne($item['product_id']);
+
+                if ($product) {
+                    $product->resetAfterUpdate();
+                }
+            }
         }
     }
 

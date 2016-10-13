@@ -324,10 +324,6 @@ class Product extends CustomModel implements ICacheable, IDuplicable
         $this->setOutdated();
         $this->getProductVarsFile();
 
-        foreach ($this->pages as $page) {
-            $page->setOutdated();
-        }
-
         /* @var $productSnippet SnippetVarValue */
         foreach ($this->productSnippets as $productSnippet) {
             $productSnippet->resetAfterUpdate();
