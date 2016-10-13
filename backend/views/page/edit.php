@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Page */
 
-$this->title = $model->isNewRecord || (isset($_GET['duplicate'])) ? 'Pridať novú podstránku' : 'Úprava podstránky: ' . ' ' . $model->name;
+$this->title = $model->isNewRecord ? 'Pridať novú podstránku' : (isset($_GET['duplicate']) ? 'Duplikácia podstránky: ' . $model->name : 'Úprava podstránky: ' . ' ' . $model->name);
 $this->params['breadcrumbs'][] = ['label' => 'Podstránky', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->isNewRecord || (isset($_GET['duplicate'])) ? 'Pridať' : 'Upraviť ' . $model->name;
+$this->params['breadcrumbs'][] = $model->isNewRecord ? 'Pridať' : (isset($_GET['duplicate']) ? 'Duplikovať' : 'Upraviť ' . $model->name);
 
 ?>
 <?= MultimediaWidget::widget(['renderAsModal' => true]) ?>
