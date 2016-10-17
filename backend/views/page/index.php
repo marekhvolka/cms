@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]) . ' ';
 
                     $result .= Html::a('<span class="fa fa-files-o"></span>', Url::to(['edit', 'id' => $data->id, 'duplicate' => true]), [
-                        'target' => '_blank'
+                        //'target' => '_blank'
                     ]) . ' ';
 
                     if ($data->getPages()->count() == 0) {

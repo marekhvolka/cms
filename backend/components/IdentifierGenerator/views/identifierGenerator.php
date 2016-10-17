@@ -29,7 +29,8 @@ function generate(input, delimiter)
     output = output.replace(/\.$/, "");
     output = output.replace(/ - /g,"-");
 
-    output = output.replace(/[ .]/g, delimiter, output); //nahradenie medzier
+    output = output.replace(/[ .]/g, delimiter); //nahradenie medzier
+    output = output.replace(/[ ]/g, delimiter);
 
     output = output.toLowerCase(); //na male pismena
 
