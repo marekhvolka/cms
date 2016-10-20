@@ -88,7 +88,11 @@ abstract class VariableValue extends CustomModel
                 }
 
                 $varValue = html_entity_decode($varValue);
-                $varValue = str_replace(' ', '&nbsp;', number_format($varValue, strlen(substr(strrchr($varValue, ','), 1)), ',', ' '));
+
+                if (is_numeric($varValue)) {
+                    $varValue = str_replace(' ', '&nbsp;', number_format($varValue, strlen(substr(strrchr($varValue, ','), 1)), ',', ' '));
+                }
+
                 $value = '\'' . $varValue . '\'';
 
                 break;
