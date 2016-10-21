@@ -14,8 +14,6 @@ use yii\base\Exception;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
-//use MongoDB\Driver\Exception\Exception;
-
 /**
  * ProductController implements the CRUD actions for Product model.
  */

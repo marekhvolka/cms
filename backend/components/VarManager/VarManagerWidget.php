@@ -18,18 +18,13 @@ class VarManagerWidget extends Widget
     public $allVariables;
 
     public $model;
-    
+
     /**
      * Url of controller, which is using whis widget for dynamic
      * append of new row (variable).
      * @var string
      */
     public $appendVarValueUrl;
-
-    public function init()
-    {
-        parent::init();
-    }
 
     public function run()
     {

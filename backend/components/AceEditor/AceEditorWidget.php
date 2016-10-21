@@ -92,7 +92,7 @@ JS;
 
         $code = "\nvar {$this->varNameAceEditor} = {};\n";
         if (Yii::$app->request->isAjax) {
-            $result .= '<script type="text/javascript">'. $code . $js . '</script>';
+            $result .= '<script type="text/javascript">' . $code . $js . '</script>';
         } else {
             $view->registerJs($code, $view::POS_HEAD);
             $view->registerJs($js);

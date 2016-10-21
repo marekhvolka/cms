@@ -19,11 +19,6 @@ class BlockModalWidget extends Widget
 
     public $prefix;
 
-    public function init()
-    {
-        parent::init();
-    }
-
     public function run()
     {
         AssetBundle::register($this->getView());

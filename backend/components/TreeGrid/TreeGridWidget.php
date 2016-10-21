@@ -12,11 +12,6 @@ class TreeGridWidget extends Widget
 
     public $childrenIdentifier;
 
-    public function init()
-    {
-        parent::init();
-    }
-
     public function run()
     {
         return $this->render('main', [

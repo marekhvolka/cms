@@ -227,6 +227,7 @@ use yii\helpers\Html;
 
                         <?php
                         break;
+                    default:
                 } ?>
                 <?php if (!empty($defaultValue)) : ?>
                     <p class="text-muted doplnInfo">Prednastavená hodnota pre toto pole je
@@ -286,7 +287,7 @@ use yii\helpers\Html;
                      data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
                      data-portal-id="<?= $portal ? $portal->id : '' ?>">
                     <button type="button" class="btn btn-success dropdown-toggle btn-xs"
-                            title="Vložiť novú položku" data-toggle="dropdown" >
+                            title="Vložiť novú položku" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
