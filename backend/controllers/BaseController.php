@@ -399,9 +399,8 @@ abstract class BaseController extends Controller
         $model->validateAndSave();
 
         foreach ($model->sections as $indexSection => $section) {
-            //if (empty($section->area_id)) {
             $section->area_id = $model->id;
-            //}
+
             if ($section->removed) {
                 $section->delete();
                 unset($model->sections[$indexSection]);
@@ -409,10 +408,12 @@ abstract class BaseController extends Controller
             }
             $section->validateAndSave();
 
+            if ($section->isChanged()) {
+                $model->setOutdated();
+            }
+
             foreach ($section->rows as $indexRow => $row) {
-                //if (empty($row->section_id)) {
                 $row->section_id = $section->id;
-                //}
 
                 if ($row->removed) {
                     $row->delete();
@@ -422,10 +423,12 @@ abstract class BaseController extends Controller
 
                 $row->validateAndSave();
 
+                if ($row->isChanged()) {
+                    $model->setOutdated();
+                }
+
                 foreach ($row->columns as $indexColumn => $column) {
-                    //if (empty($column->row_id)) {
                     $column->row_id = $row->id;
-                    //}
 
                     if ($column->removed) {
                         $column->delete();
@@ -434,10 +437,12 @@ abstract class BaseController extends Controller
                     }
                     $column->validateAndSave();
 
+                    if ($column->isChanged()) {
+                        $model->setOutdated();
+                    }
+
                     foreach ($column->blocks as $indexBlock => $block) {
-                        //if (empty($block->column_id)) {
                         $block->column_id = $column->id;
-                        //}
 
                         if ($block->removed) {
                             $block->delete();
@@ -446,6 +451,10 @@ abstract class BaseController extends Controller
                         }
                         $block->validateAndSave();
 
+                        if ($block->isChanged()) {
+                            $model->setOutdated();
+                        }
+
                         if ($block->isContentChanged()) {
                             $this->saveSnippetVarValues($block);
                             $block->resetAfterUpdate();
@@ -453,6 +462,10 @@ abstract class BaseController extends Controller
                     }
                 }
             }
+        }
+
+        if ($model->outdated) {
+            $model->getCacheFile(true);
         }
     }
 

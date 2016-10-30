@@ -257,7 +257,6 @@ class Area extends CustomModel implements IDuplicable
     public function resetAfterUpdate()
     {
         $this->setOutdated();
-        $this->getCacheFile(true);
 
         if ($this->portal) {
             $this->portal->setSoftOutdated();
