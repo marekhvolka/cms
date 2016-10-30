@@ -91,6 +91,12 @@ class Block extends CustomModel implements ICacheable, IDuplicable
         ];
     }
 
+    public function init()
+    {
+        parent::init();
+        $this->active = 1;
+    }
+
     /**
      * @inheritdoc
      */

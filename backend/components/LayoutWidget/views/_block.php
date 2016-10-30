@@ -18,6 +18,7 @@ if (!isset($renderModal)) {
      data-prefix="<?= $prefix ?>">
     <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
+    <?= Html::hiddenInput($prefix . "[active]", $model->active, ['class' => 'active']); ?>
     <?= Html::hiddenInput($prefix . "[snippet_code_id]", $model->snippet_code_id); ?>
     <?= Html::hiddenInput($prefix . "[removed]", $model->removed, ['class' => 'removed']); ?>
     <button type="button" class="btn btn-default btn-sm" title="">

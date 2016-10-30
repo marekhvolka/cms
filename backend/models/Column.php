@@ -150,11 +150,8 @@ class Column extends CustomModel implements IDuplicable
 
         foreach ($this->blocks as $block) {
             if ($block->active) {
-
                 $result .= '<?php' . PHP_EOL;
-
                 $result .= 'echo file_get_contents("' . $block->getMainCacheFile($reload) . '");' . PHP_EOL;
-
                 $result .= '?>' . PHP_EOL;
             }
         }
