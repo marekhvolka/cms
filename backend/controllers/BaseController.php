@@ -508,25 +508,11 @@ abstract class BaseController extends Controller
     protected function redirectAfterSave($model)
     {
         Alert::success('Položka bola úspešne uložená.');
-        //$continue = Yii::$app->request->post('ajaxSubmit');
         $continue = Yii::$app->request->post('continue');
 
         if (isset($continue)) {
-            $result = [
-                'status' => 'success'
-            ];
-
-            $result['message'] = yii\bootstrap\Alert::widget([
-                'options' => [
-                    'class' => 'alert-success'
-                ],
-                'body' => 'Položka bola úspešne uložená.'
-            ]);
-
             return $this->redirect(['edit', 'id' => $model->id]);
         } else {
-            Alert::success('Položka bola úspešne uložená.');
-
             return $this->redirect(['index']);
         }
     }

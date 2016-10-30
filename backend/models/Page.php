@@ -23,6 +23,7 @@ use yii\base\Exception;
  * @property integer $last_edit_user
  * @property string $breadcrumbs
  * @property bool $outdated
+ * @property bool $soft_outdated
  * @property bool $head_outdated
  * @property bool $in_sitemap
  *
@@ -208,7 +209,7 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
     {
         $path = $this->getMainDirectory() . 'page_var.php';
 
-        if (!file_exists($path) || $this->outdated || $this->head_outdated) {
+        if (!file_exists($path) || $this->head_outdated) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -276,10 +277,9 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
     {
         $this->setOutdated();
 
-        if ($this->isHeadChanged())
+        if ($this->isHeadChanged()) {
             $this->portal->generateSitemap();
 
-        if ($this->isChanged() && $this->isHeadChanged()) {
             foreach ($this->pages as $page) {
                 $page->resetAfterUpdate();
             }
@@ -317,8 +317,7 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
      */
     public function isOutdated()
     {
-        return $this->outdated || ($this->product && $this->product->outdated) ||
-        $this->portal->outdated || ($this->parent && $this->parent->head_outdated);
+        return $this->outdated || ($this->parent && $this->parent->head_outdated);
     }
 
     #endregion

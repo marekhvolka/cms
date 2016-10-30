@@ -25,6 +25,8 @@ use yii\db\Query;
  * @property integer $post_category_id
  * @property integer $post_type_id
  * @property bool $in_sitemap
+ * @property bool $outdated
+ * @property bool $soft_outdated
  *
  * @property Area[] $areas
  * @property User $lastEditUser
@@ -144,7 +146,7 @@ class Post extends LayoutOwner
     {
         $path = $this->getMainDirectory() . 'post_var.php';
 
-        if (!file_exists($path) || $this->outdated || $this->head_outdated) {
+        if (!file_exists($path) || $this->head_outdated) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -217,6 +219,10 @@ class Post extends LayoutOwner
             return true;
         }
 
+        if ($this->myOldAttributes['published_atd'] != $this->published_at) {
+            return true;
+        }
+
         if ($this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
             return true;
         }
@@ -229,7 +235,7 @@ class Post extends LayoutOwner
      */
     public function isOutdated()
     {
-        return $this->outdated || $this->portal->outdated;
+        return $this->outdated || $this->head_outdated;
     }
 
     public function updateTags()

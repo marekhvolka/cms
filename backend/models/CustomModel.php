@@ -170,15 +170,14 @@ class CustomModel extends ActiveRecord
 
     public function setOutdated()
     {
-        $this->outdated = 1;
+        $this->outdated = true;
         $this->save();
     }
 
     public function setActual()
     {
-        $this->outdated = 0;
+        $this->outdated = false;
         $this->save();
-        $this->removeException();
     }
 
     /**

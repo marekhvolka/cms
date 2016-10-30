@@ -20,7 +20,6 @@ use yii\db\Query;
  * @property integer $language_id
  * @property string $last_edit
  * @property integer $last_edit_user
- * @property bool $outdated
  *
  * @property ProductType $productType
  * @property PartnershipType $partnershipType
@@ -105,17 +104,6 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     #endregion
 
     #region GETTERS & SETTERS
-
-    public function isOutdated()
-    {
-        if ($this->outdated)
-            return true;
-
-        if ($this->parent)
-            return $this->parent->isOutdated();
-
-        return false;
-    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -317,12 +305,21 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     #region CACHING
 
     /**
-     * Metoda, pripravujuca produkt na duplikaciu
+     * Metoda, ktora sa zavola po zmene v produkte
      */
     public function resetAfterUpdate()
     {
-        $this->setOutdated();
-        $this->getProductVarsFile();
+        $this->getProductVarsFile(true);
+
+        //update podstranok s nastavenym produktom
+        Yii::$app->db->createCommand('UPDATE page SET outdated = 1 WHERE product_id = :product_id')
+            ->bindValue(':product_id', $this->id)
+            ->execute();
+
+        //update podstranok, ktorych rodic ma nastaveny produkt
+        Yii::$app->db->createCommand('UPDATE page p1, page p2 SET p1.outdated = 1 WHERE p1.parent_id = p2.id AND p2.product_id = :product_id')
+            ->bindValue(':product_id', $this->id)
+            ->execute();
 
         /* @var $productSnippet SnippetVarValue */
         foreach ($this->productSnippets as $productSnippet) {
@@ -349,7 +346,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
             try {
                 $buffer = '<?php' . PHP_EOL;
 
@@ -381,7 +378,7 @@ class Product extends CustomModel implements ICacheable, IDuplicable
     {
         $path = $this->getMainDirectory() . 'product_var.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
 
             try {
                 $buffer = '<?php ' . PHP_EOL;

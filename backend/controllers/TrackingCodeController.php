@@ -69,6 +69,9 @@ class TrackingCodeController extends BaseController
 
                 $transaction->commit();
 
+                $model->portal->getPortalVarsFile(true);
+                $model->portal->setSoftOutdated();
+
                 return $this->redirectAfterSave($model);
             } catch (Exception $exception) {
                 $transaction->rollBack();

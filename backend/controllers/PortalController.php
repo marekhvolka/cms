@@ -118,7 +118,7 @@ class PortalController extends BaseController
 
                 $transaction->commit(); // There was no error, models was validated and saved correctly.
 
-                $model->resetAfterUpdate();
+                $model->setOutdated();
 
                 return $this->redirectAfterSave($model);
             } catch (Exception $e) {

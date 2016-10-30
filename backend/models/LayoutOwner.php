@@ -150,18 +150,16 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
         $hardReload = false;
         $path = $this->getMainDirectory() . 'page_prepared.latte';
 
-        if (!file_exists($path) || $this->isOutdated()) {
+        if (!file_exists($path) || $this->outdated || $this->head_outdated) {
             try {
                 $prefix = $this->getIncludePrefix();
 
                 if ($this->className() == Page::className()) {
-                    if (($this->product && $this->product->isOutdated()) || $this->portal->outdated ||
-                        ($this->parent && $this->parent->head_outdated) || $reload
-                    ) {
+                    if (($this->parent && $this->parent->head_outdated) || $reload) {
                         $hardReload = true;
                     }
                 } else if ($this->className() == Post::className()) {
-                    $hardReload = $this->portal->outdated || $reload;
+                    $hardReload = $reload;
                 }
 
                 $prefix .= '<?php' . PHP_EOL;
@@ -215,7 +213,7 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
 
         $path = $this->getMainDirectory() . $prefix . '_compiled.php';
 
-        if (!file_exists($path) || $reload) {
+        if (!file_exists($path) || $reload || $this->soft_outdated) {
             try {
                 $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile($reload),
                     array());

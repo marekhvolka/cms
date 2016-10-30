@@ -17,7 +17,6 @@ use yii\helpers\ArrayHelper;
  * @property integer $template_id
  * @property string $color_scheme
  * @property integer $active
- * @property bool $outdated
  * @property int $blog_main_page_id
  *
  * @property string $templatePath
@@ -35,7 +34,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property string $blogUrl
  */
-class Portal extends CustomModel implements ICacheable
+class Portal extends CustomModel
 {
     #region BASIC MODEL
 
@@ -323,7 +322,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'portal_var.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -363,7 +362,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'portal_pages.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -394,7 +393,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'portal_posts.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
             try {
                 $dataEngine = Yii::$app->dataEngine;
 
@@ -441,7 +440,7 @@ class Portal extends CustomModel implements ICacheable
     {
         $path = $this->getMainDirectory() . 'main_file.php';
 
-        if (!file_exists($path) || $this->outdated || $reload) {
+        if (!file_exists($path) || $reload) {
             try {
                 $buffer = '<?php' . PHP_EOL;
 
@@ -506,9 +505,20 @@ class Portal extends CustomModel implements ICacheable
         return $prefix;
     }
 
-    public function resetAfterUpdate()
+    /** Funkcia, ktora sa vola pri vacsej zmene v portali - zmene premennych a podobne
+     * zapricinuje, ze podstranky portalu a clanky bude potrebne cele nanovo precachovat
+     * @throws \yii\db\Exception
+     */
+    public function setOutdated()
     {
-        $this->setOutdated();
+        Yii::$app->db->createCommand('UPDATE page SET outdated = 1 WHERE portal_id = :portal_id')
+            ->bindValue(':portal_id', $this->id)
+            ->execute();
+
+        Yii::$app->db->createCommand('UPDATE post SET outdated = 1 WHERE portal_id = :portal_id')
+            ->bindValue(':portal_id', $this->id)
+            ->execute();
+
         $this->getPortalVarsFile();
 
         foreach ($this->portalSnippets as $portalSnippet) {
@@ -516,6 +526,21 @@ class Portal extends CustomModel implements ICacheable
                 $portalSnippet->resetAfterUpdate();
             }
         }
+    }
+
+    /** Funkcia, ktora sa vola po uprave meracich kodov alebo hlavicky a paticky portalu, pripadne sablony webu.
+     * Zapricinuje precachovanie len vysledneho suboru, samotny layout stranky nie je potrebne aktualizovat
+     * @throws \yii\db\Exception
+     */
+    public function setSoftOutdated()
+    {
+        Yii::$app->db->createCommand('UPDATE page SET soft_outdated = 1 WHERE portal_id = :portal_id')
+            ->bindValue(':portal_id', $this->id)
+            ->execute();
+
+        Yii::$app->db->createCommand('UPDATE post SET soft_outdated = 1 WHERE portal_id = :portal_id')
+            ->bindValue(':portal_id', $this->id)
+            ->execute();
     }
 
     public function isChanged()
