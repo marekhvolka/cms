@@ -156,8 +156,7 @@ class SiteController extends Controller
         }
 
         if (isset($requestedPage)) {
-            $reload = $requestedPage->isOutdated() && !Yii::$app->user->isGuest;
-            $path = $requestedPage->getMainCacheFile($reload);
+            $path = $requestedPage->getMainCacheFile();
         }
 
         if (isset($path)) {
