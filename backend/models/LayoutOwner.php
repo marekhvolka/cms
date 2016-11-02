@@ -154,12 +154,12 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
             try {
                 $prefix = $this->getIncludePrefix();
 
+                $hardReload = $reload || $this->outdated;
+
                 if ($this->className() == Page::className()) {
                     if (($this->parent && $this->parent->head_outdated) || $reload) {
                         $hardReload = true;
                     }
-                } else if ($this->className() == Post::className()) {
-                    $hardReload = $reload;
                 }
 
                 $prefix .= '<?php' . PHP_EOL;
