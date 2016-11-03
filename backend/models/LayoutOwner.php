@@ -176,8 +176,6 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
                 $prefix .= $this->sidebar_side == 'left' ? '$page_master = $page_sidebar . $page_content;' . PHP_EOL :
                     '$page_master = $page_content . $page_sidebar;' . PHP_EOL;
 
-                $prefix .= '$global_css = \'' . Yii::$app->dataEngine->getGlobalCssFile(true) . '\';' . PHP_EOL;
-
                 $prefix .= '?>' . PHP_EOL;
 
                 $templateIndex = file_get_contents($this->portal->template->getIndexPath());
