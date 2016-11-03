@@ -27,7 +27,6 @@
         "yiisoft/yii2-bootstrap": "^2.0",
         "kartik-v/yii2-sortable": "*",
         "yiisoft/yii2-smarty": "^2.0",
-        "marekhvolka/latte": "*",
         "leafo/scssphp": "^0.6.3",
         "kartik-v/yii2-widget-colorinput": "*",
         "kartik-v/yii2-widget-datepicker": "*",
