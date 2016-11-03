@@ -212,18 +212,26 @@ class Post extends LayoutOwner
      */
     public function isHeadChanged()
     {
-        if ($this->myOldAttributes['name'] != $this->name) {
+        if (key_exists('name', $this->myOldAttributes) && $this->myOldAttributes['name'] != $this->name) {
             return true;
         }
-        if ($this->myOldAttributes['identifier'] != $this->identifier) {
-            return true;
-        }
-
-        if ($this->myOldAttributes['published_atd'] != $this->published_at) {
+        if (key_exists('identifier', $this->myOldAttributes) && $this->myOldAttributes['identifier'] != $this->identifier) {
             return true;
         }
 
-        if ($this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
+        if (key_exists('published_at', $this->myOldAttributes) && $this->myOldAttributes['published_at'] != $this->published_at) {
+            return true;
+        }
+
+        if (key_exists('in_sitemap', $this->myOldAttributes) && $this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
+            return true;
+        }
+
+        if (key_exists('title', $this->myOldAttributes) && $this->myOldAttributes['title'] != $this->title) {
+            return true;
+        }
+
+        if (key_exists('description', $this->myOldAttributes) && $this->myOldAttributes['description'] != $this->description) {
             return true;
         }
 

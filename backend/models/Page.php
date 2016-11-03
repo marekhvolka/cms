@@ -278,6 +278,10 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
         $this->setOutdated();
 
         if ($this->isHeadChanged()) {
+
+            $this->head_outdated = true;
+            $this->save();
+
             $this->portal->generateSitemap();
 
             foreach ($this->pages as $page) {
@@ -295,17 +299,25 @@ class Page extends LayoutOwner implements ICacheable, IDuplicable
      */
     public function isHeadChanged()
     {
-        if ($this->myOldAttributes['name'] != $this->name) {
+        if (key_exists('name', $this->myOldAttributes) && $this->myOldAttributes['name'] != $this->name) {
             return true;
         }
-        if ($this->myOldAttributes['identifier'] != $this->identifier) {
+        if (key_exists('identifier', $this->myOldAttributes) && $this->myOldAttributes['identifier'] != $this->identifier) {
             return true;
         }
-        if ($this->myOldAttributes['product_id'] != $this->product_id) {
+        if (key_exists('product_id', $this->myOldAttributes) && $this->myOldAttributes['product_id'] != $this->product_id) {
             return true;
         }
 
-        if ($this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
+        if (key_exists('in_sitemap', $this->myOldAttributes) && $this->myOldAttributes['in_sitemap'] != $this->in_sitemap) {
+            return true;
+        }
+
+        if (key_exists('description', $this->myOldAttributes) && $this->myOldAttributes['description'] != $this->description) {
+            return true;
+        }
+
+        if (key_exists('title', $this->myOldAttributes) && $this->myOldAttributes['title'] != $this->title) {
             return true;
         }
 
