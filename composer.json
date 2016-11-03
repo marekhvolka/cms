@@ -27,14 +27,14 @@
         "yiisoft/yii2-bootstrap": "^2.0",
         "kartik-v/yii2-sortable": "*",
         "yiisoft/yii2-smarty": "^2.0",
-        "marekhvolka/latte": "*",
         "leafo/scssphp": "^0.6.3",
         "kartik-v/yii2-widget-colorinput": "*",
         "kartik-v/yii2-widget-datepicker": "*",
         "kartik-v/yii2-widget-fileinput": "@dev",
         "2amigos/yii2-ckeditor-widget": "~1.0",
         "yiisoft/yii2-jui": "^2.0",
-        "trntv/yii2-aceeditor": "*"
+        "trntv/yii2-aceeditor": "*",
+        "latte/latte": "2.3.12"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
