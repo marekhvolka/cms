@@ -11,6 +11,7 @@ use backend\models\Snippet;
 use backend\models\SnippetCode;
 use backend\models\SnippetVar;
 use backend\models\SnippetVarDefaultValue;
+use backend\models\SnippetVarDropdown;
 use common\components\Alert;
 use Exception;
 use Yii;
@@ -205,6 +206,23 @@ class SnippetController extends BaseController
             'parentPrefix' => Yii::$app->request->post('parentPrefix'),
             'prefix' => $parentPrefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
             'forProductType' => true
+        ]);
+    }
+
+    /**
+     * Ajax action for appending one wrapper of
+     * @return string rendered view for one wrapper box.
+     */
+    public function actionAppendDropdownValue()
+    {
+        $indexDropdownValue = rand(1000, 10000);
+
+        $parentPrefix = Yii::$app->request->post('parentPrefix');
+
+        return $this->renderAjax('_variable-dropdown-val', [
+            'model' => new SnippetVarDropdown(),
+            'parentPrefix' => Yii::$app->request->post('parentPrefix'),
+            'prefix' => $parentPrefix . "[SnippetVarDropdownValue][$indexDropdownValue]",
         ]);
     }
 

@@ -14,7 +14,7 @@ use yii\helpers\Html;
 <div class="item panel panel-default snippet-var"><!-- widgetBody -->
     <a class="anchor" id="variable<?= $model->id ?>" name="variable<?= $model->id ?>"></a>
     <div class="panel-heading form-inline">
-        <a data-toggle="collapse" href="#panelVar<?= $prefix ?>">
+        <a class="collapse-btn" href="#panelVar<?= $prefix ?>">
             <span>
                 <i class="fa fa-angle-down"></i>
             </span>
@@ -57,25 +57,52 @@ use yii\helpers\Html;
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <label class="control-label">
-                    Defaultne hodnoty
-                </label>
+        <?php if ($model->supportDefaultValues()) : ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label">
+                        Defaultne hodnoty
+                    </label>
 
-                <div class="snippet-var-default-values">
-                    <?php foreach ($model->defaultValues as $indexDefaultValue => $defaultValue) : ?>
-                        <?= $this->render("_variable-default-val", [
-                            'defaultValue' => $defaultValue,
-                            'parentPrefix' => $prefix,
-                            'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
-                            'forProductType' => false
-                        ])
-                        ?>
-                    <?php endforeach; ?>
+                    <div class="snippet-var-default-values">
+                        <?php foreach ($model->defaultValues as $indexDefaultValue => $defaultValue) : ?>
+                            <?= $this->render("_variable-default-val", [
+                                'defaultValue' => $defaultValue,
+                                'parentPrefix' => $prefix,
+                                'prefix' => $prefix . "[SnippetVarDefaultValue][$indexDefaultValue]",
+                                'forProductType' => false
+                            ])
+                            ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
+
+        <?php if ($model->type && $model->type->identifier == 'dropdown') : ?>
+            <div class="row">
+                <div class="col-md-12 dropdown-container">
+                    <h4 class="control-label">
+                        Dropdown hodnoty
+                        <button type="button" class="btn btn-success btn-xs btn-add-snippet-var-dropdown pull-right" data-toggle="dropdown"
+                                title="Pridať dropdown moznost" data-parent-prefix="<?= $prefix ?>" onclick="">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </h4>
+
+                    <div class="snippet-var-dropdown-values">
+                        <?php foreach ($model->dropdownValues as $indexDropdownValue => $dropdownValue) : ?>
+                            <?= $this->render("_variable-dropdown-val", [
+                                'model' => $dropdownValue,
+                                'parentPrefix' => $prefix,
+                                'prefix' => $prefix . "[SnippetVarDropdownValue][$indexDropdownValue]",
+                            ])
+                            ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="row">
             <div class="col-sm-12">

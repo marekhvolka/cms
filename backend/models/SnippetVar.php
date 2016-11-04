@@ -130,7 +130,16 @@ class SnippetVar extends Variable
      */
     public function getDropdownValues()
     {
-        return $this->hasMany(SnippetVarDropdown::className(), ['var_id' => 'id']);
+        if (!isset($this->dropdownValues)) {
+            $this->dropdownValues = $this->hasMany(SnippetVarDropdown::className(), ['var_id' => 'id'])->all();
+        }
+
+        return $this->dropdownValues;
+    }
+
+    public function setDropdownValues($value)
+    {
+        $this->dropdownValues = $value;
     }
 
     /**
@@ -268,6 +277,13 @@ class SnippetVar extends Variable
                 }
             }
 
+            if (key_exists('SnippetVarDropdownValue', $item)) {
+                foreach ($item['SnippetVarDropdownValue'] as $indexDropdown => $dropdown) {
+                    $this->{$propertyIdentifier}[$index]->loadFromData('dropdownValues', $dropdown,
+                        $indexDropdown, SnippetVarDropdown::className());
+                }
+            }
+
             if (key_exists('Children', $item)) {
                 $this->{$propertyIdentifier}[$index]->loadChildren('children', $item['Children']);
             }
@@ -298,10 +314,46 @@ class SnippetVar extends Variable
             /* @var $defaultValue SnippetVarDefaultValue */
             foreach ($childModel->defaultValues as $defaultValue) {
                 $defaultValue->snippet_var_id = $childModel->id;
+
+                if ($defaultValue->removed) {
+                    $defaultValue->delete();
+                    continue;
+                }
+
                 $defaultValue->validateAndSave();
             }
 
+            /* @var $dropdownValue SnippetVarDropdown */
+            foreach ($childModel->dropdownValues as $dropdownValue) {
+                $dropdownValue->var_id = $childModel->id;
+
+                if ($dropdownValue->removed) {
+                    $dropdownValue->delete();
+                    continue;
+                }
+
+                $dropdownValue->validateAndSave();
+            }
+
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);
+        }
+    }
+
+    public function supportDefaultValues()
+    {
+        if ($this->type) {
+            switch ($this->type->identifier) {
+                case 'textinput':
+                case 'textarea':
+                case 'color':
+                case 'image':
+                case 'number':
+                    return true;
+                default:
+                    return false;
+            }
+        } else {
+            return true;
         }
     }
 
