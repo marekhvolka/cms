@@ -219,6 +219,13 @@ class Snippet extends CustomModel implements ICacheable
                 }
             }
 
+            if (key_exists('SnippetVarDropdownValue', $item)) {
+                foreach ($item['SnippetVarDropdownValue'] as $indexDropdown => $dropdown) {
+                    $this->{$propertyIdentifier}[$index]->loadFromData('dropdownValues', $dropdown,
+                        $indexDropdown, SnippetVarDropdown::className());
+                }
+            }
+
             if (key_exists('Children', $item)) {
                 $this->{$propertyIdentifier}[$index]->loadChildren('children', $item['Children']);
             }
@@ -255,6 +262,18 @@ class Snippet extends CustomModel implements ICacheable
                 }
 
                 $defaultValue->validateAndSave();
+            }
+
+            /* @var $dropdownValue SnippetVarDropdown */
+            foreach ($childModel->dropdownValues as $dropdownValue) {
+                $dropdownValue->var_id = $childModel->id;
+
+                if ($dropdownValue->removed) {
+                    $dropdownValue->delete();
+                    continue;
+                }
+
+                $dropdownValue->validateAndSave();
             }
 
             $childModel->saveChildren('children', $globalParentPropertyIdentifier);

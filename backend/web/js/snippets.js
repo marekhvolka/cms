@@ -2,7 +2,8 @@ var appendUrl = {
     code: controllerUrl + '/' + 'append-code',
     snippetVar: controllerUrl + '/' + 'append-var',
     listBox: controllerUrl + '/' + 'append-list-box',
-    defaultValue: controllerUrl + '/' + 'append-default-value'
+    defaultValue: controllerUrl + '/' + 'append-default-value',
+    dropdown: controllerUrl + '/' + 'append-dropdown-value'
 };
 
 var listTypeId = 5;
@@ -68,6 +69,10 @@ body.on('click', '.btn-remove-snippet-default-value', function () {
     removeItem($(this).parents('.row').first());
 });
 
+body.on('click', '.btn-remove-snippet-dropdown-value', function () {
+    removeItem($(this).parents('.row').first());
+});
+
 body.on('click', '.btn-add-snippet-default-value', function () {
     var postData = {
         parentPrefix: $(this).data('parent-prefix')
@@ -77,6 +82,20 @@ body.on('click', '.btn-add-snippet-default-value', function () {
 
     $.post(appendUrl.defaultValue, postData, function (data) {
         self.parents('.snippet-var-default-values').first().append($(data));
+
+        rescanForms();
+    });
+});
+
+body.on('click', '.btn-add-snippet-var-dropdown', function () {
+    var postData = {
+        parentPrefix: $(this).data('parent-prefix')
+    };
+
+    var self = $(this);
+
+    $.post(appendUrl.dropdown, postData, function (data) {
+        self.parents('.dropdown-container').find('.snippet-var-dropdown-values').first().append($(data));
 
         rescanForms();
     });
