@@ -190,12 +190,24 @@ abstract class BaseController extends Controller
 
         $layoutOwner = null;
         $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+        $layoutOwnerId = Yii::$app->request->post('layoutOwnerId');
 
         if ($layoutOwnerType == 'post') {
-            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Post();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Post::findOne($layoutOwnerId);
+            }
         } else if ($layoutOwnerType == 'page') {
-            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Page();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Page::findOne($layoutOwnerId);
+            }
         }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $columnsData = array();
@@ -222,11 +234,22 @@ abstract class BaseController extends Controller
 
         $layoutOwner = null;
         $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+        $layoutOwnerId = Yii::$app->request->post('layoutOwnerId');
 
         if ($layoutOwnerType == 'post') {
-            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Post();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Post::findOne($layoutOwnerId);
+            }
         } else if ($layoutOwnerType == 'page') {
-            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Page();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Page::findOne($layoutOwnerId);
+            }
         }
 
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
@@ -244,14 +267,27 @@ abstract class BaseController extends Controller
         $id = Yii::$app->request->post('id');
         $prefix = Yii::$app->request->post('prefix');
         $type = Yii::$app->request->post('type');
+
         $layoutOwner = null;
         $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+        $layoutOwnerId = Yii::$app->request->post('layoutOwnerId');
 
         if ($layoutOwnerType == 'post') {
-            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Post();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Post::findOne($layoutOwnerId);
+            }
         } else if ($layoutOwnerType == 'page') {
-            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Page();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Page::findOne($layoutOwnerId);
+            }
         }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $block = Block::findOne(['id' => $id]);
@@ -273,19 +309,31 @@ abstract class BaseController extends Controller
         $block->type = Yii::$app->request->post('blockType');
 
         if ($snippet) {
-            $block->snippet_code_id = $snippet->snippetCodes[0];
+            $block->snippet_code_id = $snippet->snippetCodes[0]->id;
         } else if ($parent) {
             $block->parent_id = $parent->id;
         }
 
         $layoutOwner = null;
         $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+        $layoutOwnerId = Yii::$app->request->post('layoutOwnerId');
 
         if ($layoutOwnerType == 'post') {
-            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Post();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Post::findOne($layoutOwnerId);
+            }
         } else if ($layoutOwnerType == 'page') {
-            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Page();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Page::findOne($layoutOwnerId);
+            }
         }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
         $prefix = Yii::$app->request->post('prefix');
 
@@ -307,12 +355,24 @@ abstract class BaseController extends Controller
 
         $layoutOwner = null;
         $layoutOwnerType = Yii::$app->request->post('layoutOwnerType');
+        $layoutOwnerId = Yii::$app->request->post('layoutOwnerId');
 
         if ($layoutOwnerType == 'post') {
-            $layoutOwner = Post::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Post();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Post::findOne($layoutOwnerId);
+            }
         } else if ($layoutOwnerType == 'page') {
-            $layoutOwner = Page::findOne(Yii::$app->request->post('layoutOwnerId'));
+            if (empty($layoutOwnerId)) {
+                $layoutOwner = new Page();
+                $layoutOwner->initializeNew();
+            } else {
+                $layoutOwner = Page::findOne($layoutOwnerId);
+            }
         }
+
         $portal = Portal::findOne(Yii::$app->request->post('portalId'));
 
         $parentId = Yii::$app->request->post('parentId');
@@ -518,23 +578,25 @@ abstract class BaseController extends Controller
         }
     }
 
-    protected function redirectAfterSave($model)
+    protected function redirectAfterSave($model, $editOptions = array(), $editView = 'edit')
     {
         Alert::success('Položka bola úspešne uložená.');
         $continue = Yii::$app->request->post('continue');
 
         if (isset($continue)) {
-            return $this->redirect(['edit', 'id' => $model->id]);
+            return $this->render($editView, array_merge([
+                'model' => $model
+            ], $editOptions));
         } else {
             return $this->redirect(['index']);
         }
     }
 
-    protected function redirectAfterFail($model, $editOptions = array())
+    protected function redirectAfterFail($model, $editOptions = array(), $editView = 'edit')
     {
         Alert::danger('Vyskytla sa chyba pri ukladaní položky.');
 
-        return $this->render('edit', array_merge([
+        return $this->render($editView, array_merge([
             'model' => $model
         ], $editOptions));
     }

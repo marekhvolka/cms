@@ -19,25 +19,28 @@ AssetBundle::register($this);
 
 ?>
 
-<div class="layouts area" data-prefix="<?= $prefix ?>">
+<div class="layouts area" data-prefix="<?= $prefix ?>" >
+
+    <div class="data-div hidden" data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+         data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>" data-portal-id="<?= $portal ? $portal->id : '' ?>"></div>
     <?= Html::hiddenInput($prefix . "[type]", $area->type); ?>
     <?= Html::hiddenInput($prefix . "[id]", $area->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[removed]", $area->removed, ['class' => 'removed']); ?>
+
     <div class="children-list sections">
         <?php foreach ($area->sections as $indexSection => $section) : ?>
             <?= $this->render('_section', [
                 'model' => $section,
                 'prefix' => $prefix . "[Section][$indexSection]",
                 'layoutOwner' => $layoutOwner,
-                'portal' => $portal
+                'portal' => $portal,
+                'allowAddingSection' => $allowAddingSection
             ]); ?>
         <?php endforeach; ?>
     </div>
     <div class="col-sm-10 col-sm-offset-2">
         <?php if ($allowAddingSection) : ?>
-        <button type="button" class="btn btn-success btn-sm add-section-btn" data-prefix="<?= $area->type ?>[Section]"
-                data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>" data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                data-portal-id="<?= $portal ? $portal->id : '' ?>">
+        <button type="button" class="btn btn-success btn-sm add-section-btn" data-prefix="<?= $area->type ?>[Section]">
             <span class="glyphicon glyphicon-plus"></span> Pridať sekciu
         </button>
         <?php endif; ?>

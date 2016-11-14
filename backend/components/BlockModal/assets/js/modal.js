@@ -10,14 +10,18 @@ var appendUrl = {
     },
     body = $("body");
 
+var dataDivBlockModal = $('.data-div-block-modal');
+
 body.on('change', '.snippet-dropdown', function () {
+    dataDivBlockModal = $('.data-div-block-modal');
+
     var postData = {
         prefix: $(this).data('prefix'),
-        layoutOwnerId: $(this).data('layout-owner-id'),
-        layoutOwnerType: $(this).data('layout-owner-type'),
-        portalId: $(this).data('portal-id'),
+        layoutOwnerId: dataDivBlockModal.data('layout-owner-id'),
+        layoutOwnerType: dataDivBlockModal.data('layout-owner-type'),
+        portalId: dataDivBlockModal.data('portal-id'),
         snippetId: $(this).val(),
-        blockType: $(this).data('type')
+        blockType: $(this).data('blockType')
     };
 
     var snippetName = $(this).find("option[value='" + $(this).val() + "']").text();
@@ -38,11 +42,11 @@ body.on('change', '.snippet-dropdown', function () {
 body.on('change', '.parent-dropdown', function () {
     var postData = {
         prefix: $(this).data('prefix'),
-        layoutOwnerId: $(this).data('layout-owner-id'),
-        layoutOwnerType: $(this).data('layout-owner-type'),
-        portalId: $(this).data('portal-id'),
+        layoutOwnerId: dataDivBlockModal.data('layout-owner-id'),
+        layoutOwnerType: dataDivBlockModal.data('layout-owner-type'),
+        portalId: dataDivBlockModal.data('portal-id'),
         parentId: $(this).val(),
-        blockType: $(this).data('type')
+        blockType: dataDivBlockModal.data('type')
     };
 
     var snippetName = $(this).find("option[value='" + $(this).val() + "']").text();
@@ -71,10 +75,10 @@ body.on('click', '.btn-block-modal', function () {
         var postData = {
                 id: blockId,
                 prefix: $(this).data('prefix'),
-                blockType: $(this).data('block-type'),
-                layoutOwnerId: $(this).data('layout-owner-id'),
-                layoutOwnerType: $(this).data('layout-owner-type'),
-                portalId: $(this).data('portal-id')
+                blockType: dataDivBlockModal.data('block-type'),
+                layoutOwnerId: dataDivBlockModal.data('layout-owner-id'),
+                layoutOwnerType: dataDivBlockModal.data('layout-owner-type'),
+                portalId: dataDivBlockModal.data('portal-id')
             },
             self = this;
 
@@ -117,9 +121,9 @@ body.on('click', '.btn-add-list-item', function () {
     var postData = {
         prefix: parentDropdownBtn.data('prefix'),
         parentVarId: parentDropdownBtn.data('parent-var-id'),
-        layoutOwnerId: parentDropdownBtn.data('layout-owner-id'),
-        layoutOwnerType: parentDropdownBtn.data('layout-owner-type'),
-        portalId: parentDropdownBtn.data('portal-id'),
+        layoutOwnerId: dataDivBlockModal.data('layout-owner-id'),
+        layoutOwnerType: dataDivBlockModal.data('layout-owner-type'),
+        portalId: dataDivBlockModal.data('portal-id'),
         parentId: parentDropdownBtn.data('parent-id')
     };
 

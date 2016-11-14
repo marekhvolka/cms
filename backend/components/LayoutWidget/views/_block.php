@@ -48,9 +48,6 @@ if (!isset($renderModal)) {
 
     <button type="button" class="btn <?= $buttonClass ?> btn-sm text-content-btn btn-block-modal block-drag-by"
             data-id="<?= $model->id ?>" data-prefix="<?= $prefix ?>"
-            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-            data-portal-id="<?= $portal ? $portal->id : '' ?>"
             data-target="#modal-<?= $model->id ?>" data-block-type="<?= $model->type ?>">
         <?= $buttonName ?>
     </button>

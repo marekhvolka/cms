@@ -7,6 +7,11 @@ use yii\helpers\BaseHtml;
 /* @var $prefix string */
 /* @var $layoutOwner \backend\models\LayoutOwner */
 /* @var $portal Portal */
+/* @var $allowAddingSection bool */
+
+if (!isset($allowAddingSection)) {
+    $allowAddingSection = true;
+}
 
 ?>
 <!--SECTION TO ADD-->
@@ -31,9 +36,6 @@ use yii\helpers\BaseHtml;
                 <div class="dropdown dropdown-cols inline-button">
                     <button type="button" class="btn btn-success dropdown-toggle add-row-btn btn-xs"
                             data-prefix="<?= $prefix ?>"
-                            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-                            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                            data-portal-id="<?= $portal ? $portal->id : '' ?>"
                             title="Vložiť nový riadok" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
@@ -48,11 +50,13 @@ use yii\helpers\BaseHtml;
                         <li><a class="add-row" data-row-type-width="1/2">1/2 riadok</a></li>
                     </ul>
                 </div>
+                <?php if ($allowAddingSection) : ?>
                 <div class="inline-button">
                     <button type="button" class="btn btn-danger btn-xs btn-remove-section" title="Zmazať">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </button>
                 </div>
+                <?php endif; ?>
             </div>
             <?= $this->render('_section-column-options', ['model' => $model, 'prefix' => $prefix]) ?>
         </h3>

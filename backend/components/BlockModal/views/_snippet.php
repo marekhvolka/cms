@@ -48,11 +48,8 @@ use yii\helpers\Url;
                 ArrayHelper::map($layoutOwner ? $layoutOwner->portal->snippets : $portal->snippets, 'id', 'name'), [
                     'prompt' => 'Výber snippetu',
                     'class' => 'snippet-dropdown activate-select2',
-                    'data-type' => $model->type,
                     'data-prefix' => $prefix,
-                    'data-layout-owner-id' => $layoutOwner ? $layoutOwner->id : '',
-                    'data-layout-owner-type' => $layoutOwner ? $layoutOwner->getType() : '',
-                    'data-portal-id' => $portal ? $portal->id : ''
+                    'data-block-type' => $model->type,
                 ]); ?>
 
                 <script type="text/javascript">

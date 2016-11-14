@@ -282,10 +282,7 @@ use yii\helpers\Html;
                 <div class="dropdown inline-button add-list-item-dropdown pull-right"
                      data-prefix="<?= $prefix ?>"
                      data-parent-var-id="<?= $snippetVarValue->var_id ?>"
-                     data-parent-id="<?= $parentId ?>"
-                     data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-                     data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                     data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                     data-parent-id="<?= $parentId ?>">
                     <button type="button" class="btn btn-success dropdown-toggle btn-xs"
                             title="Vložiť novú položku" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>

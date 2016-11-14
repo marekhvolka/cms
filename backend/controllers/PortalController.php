@@ -187,10 +187,10 @@ class PortalController extends BaseController
 
                 $transaction->commit();
 
-                return $this->redirectAfterSave($model);
+                return $this->redirectAfterSave($model, ['type' => $type], 'layout-edit');
             } catch (Exception $exc) {
                 $transaction->rollBack();
-                return $this->redirectAfterFail($model, ['type' => $type]);
+                return $this->redirectAfterFail($model, ['type' => $type], 'layout-edit');
             }
         }
 

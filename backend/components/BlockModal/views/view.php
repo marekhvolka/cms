@@ -10,6 +10,9 @@ use backend\models\Portal;
 
 ?>
 <div class="modal block-modal" id="modal" role="dialog">
+    <div class="data-div-block-modal hidden" data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
+         data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
+         data-portal-id="<?= $portal ? $portal->id : '' ?>"></div>
     <div class="modal-dialog modal-xlg">
         <div class="modal-content">
             <div class="modal-main-content">

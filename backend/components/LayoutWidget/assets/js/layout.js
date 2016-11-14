@@ -9,6 +9,8 @@ var appendUrl = {
     },
     body = $("body");
 
+var dataDiv = $('.data-div'); //element, ktory obsahuje id layoutownera, jeho typ, pripadne id portalu
+
 /* ==========================================================================
  Section
  ========================================================================== */
@@ -19,9 +21,9 @@ body.on("click", '.add-section-btn', function () {
         layouts = $this.parents('.layouts'),
         postData = {
             prefix: $this.data('prefix'),
-            layoutOwnerId: $(this).data('layout-owner-id'),
-            layoutOwnerType: $(this).data('layout-owner-type'),
-            portalId: $this.data('portal-id')
+            layoutOwnerId: dataDiv.data('layout-owner-id'),
+            layoutOwnerType: dataDiv.data('layout-owner-type'),
+            portalId: dataDiv.data('portal-id')
         };
 
     $.post(appendUrl.section, postData, function (data) {
@@ -55,9 +57,9 @@ body.on("click", ".add-row", function () {
         section = $this.parents('.section').first(),
         postData = {
             prefix: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('prefix'),
-            layoutOwnerId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('layout-owner-id'),
-            layoutOwnerType: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('layout-owner-type'),
-            portalId: $this.parents('.dropdown-cols').find('.add-row-btn').first().data('portal-id')
+            layoutOwnerId: dataDiv.data('layout-owner-id'),
+            layoutOwnerType: dataDiv.data('layout-owner-type'),
+            portalId: dataDiv.data('portal-id')
         };
 
     $.post(appendUrl.row, postData, function (data) {
@@ -65,9 +67,9 @@ body.on("click", ".add-row", function () {
             postColumnData = {
                 width: columnsByWidth,
                 prefix: row.data('prefix'),
-                layoutOwnerId: row.data('layout-owner-id'),
-                layoutOwnerType: row.data('layout-owner-type'),
-                portalId: row.data('portal-id')
+                layoutOwnerId: dataDiv.data('layout-owner-id'),
+                layoutOwnerType: dataDiv.data('layout-owner-type'),
+                portalId: dataDiv.data('portal-id')
             };
 
         $.post(appendUrl.column, postColumnData, function (columnsData) {
@@ -126,9 +128,9 @@ body.on("click", ".add-block", function () {
 
     var postData = {
         prefix: mainButton.data('prefix'),
-        layoutOwnerId: mainButton.data('layout-owner-id'),
-        layoutOwnerType: mainButton.data('layout-owner-type'),
-        portalId: mainButton.data('portal-id'),
+        layoutOwnerId: dataDiv.data('layout-owner-id'),
+        layoutOwnerType: dataDiv.data('layout-owner-type'),
+        portalId: dataDiv.data('portal-id'),
         type: $(this).data('type')
     };
 

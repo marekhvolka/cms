@@ -34,10 +34,7 @@ use yii\bootstrap\Html;
                 </div>
                 <div class="dropdown dropdown-column-content inline-button add-block-dropdown">
                     <button type="button" class="btn btn-success dropdown-toggle add-block-btn btn-xs"
-                            title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>"
-                            data-layout-owner-id="<?= $layoutOwner ? $layoutOwner->id : '' ?>"
-                            data-layout-owner-type="<?= $layoutOwner ? $layoutOwner->getType() : '' ?>"
-                            data-portal-id="<?= $portal ? $portal->id : '' ?>">
+                            title="Vložiť nový blok" data-toggle="dropdown" data-prefix="<?= $prefix ?>">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                     <ul class="dropdown-menu">
