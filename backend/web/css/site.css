@@ -493,3 +493,14 @@ a.ui-state-default.ui-state-highlight {
     width: initial;
     height: initial;
 }
+
+.hasDatepicker {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 34px;
+    line-height: 1.428571429;
+    padding: 6px 24px 6px 12px;
+}

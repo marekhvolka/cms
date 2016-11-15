@@ -149,6 +149,13 @@ class PostController extends BaseController
         }
     }
 
+    public function actionHardReset($id)
+    {
+        Post::findOne($id)->getMainCacheFile(true);
+
+        return $this->actionShow($id);
+    }
+
     public function actionShow($id)
     {
         $post = $this->findModel($id);

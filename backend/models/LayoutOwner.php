@@ -211,9 +211,9 @@ abstract class LayoutOwner extends CustomModel implements IDuplicable, ICacheabl
 
         $path = $this->getMainDirectory() . $prefix . '_compiled.php';
 
-        if (!file_exists($path) || (($this->outdated || $this->soft_outdated || $this->head_outdated) && !Yii::$app->user->isGuest)) {
+        if (!file_exists($path) || (($reload || $this->outdated || $this->soft_outdated || $this->head_outdated) && !Yii::$app->user->isGuest)) {
             try {
-                $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile(),
+                $result = Yii::$app->dataEngine->latteRenderer->renderToString($this->getMainPreCacheFile($reload),
                     array());
 
                 $result = html_entity_decode($result, ENT_QUOTES);

@@ -1,7 +1,12 @@
 .cms-top-bar {
-    background-color: black;
+    background-color: black !important;
     padding: 5px;
     color: white;
+    z-index: 26;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 
 .cms-top-bar a {

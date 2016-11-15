@@ -120,7 +120,7 @@ class PortalController extends BaseController
 
                 $model->setOutdated();
 
-                return $this->redirectAfterSave($model);
+                return $this->redirectAfterSave($model, ['allVariables' => $allVariables]);
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->redirectAfterFail($model, ['allVariables' => $allVariables]);
