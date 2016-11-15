@@ -86,7 +86,7 @@ if (!isset($renderModal)) {
 
                     <button type="button" class="btn btn-default btn-sm text-content-btn btn-block-modal"
                             data-id="<?= $varValue->valueBlock->id ?>" data-prefix="<?= $prefix ?>"
-                            data-portal-id="<?= $model->id ?>" data-target="#modal-<?= $varValue->id ?>">
+                            data-target="#modal-<?= $varValue->id ?>">
                         <?php echo $varValue->valueBlock->name; ?>
                     </button>
                     <?php if ($varValue->valueBlock->snippetCode) : ?>

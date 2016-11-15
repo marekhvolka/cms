@@ -15,6 +15,8 @@ use kartik\select2\Select2;
 
 <?= MultimediaWidget::widget(['renderAsModal' => true]) ?>
 
+    <div class="hidden data-div-block-modal" data-portal-id="<?= $model->id ?>"></div>
+
     <h3>Premenné</h3>
 
     <div id="dynamic-fields" class="row">
