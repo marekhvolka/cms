@@ -330,7 +330,7 @@ class Portal extends CustomModel
 
                 $buffer .= '$portal->id = ' . $this->id . ';' . PHP_EOL;
                 $buffer .= '$portal->domain = \'' . $dataEngine->normalizeString($this->domain) . '\';' . PHP_EOL;
-                $buffer .= '$portal->url = \'' . $dataEngine->normalizeString('http://www.' . $this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->url = \'' . $dataEngine->normalizeString('//www.' . $this->domain) . '\';' . PHP_EOL;
                 $buffer .= '$portal->name = \'' . $dataEngine->normalizeString($this->name) . '\';' . PHP_EOL;
                 $buffer .= '$portal->lang = \'' . $dataEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
                 $buffer .= '$portal->template = \'' . $this->template->getMainDirectory(true) . '\';' . PHP_EOL;
