@@ -850,15 +850,14 @@ function _getDevice()
 	return prefix + devices[Math.floor(Math.random() * devices.length)] + postfix;
 }
 
-function _setCookie(cname, cvalue)
+function _setCookie(cname, cpath, cvalue)
 {
 	var now        = new Date();
 	var time       = now.getTime();
 	var expireTime = time + 36000 * 1000;
 	now.setTime(expireTime);
 
-	var path = "path=/";
-	document.cookie = cname + "=" + cvalue + ";expires=" + now.toGMTString() + ";" + path;
+	document.cookie = cname + "=" + cvalue + ";expires=" + now.toGMTString() + ";path=" + cpath;
 }
 
 function _getCookie(cname)
@@ -912,13 +911,11 @@ function getPersonWithLocalization(id_element, dolna_hranica, horna_hranica, kra
 	round_to = round_to.replace(/ /g,'');
 	round_to = parseInt(replaceAll('&nbsp;', '', round_to));
 
-	var win   = window.location.pathname;
-	var regex = new RegExp('/', 'g');
-	win       = win.replace(regex, '_');
+	var cpath   = window.location.pathname;
 
-	if (_checkCookie('p_' + id_element + win)) {
+	if (_checkCookie('p_' + id_element)) {
 		try {
-			var json = _getCookie('p_' + id_element + win);
+			var json = _getCookie('p_' + id_element);
 			person   = JSON.parse(json);
 		} catch (e) {
 			console.log('Chyba pri nacitani cookie');
@@ -936,7 +933,7 @@ function getPersonWithLocalization(id_element, dolna_hranica, horna_hranica, kra
 					$("." + id_element + "_place").html(person.city);
 
 					var json = JSON.stringify(person);
-					_setCookie('p_' + id_element + win, json);
+					_setCookie('p_' + id_element, cpath, json);
 				}
 
 			}).fail(function() {
@@ -986,7 +983,7 @@ function getPersonWithLocalization(id_element, dolna_hranica, horna_hranica, kra
 		person.device = _getDevice();
 
 		var json = JSON.stringify(person);
-		_setCookie('p_' + id_element + win, json);
+		_setCookie('p_' + id_element, cpath, json);
 	}
 
 	_setValue(person, id_element);
@@ -1012,11 +1009,6 @@ function getApplicantCount(id_element, dolna_pocet, horna_pocet, dolna_cas, horn
 	var horna_pocet = typeof horna_pocet === 'object' || horna_pocet === undefined || horna_pocet == '' ? 120 : parseInt(horna_pocet.replace(/ /g,''));
 	var dolna_cas   = typeof dolna_cas === 'object' || dolna_cas === undefined || dolna_cas == '' ? 6 : parseInt(dolna_cas.replace(/ /g,''));
 	var horna_cas   = typeof horna_cas === 'object' || horna_cas === undefined || horna_cas == '' ? 19 : parseInt(horna_cas.replace(/ /g,''));
-
-
-	var win   = window.location.pathname;
-	var regex = new RegExp('/', 'g');
-	win = win.replace(regex, '_');
 
 	var rozdiel = (horna_cas - dolna_cas)*60;
 
