@@ -3,7 +3,7 @@ var LAST_NAME_ARRAY = 'ABCDEFGHIJKLMNOPRSTV';
 var MIN_TIME        = 30;
 var MAX_TIME        = 120;
 var RADIUS          = 10;
-var URL 			= 'http://www.hypercms.sk/geoip/';
+var URL 			= '/geoip/';
 
 var SK_CITY = [
 	'Bratislava',
