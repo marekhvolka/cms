@@ -16,17 +16,17 @@ use yii\bootstrap\Html;
 
     <div class="pull-right">
         <?php if ($requestedPage->isPage()) : ?>
-        <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $requestedPage->id, [
-            'target' => '_blank'
-        ]) ?>
-        <?= isset($requestedPage->product) ?
-            Html::a('Upraviť produkt', '/backend/web/product/edit/' . $requestedPage->product->id, [
+            <?= Html::a('Upraviť podstránku', '/backend/web/page/edit/' . $requestedPage->id, [
                 'target' => '_blank'
-            ]) : '' ?>
+            ]) ?>
+            <?= isset($requestedPage->product) ?
+                Html::a('Upraviť produkt', '/backend/web/product/edit/' . $requestedPage->product->id, [
+                    'target' => '_blank'
+                ]) : '' ?>
         <?php elseif ($requestedPage->isPost()) : ?>
-        <?= Html::a('Upraviť článok', '/backend/web/post/edit/' . $requestedPage->id, [
-            'target' => '_blank'
-        ]) ?>
+            <?= Html::a('Upraviť článok', '/backend/web/post/edit/' . $requestedPage->id, [
+                'target' => '_blank'
+            ]) ?>
         <?php endif; ?>
         Prihlásený ako <?= Yii::$app->user->getIdentity()->username ?>.
     </div>
@@ -35,43 +35,35 @@ use yii\bootstrap\Html;
 <script>
 
     $(document).ready(
-        function ()
-        {
+        function () {
             var stylesPath = getCookie('developTemplate');
 
-            if (stylesPath == null || stylesPath == 'null')
-            {
-                stylesPath = $('#template-main').attr('href');
+            if (stylesPath != null && stylesPath != 'null' && stylesPath != 'undefined') {
+                $("#template-switch").val(stylesPath);
+                changeTemplate(stylesPath);
             }
-
-            $("#template-switch").val(stylesPath);
-            changeTemplate(stylesPath);
         }
     );
 
     $('#template-switch').change(
-        function ()
-        {
+        function () {
             var newStylesheet = $(this).val();
             changeTemplate(newStylesheet);
         }
     );
 
-    function changeTemplate(newStylesheet)
-    {
+    function changeTemplate(newStylesheet) {
         $('#template-main').attr('href', newStylesheet);
         setCookie('developTemplate', newStylesheet);
     }
 
-    function setCookie(key, value)
-    {
+    function setCookie(key, value) {
         var expires = new Date();
         expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
         document.cookie = key + '=' + value + ';path=/;expires=' + expires.toUTCString();
     }
 
-    function getCookie(key)
-    {
+    function getCookie(key) {
         var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
         return keyValue ? keyValue[2] : null;
     }
