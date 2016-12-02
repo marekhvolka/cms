@@ -103,6 +103,44 @@ abstract class BaseController extends Controller
         return (new GlobalSearch)->search($q);
     }
 
+    public function actionResetCache()
+    {
+        $path = Yii::getAlias('@frontend') . '/web/data/' . Yii::$app->user->identity->portal->domain;
+        chdir($path);
+
+        $files = glob('pages/*/page_prepared.latte');
+
+        foreach($files as $file){ // iterate files
+            if(is_file($file))
+                unlink($file); // delete file
+        }
+
+        $files = glob('pages/*/page_compiled.php');
+
+        foreach($files as $file){ // iterate files
+            if(is_file($file))
+                unlink($file); // delete file
+        }
+
+        $files = glob('posts/*/page_prepared.latte');
+
+        foreach($files as $file){ // iterate files
+            if(is_file($file))
+                unlink($file); // delete file
+        }
+
+        $files = glob('posts/*/post_compiled.php');
+
+        foreach($files as $file){ // iterate files
+            if(is_file($file))
+                unlink($file); // delete file
+        }
+
+        Alert::success('Cache resetnutá.');
+
+        $this->goHome();
+    }
+
     public function actionMultimediaUpload()
     {
         $item = new MultimediaItem();

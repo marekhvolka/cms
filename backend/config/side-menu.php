@@ -44,9 +44,8 @@ return [
             ['title' => 'Portály', 'controller' => 'portal', 'action' => 'index'],
             ['title' => 'Používatelia', 'controller' => 'user', 'action' => 'index'],
             ['title' => 'Krajiny', 'controller' => 'language', 'action' => 'index'],
-            //['title' => 'Administrácia rolí', 'controller' => 'TODO', 'action' => 'index'],
-            //['title' => 'Administrácia oprávnení', 'controller' => 'TODO', 'action' => 'index'],
         ],
     ],
-    ['icon' => 'exclamation-triangle', 'title' => 'Hlásenia', 'controller' => 'system-exception', 'action' => 'index']
+    ['icon' => 'exclamation-triangle', 'title' => 'Hlásenia', 'controller' => 'system-exception', 'action' => 'index'],
+    ['icon' => 'refresh', 'title' => 'Reset cache', 'controller' => 'page', 'action' => 'reset-cache', 'title' => 'totot je alt']
 ];
