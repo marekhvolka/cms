@@ -47,5 +47,5 @@ return [
         ],
     ],
     ['icon' => 'exclamation-triangle', 'title' => 'Hlásenia', 'controller' => 'system-exception', 'action' => 'index'],
-    ['icon' => 'refresh', 'title' => 'Reset cache', 'controller' => 'page', 'action' => 'reset-cache', 'title' => 'totot je alt']
+    ['icon' => 'refresh', 'title' => 'Reset cache', 'controller' => 'page', 'action' => 'reset-cache']
 ];
