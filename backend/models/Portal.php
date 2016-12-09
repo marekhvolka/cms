@@ -338,7 +338,7 @@ class Portal extends CustomModel
                 $buffer .= '$portal->lang = \'' . $dataEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
                 $buffer .= '$portal->template = \'' . $this->template->getMainDirectory(true) . '\';' . PHP_EOL;
                 $buffer .= '$portal->color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
-                $buffer .= '$portal->https_active = ' . $this->https_active ? 'TRUE' : 'FALSE' . ';' . PHP_EOL;
+                $buffer .= '$portal->https_active = ' . ($this->https_active ? 'TRUE' : 'FALSE') . ';' . PHP_EOL;
 
                 $buffer .= '/* Portal vars */' . PHP_EOL;
 
