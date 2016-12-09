@@ -18,6 +18,8 @@ use yii\helpers\ArrayHelper;
  * @property string $color_scheme
  * @property integer $active
  * @property int $blog_main_page_id
+ * @property int $https_active
+ * @property string $url
  *
  * @property string $templatePath
  * @property Page[] $pages
@@ -61,7 +63,7 @@ class Portal extends CustomModel
                 ['name', 'language_id', 'domain', 'template_id', 'active'],
                 'required'
             ],
-            [['language_id', 'template_id', 'active', 'blog_main_page_id'], 'integer'],
+            [['language_id', 'template_id', 'active', 'blog_main_page_id', 'https_active'], 'integer'],
             [['color_scheme'], 'string'],
             [['name', 'domain'], 'string', 'max' => 50]
         ];
@@ -80,7 +82,8 @@ class Portal extends CustomModel
             'template_id' => 'Šablóna',
             'color_scheme' => 'Farebná schéma',
             'active' => 'Aktívny',
-            'blog_main_page_id' => 'Hlavná podstránka blogu (url)'
+            'blog_main_page_id' => 'Hlavná podstránka blogu (url)',
+            'https_active' => 'HTTPS Aktívne'
         ];
     }
 
@@ -330,11 +333,12 @@ class Portal extends CustomModel
 
                 $buffer .= '$portal->id = ' . $this->id . ';' . PHP_EOL;
                 $buffer .= '$portal->domain = \'' . $dataEngine->normalizeString($this->domain) . '\';' . PHP_EOL;
-                $buffer .= '$portal->url = \'' . $dataEngine->normalizeString('//www.' . $this->domain) . '\';' . PHP_EOL;
+                $buffer .= '$portal->url = \'' . $this->url . '\';' . PHP_EOL;
                 $buffer .= '$portal->name = \'' . $dataEngine->normalizeString($this->name) . '\';' . PHP_EOL;
                 $buffer .= '$portal->lang = \'' . $dataEngine->normalizeString($this->language->identifier) . '\';' . PHP_EOL;
                 $buffer .= '$portal->template = \'' . $this->template->getMainDirectory(true) . '\';' . PHP_EOL;
                 $buffer .= '$portal->color_scheme = \'' . $this->getColorSchemePath() . '\';' . PHP_EOL;
+                $buffer .= '$portal->https_active = ' . $this->https_active ? 'TRUE' : 'FALSE' . ';' . PHP_EOL;
 
                 $buffer .= '/* Portal vars */' . PHP_EOL;
 
@@ -594,7 +598,7 @@ class Portal extends CustomModel
         foreach ($this->pages as $page) {
             if ($page->in_sitemap) {
                 $buffer .= '<url>' . PHP_EOL;
-                $buffer .= '<loc>http://www.' . $page->portal->domain . $page->getUrl() . '</loc>' . PHP_EOL;
+                $buffer .= '<loc>' . $page->portal->url . $page->getUrl() . '</loc>' . PHP_EOL;
                 $buffer .= '</url>' . PHP_EOL;
             }
         }
@@ -603,7 +607,7 @@ class Portal extends CustomModel
             foreach ($this->posts as $post) {
                 if ($post->in_sitemap) {
                     $buffer .= '<url>' . PHP_EOL;
-                    $buffer .= '<loc>http://www.' . $post->portal->domain . $post->getUrl() . '</loc>' . PHP_EOL;
+                    $buffer .= '<loc>' . $post->portal->url . $post->getUrl() . '</loc>' . PHP_EOL;
                     $buffer .= '</url>' . PHP_EOL;
                 }
             }
@@ -612,5 +616,13 @@ class Portal extends CustomModel
         $buffer .= '</urlset>';
         
         Yii::$app->dataEngine->writeToFile($path, 'w+', $buffer);
+    }
+
+    /** Vrati zakladnu URL portalu
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->https_active ? 'https' : 'http' . '://www.' . $this->domain;
     }
 }

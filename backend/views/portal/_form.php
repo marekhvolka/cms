@@ -65,6 +65,10 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'active')->widget(SwitchInput::classname(), [
                 'type' => SwitchInput::CHECKBOX
             ]) ?>
+
+            <?= $form->field($model, 'https_active')->widget(SwitchInput::classname(), [
+                'type' => SwitchInput::CHECKBOX
+            ]) ?>
         </div>
         <div class="tab-pane" id="tab_variables_settings">
             <?= VarManagerWidget::widget([
