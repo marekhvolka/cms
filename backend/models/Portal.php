@@ -623,6 +623,6 @@ class Portal extends CustomModel
      */
     public function getUrl()
     {
-        return $this->https_active ? 'https' : 'http' . '://www.' . $this->domain;
+        return ($this->https_active ? 'https' : 'http') . '://www.' . $this->domain;
     }
 }
