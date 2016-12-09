@@ -14,7 +14,7 @@ if (!isset($renderModal)) {
 }
 ?>
 
-<div class="btn-group layout-block block" data-content="" role="group" id="block-<?= $model->id ?>"
+<div class="btn-group layout-block block <?= $model->active ? '' : 'disabled' ?>" data-content="" role="group" id="block-<?= $model->id ?>"
      data-prefix="<?= $prefix ?>">
     <?= Html::hiddenInput($prefix . "[id]", $model->id, ['class' => 'model_id']); ?>
     <?= Html::hiddenInput($prefix . "[type]", $model->type, ['class' => 'type']); ?>
