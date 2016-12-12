@@ -226,7 +226,8 @@ class Portal extends CustomModel
 
         $codes = TrackingCode::findAll([
             'portal_id' => $this->id,
-            'place_id' => $placeId
+            'place_id' => $placeId,
+            'active' => 1
         ]);
 
         $result = '';

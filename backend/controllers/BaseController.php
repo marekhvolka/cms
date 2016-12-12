@@ -622,7 +622,7 @@ abstract class BaseController extends Controller
         $continue = Yii::$app->request->post('continue');
 
         if (isset($continue)) {
-            return $this->redirect([$editView, 'id' => $model->id]);
+            return $this->redirect(array_merge([$editView, 'id' => $model->id], $editOptions));
         } else {
             return $this->redirect(['index']);
         }

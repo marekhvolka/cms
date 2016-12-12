@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Názov',
                 'format' => 'raw',
                 'value'=>function ($dataProvider) {
-                    return Html::a($dataProvider->object->name, Url::to(['/system-exception/view/', 'id' => $dataProvider->id]));
+                    return Html::a($dataProvider->message, Url::to(['/system-exception/view/', 'id' => $dataProvider->id]));
                 },
             ],
             'type',

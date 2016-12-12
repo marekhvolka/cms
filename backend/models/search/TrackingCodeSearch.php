@@ -62,7 +62,6 @@ class TrackingCodeSearch extends TrackingCode
             'id' => $this->id,
             'place_id' => $this->place_id,
             'portal_id' => $this->portal_id,
-            'active' => $this->active,
             'last_edit' => $this->last_edit,
             'last_edit_user' => $this->last_edit_user,
         ]);
