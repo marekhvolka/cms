@@ -95,7 +95,7 @@ $(
          */
         function refresh(val) {
             $.get(
-                globalSearchUrl + "?q=" + encodeURI(val), function (data) {
+                '/backend/web/page/global-search-results' + "?q=" + encodeURI(val), function (data) {
                     $(".global-search .data li").remove();
 
                     var dataInDOM = $(".global-search .data"),

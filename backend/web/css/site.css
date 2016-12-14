@@ -223,57 +223,6 @@ ul {
     padding: 0;
 }
 
-.global-search {
-    display: inline-block;
-    min-width: 500px;
-    position: relative;
-}
-
-.global-search input {
-    margin-top: 8px;
-    z-index: 2;
-    position: relative;
-}
-
-.global-search .data {
-    display: none;
-    position: absolute;
-    left: 0;
-    margin-top: -1px;
-    padding: 5px 0;
-    background-color: white;
-    width: 100%;
-    border: 1px solid #C9C9C9;
-    border-top: none;
-    z-index: 1;
-    margin-bottom: 0;
-}
-
-.global-search ul.data {
-
-}
-
-.global-search .data li {
-    list-style-type: none;
-    border-bottom: 1px solid #fff
-}
-
-.global-search .data li a {
-    display: block;
-    outline: none;
-    padding: 3px 5px;
-    color: black;
-}
-
-.global-search .data li.active a {
-    text-decoration: underline;
-    font-weight: bold;
-}
-
-.global-search .data li a:hover {
-    background-color: rgba(27, 206, 176, 0.31);
-}
-
 a.anchor {
     display: block;
     position: relative;
@@ -316,30 +265,6 @@ a.anchor {
 .fixed-panel {
     max-height: 600px;
     overflow-y: scroll;
-}
-
-.global-search .suggest-snippet {
-    background-color: #ffffec;
-}
-
-.global-search .suggest-product {
-    background-color: #dce8ed;
-}
-
-.global-search .suggest-snippet-code {
-    background-color: #fadedd;
-}
-
-.global-search .suggest-page {
-    background-color: #d1ffcd;
-}
-
-.global-search .suggest-action {
-    background-color: rgba(0, 255, 0, 0.46);
-}
-
-.global-search .suggest-post {
-    background-color: rgba(77, 223, 255, 0.35);
 }
 
 .search-multimedia {

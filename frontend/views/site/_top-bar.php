@@ -1,18 +1,45 @@
 <?php
 use backend\models\Page;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /** @var $requestedPage \backend\models\LayoutOwner */
 ?>
 
+<style>
+    body {
+        margin-top: 60px;
+    }
+</style>
+
+<link rel="stylesheet" href="/backend/web/css/global-search.css">
+<script src="/backend/web/js/global-search.js"></script>
+
 <div class="cms-top-bar">
 
-    <select id="template-switch">
+    <span>CSS štýly</span>
+    <select class="input-sm" id="template-switch">
         <?php foreach ($requestedPage->portal->template->getCssSchemes() as $cssScheme) : ?>
             <option value="<?= $cssScheme->getPath() ?>"><?= $cssScheme->name ?></option>
 
         <?php endforeach; ?>
     </select>
+
+    <?php
+        $this->registerJs("var globalSearchUrl = \"" . Url::to(['global-search-results']) . "\";", \yii\web\View::POS_END);
+    ?>
+    <div class="global-search">
+        <?= Html::input('string', 'globalSearch', null, [
+            'id' => 'global-search-input',
+            'placeholder' => 'Globálne vyhľadávanie',
+            'class' => 'form-control',
+            'autofocus' => 'autofocus',
+            'autocomplete' => 'off'
+        ]) ?>
+        <ul class="data">
+            <li>Žiadne výsledky</li>
+        </ul>
+    </div>
 
     <div class="pull-right">
         <?php if ($requestedPage->isPage()) : ?>
