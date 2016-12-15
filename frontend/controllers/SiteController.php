@@ -108,23 +108,6 @@ class SiteController extends Controller
                 'identifier' => 'homepage'
             ])
                 ->one();
-        } else if ($portal->blogMainPage && $identifiers[0] == $portal->blogMainPage->identifier && sizeof($identifiers) > 2) { //blog ale nie hlavna stranka blogu
-            if (key_exists(1, $identifiers)) {
-                $requestedPage = Post::find()->where([
-                    'portal_id' => $portal->id,
-                    'identifier' => $identifiers[1]
-                ])->one();
-            }
-
-            if (!$requestedPage) {
-                $pages = Page::find()
-                    ->where([
-                        'parent_id' => null,
-                        'portal_id' => $portal->id
-                    ])->all();
-
-                $requestedPage = $this->findPage($pages, $identifiers, 0);
-            }
         } else {
             $redirect = Redirect::find()
                 ->where([
@@ -137,14 +120,24 @@ class SiteController extends Controller
                 return $this->redirect($redirect->target_url, $redirect->redirect_type);
             }
 
-            $pages = Page::find()
-                ->where([
-                    'parent_id' => null,
-                    'portal_id' => $portal->id
-                ])->all();
+            if ($portal->blogMainPage && $identifiers[0] == $portal->blogMainPage->identifier && sizeof($identifiers) > 2) { //blog ale nie hlavna stranka blogu
+                if (key_exists(1, $identifiers)) {
+                    $requestedPage = Post::find()->where([
+                        'portal_id' => $portal->id,
+                        'identifier' => $identifiers[1]
+                    ])->one();
+                }
+            } else {
+                $pages = Page::find()
+                    ->where([
+                        'parent_id' => null,
+                        'portal_id' => $portal->id
+                    ])->all();
 
-            $requestedPage = $this->findPage($pages, $identifiers, 0);
+                $requestedPage = $this->findPage($pages, $identifiers, 0);
+            }
         }
+
         if (!isset($requestedPage)) {
             $requestedPage = Page::find()
                 ->where([
